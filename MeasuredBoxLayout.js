@@ -58,6 +58,26 @@ enyo.kind({
 	orient: "v"
 });
 
+
+enyo.kind({
+	name: "MeasuredControl",
+	/*
+	showingChanged: function() {
+		this.inherited(arguments);
+		if (this.showing) {
+			this.reflowControls();
+		}
+	},
+	*/
+	reflowControls: function() {
+		this.broadcastMessage("reflowControls");
+	},
+	reflowControlsHandler: function() {
+		this.reflow();
+		this.broadcastToControls("reflowControls");
+	}
+});
+
 enyo.kind({
 	name: "enyo.HMeasuredBox",
 	kind: "Control",
