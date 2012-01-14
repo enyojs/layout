@@ -1,47 +1,55 @@
-﻿enyo.kind({
+/*
+	A box layout that supports a single flexible region
+*/
+enyo.kind({
 	name: "enyo.BoxLayout",
-	kind: "Layout",
+	kind: enyo.Layout,
+	layoutClass: "",
 	unit: "px",
 	//* @protected
-	calcMetrics: function(inMeasure) {
-		var m = {flex: 0, fixed: 0};
-		for (var i=0, c$ = this.container.children, c; c=c$[i]; i++) {
-			m.flex += c.flex || 0;
-			m.fixed += c[inMeasure] || 0;
+	_flow: function(measure, mAttr, nAttr, pAttr, qAttr, boxClass) {
+		var ex, m = 0, b = {}, p = ("pad" in this.container) ? Number(this.container.pad) : 0, c;
+		b[pAttr] = p;
+		b[qAttr] = p;
+		var c$ = this.container.children;
+		for (var i=0; (c=c$[i]); i++) {
+			m += p;
+			//c.applyStyle("position", "absolute");
+			c.addClass(boxClass + "-div");
+			if (c.flex) {
+				break;
+			}
+			b[measure] = ex = Number(c[measure]) || 96;
+			b[mAttr] = m;
+			c.setBounds(b, this.unit);
+			m += ex;
 		}
-		return m;
+		delete b[mAttr];
+		if (c) {
+			var client = c, n = 0;
+			for (i=c$.length-1; c=c$[i]; i--) {
+				//c.applyStyle("position", "absolute");
+				c.addClass(boxClass + "-div");
+				n += p;
+				if (c == client) {
+					break;
+				}
+				b[measure] = ex = Number(c[measure]) || 96;
+				b[nAttr] = n;
+				c.setBounds(b, this.unit);
+				n += ex;
+			}
+			delete b[measure];
+			b[mAttr] = m;
+			b[nAttr] = n;
+			client.setBounds(b, this.unit);
+		}
 	},
 	flow: function() {
-		var c$ = this.container.children;
-		for (var i=0, c; c=c$[i]; i++) {
-			c.addClass("enyo-box-div");
-		}
-	},
-	_reflow: function(measure, mAttr, nAttr, pAttr, qAttr) {
-		var m = this.calcMetrics(measure);
-		var p = ("pad" in this.container) ? Number(this.container.pad) : 0;
-		//
-		var pb = this.container.getBounds();
-		var c$ = this.container.children;
-		var free = pb[measure] - m.fixed - (p * (c$.length + 1));
-		//
-		var b = {};
-		b[pAttr] = b[qAttr] = p;
-		//
-		for (var i=0, o=0, ex, c; c=c$[i]; i++) {
-			o += p;
-			ex = Math.round(c.flex ? (c.flex / m.flex) * free : Number(c[measure]) || 96);
-			b[measure] = ex;
-			b[mAttr] = o;
-			c.setBounds(b, this.unit);
-			o += ex;
-		}
-	},
-	reflow: function() {
 		if (this.orient == "h") {
-			this._reflow("width", "left", "right", "top", "bottom");
+			this._flow("width", "left", "right", "top", "bottom", "enyo-box");
 		} else {
-			this._reflow("height", "top", "bottom", "left", "right");
+			this._flow("height", "top", "bottom", "left", "right", "enyo-box");
 		}
 	}
 });
@@ -60,12 +68,12 @@ enyo.kind({
 
 enyo.kind({
 	name: "enyo.HBox",
-	kind: "Control",
+	kind: enyo.Control,
 	layoutKind: "enyo.HBoxLayout"
 });
 
 enyo.kind({
 	name: "enyo.VBox",
-	kind: "Control",
+	kind: enyo.Control,
 	layoutKind: "enyo.VBoxLayout"
 });

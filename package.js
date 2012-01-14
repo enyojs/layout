@@ -1,9 +1,9 @@
 enyo.depends(
 	"HLayout.css",
 	"HLayout.js",
-	"SimpleBoxLayout.css",
-	"SimpleBoxLayout.js",
+	"BoxLayout.css",
 	"BoxLayout.js",
+	"MeasuredBoxLayout.js",
 	"SnapLayout.css",
 	"SnapLayout.js"
 );
