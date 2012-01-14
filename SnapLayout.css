@@ -1,0 +1,15 @@
+.enyo-snap-scroll-layout {
+	overflow: hidden;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	/* compositify: makes ios happy */
+	-webkit-transform: translateZ(0);
+}
+
+.enyo-snap-scroll-layout > * {
+	position: absolute;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
