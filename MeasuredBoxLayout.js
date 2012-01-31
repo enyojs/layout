@@ -3,6 +3,10 @@
 	kind: "Layout",
 	unit: "px",
 	//* @protected
+	destroy: function() {
+		this.inherited(arguments);
+		this.unflow();
+	},
 	calcMetrics: function(inMeasure) {
 		var m = {flex: 0, fixed: 0};
 		for (var i=0, c$ = this.container.children, c; c=c$[i]; i++) {
@@ -42,6 +46,20 @@
 			this._reflow("width", "left", "right", "top", "bottom");
 		} else {
 			this._reflow("height", "top", "bottom", "left", "right");
+		}
+	},
+	unflow: function() {
+		if (this.orient == "h") {
+			this._unflow("width", "left", "right", "top", "bottom");
+		} else {
+			this._unflow("height", "top", "bottom", "left", "right");
+		}
+	},
+	_unflow: function(measure, mAttr, nAttr, pAttr, qAttr) {
+		for (var i=0, c$ = this.container.children, c, ds; c=c$[i]; i++) {
+			ds = c.domStyles;
+			ds[measure] = ds[mAttr] = ds[nAttr] = ds[pAttr] = ds[qAttr] = null;
+			c.domStylesChanged();
 		}
 	}
 });
@@ -88,4 +106,16 @@ enyo.kind({
 	name: "enyo.VMeasuredBox",
 	kind: "Control",
 	layoutKind: "enyo.VMeasuredBoxLayout"
+});
+
+enyo.kind({
+	name: "BoxFitLayout",
+	name: "DynamicLayout",
+	strategyKind: "MeasuredBoxLayout",
+	minStrategyKind: "FitLayout",
+	createStrategy: function(inKind) {
+		var r =  enyo.createFromKind(inKind, this.container);
+		r.orient = this.orient;
+		return r;
+	}
 });
