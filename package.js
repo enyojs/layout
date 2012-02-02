@@ -1,10 +1,11 @@
 enyo.depends(
+	"DynamicLayout.js",
 	"HLayout.css",
 	"HLayout.js",
 	"BoxLayout.css",
 	"BoxLayout.js",
 	"MeasuredBoxLayout.js",
-	"DynamicLayout.js",
 	"SnapLayout.css",
-	"SnapLayout.js"
+	"SnapLayout.js",
+	"FitLayout.js"
 );

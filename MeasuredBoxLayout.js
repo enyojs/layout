@@ -110,12 +110,12 @@ enyo.kind({
 
 enyo.kind({
 	name: "BoxFitLayout",
-	name: "DynamicLayout",
+	kind: "DynamicLayout",
 	strategyKind: "MeasuredBoxLayout",
 	minStrategyKind: "FitLayout",
 	createStrategy: function(inKind) {
 		var r =  enyo.createFromKind(inKind, this.container);
-		r.orient = this.orient;
+		r.orient = this.container.orient || "v";
 		return r;
 	}
 });
