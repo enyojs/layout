@@ -3,11 +3,13 @@
 	kind: "Layout",
 	layoutClass: "enyo-snap-scroll-layout",
 	centered: true,
+	accelerated: "auto",
 	unit: "px",
 	pad: 0,
 	//* @protected
 	constructor: function(inContainer) {
 		this.inherited(arguments);
+		this.scale = this.container.layoutScale || 1;
 		this.orientChanged();
 	},
 	setOrient: function(inOrient) {
@@ -27,6 +29,7 @@
 		b[this.offExtent] = s;
 		for (var i=0, c$ = this.container.children, c; c=c$[i]; i++) {
 			// place offff screen (what about using display: none?)
+			enyo.Layout.accelerate(c, this.accelerated);
 			this.applyTransform(c, "-200%");
 			b[this.measure] = this.calcMeasuredBound(c);
 			c.setBounds(b, "");
@@ -64,11 +67,10 @@
 		}
 	},
 	applyTransform: function(inControl, inValue, inApply) {
-		var t = this.transform + "(" + inValue + ")";
-		enyo.Layout.transform(inControl, t);
+		enyo.Layout.transformValue(inControl, this.transform, inValue);
 	},
 	measureControl: function(inControl) {
-		return inControl.getBounds()[this.measure] + (this.container.pad || 0) * 2;
+		return (inControl.getBounds()[this.measure]) + (this.container.pad || 0) * 2;
 	}
 });
 
