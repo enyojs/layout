@@ -1,20 +1,4 @@
 ﻿enyo.kind({
-	name: "enyo.SnappyLayout",
-	kind: "DynamicLayout",
-	strategyKind: "SnapLayout",
-	minStrategyKind: "SnapFitLayout",
-	orient: "h",
-	createStrategy: function() {
-		var r = this.inherited(arguments);
-		r.setOrient(this.orient);
-		return r;
-	},
-	measureControl: function(inControl) {
-		return this.strategy.measureControl(inControl);
-	}
-});
-
-enyo.kind({
 	name: "enyo.SnapLayout",
 	kind: "Layout",
 	layoutClass: "enyo-snap-scroll-layout",
@@ -81,23 +65,10 @@ enyo.kind({
 	},
 	applyTransform: function(inControl, inValue, inApply) {
 		var t = this.transform + "(" + inValue + ")";
-		var ds = inControl.domStyles;
-		ds["-webkit-transform"] = ds["-moz-transform"] = ds["-ms-transform"] = ds["transform"] = t;
-		if (inApply && inControl.hasNode()) {
-			var s = inControl.node.style;
-			s.webkitTransform = s.MozTransform = s.msTransform = s.transform = t;
-		}
+		enyo.Layout.transform(inControl, t);
 	},
 	measureControl: function(inControl) {
 		return inControl.getBounds()[this.measure] + (this.container.pad || 0) * 2;
-	}
-});
-
-enyo.kind({
-	name: "enyo.SnapFitLayout",
-	kind: "SnapLayout",
-	calcMeasuredBound: function(inControl) {
-		return "100%";
 	}
 });
 
@@ -111,16 +82,4 @@ enyo.kind({
 	name: "enyo.VSnapLayout",
 	kind: enyo.SnapLayout,
 	orient: "v"
-});
-
-enyo.kind({
-	name: "HSnap",
-	kind: "Control",
-	layoutKind: "HSnapLayout"
-});
-
-enyo.kind({
-	name: "VSnap",
-	kind: "Control",
-	layoutKind: "VSnapLayout"
 });

@@ -76,26 +76,6 @@ enyo.kind({
 	orient: "v"
 });
 
-
-enyo.kind({
-	name: "MeasuredControl",
-	/*
-	showingChanged: function() {
-		this.inherited(arguments);
-		if (this.showing) {
-			this.reflowControls();
-		}
-	},
-	*/
-	reflowControls: function() {
-		this.broadcastMessage("reflowControls");
-	},
-	reflowControlsHandler: function() {
-		this.reflow();
-		this.broadcastToControls("reflowControls");
-	}
-});
-
 enyo.kind({
 	name: "enyo.HMeasuredBox",
 	kind: "Control",
@@ -106,16 +86,4 @@ enyo.kind({
 	name: "enyo.VMeasuredBox",
 	kind: "Control",
 	layoutKind: "enyo.VMeasuredBoxLayout"
-});
-
-enyo.kind({
-	name: "BoxFitLayout",
-	kind: "DynamicLayout",
-	strategyKind: "MeasuredBoxLayout",
-	minStrategyKind: "FitLayout",
-	createStrategy: function(inKind) {
-		var r =  enyo.createFromKind(inKind, this.container);
-		r.orient = this.container.orient || "v";
-		return r;
-	}
 });
