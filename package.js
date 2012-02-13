@@ -7,6 +7,7 @@ enyo.depends(
 	"MeasuredBoxLayout.js",
 	"SnapLayout.css",
 	"SnapLayout.js",
+	"SnapBgLayout.js",
 	"SnapFitLayout.js",
 	"FitLayout.js",
 	"DynamicLayout.js"
