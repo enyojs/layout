@@ -9,7 +9,6 @@
 	//* @protected
 	constructor: function(inContainer) {
 		this.inherited(arguments);
-		this.scale = this.container.layoutScale || 1;
 		this.orientChanged();
 	},
 	setOrient: function(inOrient) {
@@ -43,8 +42,10 @@
 	reflow: function() {
 		var offset = this.container.layoutOffset || 0;
 		var cb = this.container.getBounds()[this.measure];
+		var scale = this.container.layoutScale || 1;
 		var li = this.container.layoutIndex || 0;
-		var b = !this.centered ? 0 : (cb - this.measureControl(this.container.children[li])) / 2;
+		var ci = this.container.children[li];
+		var b = !this.centered || !ci ? 0 : (cb - this.measureControl(ci)) / 2;
 		var o = offset + b;
 		// layout out foward from offset until screen is filled
 		for (var i=li || 0, c$ = this.container.children, c; c=c$[i]; i++) {
@@ -56,21 +57,20 @@
 		}
 		// layout out backward from offset until screen is filled
 		o = offset + b;
-		if (o > 0) {
-			for (var i=li-1, c$ = this.container.children, c; c=c$[i]; i--) {
-				o -= this.measureControl(c);
-				this.applyTransform(c, o+"px", true);
-				if (o < 0) {
-					break;
-				}
+		for (var i=li-1, c$ = this.container.children, c; c=c$[i]; i--) {
+			if (o < 0) {
+				break;
 			}
+			o -= this.measureControl(c);
+			this.applyTransform(c, o+"px", true);
 		}
 	},
 	applyTransform: function(inControl, inValue, inApply) {
 		enyo.Layout.transformValue(inControl, this.transform, inValue);
 	},
 	measureControl: function(inControl) {
-		return (inControl.getBounds()[this.measure]) + (this.container.pad || 0) * 2;
+		var scale = this.container.layoutScale || 1;
+		return ((inControl.getBounds()[this.measure]) + (this.container.pad || 0) * 2) * scale;
 	}
 });
 
