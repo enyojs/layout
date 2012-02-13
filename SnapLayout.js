@@ -2,6 +2,7 @@
 	name: "enyo.SnapLayout",
 	kind: "Layout",
 	layoutClass: "enyo-snap-scroll-layout",
+	useTransform: true,
 	centered: true,
 	accelerated: "auto",
 	unit: "px",
@@ -27,9 +28,7 @@
 		var b = {top: s, left: s};
 		b[this.offExtent] = s;
 		for (var i=0, c$ = this.container.children, c; c=c$[i]; i++) {
-			// place offff screen (what about using display: none?)
 			enyo.Layout.accelerate(c, this.accelerated);
-			this.applyTransform(c, "-200%");
 			b[this.measure] = this.calcMeasuredBound(c);
 			c.setBounds(b, "");
 		}
@@ -49,24 +48,37 @@
 		var o = offset + b;
 		// layout out foward from offset until screen is filled
 		for (var i=li || 0, c$ = this.container.children, c; c=c$[i]; i++) {
-			this.applyTransform(c, o + "px", true);
-			o += this.measureControl(c);
-			if (o > cb) {
-				break;
+			if (o < cb) {
+				this.controlToPosition(c, o + "px");
+				o += this.measureControl(c);
+			} else {
+				this.hideControl(c);
 			}
 		}
 		// layout out backward from offset until screen is filled
 		o = offset + b;
 		for (var i=li-1, c$ = this.container.children, c; c=c$[i]; i--) {
-			if (o < 0) {
-				break;
+			if (o >= 0) {
+				o -= this.measureControl(c);
+				this.controlToPosition(c, o+"px");
+			} else {
+				this.hideControl(c);
 			}
-			o -= this.measureControl(c);
-			this.applyTransform(c, o+"px", true);
 		}
 	},
-	applyTransform: function(inControl, inValue, inApply) {
-		enyo.Layout.transformValue(inControl, this.transform, inValue);
+	hideControl: function(inControl) {
+		this.controlToPosition(inControl, this.useTransform ? "-100%" : "5000px");
+	},
+	controlToPosition: function(inControl, inValue) {
+		if (this.useTransform) {
+			enyo.Layout.transformValue(inControl, this.transform, inValue);
+		} else {
+			var n = inControl.hasNode();
+			if (n) {
+				var d = this.orient == "h" ? "left" : "top";
+				n.style[d] = inControl.domStyles[d] = inValue;
+			}
+		}
 	},
 	measureControl: function(inControl) {
 		var scale = this.container.layoutScale || 1;
