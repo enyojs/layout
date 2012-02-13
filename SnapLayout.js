@@ -40,10 +40,10 @@
 	},
 	// dynamic-y measure based layout
 	reflow: function() {
-		var offset = this.container.layoutOffset || this.container.layoutOffset = 0;
+		var offset = this.container.layoutOffset || (this.container.layoutOffset = 0);
+		var li = this.container.layoutIndex || (this.container.layoutIndex = 0);
 		var cb = this.container.getBounds()[this.measure];
 		var scale = this.container.layoutScale || 1;
-		var li = this.container.layoutIndex || 0;
 		var ci = this.container.children[li];
 		var b = !this.centered || !ci ? 0 : (cb - this.measureControl(ci)) / 2;
 		var o = offset + b;
