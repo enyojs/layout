@@ -57,6 +57,7 @@
 		var scale = this.scale;
 		var ci = this.container.children[li];
 		var b = !this.centered || !ci ? 0 : (cb - this.measureControl(ci)) / 2;
+		//var b = !this.centered || !ci ? 0 : (cb - this.measureControl(ci)/this.scale) / 2;
 		var o = offset + b;
 		// layout out foward from offset until screen is filled
 		for (var i=li || 0, c$ = this.container.children, c; c=c$[i]; i++) {
