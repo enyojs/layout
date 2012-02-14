@@ -4,6 +4,7 @@
 	layoutClass: "enyo-snap-scroll-layout",
 	useTransform: true,
 	centered: true,
+	scale: 1,
 	accelerated: "auto",
 	unit: "px",
 	pad: 0,
@@ -14,13 +15,24 @@
 	},
 	setOrient: function(inOrient) {
 		this.orient = inOrient;
+		this.unflow();
 		this.orientChanged();
+		this.flow();
+		this.reflow();
 	},
 	orientChanged: function() {
 		var h = this.orient == "h";
 		this.measure = h ? "width" : "height";
 		this.transform = h ? "translateX" : "translateY";
 		this.offExtent = h ? "bottom" : "right";
+	},
+	unflow: function() {
+		for (var i=0, c$ = this.container.children, c, ds; c=c$[i]; i++) {
+			ds = c.domStyles;
+			ds["top"] = ds["right"] = ds["left"] = ds["bottom"] = null;
+			c.domStylesChanged();
+			this.controlToPosition(c, 0 + "px");
+		}
 	},
 	// static-y property based layout
 	flow: function() {
@@ -39,10 +51,10 @@
 	},
 	// dynamic-y measure based layout
 	reflow: function() {
-		var offset = this.container.layoutOffset || (this.container.layoutOffset = 0);
-		var li = this.container.layoutIndex || (this.container.layoutIndex = 0);
+		var offset = this.offset || (this.offset = 0);
+		var li = this.index || (this.index = 0);
 		var cb = this.container.getBounds()[this.measure];
-		var scale = this.container.layoutScale || 1;
+		var scale = this.scale;
 		var ci = this.container.children[li];
 		var b = !this.centered || !ci ? 0 : (cb - this.measureControl(ci)) / 2;
 		var o = offset + b;
@@ -81,8 +93,7 @@
 		}
 	},
 	measureControl: function(inControl) {
-		var scale = this.container.layoutScale || 1;
-		return ((inControl.getBounds()[this.measure]) + (this.container.pad || 0) * 2) * scale;
+		return ((inControl.getBounds()[this.measure]) + (this.container.pad || 0) * 2) * this.scale;
 	}
 });
 

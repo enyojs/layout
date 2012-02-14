@@ -13,7 +13,7 @@ enyo.kind({
 		this.container.applyStyle("background-position", this.orient == "h" ? x + "px 100%" : "100% " + x + "px");
 	},
 	calcOffsetFraction: function() {
-		var li = this.container.layoutIndex || 0;
+		var li = this.index || 0;
 		for (var i=0, c$=this.container.children, oi=0, o=0, v=0, l=0, n, c; c=c$[i]; i++) {
 			if (i == li) {
 				oi = o;
@@ -27,7 +27,7 @@ enyo.kind({
 				o += i < c$.length-1 ? this.measureControl(c) || 0 : 0;
 			}
 		}
-		var f = (-oi + this.container.layoutOffset) / o;
+		var f = (-oi + this.offset) / o;
 		return f;
 	}
 });
