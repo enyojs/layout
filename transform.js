@@ -53,6 +53,8 @@ enyo.mixin(enyo.Layout, {
 			for (var i=0, p; (p=this.cssTransformProps[i]); i++) {
 				s[p] = t;
 			}
+		} else {
+			inControl.domStylesChanged();
 		}
 	}
 });
