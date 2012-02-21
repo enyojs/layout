@@ -1,0 +1,15 @@
+﻿.enyo-float-layout {
+	overflow: hidden;
+}
+
+.enyo-float-layout > .enyo-left {
+	float: left;
+}
+
+.enyo-float-layout > .enyo-right {
+	float: right;
+}
+
+.enyo-float-layout > .enyo-flex {
+	overflow: hidden;
+}
