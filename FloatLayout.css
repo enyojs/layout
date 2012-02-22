@@ -1,5 +1,6 @@
 ﻿.enyo-float-layout {
 	overflow: hidden;
+	white-space: nowrap;
 }
 
 .enyo-float-layout > .enyo-left {
