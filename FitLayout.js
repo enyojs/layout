@@ -6,14 +6,14 @@
 		this.unflow();
 	},
 	flow: function() {
-		var t = this.container.layoutIndex || 0;
+		var t = this.index || 0;
 		for (var i=0, c$=this.container.children, c; c=c$[i]; i++) {
 			c.addClass("enyo-fit");
 			c.setShowing(t == i);
 		}
 	},
 	reflow: function() {
-		this.flow();
+		//this.flow();
 	},
 	unflow: function() {
 		for (var i=0, c$=this.container.children, c; c=c$[i]; i++) {
