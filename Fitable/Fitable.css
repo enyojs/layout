@@ -9,6 +9,10 @@
 	display: table;
 }
 
+.enyo-fitable .enyo-fitable-rows-box > * > * {
+	display: block;
+}
+
 .enyo-row-flex {
 	position: relative;
 }

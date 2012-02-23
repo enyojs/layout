@@ -1,5 +1,6 @@
 enyo.kind({
-	name: "enyo.Stack",
+	name: "enyo.Fitable",
+	classes: "enyo-fitable",
 	components: [
 		// box offsetHeight equals Rows content height, which is otherwise unavailable with calculations
 		{name: "box", classes: "enyo-0", style: "height: 100%;", components: [
@@ -33,7 +34,11 @@ enyo.kind({
 
 enyo.kind({
 	name: "enyo.Rows",
-	kind: "enyo.Stack",
+	kind: "enyo.Fitable",
+	initComponents: function() {
+		this.inherited(arguments);
+		this.$.box.addClass("enyo-fitable-rows-box");
+	},
 	reflow: function() {
 		var t = this.$.pre.getBounds().height;
 		var b = this.$.post.getBounds().height;
@@ -45,7 +50,7 @@ enyo.kind({
 enyo.kind({
 	// doesn't support top/bottom margin on child elements (left/right ok)
 	name: "enyo.Cols",
-	kind: "enyo.Stack",
+	kind: "enyo.Fitable",
 	initComponents: function() {
 		this.inherited(arguments);
 		this.$.box.addClass("enyo-col-box");
