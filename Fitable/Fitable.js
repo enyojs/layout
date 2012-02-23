@@ -4,11 +4,11 @@ enyo.kind({
 		// box offsetHeight equals Rows content height, which is otherwise unavailable with calculations
 		{name: "box", classes: "enyo-0", style: "height: 100%;", components: [
 			// top offsetHeight will be sum of child heights (including child pad-border-margin) which otherwise requires calculations
-			{name: "pre", classes: "enyo-0", style: "overflow: hidden;"},
+			{name: "pre", classes: "enyo-0", Xstyle: "overflow: hidden;"},
 			// flex can be sized without regard to child pad-border-margin, sizing child directly would require calculations
 			{name: "flex", classes: "enyo-0 enyo-row-flex"},
 			// bottom offsetHeight will be sum of child heights (including child pad-border-margin) which otherwise requires calculations
-			{name: "post", classes: "enyo-0", style: "overflow: hidden;"}
+			{name: "post", classes: "enyo-0", Xstyle: "overflow: hidden;"}
 		]}
 	],
 	flow: function() {
