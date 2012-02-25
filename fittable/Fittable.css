@@ -1,3 +1,5 @@
+/* pad-border-margin reset */
+
 .enyo-0 {
 	padding: 0;
 	margin: 0;
@@ -5,17 +7,44 @@
 }
 
 /* margin containment */
+
 .enyo-0:after, .enyo-0:before {
 	content: '';
 	display: table;
 }
 
+/*
+	the 'box' element exists to allow measuring the content size of fittable.
+	row-box needs height:100% so it fits the content height, and provides that measure
+	col-box needs height:100% to support column 'stretch' (i.e. columns all fit the height of fittable)
+	(note: row 'stretch' is default behavior for divs)
+*/
+
 .enyo-fittable-row-box, .enyo-fittable-col-box {
 	height: 100%;
 }
 
-.enyo-fittable .enyo-fittable-row-box > * > * {
-	display: block;
+.enyo-fittable-col-box {
+	white-space: nowrap;
+}
+
+.enyo-fittable-col-box > *, .enyo-fittable-col-box > * > * {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	display: inline-block;
+}
+
+.enyo-fittable-col-box > * {
+	vertical-align: top;
+}
+
+.enyo-fittable-col-box.enyo-stretch > *, .enyo-fittable-col-box.enyo-stretch > * > * {
+	height: 100%;
+	vertical-align: top;
+}
+
+.enyo-fittable-col-box > * > * {
+	white-space: normal;
 }
 
 .enyo-fittable-flex {
@@ -30,18 +59,10 @@
 	left: 0;
 }
 
-.enyo-fittable-col-box {
-	white-space: nowrap;
-}
-
-.enyo-fittable-col-box > *, .enyo-fittable-col-box > * > * {
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
+.enyo-fittable .enyo-fittable-row-box > * > * {
 	display: inline-block;
-	height: 100%;
-	vertical-align: top;
 }
 
-.enyo-fittable-col-box > * > * {
-	white-space: normal;
+.enyo-fittable .enyo-fittable-row-box.enyo-stretch > * > * {
+	display: block;
 }
