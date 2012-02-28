@@ -3,5 +3,5 @@ enyo.depends(
 	"PanelsLayout.css",
 	"PanelsLayout.js",
 	"Panels.js",
-	"CollapsingColumns.js"
+	"CollapsibleColumns.js"
 );
