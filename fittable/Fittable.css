@@ -29,9 +29,9 @@
 }
 
 .enyo-fittable-col-box > *, .enyo-fittable-col-box > * > * {
+	display: inline-block;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	display: inline-block;
 }
 
 .enyo-fittable-col-box > * {

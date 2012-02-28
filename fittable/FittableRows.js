@@ -9,6 +9,6 @@ enyo.kind({
 		var t = this.$.pre.getBounds().height;
 		var b = this.$.post.getBounds().height;
 		var h = this.$.box.getBounds().height;
-		this.$.flex.applyStyle("height", h - t -b + "px");
+		this.$.flex.applyStyle("height", h - t - b + "px");
 	}
 });
