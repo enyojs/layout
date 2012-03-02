@@ -44,37 +44,37 @@
 	new (enyo.kind({
 		name: "App",
 		components: [
-			{tag: "p", content: "FittableColumns, no margin on boxes (all divs have some padding). By default, boxes 'stretch' to fit the container (which must have a height)."},
+			{tag: "p", allowHtml: true, content: "FittableColumns, no margin on boxes (all divs have some padding). By default, boxes 'stretch' to fit the container (which must have a height)."},
 			{kind: "FittableColumns", classes: "height box o mlr mtb", components: [
 				{content: "BoxA", classes: "box"},
 				{content: "Fitting BoxB", fit: true, classes: "box"},
 				{content: "BoxC", classes: "box"}
 			]},
-			{tag: "p", content: "Boxes with left/right margins. Note: top/bottom margin on column boxes is NOT supported."},
+			{tag: "p", allowHtml: true, content: "Boxes with left/right margins. Note: top/bottom margin on column boxes is NOT supported."},
 			{kind: "FittableColumns", classes: "height box o mlr mtb", components: [
 				{content: "BoxA", classes: "box mlr"},
 				{content: "Fitting BoxB", fit: true, classes: "box mlr"},
 				{content: "BoxC", classes: "box mlr"}
 			]},
-			{tag: "p", content: "With <code>stretch: false</code>, boxes have natural height, except the fitting box, which must be sized explicitly."},
+			{tag: "p", allowHtml: true, content: "With <code>stretch: false</code>, boxes have natural height, except the fitting box, which must be sized explicitly."},
 			{kind: "FittableColumns", stretch: false, classes: "height box o mlr mtb", components: [
 				{content: "BoxA", classes: "box mlr"},
 				{content: "Fitting BoxB (height: 40px)", fit: true, classes: "box mlr", style: "height: 40px;"},
 				{content: "BoxC", classes: "box mlr"}
 			]},
-			{tag: "p", content: "FittableRows, no margin on boxes (all divs have some padding)."},
+			{tag: "p", allowHtml: true, content: "FittableRows, no margin on boxes (all divs have some padding)."},
 			{kind: "FittableRows", classes: "height box o mlr mtb", components: [
 				{content: "BoxA", classes: "box"},
 				{content: "Fitting BoxB", fit: true, classes: "box"},
 				{content: "BoxC", classes: "box"}
 			]},
-			{tag: "p", content: "Row boxes may have margin in any dimension."},
+			{tag: "p", allowHtml: true, content: "Row boxes may have margin in any dimension."},
 			{kind: "FittableRows", classes: "height box o mlr mtb", components: [
 				{content: "BoxA", classes: "box mlr mtb"},
 				{content: "Fitting BoxB", fit: true, classes: "box mlr mtb"},
 				{content: "BoxC", classes: "box mlr mtb"}
 			]},
-			{tag: "p", content: "With <code>stretch: false</code>, boxes have natural width, except the fitting box, which must be sized explicitly."},
+			{tag: "p", allowHtml: true, content: "With <code>stretch: false</code>, boxes have natural width, except the fitting box, which must be sized explicitly."},
 			{kind: "FittableRows", stretch: false, classes: "height box o mlr mtb", components: [
 				{content: "BoxA", classes: "box mlr mtb"},
 				{content: "Fitting BoxB (width: 140px)", fit: true, classes: "box mlr mtb", style: "width: 140px;"},
