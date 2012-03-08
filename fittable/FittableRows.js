@@ -6,9 +6,11 @@ enyo.kind({
 		this.$.box.addClass("enyo-fittable-row-box");
 	},
 	reflow: function() {
-		var t = this.$.pre.getBounds().height;
-		var b = this.$.post.getBounds().height;
-		var h = this.$.box.getBounds().height;
-		this.$.flex.applyStyle("height", h - t - b + "px");
+		if (this.$.flex.children.length) {
+			var t = this.$.pre.getBounds().height;
+			var b = this.$.post.getBounds().height;
+			var h = this.$.box.getBounds().height;
+			this.$.flex.applyStyle("height", h - t - b + "px");
+		}
 	}
 });

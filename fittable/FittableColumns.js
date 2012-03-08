@@ -7,9 +7,11 @@ enyo.kind({
 		this.$.box.addClass("enyo-fittable-col-box");
 	},
 	reflow: function() {
-		var l = this.$.pre.getBounds().width;
-		var r = this.$.post.getBounds().width;
-		var w = this.$.box.getBounds().width;
-		this.$.flex.applyStyle("width", w - l - r + "px");
+		if (this.$.flex.children.length) {
+			var l = this.$.pre.getBounds().width;
+			var r = this.$.post.getBounds().width;
+			var w = this.$.box.getBounds().width;
+			this.$.flex.applyStyle("width", w - l - r + "px");
+		}
 	}
 });

@@ -28,6 +28,20 @@
 	white-space: nowrap;
 }
 
+/*
+	the white-space directive above is inherited by the whole subtree
+	we attempt to reset it here, but we've clobber lower specificity
+	settings (e.g. pre { white-space: pre })
+*/
+.enyo-fittable-col-box > * > * {
+	white-space: normal;
+}
+
+/* repair clobbered white-space setting for pre, code */
+.enyo-fittable-col-box > * > pre, .enyo-fittable-col-box > * > code {
+	white-space: pre;
+}
+
 .enyo-fittable-col-box > *, .enyo-fittable-col-box > * > * {
 	display: inline-block;
 	box-sizing: border-box;
@@ -41,10 +55,6 @@
 .enyo-fittable-col-box.enyo-stretch > *, .enyo-fittable-col-box.enyo-stretch > * > * {
 	height: 100%;
 	vertical-align: top;
-}
-
-.enyo-fittable-col-box > * > * {
-	white-space: normal;
 }
 
 .enyo-fittable-flex {
