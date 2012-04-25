@@ -1,0 +1,42 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<title>Flyweight Repeater: Enyo Ui Examples</title>
+		<!-- -->
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="viewport" content="width=device-width initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<!-- -->
+		<script src="../../../../enyo/enyo.js" type="text/javascript"></script>
+		<!-- -->
+		<script src="../../../onyx/package.js" type="text/javascript"></script>
+		<script src="../../../layout/package.js" type="text/javascript"></script>
+		<!-- -->
+		<style type="text/css">
+		</style>
+	</head>
+	<body class="enyo-unselectable">
+		<script>
+			var rows = 500;
+			var t = enyo.now();
+			new enyo.Control({
+				components: [
+					{name: "time"},
+					{name: "list", kind: "FlyweightRepeater", rows: rows, onSetupRow: "setupRow", components: [
+						{name: "item", content: "Row Item", style: "padding: 8px;", ontap: "rowTap"}
+					]},
+					{kind: "onyx.Popup", style: "right: 0; top: 0;"}
+				],
+				setupRow: function(inSender, inEvent) {
+					this.$.item.setContent("Row #" + inEvent.index);
+					this.$.item.applyStyle("background-color", inSender.isSelected(inEvent.index) ? "lightblue" : null);
+				},
+				rowTap: function(inSender, inEvent) {
+					this.$.popup.setContent("You tapped row: " + inEvent.index);
+					this.$.popup.show();
+				}
+			}).write();
+			t = enyo.now() - t;
+			enyo.$.control_time.setContent("rendered " + rows + " rows in " + t + "ms");
+		</script>
+	</body>
+</html>

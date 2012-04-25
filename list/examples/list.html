@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+	<title>List Basic Example</title>
+	<!-- -->
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="viewport" content="width=device-width initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<!-- -->
+	<script src="../../../../enyo/enyo.js" type="text/javascript"></script>
+	<!-- -->
+	<script src="../../../onyx/package.js" type="text/javascript"></script>
+	<script src="../../../layout/package.js" type="text/javascript"></script>
+	<!-- -->
+	<script src="source/NameGenerator.js" type="text/javascript"></script>
+	<!-- -->
+	<style>
+		body {
+			background-color: gray;
+		}
+		.list {
+			max-width: 600px;
+			margin: auto;
+			background-color: #eee;
+		}
+		.item {
+			height: 100px;
+			border: 1px solid silver;
+			padding: 8px;
+			font-size: 18px;
+			font-weight: bold;
+		}
+		.index {
+			float: right;
+			font-size: 16px;
+			font-weight: normal;
+		}
+	</style>
+</head>
+
+<body>
+	<script>
+		enyo.kind({
+			name: "App",
+			components: [
+				{name: "list", kind: "List", rows: 50000, multiSelect: false, classes: "enyo-fit list", onSetupRow: "setupRow", components: [
+					{name: "item", classes: "item enyo-border-box", components: [
+						{name: "name"},
+						{name: "index", classes: "index"}
+					]}
+				]}
+			],
+			names: [],
+			setupRow: function(inSender, inEvent) {
+				// this is the row we're setting up
+				var i = inEvent.index;
+				// make some mock data if we have none for this row
+				if (!this.names[i]) {
+					this.names[i] = makeName(5, 10, '', '');
+				}
+				var n = this.names[i];
+				var ni = ("00000000" + i).slice(-5);
+				// apply selection style if inSender (the list) indicates that this row is selected.
+				this.$.item.addRemoveClass("onyx-selected", inSender.isSelected(i));
+				this.$.name.setContent(n);
+				this.$.index.setContent(ni);
+			}
+		});
+		new App({fit: true, classes: "enyo-unselectable"}).write();
+	</script>
+</body>
+</html>

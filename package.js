@@ -1,0 +1,4 @@
+enyo.depends(
+	"fittable",
+	"list"
+);
