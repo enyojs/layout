@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+	<title>Bottom Up List</title>
+	<!-- -->
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="viewport" content="width=device-width initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<!-- -->
+	<script src="../../../../enyo/enyo.js" type="text/javascript"></script>
+	<!-- -->
+	<script src="../../../../lib/onyx/package.js" type="text/javascript"></script>
+	<script src="../../../../lib/layout/package.js" type="text/javascript"></script>
+	<!-- -->
+	<script src="source/NameGenerator.js" type="text/javascript"></script>
+	<!-- -->
+	<style>
+		.item {
+			border-bottom: 1px solid silver;
+			border-top: 1px solid white;
+			padding: 40px 10px;
+			font-size: 18px;
+			font-weight: bold;
+		}
+
+		.index {
+			float: right;
+			font-size: 16px;
+			font-weight: normal;
+		}
+
+		.divider {
+			background: orange;
+			font-size: 14px;
+			font-weight: bold;
+			padding: 2px;
+		}
+	</style>
+</head>
+
+<body class="onyx">
+	<script>
+		enyo.kind({
+			name: "App",
+			kind: "FittableRows",
+			components: [
+				{kind: "onyx.Toolbar", components: [
+					{kind: "onyx.Button", content: "Add", ontap: "addRow"},
+					{kind: "onyx.Button", content: "Reset to 5 rows", ontap: "resetRows", rows: 5},
+					{kind: "onyx.Button", content: "Reset to 200 rows", ontap: "resetRows", rows: 200},
+					{content: "BottomUp"},
+					{kind: "onyx.Checkbox", value: true, onChange: "bottomUpCheckboxChanged"}
+				]},
+				{name: "list", kind: "List", fit: true, touch: true, rows: 5, bottomUp: true, classes: "list", onSetupRow: "setupRow", components: [
+					{name: "divider", content: "DIVIDE", classes: "divider"},
+					{classes: "item", components: [
+						{name: "index", classes: "index"},
+						{name: "item"}
+					]}
+				]}
+			],
+			create: function() {
+				this.inherited(arguments);
+				this.names = [];
+				for (var i=0; i<this.$.list.rows; i++) {
+					this.addName();
+				}
+			},
+			generateName: function() {
+				return makeName(5, 10, '', '');
+			},
+			addName: function() {
+				// add at beginning
+				this.names.unshift(this.generateName());
+			},
+			setupRow: function(inSender, inEvent) {
+				var i = inEvent.index;
+				// ensure some mock data.
+				if (!this.names[i]) {
+					this.names[i] = this.generateName();
+				}
+				this.$.item.setContent(this.names[i]);
+				this.$.index.setContent(("00000000" + i).slice(-5));
+				var d = !((i-2) % 10);
+				this.$.divider.canGenerate = d;
+			},
+			resetRows: function(inSender) {
+				this.$.list.setRows(inSender.rows);
+				this.$.list.reset();
+			},
+			addRow: function() {
+				this.addName();
+				this.$.list.setRows(this.$.list.rows+1);
+				this.$.list.refresh();
+				this.$.list.scrollToStart();
+			},
+			bottomUpCheckboxChanged: function(inSender) {
+				this.$.list.setBottomUp(inSender.getValue());
+			}
+		});
+		new App({fit: true, classes: "enyo-unselectable"}).write();
+	</script>
+</body>
+</html>

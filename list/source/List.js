@@ -204,6 +204,9 @@ enyo.kind({
 	},
 	invalidatePages: function() {
 		this.p0 = this.p1 = null;
+		// clear the html in our render targets
+		this.$.page0.setContent("");
+		this.$.page1.setContent("");
 	},
 	invalidateMetrics: function() {
 		this.pageHeights = [];
