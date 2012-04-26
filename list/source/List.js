@@ -45,7 +45,9 @@ enyo.kind({
 		//* and the beginning position of the list is scrolled to the bottom.
 		bottomUp: false,
 		//* If true, allow multiple selections
-		multiSelect: false
+		multiSelect: false,
+		//* If true, the selected item will toggle
+		toggleSelected: false
 	},
 	events: {
 		//* Fired once per row at render-time, with event object: {index: <index of row>}
@@ -67,6 +69,7 @@ enyo.kind({
 		this.inherited(arguments);
 		this.bottomUpChanged();
 		this.multiSelectChanged();
+		this.toggleSelectedChanged();
 	},
 	createStrategy: function() {
 		this.controlParentName = "strategy";
@@ -96,6 +99,9 @@ enyo.kind({
 	},
 	multiSelectChanged: function() {
 		this.$.generator.setMultiSelect(this.multiSelect);
+	},
+	toggleSelectedChanged: function() {
+		this.$.generator.setToggleSelected(this.toggleSelected);
 	},
 	rowsChanged: function() {
 		this.updateMetrics();

@@ -4,7 +4,8 @@ enyo.kind({
 		//* How many rows to render
 		rows: 0,
 		//* If true, allow multiple selections
-		multiSelect: false
+		multiSelect: false,
+		toggleSelected: false
 	},
 	events: {
 		//* Fired once per row at render-time, with event object: {index: <index of row>}
@@ -43,7 +44,11 @@ enyo.kind({
 		inEvent.repeater = this;
 	},
 	tap: function(inSender, inEvent) {
-		this.$.selection.select(inEvent.index);
+		if (this.toggleSelected) {
+			this.$.selection.toggle(inEvent.index);
+		} else {
+			this.$.selection.select(inEvent.index);
+		}
 	},
 	selectDeselect: function(inSender, inEvent) {
 		this.renderRow(inEvent.key);
