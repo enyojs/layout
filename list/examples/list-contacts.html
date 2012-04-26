@@ -156,10 +156,10 @@
 			removeItem: function(inIndex) {
 				this._removeItem(inIndex);
 				this.refreshList();
+				this.$.list.getSelection().deselect(inIndex);
 			},
 			_removeItem: function(inIndex) {
 				this.db.splice(inIndex, 1);
-				this.$.list.getSelection().deselect(inIndex);
 			},
 			removeTap: function(inSender, inEvent) {
 				this.removeItem(inEvent.index);
@@ -171,6 +171,7 @@
 						this._removeItem(i);
 					}
 				}
+				this.$.list.getSelection().clear();
 				this.refreshList();
 			},
 			populateList: function() {
