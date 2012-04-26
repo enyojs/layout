@@ -1,3 +1,33 @@
+/**
+A control that displays a repeating list of rows. It is suitable for displaying medium-sized
+lists (maximum of ~100 items). A flyweight strategy is employed to render one 
+set of row controls as needed for as many rows as are contained in the repeater.
+
+##Basic Use
+
+A FlyweightRepeater's components block contains the controls to be used for a single row.
+This set of controls will be rendered for each row.
+
+The onSetupRow event allows for customization of row rendering. Here's a simple example:
+
+	components: [
+		{kind: "FlyweightRepeater", rows: 100, onSetupRow: "setupRow", components: [
+			{name: "item"}
+		]}
+	],
+	setupRow: function(inSender, inEvent) {
+		this.$.item.setContent("I am row: " + inEvent.index);
+	}
+	
+##Modifying Rows
+
+Controls inside a FlyweightRepeater are non-interactive. This means that outside the onSetupRow event, 
+calling methods that would otherwise cause rendering to occur will not do so (e.g. setContent).
+A row can be forced to render by calling the renderRow(inRow) method. In addition, a row can be 
+temporarily made interactive by calling the prepareRow(inRow) method. When interaction is complete, the
+lockRow method should be called.
+
+*/
 enyo.kind({
 	name: "enyo.FlyweightRepeater",
 	published: {
@@ -5,6 +35,7 @@ enyo.kind({
 		rows: 0,
 		//* If true, allow multiple selections
 		multiSelect: false,
+		//* If true, the selected item will toggle
 		toggleSelected: false
 	},
 	events: {
@@ -71,12 +102,14 @@ enyo.kind({
 			this.$.client.teardownChildren();
 		}
 	},
+	//* Fetch the dom node for the given row index.
 	fetchRowNode: function(inIndex) {
 		if (this.hasNode()) {
 			var n$ = this.node.querySelectorAll('[index="' + inIndex + '"]');
 			return n$ && n$[0];
 		}
 	},
+	//* Fetch the dom node for the given event.
 	rowForEvent: function(inEvent) {
 		var n = inEvent.target;
 		while (n && n.parentNode && n.id != this.id) {
