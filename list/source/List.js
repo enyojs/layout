@@ -266,6 +266,7 @@ enyo.kind({
 	},
 	//* Re-render the list from the beginning
 	reset: function() {
+		this.getSelection().clear();
 		this.invalidateMetrics();
 		this.invalidatePages();
 		this.scrollToStart();

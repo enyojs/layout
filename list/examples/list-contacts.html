@@ -78,13 +78,18 @@
 			name: "App",
 			kind: "FittableRows",
 			components: [
-				{kind: "onyx.Toolbar", components: [
+				{kind: "onyx.Toolbar", layoutKind: "FittableColumnsLayout", components: [
 					{kind: "onyx.Button", content: "setup", ontap: "showSetupPopup"},
 					{kind: "onyx.Button", content: "remove selected", ontap: "removeSelected"},
 					{kind: "onyx.InputDecorator", components: [
 						{name: "newContactInput", kind: "onyx.Input", value: "Frankie Fu"},
 					]},
-					{kind: "onyx.Button", content: "new contact", ontap: "addItem"}
+					{kind: "onyx.Button", content: "new contact", ontap: "addItem"},
+					{fit: true},
+					{kind: "onyx.InputDecorator", components: [
+						{kind: "onyx.Input", placeholder: "Search...", style: "width: 140px;", oninput: "searchInputChange"},
+						{kind: "Image", src: "images/search-input-search.png", style: "width: 20px;"}
+					]}
 				]},
 				{kind: "List", classes: "list", fit: true, multiSelect: true, onSetupRow: "setupRow", components: [
 					{name: "divider", classes: "divider"},
@@ -118,7 +123,8 @@
 			},
 			setupRow: function(inSender, inEvent) {
 				var i = inEvent.index;
-				var item = this.db[i];
+				var data = this.filter ? this.filtered : this.db;
+				var item = data[i];
 				// content
 				this.$.item.setContact(item);
 				// selection
@@ -126,7 +132,7 @@
 				// divider
 				if (!this.hideDivider) {
 					var d = item.name[0];
-					var prev = this.db[i-1];
+					var prev = data[i-1];
 					var showd = d != (prev && prev.name[0]);
 					this.$.divider.setContent(d);
 					this.$.divider.canGenerate = showd;
@@ -202,6 +208,27 @@
 			showSetupPopup: function() {
 				this.$.popup.show();
 			},
+			searchInputChange: function(inSender) {
+				enyo.job(this.id + ":search", enyo.bind(this, "filterList", inSender.getValue()), 200);
+			},
+			filterList: function(inFilter) {
+				if (inFilter != this.filter) {
+					this.filter = inFilter;
+					this.filtered = this.generateFilteredData(inFilter);
+					this.$.list.setRows(this.filtered.length);
+					this.$.list.reset();
+				}
+			},
+			generateFilteredData: function(inFilter) {
+				var re = new RegExp("^" + inFilter, "i");
+				var r = [];
+				for (var i=0, d; d=this.db[i]; i++) {
+					if (d.name.match(re)) {
+						r.push(d);
+					}
+				}
+				return r;
+			}
 		});
 
 		var avatars = [
