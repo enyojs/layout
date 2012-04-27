@@ -67,6 +67,7 @@ enyo.kind({
 	],
 	create: function() {
 		this.inherited(arguments);
+		this.getStrategy().translateOptimized = true;
 		this.bottomUpChanged();
 		this.multiSelectChanged();
 		this.toggleSelectedChanged();
@@ -263,12 +264,14 @@ enyo.kind({
 	refresh: function() {
 		this.invalidatePages();
 		this.update(this.getScrollTop());
+		this.stabilize();
 	},
 	//* Re-render the list from the beginning
 	reset: function() {
 		this.getSelection().clear();
 		this.invalidateMetrics();
 		this.invalidatePages();
+		this.stabilize();
 		this.scrollToStart();
 	},
 	//* Returns the selection component (<a href="#enyo.Selection">enyo.Selection</a>) that manages the selection state for this list.
