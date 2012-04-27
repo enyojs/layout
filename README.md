@@ -3,6 +3,8 @@ This is a layout library for Enyo 2. This library provides a collection of layou
 The list package provides a `List` control that displays a scrolling list of rows. It's suitable for displaying very large lists and is optimized such that only a small portion of the list is rendered
 at a given time. 
 
+Check out the [List sample](http://enyojs.com/samples/list) to see it in action.
+
 The fittable pacakge helps you create layouts that expand to fit available space -- a common need for apps, but one that has historically been difficult to meet using web technologies.
 
 The  `FittableColumns` and `FittableRows` controls let you define views whose children are arranged either horizontally or vertically. Within a given view, you can designate one child to expand and contract to fit the available space, while its siblings retain their natural or explicitly specified sizes. Fittable views can be nested as needed.
