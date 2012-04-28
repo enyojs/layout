@@ -35,6 +35,8 @@
 			vertical-align: middle;
 		}
 		.avatar {
+		    width: 32px;
+		    height: 32px;
 			padding-right: 10px;
 		}
 		.description {
@@ -140,7 +142,12 @@
 				}
 			},
 			refreshList: function() {
-				this.$.list.setRows(this.db.length);
+				if (this.filter) {
+					this.filtered = this.generateFilteredData(this.filter);
+					this.$.list.setRows(this.filtered.length);
+				} else {
+					this.$.list.setRows(this.db.length);
+				}
 				this.$.list.refresh();
 			},
 			addItem: function() {
@@ -159,7 +166,8 @@
 				this.$.list.getSelection().deselect(inIndex);
 			},
 			_removeItem: function(inIndex) {
-				this.db.splice(inIndex, 1);
+				var i = this.filter ? this.filtered[inIndex].dbIndex : inIndex;
+				this.db.splice(i, 1);
 			},
 			removeTap: function(inSender, inEvent) {
 				this.removeItem(inEvent.index);
@@ -225,6 +233,7 @@
 				var r = [];
 				for (var i=0, d; d=this.db[i]; i++) {
 					if (d.name.match(re)) {
+						d.dbIndex = i;
 						r.push(d);
 					}
 				}
@@ -271,7 +280,7 @@
 				{components: [
 					{name: "name"},
 					{name: "title", classes: "description"},
-					{content: "(415) 911-1234", classes: "description"}
+					{content: "(415) 711-1234", classes: "description"}
 				]},
 				{name: "remove", kind: "onyx.IconButton", classes: "remove-button", src: "images/remove-icon.png", ontap: "removeTap"}
 			],
