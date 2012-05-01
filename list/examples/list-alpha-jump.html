@@ -10,6 +10,7 @@
 	<!-- -->
 	<script src="../../../layout/package.js" type="text/javascript"></script>
 	<script src="../../../onyx/package.js" type="text/javascript"></script>
+	<script src="../../../layout/list/source/wip-package.js" type="text/javascript"></script>
 	<!-- -->
 	<script src="source/NameGenerator.js" type="text/javascript"></script>
 	<!-- -->
@@ -93,7 +94,7 @@
 						{kind: "Image", src: "images/search-input-search.png", style: "width: 20px;"}
 					]}
 				]},
-				{kind: "List", classes: "list", fit: true, multiSelect: true, onSetupRow: "setupRow", components: [
+				{name: "list", kind: "AlphaJumpList", classes: "list", touch: true, fit: true, multiSelect: true, onSetupRow: "setupRow", onAlphaJump: "alphaJump", components: [
 					{name: "divider", classes: "divider"},
 					{name: "item", kind: "ContactItem", classes: "item enyo-border-box", onRemove: "removeTap"}
 				]},
@@ -119,6 +120,10 @@
 					]}
 				]}
 			],
+			alphaJump: function(inSender, inEvent) {
+				var row = this.dbletters[inEvent.letter];
+				this.$.list.scrollToRow(row);
+			},
 			rendered: function() {
 				this.inherited(arguments);
 				this.populateList();
@@ -148,6 +153,7 @@
 				} else {
 					this.$.list.setRows(this.db.length);
 				}
+				this.updateDbLetters();
 				this.$.list.refresh();
 			},
 			addItem: function() {
@@ -199,6 +205,17 @@
 					this.db.push(this.generateItem(makeName(4, 6) + " " + makeName(5, 10)));
 				}
 				this.sortDb();
+				this.updateDbLetters();
+			},
+			updateDbLetters: function() {
+				this.dbletters = {};
+				for (var i=0, item; item=this.db[i]; i++) {
+					var l = item.name[0];
+					var prev = this.db[i-1];
+					if (l != (prev && prev.name[0])) {
+						this.dbletters[l] = i;
+					}
+				}
 			},
 			generateItem: function(inName) {
 				return {

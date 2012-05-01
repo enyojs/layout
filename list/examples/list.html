@@ -8,8 +8,8 @@
 	<!-- -->
 	<script src="../../../../enyo/enyo.js" type="text/javascript"></script>
 	<!-- -->
-	<script src="../../../onyx/package.js" type="text/javascript"></script>
 	<script src="../../../layout/package.js" type="text/javascript"></script>
+	<script src="../../../onyx/package.js" type="text/javascript"></script>
 	<!-- -->
 	<script src="source/NameGenerator.js" type="text/javascript"></script>
 	<!-- -->
@@ -23,9 +23,8 @@
 			background-color: #eee;
 		}
 		.item {
-			height: 100px;
 			border: 1px solid silver;
-			padding: 8px;
+			padding: 18px;
 			font-size: 18px;
 			font-weight: bold;
 		}
@@ -42,10 +41,10 @@
 		enyo.kind({
 			name: "App",
 			components: [
-				{name: "list", kind: "List", rows: 50000, multiSelect: false, classes: "enyo-fit list", onSetupRow: "setupRow", components: [
+				{name: "list", kind: "List", rows: 2000000, multiSelect: false, classes: "enyo-fit list", onSetupRow: "setupRow", components: [
 					{name: "item", classes: "item enyo-border-box", components: [
-						{name: "name"},
-						{name: "index", classes: "index"}
+						{name: "index", classes: "index"},
+						{name: "name"}
 					]}
 				]}
 			],
@@ -58,7 +57,7 @@
 					this.names[i] = makeName(5, 10, '', '');
 				}
 				var n = this.names[i];
-				var ni = ("00000000" + i).slice(-5);
+				var ni = ("00000000" + i).slice(-7);
 				// apply selection style if inSender (the list) indicates that this row is selected.
 				this.$.item.addRemoveClass("onyx-selected", inSender.isSelected(i));
 				this.$.name.setContent(n);
