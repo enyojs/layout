@@ -1,4 +1,6 @@
 enyo.depends(
 	"fittable",
-	"list"
+	"list",
+	"popup",
+	"slideable"
 );
