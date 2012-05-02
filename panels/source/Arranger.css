@@ -1,0 +1,22 @@
+﻿.enyo-arranger {
+	position: relative;
+	overflow: hidden;
+}
+
+.enyo-arranger.enyo-fit {
+	position: absolute;
+}
+
+.enyo-arranger > * {
+	position: absolute;
+	left: 0;
+	top: 0;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+
+.enyo-arranger-fit > * {
+	bottom: 0;
+	right: 0;
+}

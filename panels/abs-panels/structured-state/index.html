@@ -1,0 +1,337 @@
+<!doctype html>
+<html>
+<head>
+	<title>Application Panels</title>
+	<!-- -->
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="viewport" content="width=device-width initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<!-- -->
+	<script src="../../../../../../enyo/enyo.js" type="text/javascript"></script>
+	<script src="../../../../../../lib/layout/package.js" type="text/javascript"></script>
+	<script src="../../../../../../lib/onyx/package.js" type="text/javascript"></script>
+	<!-- -->
+	<style>
+		.abspanels {
+			position: relative;
+			background: url(bg.png);
+			color: White;
+			font-family: Segoe UI Semibold;
+			font-weight: bold;
+			font-size: 20px;
+			overflow: hidden;
+		}
+		.abspanels > * {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			border: 8px solid gray;
+			padding: 8px;
+			background: inherit;
+		}
+		.animate > * {
+			-webkit-transition-property: top, right, bottom, left;
+			-webkit-transition-duration: 0.5s;
+			/**/
+			-ms-transition-property: top, right, bottom, left;
+			-ms-transition-duration: 0.5s;
+			/**/
+			-moz-transition-property: top, right, bottom, left;
+			-moz-transition-duration: 0.5s;
+		}
+		.noanimate > * {
+			-webkit-transition-property: none !important;
+			/**/
+			-ms-transition-property: none !important;
+			/**/
+			-moz-transition-property: none !important;
+		}
+		.panel {
+			position: relative;
+			width: 300px;
+			height: 200px;
+			display: inline-block;
+			margin: 8px;
+		}
+
+		.abspanels.fittable > * {
+			width: 100px;
+			height: auto;
+		}
+
+		.abspanels.pbm > * {
+			margin: 0 10px;
+			margin: 1em 6px;
+		}
+
+		.small > * {
+			width: 100px;
+			height: 50px;
+		}
+	</style>
+</head>
+<body>
+	<script>
+		enyo.kind({
+			name: "Panels",
+			classes: "abspanels enyo-unselectable",
+			handlers: {
+				ontouchmove: "touchmove"
+			},
+			touchmove: function(inSender, inEvent) {
+				inEvent.preventDefault();
+			}
+		});
+		//
+		enyo.kind({
+			name: "Slidey",
+			kind: "Panels",
+			components: [
+				{name: "alpha", content: "Alpha"},
+				{name: "bravo", content: "Bravo", style: "border-color: lightblue;"},
+				{name: "charlie", content: "Charlie", style: "border-color: orange;"},
+				{name: "delta", content: "Delta", style: "border-color: magenta;"},
+				{name: "echo", content: "Echo", style: "border-color: lightgreen;"},
+				{name: "foxtrot", fit: true, content: "Foxtrot", style: "border-color: yellow;"}
+			],
+			handlers: {
+				ondragstart: "dragstart",
+				ondrag: "drag",
+				ondragfinish: "dragfinish"
+			},
+			create: function() {
+				this.inherited(arguments);
+				this.c = this.controls; 
+			},
+			rendered: function() {
+				this.inherited(arguments);
+				this.addClass("noanimate");
+				this[this.arranger](this.c);
+				enyo.asyncMethod(this, function() {
+					this.removeClass("noanimate");
+				});
+			},
+			leftRight: function(inC, inOffset) {
+				inOffset = 10;
+				var margin = 40;
+				var port = this.getBounds().width;
+				var box = port - margin -margin;
+				var e = margin - box - box; 
+				var m = (inC.length - 1) / 2;
+				for (var i=0, c; c=inC[i]; i++) {
+					c.applyStyle("z-index", Math.floor(m - Math.abs(m - i)));
+					c.setBounds({width: box, left: e + inOffset, top: 0});
+					e += box;
+				}
+			},
+			topBottom: function(inC) {
+				var margin = 40;
+				var port = this.getBounds().height;
+				var box = port - margin -margin;
+				var e = margin - box - box; 
+				var m = (inC.length - 1) / 2;
+				for (var i=0, c; c=inC[i]; i++) {
+					c.applyStyle("z-index", Math.floor(m - Math.abs(m - i)));
+					c.setBounds({height: box, left: 0, top: e});
+					e += box;
+				}
+			},
+			gridly: function(inC) {
+				var w=100, h=100;
+				for (var y=0, i=0; i<inC.length; y++) {
+					for (var x=0; (x<3) && (c=inC[i]); x++, i++) {
+						c.setBounds({width: w, height: h, left: w*x, top: h*y});
+					}
+				}
+			},
+			spiral: function(inC) {
+				var w=80, h=80, s=20, l=inC.length;
+				for (var i=0, c; c=inC[i]; i++) {
+					var x = Math.cos(i/l * 2*Math.PI) * i * s + w;
+					var y = Math.sin(i/l * 2*Math.PI) * i * s + h;
+					c.setBounds({width: w, height: h, left: x, top: y});
+					c.applyStyle("z-index", i);
+				}
+			},
+			nByOne: function(inC) {
+				var last = inC[inC.length - 1];
+				var port = this.getBounds().width;
+				var box = port - last.getBounds().width;
+				for (var i=0, c; (c=inC[i]) && (c!=last); i++) {
+					c.setBounds({width: box, left: 0, top: 0});
+				}
+			},
+			// arranger that does fittable columns
+			fittableColumns: function(inC) {
+				var padding = enyo.FittableLayout.calcPaddingExtents(this.hasNode());
+				var pb = this.getBounds();
+				pb.height -= padding.top + padding.bottom;
+				pb.width -= padding.left + padding.right;
+				// used space
+				var fit;
+				for (var i=0, s=0, m, c; c=inC[i]; i++) {
+					m = enyo.FittableLayout.calcMarginExtents(c.hasNode());
+					c.width = c.getBounds().width;
+					c.marginWidth = m.right + m.left;
+					s += (c.fit ? 0 : c.width) + c.marginWidth;
+					if (c.fit) {
+						fit = c;
+					}
+				}
+				if (fit) {
+					 fit.width = pb.width - s;
+					}
+				// position
+				for (var i=0, e=padding.left, m, c; c=inC[i]; i++) {
+					c.setBounds({left: e, top: padding.top, bottom: padding.bottom, width: c.fit ? c.width : null});
+					e += c.width + c.marginWidth;
+				}
+			},
+			slidingPanels: function(inC, inState) {
+				inC = this.controls;
+				var state = Math.floor(inState) || 0;
+				var padding = enyo.FittableLayout.calcPaddingExtents(this.hasNode());
+				var pb = this.getBounds();
+				pb.height -= padding.top + padding.bottom;
+				pb.width -= padding.left + padding.right;
+				// used space
+				var fit;
+				for (var i=0, s=0, m, c; c=inC[i]; i++) {
+					m = enyo.FittableLayout.calcMarginExtents(c.hasNode());
+					c.width = c.getBounds().width;
+					c.marginWidth = m.right + m.left;
+					s += (c.fit ? 0 : c.width) + c.marginWidth;
+					if (c.fit) {
+						fit = c;
+					}
+				}
+				if (fit) {
+					 fit.width = pb.width - s;
+					}
+				// position
+				for (var i=0, e=padding.left, m, c; c=inC[i]; i++) {
+					c.setBounds({left: e, top: padding.top, bottom: padding.bottom, width: c.fit ? c.width : null});
+					if (i >= state) {
+						e += c.width + c.marginWidth;
+					}
+				}
+			},
+			transition: function(inArranger, inC) {
+				this.removeClass("animate");
+				enyo.asyncMethod(this, function() {
+					this.addClass("animate");
+					this[inArranger](inC);
+				});
+			},
+			next: function(inArranger, inC) {
+				inC.push(inC.shift());
+				this.transition(inArranger, inC);
+			},
+			prev: function(inArranger, inC) {
+				inC.unshift(inC.pop());
+				this.transition(inArranger, inC);
+			},
+			state: 0,
+			dragProp: "dx",
+			// gambit: We choose to make arrangements only for integer states because this simplifies creation of arrangers.
+			// Then we interpolate between the states as needed; inState is a floating point number.
+			applyState: function(inState) {
+				var whole = Math.floor(inState);
+				var frac = inState - whole;
+				// arrange controls as this state requires
+				var c$ = this.getOrderedControls(inState);
+				// first arrange the next state
+				c$.push(c$.shift());
+				this[this.arranger](c$, whole+1);
+				// then record vital statistics
+				var s1 = [];
+				for (var i=0, c, b; c=this.controls[i]; i++) {
+					s1.push(c.getBounds());
+				}
+				// arrange this state's whole number part
+				c$.unshift(c$.pop());
+				this[this.arranger](c$, whole);
+				// then adjust by state fraction!
+				for (var i=0, b, c; c=this.controls[i]; i++) {
+					b = c.getBounds();
+					//this.log(c.id, "original", l, "next", s1[i], "difference", (l - s1[i]), "fraction of difference", (l - s1[i]) * frac, "new position", l + (l - s1[i]) * frac);
+					//l = l - (l - s1[i]) * frac;
+					this.setControlBoundsDelta(c, b, s1[i], frac);
+				}
+			},
+			getOrderedControls: function(inState) {
+				var whole = Math.abs(Math.floor(inState));
+				var sign = inState > 0;
+				var c$ = [].concat(this.controls);
+				for (var i=0; i<whole; i++) {
+					if (sign) {
+						c$.push(c$.shift());
+					} else {
+						c$.unshift(c$.pop());
+					}
+				}
+				return c$;
+			},
+			// given 2 sets of bounds A and B, apply bounds that are inDelta between A and B.
+			setControlBoundsDelta: function(inControl, inNewBounds, inOldBounds, inDelta) {
+				var b = {}, n, o;
+				for (var i in inNewBounds) {
+					n = inNewBounds[i];
+					o =  inOldBounds[i];
+					if (n != o) {
+						b[i] = n - (n - o) * inDelta;
+					}
+				}
+				inControl.setBounds(b);
+			},
+			// calculate a state for a position
+			positionToState: function(inX) {
+				var c$ = this.getOrderedControls(this.state || 0);
+				return inX / c$[0].getBounds().width;
+			},
+			dragstart: function(inSender, inEvent) {
+				if (this.animation) {
+					this.animation.stop();
+				}
+				this.startState = this.state;
+			},
+			drag: function(inSender, inEvent) {
+				this.state = this.startState + this.positionToState(-inEvent[this.dragProp]);
+				this.applyState(this.state);
+			},
+			// note: we animate to the next state; we could use transition here;
+			// using state animation to test it.
+			dragfinish: function(inSender, inEvent) {
+				inEvent.preventTap();
+				var e = inEvent[this.dragProp == "dx" ?"xDirection" : "yDirection"] < 0 ? Math.ceil(this.state) : Math.floor(this.state);
+				this.animation = new enyo.Animator({
+					context: this,
+					startValue: this.state,
+					endValue: e,
+					onStep: function(inEvent) {
+						this.state = inEvent.value;
+						this.applyState(this.state);
+					}
+				}).play();
+			}
+		});
+		//
+		enyo.kind({
+			name: "App",
+			components: [
+				{kind: "Slidey", arranger: "leftRight", classes: "panel"},
+				{kind: "Slidey", arranger: "topBottom", dragProp: "dy", classes: "panel"},
+				{kind: "Slidey", arranger: "gridly", classes: "panel"},
+				{kind: "Slidey", arranger: "spiral", classes: "panel"},
+				{kind: "Slidey", arranger: "fittableColumns", style: "width: 1000px; padding: 10px;", classes: "panel fittable pbm"},
+				{kind: "Slidey", arranger: "slidingPanels", style: "width: 1000px;", classes: "panel fittable"}
+			]
+		});
+		new App({fit: false}).write();
+	</script>
+</body>
+</html>
+
