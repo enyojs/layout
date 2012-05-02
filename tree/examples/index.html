@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="viewport" content="width=device-width initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<!-- -->
+	<title>Tree Example</title>
+	<!-- -->
+	<script src="../../../../enyo/enyo.js" type="text/javascript"></script>
+	<!-- -->
+	<script src="../../../../lib/layout/package.js" type="text/javascript"></script>
+	<script src="../package.js" type="text/javascript"></script>
+	<!-- -->
+	<style>
+	</style>
+</head>
+<body>
+	<script type="text/javascript">
+		enyo.kind({
+			name: "App",
+			classes: "enyo-unselectable",
+			layoutKind: "FittableRowsLayout",
+			fit: true,
+			components: [
+				{kind: "Selection", onSelect: "select", onDeselect: "deselect"},
+				{kind: "Scroller", fit: true, components: [
+					{kind: "Node", icon: "images/folder-open.png", content: "Tree", expandable: true, expanded: true, onExpand: "nodeExpand", onNodeTap: "nodeTap", components: [
+						{icon: "images/file.png", content: "Alpha"},
+						{icon: "images/folder-open.png", content: "Bravo", expandable: true, expanded: true, components: [
+							{icon: "images/file.png", content: "Bravo-Alpha"},
+							{icon: "images/file.png", content: "Bravo-Bravo"},
+							{icon: "images/file.png", content: "Bravo-Charlie"}
+						]},
+						{icon: "images/folder.png", content: "Charlie", expandable: true, components: [
+							{icon: "images/file.png", content: "Charlie-Alpha"},
+							{icon: "images/file.png", content: "Charlie-Bravo"},
+							{icon: "images/file.png", content: "Charlie-Charlie"}
+						]},
+						{icon: "images/folder-open.png", content: "Delta", expandable: true, expanded: true, components: [
+							{icon: "images/file.png", content: "Delta-Alpha"},
+							{icon: "images/file.png", content: "Delta-Bravo"},
+							{icon: "images/file.png", content: "Delta-Charlie"}
+						]},
+						{icon: "images/file.png", content: "Epsilon"}
+					]}
+				]}
+			],
+			nodeExpand: function(inSender, inEvent) {
+				inSender.setIcon("images/" + (inSender.expanded ? "folder-open.png" : "folder.png"));
+			},
+			nodeTap: function(inSender, inEvent) {
+				var node = inEvent.originator;
+				this.$.selection.select(node.id, node);
+			},
+			select: function(inSender, inEvent) {
+				inEvent.data.$.caption.applyStyle("background-color", "lightblue");
+			},
+			deselect: function(inSender, inEvent) {
+				inEvent.data.$.caption.applyStyle("background-color", null);
+			}
+		});
+
+		new App().write();
+	</script>
+</body>
+</html>
