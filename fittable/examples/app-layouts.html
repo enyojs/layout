@@ -6,8 +6,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- -->
 	<script src="../../../../enyo/enyo.js" type="text/javascript"></script>
-	<script src="../package.js" type="text/javascript"></script>
+	<script src="../../../../lib/layout/package.js" type="text/javascript"></script>
 	<script src="../../../../lib/onyx/package.js" type="text/javascript"></script>
+	<script src="../package.js" type="text/javascript"></script>
 	<!-- -->
 	<style>
 		.pullout-grabbutton {
@@ -45,7 +46,7 @@
 	new (enyo.kind({
 		name: "App",
 		components: [
-			{kind: "onyx.Slideable", classes: "pullout", style: "z-index: 10; position: absolute; left: 0; top: 60px;", unit: "%", min: -100, value: -100, components: [
+			{kind: "enyo.Slideable", classes: "pullout", style: "z-index: 10; position: absolute; left: 0; top: 60px;", unit: "%", min: -100, value: -100, components: [
 				{classes: "pullout-controls", components: [
 					{kind: "onyx.Button", content: "Layout 1", value: 1, ontap: "layoutButtonTap"},
 					{kind: "onyx.Button", content: "Layout 2", value: 2, ontap: "layoutButtonTap"},
