@@ -85,7 +85,7 @@ enyo.kind({
 		this.$.generator.generated = true;
 		this.reset();
 	},
-	resize: function() {
+	resizeHandler: function() {
 		this.inherited(arguments);
 		this.adjustPortSize();
 	},
@@ -168,6 +168,12 @@ enyo.kind({
 			this.adjustPortSize();
 		}
 	},
+	updateForPosition: function(inPos) {
+		this.update(this.calcPos(inPos));
+	},
+	calcPos: function(inPos) {
+		return (this.bottomUp ? (this.portSize - this.scrollerHeight - inPos) : inPos);
+	},
 	adjustBottomPage: function() {
 		var bp = this.p0 >= this.p1 ? this.$.page0 : this.$.page1;
 		this.positionPage(bp.pageNo, bp);
@@ -193,7 +199,7 @@ enyo.kind({
 	},
 	positionToPageInfo: function(inY) {
 		var page = -1;
-		var p = this.bottomUp ? this.portSize - inY : inY;
+		var p = this.calcPos(inY);
 		var h = this.defaultPageHeight;
 		while (p >= 0) {
 			page++;
@@ -234,21 +240,32 @@ enyo.kind({
 		this.update(inScrollTop);
 		this.inherited(arguments);
 	},
+	getScrollPosition: function() {
+		return this.calcPos(this.getScrollTop());
+	},
+	setScrollPosition: function(inPos) {
+		this.setScrollTop(this.calcPos(inPos));
+	},
 	//* Scrolls to a specific row.
 	scrollToRow: function(inRow) {
 		var page = Math.floor(inRow / this.rowsPerPage);
 		var pageRow = inRow % this.rowsPerPage;
 		var h = this.pageToPosition(page);
 		// update the page
-		this.update(h);
+		this.updateForPosition(h);
 		// call pageToPosition again and this time should return the right pos since the page info is populated
 		h = this.pageToPosition(page);
-		this.setScrollTop(h);
+		this.setScrollPosition(h);
 		if (page == this.p0 || page == this.p1) {
 			var rowNode = this.$.generator.fetchRowNode(inRow);
 			if (rowNode) {
-				var y = this.getScrollTop() + rowNode.offsetTop;
-				this.setScrollTop(y);
+				// calc row offset
+				var offset = rowNode.offsetTop;
+				if (this.bottomUp) {
+					offset = this.getPageHeight(page) - rowNode.offsetHeight - offset;
+				}
+				var y = this.getScrollPosition() + offset;
+				this.setScrollPosition(y);
 			}
 		}
 	},
