@@ -152,13 +152,15 @@
 			},
 			addItem: function() {
 				var item = this.generateItem(enyo.cap(this.$.newContactInput.getValue()));
-				for (var i=0, di; di=this.db[i]; i++) {
+				var i = 0;
+				for (var di; di=this.db[i]; i++) {
 					if (di.name > item.name) {
 						this.db.splice(i, 0, item);
 						break;
 					}
 				}
 				this.refreshList();
+				this.$.list.scrollToRow(i);
 			},
 			removeItem: function(inIndex) {
 				this._removeItem(inIndex);
