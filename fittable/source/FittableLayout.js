@@ -41,7 +41,7 @@
 		// calculate available space
 		if (n) {
 			// measure 1
-			var p = enyo.FittableLayout.calcPaddingExtents(n);
+			p = enyo.FittableLayout.calcPaddingExtents(n);
 			// measure 2
 			s = n[cMeasure] - (p[mAttr] + p[nAttr]);
 			//console.log("overall size", s);
@@ -51,7 +51,7 @@
 		// measure 3
 		var fb = f.getBounds();
 		// offset - container padding.
-		a = fb[mAttr] - p[mAttr];
+		a = fb[mAttr] - ((p && p[mAttr]) || 0);
 		//console.log("above", a);
 		//
 		// calculate space below fitting control

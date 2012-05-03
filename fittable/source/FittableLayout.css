@@ -47,6 +47,10 @@
 	white-space: normal;
 }
 
+.enyo-fittable-columns-layout.enyo-tool-decorator > * {
+	vertical-align: middle;
+}
+
 /* repair clobbered white-space setting for pre, code */
 .enyo-fittable-columns-layout > pre, .enyo-fittable-columns-layout > code {
 	white-space: pre;
