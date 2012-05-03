@@ -112,12 +112,13 @@ enyo.kind({
 	//* Fetch the dom node for the given event.
 	rowForEvent: function(inEvent) {
 		var n = inEvent.target;
-		while (n && n.parentNode && n.id != this.id) {
-			n = n.parentNode;
+		var id = this.hasNode().id;
+		while (n && n.parentNode && n.id != id) {
 			var i = n.getAttribute("index");
 			if (i !== null) {
 				return Number(i);
 			}
+			n = n.parentNode;
 		}
 		return -1;
 	},
