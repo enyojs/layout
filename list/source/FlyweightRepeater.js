@@ -114,7 +114,7 @@ enyo.kind({
 		var n = inEvent.target;
 		var id = this.hasNode().id;
 		while (n && n.parentNode && n.id != id) {
-			var i = n.getAttribute("index");
+			var i = n.getAttribute && n.getAttribute("index");
 			if (i !== null) {
 				return Number(i);
 			}
