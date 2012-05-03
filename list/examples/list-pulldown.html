@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+<head>
+	<title>List Example: Twitter</title>
+	<!-- -->
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="viewport" content="width=device-width initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<!-- -->
+	<script src="../../../../enyo/enyo.js" type="text/javascript"></script>
+	<!-- -->
+	<script src="../../../layout/package.js" type="text/javascript"></script>
+	<script src="../../../onyx/package.js" type="text/javascript"></script>
+	<!-- -->
+	<script src="../package.js" type="text/javascript"></script>
+	<!-- -->
+	<style>
+		.list {
+			background: silver;
+		}
+		.item {
+			border-bottom: 1px solid #0E0E0E;
+			padding: 12px 16px;
+			background-color: #333333;
+			/**/
+			font-size: 14px;
+			color: white;
+		}
+		/* pulldown */
+		.enyo-scroller-pulldown {
+			position: absolute;
+			bottom: 100%;
+			left: 0;
+			right: 0;
+		}
+		.puller {
+			font-size: 22px;
+			color: #333;
+			padding: 24px 0 16px 68px;
+		}
+	</style>
+</head>
+
+<body>
+	<script>
+		enyo.kind({
+			name: "PulldownList",
+			kind: "List",
+			touch: true,
+			pulldownTools: [
+				{name: "pulldown", classes: "enyo-scroller-pulldown"}
+			],
+			events: {
+				onPullStart: "",
+				onPullCancel: "",
+				onPull: "",
+				onPullRelease: "",
+				onPullComplete: ""
+			},
+			handlers: {
+				onScrollStart: "scrollstartHandler",
+				onScroll: "scrollHandler",
+				ondragfinish: "dragfinish"
+			},
+			initComponents: function() {
+				this.createChrome(this.pulldownTools);
+				this.createComponents(this.pulldownComponents, {owner: this.owner, container: this.$.pulldown});
+				this.accel = enyo.dom.canAccelerate();
+				this.translation = this.accel ? "translate3d" : "translate";
+				this.inherited(arguments);
+			},
+			scrollstartHandler: function() {
+				this.firedPullStart = false;
+				this.firedPull = false;
+				this.firedPullCancel = false;
+			},
+			scrollHandler: function(inSender) {
+				if (this.$.strategy.$.scrollMath.isInOverScroll()) {
+					var over = this.$.strategy.$.scrollMath.y;
+					// FIXME: fix fugly flags
+					if (over > 0) {
+						enyo.dom.transformValue(this.$.pulldown, this.translation, "0," + over + "px" + (this.accel ? ",0" : ""));
+						if (!this.firedPullStart) {
+							this.firedPullStart = true;
+							this.doPullStart();
+							this.pullHeight = this.$.pulldown.getBounds().height;
+						}
+						if (over > this.pullHeight && !this.firedPull) {
+							this.firedPull = true;
+							this.firedPullCancel = false;
+							this.doPull();
+						}
+						if (this.firedPull && !this.firedPullCancel && over < this.pullHeight) {
+							this.firedPullCancel = true;
+							this.firedPull = false;
+							this.doPullCancel();
+						}
+					}
+				}
+			},
+			dragfinish: function() {
+				if (this.firedPull) {
+					this.$.strategy.$.scrollMath.setScrollY(this.$.strategy.$.scrollMath.y - this.pullHeight);
+					this.doPullRelease();
+				}
+			},
+			completePull: function() {
+				this.$.strategy.$.scrollMath.setScrollY(this.pullHeight);
+				this.$.strategy.$.scrollMath.start();
+				this.doPullComplete();
+			}
+		});
+		
+		enyo.kind({
+			name: "App",
+			classes: "enyo-unselectable onyx",
+			kind: "FittableRows",
+			components: [
+				{kind: "onyx.Toolbar", components: [
+					{kind: "onyx.InputDecorator", components: [
+						{name: "searchInput", kind: "onyx.Input", value: "enyojs"},
+					]},
+					{kind: "onyx.Button", content: "search", ontap: "search"},
+					{name: "searchSpinner", kind: "Image", src: "images/spinner.gif", showing: false}
+				]},
+				{name: "list", kind: "PulldownList", classes: "list", fit: true, onSetupRow: "setupItem",  onPullStart: "pullStart", onPull: "pull", onPullCancel: "pullCancel", onPullRelease: "pullRelease", pulldownComponents: [
+					{name: "pulldown", classes: "puller"}
+				], components: [
+					{name: "pully", canGenerate: false, content: "Loading...", classes: "puller"},
+					{style: "padding: 10px;", classes: "item enyo-border-box", components: [
+						{name: "icon", kind: "Image", style: "float: left; width: 48px; height: 48px; padding: 0 10px 10px 0;"},
+						{name: "name", tag: "span", style: "font-weight: bold;"},
+						{name: "handle", tag: "span"},
+						{name: "date", tag: "span", style: "float: right;"},
+						{tag: "br"},
+						{name: "text", tag: "p", style: "word-wrap: break-word;"}
+					]}
+				]}
+			],
+			rendered: function() {
+				this.inherited(arguments);
+				this.search();
+			},
+			pullingMessage: "Pull down to refresh...",
+			pulledMessage: "Release to refresh...",
+			pullStart: function() {
+				this.$.pulldown.setContent(this.pullingMessage);
+				this.$.pulldown.setShowing(true);
+			},
+			pull: function() {
+				this.$.pulldown.setContent(this.pulledMessage);
+			},
+			pullCancel: function() {
+				this.$.pulldown.setContent(this.pullingMessage);
+			},
+			pullComplete: function() {
+				this.$.pulldown.setShowing(true);
+			},
+			pullRelease: function() {
+				this.$.pulldown.setContent(this.pullingMessage);
+				this.$.pulldown.setShowing(false);
+				this.$.pully.canGenerate = true;
+				this.$.list.renderRow(0);
+				this.search();
+			},
+			search: function() {
+				var searchText = this.$.searchInput.getValue();
+				this.$.searchSpinner.show();
+				var req = new enyo.JsonpRequest({
+					url: "http://search.twitter.com/search.json",
+					callbackName: "callback"
+				});
+				req.response(enyo.bind(this, "processSearchResults"));
+				req.go({q: searchText});
+			},
+			processSearchResults: function(inRequest, inResponse) {
+				this.$.searchSpinner.hide();
+				this.$.pully.canGenerate = false;
+				this.results = inResponse.results;
+				this.$.list.setRows(this.results.length);
+				this.$.list.reset();
+				if (!this.$.pulldown.showing) {
+					this.$.list.completePull();
+				}
+			},
+			setupItem: function(inSender, inEvent) {
+				var i = inEvent.index;
+				var item = this.results[i];
+				this.$.icon.setSrc(item.profile_image_url);
+				this.$.name.setContent(item.from_user_name);
+				this.$.handle.setContent(" @" + item.from_user);
+				this.$.date.setContent((new Date(item.created_at)).toLocaleTimeString());
+				this.$.text.setContent(item.text);
+			}
+		});
+
+		new App({fit: true}).write();
+	</script>
+</body>
+</html>
