@@ -24,7 +24,7 @@
 					{name: "list", kind: "FlyweightRepeater", rows: rows, onSetupRow: "setupRow", components: [
 						{name: "item", content: "Row Item", style: "padding: 8px;", ontap: "rowTap"}
 					]},
-					{kind: "onyx.Popup", style: "right: 0; top: 0;"}
+					{kind: "onyx.Popup", floating: true, style: "position: fixed; right: 0; top: 0;"}
 				],
 				setupRow: function(inSender, inEvent) {
 					this.$.item.setContent("Row #" + inEvent.index);
