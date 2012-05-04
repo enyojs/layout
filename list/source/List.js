@@ -242,6 +242,7 @@ enyo.kind({
 	setScrollTop: function(inScrollTop) {
 		this.update(inScrollTop);
 		this.inherited(arguments);
+		this.twiddle();
 	},
 	getScrollPosition: function() {
 		return this.calcPos(this.getScrollTop());
@@ -323,13 +324,17 @@ enyo.kind({
 	performOnRow: function(inIndex, inFunc, inContext) {
 		this.$.generator.performOnRow(inIndex, inFunc, inContext);
 	},
+	//* @protected
+	animateFinish: function(inSender) {
+		this.twiddle();
+		return true;
+	},
 	// FIXME: Android 4.04 has issues with nested composited elements; for example, a SwipeableItem, 
 	// can incorrectly generate taps on its content when it has slid off the screen;
 	// we address this BUG here by forcing the Scroller to "twiddle" which corrects the bug by
 	// provoking a dom update.
-	animateFinish: function(inSender) {
+	twiddle: function() {
 		var s = this.getStrategy();
 		enyo.call(s, "twiddle");
-		return true;
 	}
 });
