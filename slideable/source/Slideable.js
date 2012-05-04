@@ -80,7 +80,7 @@ enyo.kind({
 		}
 	},
 	acceleratedChanged: function() {
-		enyo.dom.accelerate(this, this.accelerated);
+		//enyo.dom.accelerate(this, this.accelerated);
 	},
 	axisChanged: function() {
 		var h = this.axis == "h";
@@ -89,10 +89,17 @@ enyo.kind({
 		this.transform = h ? "translateX" : "translateY";
 		this.dimension = h ? "width" : "height";
 	},
-	valueChanged: function() {
+	valueChanged: function(inLast) {
 		var v = this.value;
 		if (this.isOob(v) && !this.isAnimating()) {
 				this.value = this.overMoving ? this.dampValue(v) : this.clampValue(v);
+		}
+		if (this.value) {
+			if (inLast == 0 || inLast == undefined) {
+				enyo.dom.accelerate(this, this.accelerated);
+			}
+		} else {
+			enyo.dom.accelerate(this, false);
 		}
 		enyo.dom.transformValue(this, this.transform, this.value + this.unit);
 		this.doChange();
