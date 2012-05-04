@@ -26,16 +26,25 @@
 			color: white;
 		}
 		/* pulldown */
-		.enyo-scroller-pulldown {
+		.enyo-list-pulldown {
 			position: absolute;
 			bottom: 100%;
 			left: 0;
 			right: 0;
 		}
-		.puller {
+		.enyo-list-puller {
 			font-size: 22px;
 			color: #333;
-			padding: 24px 0 16px 68px;
+			padding: 10px 0px 8px 34px;
+		}
+		.enyo-list-puller-image {
+			vertical-align: middle;
+			width: 13px;
+			height: 51px;
+		}
+		.enyo-list-puller-text {
+			vertical-align: middle;
+			padding-left: 20px;
 		}
 	</style>
 </head>
@@ -43,11 +52,13 @@
 <body>
 	<script>
 		enyo.kind({
-			name: "PulldownList",
+			name: "enyo.PulldownList",
 			kind: "List",
 			touch: true,
 			pulldownTools: [
-				{name: "pulldown", classes: "enyo-scroller-pulldown"}
+				{name: "pulldown", classes: "enyo-list-pulldown", components: [
+					{name: "puller", kind: "Puller"}
+				]}
 			],
 			events: {
 				onPullStart: "",
@@ -59,11 +70,22 @@
 			handlers: {
 				onScrollStart: "scrollstartHandler",
 				onScroll: "scrollHandler",
+				onScrollStop: "scrollStopHandler",
 				ondragfinish: "dragfinish"
+			},
+			pullingMessage: "Pull down to refresh...",
+			pulledMessage: "Release to refresh...",
+			loadingMessage: "Loading...",
+			pullingImage: "images/pulldown.png",
+			pulledImage: "images/pullup.png",
+			loadingImage: "",
+			create: function() {
+				var p = {name: "pully", kind: "Puller", showing: false, text: this.loadingMessage, src: this.loadingImage};
+				this.listTools.splice(0, 0, p);
+				this.inherited(arguments);
 			},
 			initComponents: function() {
 				this.createChrome(this.pulldownTools);
-				this.createComponents(this.pulldownComponents, {owner: this.owner, container: this.$.pulldown});
 				this.accel = enyo.dom.canAccelerate();
 				this.translation = this.accel ? "translate3d" : "translate";
 				this.inherited(arguments);
@@ -74,39 +96,96 @@
 				this.firedPullCancel = false;
 			},
 			scrollHandler: function(inSender) {
-				if (this.$.strategy.$.scrollMath.isInOverScroll()) {
-					var over = this.$.strategy.$.scrollMath.y;
+				if (this.completingPull) {
+					this.$.pully.setShowing(false);
+				}
+				var s = this.getStrategy().$.scrollMath;
+				if (s.isInOverScroll()) {
+					var over = s.y;
 					// FIXME: fix fugly flags
 					if (over > 0) {
 						enyo.dom.transformValue(this.$.pulldown, this.translation, "0," + over + "px" + (this.accel ? ",0" : ""));
 						if (!this.firedPullStart) {
 							this.firedPullStart = true;
-							this.doPullStart();
+							this.pullStart();
 							this.pullHeight = this.$.pulldown.getBounds().height;
 						}
 						if (over > this.pullHeight && !this.firedPull) {
 							this.firedPull = true;
 							this.firedPullCancel = false;
-							this.doPull();
+							this.pull();
 						}
 						if (this.firedPull && !this.firedPullCancel && over < this.pullHeight) {
 							this.firedPullCancel = true;
 							this.firedPull = false;
-							this.doPullCancel();
+							this.pullCancel();
 						}
 					}
 				}
 			},
+			scrollStopHandler: function() {
+				if (this.completingPull) {
+					this.completingPull = false;
+					this.doPullComplete();
+				}
+			},
 			dragfinish: function() {
 				if (this.firedPull) {
-					this.$.strategy.$.scrollMath.setScrollY(this.$.strategy.$.scrollMath.y - this.pullHeight);
-					this.doPullRelease();
+					var s = this.getStrategy().$.scrollMath;
+					s.setScrollY(s.y - this.pullHeight);
+					this.pullRelease();
 				}
 			},
 			completePull: function() {
+				this.completingPull = true;
+				this.$.puller.setShowing(true);
 				this.$.strategy.$.scrollMath.setScrollY(this.pullHeight);
 				this.$.strategy.$.scrollMath.start();
-				this.doPullComplete();
+			},
+			pullStart: function() {
+				this.$.puller.setText(this.pullingMessage);
+				this.$.puller.setImage(this.pullingImage);
+				this.$.puller.setShowing(true);
+				this.doPullStart();
+			},
+			pull: function() {
+				this.$.puller.setText(this.pulledMessage);
+				this.$.puller.setImage(this.pulledImage);
+				this.doPull();
+			},
+			pullCancel: function() {
+				this.$.puller.setText(this.pullingMessage);
+				this.$.puller.setImage(this.pullingImage);
+				this.doPullCancel();
+			},
+			pullRelease: function() {
+				this.$.puller.setShowing(false);
+				this.$.pully.setShowing(true);
+				this.doPullRelease();
+			}
+		});
+		
+		enyo.kind({
+			name: "enyo.Puller",
+			classes: "enyo-list-puller",
+			published: {
+				text: "",
+				image: ""
+			},
+			components: [
+				{kind: "Image", classes: "enyo-list-puller-image"},
+				{name: "text", tag: "span", classes: "enyo-list-puller-text"}
+			],
+			create: function() {
+				this.inherited(arguments);
+				this.textChanged();
+				this.imageChanged();
+			},
+			textChanged: function() {
+				this.$.text.setContent(this.text);
+			},
+			imageChanged: function() {
+				this.$.image.setSrc(this.image);
 			}
 		});
 		
@@ -119,13 +198,9 @@
 					{kind: "onyx.InputDecorator", components: [
 						{name: "searchInput", kind: "onyx.Input", value: "enyojs"},
 					]},
-					{kind: "onyx.Button", content: "search", ontap: "search"},
-					{name: "searchSpinner", kind: "Image", src: "images/spinner.gif", showing: false}
+					{kind: "onyx.Button", content: "search", ontap: "search"}
 				]},
-				{name: "list", kind: "PulldownList", classes: "list", fit: true, onSetupRow: "setupItem",  onPullStart: "pullStart", onPull: "pull", onPullCancel: "pullCancel", onPullRelease: "pullRelease", pulldownComponents: [
-					{name: "pulldown", classes: "puller"}
-				], components: [
-					{name: "pully", canGenerate: false, content: "Loading...", classes: "puller"},
+				{name: "list", kind: "PulldownList", classes: "list", fit: true, onSetupRow: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [
 					{style: "padding: 10px;", classes: "item enyo-border-box", components: [
 						{name: "icon", kind: "Image", style: "float: left; width: 48px; height: 48px; padding: 0 10px 10px 0;"},
 						{name: "name", tag: "span", style: "font-weight: bold;"},
@@ -140,31 +215,18 @@
 				this.inherited(arguments);
 				this.search();
 			},
-			pullingMessage: "Pull down to refresh...",
-			pulledMessage: "Release to refresh...",
-			pullStart: function() {
-				this.$.pulldown.setContent(this.pullingMessage);
-				this.$.pulldown.setShowing(true);
-			},
-			pull: function() {
-				this.$.pulldown.setContent(this.pulledMessage);
-			},
-			pullCancel: function() {
-				this.$.pulldown.setContent(this.pullingMessage);
+			pullRelease: function() {
+				this.pulled = true;
+				setTimeout(enyo.bind(this, function() {
+					this.search();
+				}), 1000);
 			},
 			pullComplete: function() {
-				this.$.pulldown.setShowing(true);
-			},
-			pullRelease: function() {
-				this.$.pulldown.setContent(this.pullingMessage);
-				this.$.pulldown.setShowing(false);
-				this.$.pully.canGenerate = true;
-				this.$.list.renderRow(0);
-				this.search();
+				this.pulled = false;
+				this.$.list.reset();
 			},
 			search: function() {
 				var searchText = this.$.searchInput.getValue();
-				this.$.searchSpinner.show();
 				var req = new enyo.JsonpRequest({
 					url: "http://search.twitter.com/search.json",
 					callbackName: "callback"
@@ -173,13 +235,12 @@
 				req.go({q: searchText});
 			},
 			processSearchResults: function(inRequest, inResponse) {
-				this.$.searchSpinner.hide();
-				this.$.pully.canGenerate = false;
 				this.results = inResponse.results;
 				this.$.list.setRows(this.results.length);
-				this.$.list.reset();
-				if (!this.$.pulldown.showing) {
+				if (this.pulled) {
 					this.$.list.completePull();
+				} else {
+					this.$.list.reset();
 				}
 			},
 			setupItem: function(inSender, inEvent) {
@@ -188,7 +249,9 @@
 				this.$.icon.setSrc(item.profile_image_url);
 				this.$.name.setContent(item.from_user_name);
 				this.$.handle.setContent(" @" + item.from_user);
-				this.$.date.setContent((new Date(item.created_at)).toLocaleTimeString());
+				var d = new Date(item.created_at);
+				var dd = d.toLocaleDateString();
+				this.$.date.setContent((new Date()).toLocaleDateString() == dd ? d.toLocaleTimeString() : dd);
 				this.$.text.setContent(item.text);
 			}
 		});
