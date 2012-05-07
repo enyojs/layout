@@ -12,10 +12,11 @@
 	<script src="../../../onyx/package.js" type="text/javascript"></script>
 	<!-- -->
 	<script src="../package.js" type="text/javascript"></script>
+	<script src="../source/wip-package.js" type="text/javascript"></script>
 	<!-- -->
 	<style>
 		.list {
-			background: silver;
+			background: grey;
 		}
 		.item {
 			border-bottom: 1px solid #0E0E0E;
@@ -25,170 +26,11 @@
 			font-size: 14px;
 			color: white;
 		}
-		/* pulldown */
-		.enyo-list-pulldown {
-			position: absolute;
-			bottom: 100%;
-			left: 0;
-			right: 0;
-		}
-		.enyo-list-puller {
-			font-size: 22px;
-			color: #333;
-			padding: 10px 0px 8px 34px;
-		}
-		.enyo-list-puller-image {
-			vertical-align: middle;
-			width: 13px;
-			height: 51px;
-		}
-		.enyo-list-puller-text {
-			vertical-align: middle;
-			padding-left: 20px;
-		}
 	</style>
 </head>
 
 <body>
 	<script>
-		enyo.kind({
-			name: "enyo.PulldownList",
-			kind: "List",
-			touch: true,
-			pulldownTools: [
-				{name: "pulldown", classes: "enyo-list-pulldown", components: [
-					{name: "puller", kind: "Puller"}
-				]}
-			],
-			events: {
-				onPullStart: "",
-				onPullCancel: "",
-				onPull: "",
-				onPullRelease: "",
-				onPullComplete: ""
-			},
-			handlers: {
-				onScrollStart: "scrollstartHandler",
-				onScroll: "scrollHandler",
-				onScrollStop: "scrollStopHandler",
-				ondragfinish: "dragfinish"
-			},
-			pullingMessage: "Pull down to refresh...",
-			pulledMessage: "Release to refresh...",
-			loadingMessage: "Loading...",
-			pullingImage: "images/pulldown.png",
-			pulledImage: "images/pullup.png",
-			loadingImage: "",
-			create: function() {
-				var p = {name: "pully", kind: "Puller", showing: false, text: this.loadingMessage, src: this.loadingImage};
-				this.listTools.splice(0, 0, p);
-				this.inherited(arguments);
-			},
-			initComponents: function() {
-				this.createChrome(this.pulldownTools);
-				this.accel = enyo.dom.canAccelerate();
-				this.translation = this.accel ? "translate3d" : "translate";
-				this.inherited(arguments);
-			},
-			scrollstartHandler: function() {
-				this.firedPullStart = false;
-				this.firedPull = false;
-				this.firedPullCancel = false;
-			},
-			scrollHandler: function(inSender) {
-				if (this.completingPull) {
-					this.$.pully.setShowing(false);
-				}
-				var s = this.getStrategy().$.scrollMath;
-				if (s.isInOverScroll()) {
-					var over = s.y;
-					// FIXME: fix fugly flags
-					if (over > 0) {
-						enyo.dom.transformValue(this.$.pulldown, this.translation, "0," + over + "px" + (this.accel ? ",0" : ""));
-						if (!this.firedPullStart) {
-							this.firedPullStart = true;
-							this.pullStart();
-							this.pullHeight = this.$.pulldown.getBounds().height;
-						}
-						if (over > this.pullHeight && !this.firedPull) {
-							this.firedPull = true;
-							this.firedPullCancel = false;
-							this.pull();
-						}
-						if (this.firedPull && !this.firedPullCancel && over < this.pullHeight) {
-							this.firedPullCancel = true;
-							this.firedPull = false;
-							this.pullCancel();
-						}
-					}
-				}
-			},
-			scrollStopHandler: function() {
-				if (this.completingPull) {
-					this.completingPull = false;
-					this.doPullComplete();
-				}
-			},
-			dragfinish: function() {
-				if (this.firedPull) {
-					var s = this.getStrategy().$.scrollMath;
-					s.setScrollY(s.y - this.pullHeight);
-					this.pullRelease();
-				}
-			},
-			completePull: function() {
-				this.completingPull = true;
-				this.$.puller.setShowing(true);
-				this.$.strategy.$.scrollMath.setScrollY(this.pullHeight);
-				this.$.strategy.$.scrollMath.start();
-			},
-			pullStart: function() {
-				this.$.puller.setText(this.pullingMessage);
-				this.$.puller.setImage(this.pullingImage);
-				this.$.puller.setShowing(true);
-				this.doPullStart();
-			},
-			pull: function() {
-				this.$.puller.setText(this.pulledMessage);
-				this.$.puller.setImage(this.pulledImage);
-				this.doPull();
-			},
-			pullCancel: function() {
-				this.$.puller.setText(this.pullingMessage);
-				this.$.puller.setImage(this.pullingImage);
-				this.doPullCancel();
-			},
-			pullRelease: function() {
-				this.$.puller.setShowing(false);
-				this.$.pully.setShowing(true);
-				this.doPullRelease();
-			}
-		});
-		
-		enyo.kind({
-			name: "enyo.Puller",
-			classes: "enyo-list-puller",
-			published: {
-				text: "",
-				image: ""
-			},
-			components: [
-				{kind: "Image", classes: "enyo-list-puller-image"},
-				{name: "text", tag: "span", classes: "enyo-list-puller-text"}
-			],
-			create: function() {
-				this.inherited(arguments);
-				this.textChanged();
-				this.imageChanged();
-			},
-			textChanged: function() {
-				this.$.text.setContent(this.text);
-			},
-			imageChanged: function() {
-				this.$.image.setSrc(this.image);
-			}
-		});
-		
 		enyo.kind({
 			name: "App",
 			classes: "enyo-unselectable onyx",
@@ -217,6 +59,7 @@
 			},
 			pullRelease: function() {
 				this.pulled = true;
+				// add 1 second delay so we can see the loading message
 				setTimeout(enyo.bind(this, function() {
 					this.search();
 				}), 1000);
@@ -232,7 +75,7 @@
 					callbackName: "callback"
 				});
 				req.response(enyo.bind(this, "processSearchResults"));
-				req.go({q: searchText});
+				req.go({q: searchText, rpp: 20});
 			},
 			processSearchResults: function(inRequest, inResponse) {
 				this.results = inResponse.results;
