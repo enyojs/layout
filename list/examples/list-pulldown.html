@@ -92,10 +92,22 @@
 				this.$.icon.setSrc(item.profile_image_url);
 				this.$.name.setContent(item.from_user_name);
 				this.$.handle.setContent(" @" + item.from_user);
-				var d = new Date(item.created_at);
-				var dd = d.toLocaleDateString();
-				this.$.date.setContent((new Date()).toLocaleDateString() == dd ? d.toLocaleTimeString() : dd);
+				this.$.date.setContent(this.getRelativeDateString(item.created_at));
 				this.$.text.setContent(item.text);
+			},
+			getRelativeDateString: function(inDateString) {
+				var d = new Date(inDateString);
+				var td = new Date();
+				var s;
+				if (td.toLocaleDateString() == d.toLocaleDateString()) {
+					var dh = td.getHours() - d.getHours();
+					var dm = td.getMinutes() - d.getMinutes();
+					s = dh ? dh + " hour" : (dm ? dm + " minute" : td.getSeconds() - d.getSeconds() + " second");
+				} else {
+					var dmo = td.getMonth() - d.getMonth();
+					s = dmo ? dmo + " month" : td.getDate() - d.getDate() + " day";
+				}
+				return s.split(" ")[0] > 1 ? s + "s" : s;
 			}
 		});
 
