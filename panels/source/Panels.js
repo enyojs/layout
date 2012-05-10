@@ -8,7 +8,8 @@
 		wrap: true
 	},
 	events: {
-		onTransition: ""
+		onTransitionStart: "",
+		onTransitionFinish: ""
 	},
 	handlers: {
 		ondragstart: "dragstart",
@@ -27,6 +28,17 @@
 	initComponents: function() {
 		this.createChrome(this.tools);
 		this.inherited(arguments);
+	},
+	removeControl: function(inControl) {
+		this.inherited(arguments);
+		if (this.isPanel(inControl)) {
+			this.flow();
+			this.reflow();
+			this.setIndex(0);
+		}
+	},
+	isPanel: function() {
+		return true;
 	},
 	flow: function() {
 		this.arrangements = [];
@@ -123,6 +135,7 @@
 		this.fromIndex = this.clamp(this.fromIndex);
 		this.toIndex = this.clamp(this.toIndex);
 		//this.log(this.fromIndex, this.toIndex);
+		this.fireTransitionStart();
 		this.layout.start();
 	},
 	dragTransition: function(inEvent) {
@@ -172,14 +185,21 @@
 		this.toIndex = this.toIndex != null ? this.toIndex : this.index;
 		//this.log(this.fromIndex, this.toIndex);
 		this.layout.start();
+		this.fireTransitionStart();
 	},
 	finishTransition: function() {
 		this.layout.finish();
 		this.fraction = 0;
 		this.fromIndex = this.toIndex = null;
+	},
+	fireTransitionStart: function() {
 		if (this.hasNode()) {
-			//this.log();
-			this.doTransition();
+			this.doTransitionStart({fromIndex: this.fromIndex, toIndex: this.toIndex});
+		}
+	},
+	fireTransitionFinish: function() {
+		if (this.hasNode()) {
+			this.doTransitionFinish({fromIndex: this.lastIndex, toIndex: this.index});
 		}
 	},
 	// gambit: we interpolate between arrangements as needed.

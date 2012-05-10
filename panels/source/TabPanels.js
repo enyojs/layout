@@ -1,14 +1,12 @@
 ﻿enyo.kind({
 	name: "enyo.TabPanels",
 	kind: "Panels",
-	//draggable: false,
-	//layoutKind: "FadeArranger",
-	layoutKind: "SlideInArranger",
+	layoutKind: "FadeArranger",
 	tabTools: [
-		{name: "scroller", kind: "Scroller", maxHeight: "100px", touch: true, thumb: false, vertical: "hidden", horizontal: "auto", components: [
+		{name: "scroller", kind: "Scroller", maxHeight: "100px", strategyKind: "TranslateScrollStrategy", thumb: false, vertical: "hidden", horizontal: "auto", components: [
 			{name: "tabs", kind: "onyx.RadioGroup", style: "text-align: left; white-space: nowrap", controlClasses: "onyx-tabbutton", onActivate: "tabActivate"}
 		]},
-		{name: "client", fit: true, kind: "Panels", onTransition: "clientTransition"}
+		{name: "client", fit: true, kind: "Panels", onTransitionStart: "clientTransitionStart"}
 	],
 	create: function() {
 		this.inherited(arguments);
@@ -40,13 +38,13 @@
 		this.$.client.setWrap(this.wrap);
 		this.wrap = false;
 	},
-	isTabTool: function(inControl) {
+	isPanel: function(inControl) {
 		var n = inControl.name;
-		return (n == "tabs" || n == "client" || n == "scroller");
+		return !(n == "tabs" || n == "client" || n == "scroller");
 	},
 	addControl: function(inControl) {
 		this.inherited(arguments);
-		if (!this.isTabTool(inControl)) {
+		if (this.isPanel(inControl)) {
 			var c = inControl.caption || ("Tab " + this.$.tabs.controls.length);
 			var t = inControl._tab = this.$.tabs.createComponent({content: c});
 			if (this.hasNode()) {
@@ -55,17 +53,10 @@
 		}
 	},
 	removeControl: function(inControl) {
-		var isPanel = !this.isTabTool(inControl);
-		if (isPanel && inControl._tab) {
+		if (this.isPanel(inControl) && inControl._tab) {
 			inControl._tab.destroy();
 		}
 		this.inherited(arguments);
-		if (isPanel) {
-			// FIXME: flow + reflow is not acceptable api.
-			this.flow();
-			this.reflow();
-			this.setIndex(0);
-		}
 	},
 	layoutKindChanged: function() {
 		if (!this.layout) {
@@ -87,17 +78,16 @@
 		if (this.hasNode()) {
 			if (inEvent.originator.active) {
 				var i = inEvent.originator.indexInContainer();
-				this.log(i);
 				this.setIndex(i);
 			}
 		}
 	},
-	clientTransition: function(inSender) {
-		var i = inSender.getIndex();
+	clientTransitionStart: function(inSender, inEvent) {
+		var i = inEvent.toIndex;
 		var t = this.$.tabs.getClientControls()[i];
-		if (t) {
+		if (t && t.hasNode()) {
 			this.$.tabs.setActive(t);
-			var tn = t.hasNode();
+			var tn = t.node;
 			var tl = tn.offsetLeft;
 			var tr = tl + tn.offsetWidth;
 			var sb = this.$.scroller.getScrollBounds();
@@ -105,6 +95,7 @@
 				this.$.scroller.scrollToControl(t);
 			}
 		}
+		return true;
 	},
 	startTransition: enyo.nop,
 	finishTransition: enyo.nop,
