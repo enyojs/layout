@@ -56,6 +56,9 @@ enyo.kind({
 	multiSelectChanged: function() {
 		this.$.selection.setMulti(this.multiSelect);
 	},
+	setupRow: function(inIndex) {
+		this.doSetupRow({index: inIndex, selected: this.isSelected(inIndex)});
+	},
 	//* Render the list
 	generateChildHtml: function() {
 		var h = "";
@@ -63,7 +66,7 @@ enyo.kind({
 		// and indicate if rows should be rendered top down or bottomUp
 		for (var i=0, r=0; i<this.rows; i++) {
 			r = this.rowOffset + (this.bottomUp ? this.rows - i-1 : i);
-			this.doSetupRow({index: r, selected: this.isSelected(r)});
+			this.setupRow(r);
 			this.$.client.setAttribute("index", r);
 			h += this.inherited(arguments);
 			this.$.client.teardownRender();
@@ -97,7 +100,7 @@ enyo.kind({
 	renderRow: function(inIndex) {
 		var node = this.fetchRowNode(inIndex);
 		if (node) {
-			this.doSetupRow({index: inIndex});
+			this.setupRow(inIndex);
 			node.innerHTML = this.$.client.generateChildHtml();
 			this.$.client.teardownChildren();
 		}
