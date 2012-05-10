@@ -110,13 +110,13 @@ enyo.kind({
 	//* To signal that the list should execute pull completion.  This usually be called after the application has received the new data.
 	completePull: function() {
 		this.completingPull = true;
-		this.$.puller.setShowing(true);
 		this.$.strategy.$.scrollMath.setScrollY(this.pullHeight);
 		this.$.strategy.$.scrollMath.start();
 	},
 	//* @protected
 	pullStart: function() {
 		this.setPulling();
+		this.$.pully.setShowing(false);
 		this.$.puller.setShowing(true);
 		this.doPullStart();
 	},

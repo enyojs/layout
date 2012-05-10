@@ -69,6 +69,7 @@ enyo.kind({
 		]}
 	],
 	create: function() {
+		this.pageHeights = [];
 		this.inherited(arguments);
 		this.getStrategy().translateOptimized = true;
 		this.bottomUpChanged();
@@ -108,7 +109,9 @@ enyo.kind({
 		this.$.generator.setToggleSelected(this.toggleSelected);
 	},
 	rowsChanged: function() {
-		this.updateMetrics();
+		if (this.hasNode()) {
+			this.updateMetrics();
+		}
 	},
 	updateMetrics: function() {
 		this.defaultPageHeight = this.rowsPerPage * (this.rowHeight || 100);
