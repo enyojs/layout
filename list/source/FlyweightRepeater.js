@@ -63,7 +63,7 @@ enyo.kind({
 		// and indicate if rows should be rendered top down or bottomUp
 		for (var i=0, r=0; i<this.rows; i++) {
 			r = this.rowOffset + (this.bottomUp ? this.rows - i-1 : i);
-			this.doSetupRow({index: r});
+			this.doSetupRow({index: r, selected: this.isSelected(r)});
 			this.$.client.setAttribute("index", r);
 			h += this.inherited(arguments);
 			this.$.client.teardownRender();
