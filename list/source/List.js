@@ -1,34 +1,32 @@
 /**
-A control that displays a scrolling list of rows. It is suitable for displaying very large
-lists. List is optimized such that only a small portion of the list is rendered
-at a given time. 
+	A control that displays a scrolling list of rows. It is suitable for displaying very large
+	lists. List is optimized such that only a small portion of the list is rendered
+	at a given time. 
 
-##Basic Use
+	## Basic Use
 
-A List's components block contains the controls to be used for a single row.
-This set of controls will be rendered for each row.
+	A List's components block contains the controls to be used for a single row.
+	This set of controls will be rendered for each row.
 
-The onSetupRow event allows for customization of row rendering. Here's a simple example:
+	The onSetupRow event allows for customization of row rendering. Here's a simple example:
 
-	components: [
-		{kind: "List", fit: true, rows: 1000, onSetupRow: "setupRow", components: [
-			{name: "item"}
-		]}
-	],
-	setupRow: function(inSender, inEvent) {
-		this.$.item.setContent("I am row: " + inEvent.index);
-	}
+		components: [
+			{kind: "List", fit: true, rows: 1000, onSetupRow: "setupRow", components: [
+				{name: "item"}
+			]}
+		],
+		setupRow: function(inSender, inEvent) {
+			this.$.item.setContent("I am row: " + inEvent.index);
+		}
 
-##Modifying List Rows
+	## Modifying List Rows
 
-Controls inside a list are non-interactive. This means that outside the onSetupRow event, 
-calling methods that would otherwise cause rendering to occur will not do so (e.g. setContent).
-A row can be forced to render by calling the renderRow(inRow) method. In addition, a row can be 
-temporarily made interactive by calling the prepareRow(inRow) method. When interaction is complete, the
-lockRow method should be called.
-
+	Controls inside a list are not interactive. This means that outside the onSetupRow event, 
+	calling methods that would otherwise cause rendering to occur will not do so (e.g. setContent).
+	A row can be forced to render by calling the renderRow(inRow) method. In addition, a row can be 
+	temporarily made interactive by calling the prepareRow(inRow) method. When interaction is complete, the
+	lockRow() method should be called.
 */
-
 enyo.kind({
 	name: "enyo.List",
 	kind: "Scroller",
