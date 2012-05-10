@@ -122,7 +122,7 @@
 		}
 		this.fromIndex = this.clamp(this.fromIndex);
 		this.toIndex = this.clamp(this.toIndex);
-		this.log(this.fromIndex, this.toIndex);
+		//this.log(this.fromIndex, this.toIndex);
 		this.layout.start();
 	},
 	dragTransition: function(inEvent) {
@@ -178,7 +178,7 @@
 		this.fraction = 0;
 		this.fromIndex = this.toIndex = null;
 		if (this.hasNode()) {
-			this.log();
+			//this.log();
 			this.doTransition();
 		}
 	},
