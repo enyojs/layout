@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+	<title>Panels</title>
+	<!-- -->
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="viewport" content="width=device-width initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<!-- -->
+	<script src="../../../../enyo/enyo.js" type="text/javascript"></script>
+	<script src="../../../../lib/onyx/package.js" type="text/javascript"></script>
+	<script src="../../../../lib/layout/package.js" type="text/javascript"></script>
+	<script src="../package.js" type="text/javascript"></script>
+	<!-- -->
+	<style>
+		.panels {
+			height: 33%;
+			width: 33%;
+			min-height: 320px;
+			min-width: 320px;
+			display: inline-block;
+			margin: 30px;
+			border: 10px solid orange;
+		}
+		
+		.panels > * {
+			border: 2px solid #333;
+			font-size: 5em;
+			text-align: center;
+		}
+
+		.wide > * {
+			min-width: 50%;
+		}
+	</style>
+</head>
+<body>
+	<script>
+		enyo.bodyIsFitting = true;
+
+		enyo.kind({
+			name: "SamplePanels",
+			kind: "Panels",
+			classes: "panels enyo-unselectable enyo-border-box",
+			components: [
+				{content: 0, style: "background: red; width: 150px;"},
+				{content: 1, style: "background: orange; width: 500px;"},
+				{content: 2, style: "background: yellow; width: 150px;"},
+				{content: 3, style: "background: green; width: 500px;"},
+				{content: 4, style: "background: blue; width: 500px;"},
+				{content: 5, style: "background: indigo; width: 500px;" },
+				{content: 0, style: "background: red; width: 150px;"},
+				{content: 1, style: "background: orange; width: 500px;"},
+				{content: 2, style: "background: yellow; width: 150px;"},
+				{content: 3, style: "background: green; width 500px;"},
+				{content: 4, style: "background: blue; width: 150px;"},
+				{content: 5, style: "background: indigo; width: 500px;" },
+				{content: 6, style: "background: violet;"}
+			]
+		});
+		
+		enyo.kind({
+			name: "App",
+			//kind: "Scroller",
+			components: [
+				{kind: "SamplePanels", layoutKind: "FittableColumnsArranger", index: 2, style: "width: 80%;", wrap: false},
+				//{kind: "SamplePanels", layoutKind: "FittableColumnsArranger", classes: "wide", wrap: false, style: "width: 80%;"},
+				//{kind: "SamplePanels", layoutKind: "SlidingArranger", style: "width: 80%;", wrap: false}
+			],
+			prevPanel: function() {
+				this.$.p.previous();
+			},
+			nextPanel: function() {
+				this.$.p.next();
+			}
+		});
+		new App({fit: true}).write();
+	</script>
+</body>
+</html>
+

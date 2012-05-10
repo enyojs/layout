@@ -11,10 +11,26 @@
 	size: function() {
 	},
 	start: function() {
+		this.container.startState = this.container.fromIndex;
+		this.container.endState = this.container.toIndex;
 	},
 	finish: function() {
+		this.container.startState = null;
+		this.container.endState = null;
 	},
-	calcArrangementDifference: function(inState0, inState1) {
+	drag: function(inEvent, inAn, inA, inBn, inB) {
+		var dp = inEvent[this.dragProp];
+		var f = this.measureArrangementDelta(-dp, inAn, inA, inBn, inB);
+		return f;
+	},
+	measureArrangementDelta: function(inX, inI0, inA0, inI1, inA1) {
+		var d = this.calcArrangementDifference(inI0, inA0, inI1, inA1);
+		var s = d ? inX / Math.abs(d) : 0;
+		s = s * (this.container.fromIndex > this.container.toIndex ? -1 : 1);
+		//enyo.log("delta", s);
+		return s;
+	},
+	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
 	},
 	_arrange: function(inIndex) {
 		var c$ = this.getOrderedControls(inIndex);
@@ -25,11 +41,6 @@
 	},
 	canDragEvent: function(inEvent) {
 		return this.container.draggable && inEvent[this.canDragProp];
-	},
-	measureArrangementDelta: function(inX, inA0, inA1) {
-		var d = this.calcArrangementDifference(inA0, inA1);
-		var s = d ? inX / d : 0;
-		return s;
 	},
 	flow: function() {
 		this.c$ = [].concat(this.container.children);
@@ -53,8 +64,10 @@
 	},
 	flowControl: function(inControl, inA) {
 		enyo.Arranger.positionControl(inControl, inA);
-		if (inA.opacity != null) {
-			inControl.applyStyle("opacity", inA.opacity);
+		var o = inA.opacity;
+		if (o != null) {
+			o = o > .99 ? 1 : (o < .01 ? 0 : o);
+			inControl.applyStyle("opacity",  o);
 		}
 	},
 	// get an array of controls arranged in state order.
@@ -63,7 +76,7 @@
 		var whole = Math.floor(inIndex);
 		var a = whole - this.controlsIndex;
 		var sign = a > 0;
-		var c$ = this.c$;
+		var c$ = this.c$ || [];
 		for (var i=0; i<Math.abs(a); i++) {
 			if (sign) {
 				c$.push(c$.shift());

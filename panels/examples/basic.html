@@ -38,7 +38,7 @@
 		enyo.kind({
 			name: "SamplePanels",
 			kind: "Panels",
-			classes: "panels enyo-unselectable enyo-border-box",
+			classes: "panels enyo-border-box",
 			components: [
 				{content: 0, style: "background: red;"},
 				{content: 1, style: "background: orange;"},
@@ -52,30 +52,47 @@
 		
 		enyo.kind({
 			name: "App",
-			kind: "Scroller",
+			kind: "FittableRows",
 			components: [
-				{kind: "SamplePanels", layoutKind: "LeftRightArranger"},
-				{kind: "SamplePanels", layoutKind: "FadeArranger", wrap: false},
-				{name: "p", kind: "SamplePanels", layoutKind: "Fade1Arranger", wrap: false},
 				{kind: "onyx.Toolbar", components: [
 					{kind: "onyx.Button", content: "Previous", ontap: "prevPanel"},
-					{kind: "onyx.Button", content: "Next", ontap: "nextPanel"}
+					{kind: "onyx.Button", content: "Next", ontap: "nextPanel"},
+					{kind: "onyx.InputDecorator", components: [
+						{kind: "onyx.Input", value: 4, onchange: "gotoPanel"}
+					]},
+					{kind: "onyx.Button", content: "Go", ontap: "gotoPanel"},
 				]},
-				{kind: "SamplePanels", layoutKind: "TopBottomArranger"},
-				{kind: "SamplePanels", layoutKind: "SpiralArranger"},
-				{kind: "SamplePanels", layoutKind: "GridArranger"},
-				{kind: "SamplePanels", layoutKind: "FittableColumnsArranger", style: "width: 80%;"},
-				{kind: "SamplePanels", layoutKind: "FittableColumnsArranger", classes: "wide", wrap: false, style: "width: 80%;"},
-				{kind: "SamplePanels", layoutKind: "SlidingArranger", style: "width: 80%;", wrap: false}
+				{name: "samples", kind: "Scroller", fit: true, components: [
+					{kind: "SamplePanels", layoutKind: "LeftRightArranger"},
+					{kind: "SamplePanels", layoutKind: "FadeArranger", wrap: false},
+					{kind: "SamplePanels", layoutKind: "SlideInArranger", wrap: false},
+					{kind: "SamplePanels", layoutKind: "TopBottomArranger"},
+					{kind: "SamplePanels", layoutKind: "SpiralArranger"},
+					{kind: "SamplePanels", layoutKind: "GridArranger"},
+					{kind: "SamplePanels", layoutKind: "FittableColumnsArranger", style: "width: 80%;"},
+					{kind: "SamplePanels", layoutKind: "FittableColumnsArranger", classes: "wide", wrap: false, style: "width: 80%;"},
+					{kind: "SamplePanels", layoutKind: "SlidingArranger", style: "width: 80%;", wrap: false}
+				]}
 			],
 			prevPanel: function() {
-				this.$.p.previous();
+				this.forEachPanel("previous");
 			},
 			nextPanel: function() {
-				this.$.p.next();
+				this.forEachPanel("next");
+			},
+			gotoPanel: function() {
+				var i = Number(this.$.input.getValue());
+				this.forEachPanel("setIndex", i);
+			},
+			forEachPanel: function(inMethod) {
+				var c$ = this.$.samples.getClientControls();
+				var a = enyo.cloneArray(arguments, 1) || [];
+				for (var i=0, c; c=c$[i]; i++) {
+					c[inMethod].apply(c, a);
+				}
 			}
 		});
-		new App({fit: true}).write();
+		new App({fit: true, classes: "enyo-unselectable"}).write();
 	</script>
 </body>
 </html>

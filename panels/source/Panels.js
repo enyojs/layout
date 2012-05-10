@@ -3,10 +3,12 @@
 	classes: "enyo-panels",
 	published: {
 		index: 0,
-		state: 0,
 		draggable: true,
 		animate: true,
 		wrap: true
+	},
+	events: {
+		onTransition: ""
 	},
 	handlers: {
 		ondragstart: "dragstart",
@@ -17,21 +19,33 @@
 		{kind: "Animator", onStep: "step", onEnd: "completed"}
 	],
 	layoutKind: "LeftRightArranger",
+	fraction: 0,
 	create: function() {
-		this.states = [];
 		this.inherited(arguments);
-		this.state = this.index;
-	},
-	reflow: function() {
-		this.states = [];
-		this.inherited(arguments);
-		this.layout.start()
-		this.stateChanged();
-		this.layout.finish();
+		this.indexChanged();
 	},
 	initComponents: function() {
 		this.createChrome(this.tools);
 		this.inherited(arguments);
+	},
+	flow: function() {
+		this.arrangements = [];
+		this.inherited(arguments);
+	},
+	reflow: function() {
+		this.arrangements = [];
+		this.inherited(arguments);
+		this.refresh();
+	},
+	getPanels: function() {
+		return this.getClientControls();
+	},
+	getActive: function() {
+		var p$ = this.getPanels();
+		return p$[this.index];
+	},
+	getAnimator: function() {
+		return this.$.animator;
 	},
 	setIndex: function(inIndex) {
 		// override setIndex so that indexChanged is called 
@@ -54,97 +68,140 @@
 	indexChanged: function(inOld) {
 		this.lastIndex = inOld;
 		this.index = this.clamp(this.index);
-		this.$.animator.stop();
-		if (this.hasNode() && this.animate) {
-			this.layout.start();
-			this.$.animator.play({
-				startValue: this.state,
-				endValue: this.index
-			});
-		} else {
-			this.layout.start();
-			this.setState(this.index);
-			this.layout.finish();
+		if (!this.dragging) {
+			this.$.animator.stop();
+			if (this.hasNode() && this.animate) {
+				this.startTransition();
+				this.$.animator.play({
+					startValue: this.fraction
+				});
+			} else {
+				this.refresh();
+			}
 		}
 	},
 	step: function(inSender) {
-		this.setState(inSender.value);
+		this.fraction = inSender.value;
+		this.stepTransition();
 	},
 	completed: function(inSender) {
 		if (this.$.animator.isAnimating()) {
 			this.$.animator.stop();
 		}
-		this.setState(this.index);
-		this.layout.finish();
+		this.stepTransition();
+		this.finishTransition();
 	},
 	dragstart: function(inSender, inEvent) {
-		if (this.layout.canDragEvent(inEvent)) {
+		if (this.draggable && inEvent[this.layout.canDragProp]) {
 			inEvent.preventDefault();
+			this.dragstartTransition(inEvent);
 			this.dragging = true;
 			this.$.animator.stop();
-			this.layout.start();
 			return true;
 		}
 	},
 	drag: function(inSender, inEvent) {
 		if (this.dragging) {
 			inEvent.preventDefault();
-			var s = this.calcDragState(inEvent);
-			/*
-			var f = Math.floor(s);
-			this.log(s, f, Math.floor(this.state));
-			if (s != f && f != Math.floor(this.state)) {
-				this.log(s, this.state);
-				this.layout.start();
-			}
-			*/
-			this.setState(s);
+			this.dragTransition(inEvent);
 		}
 	},
 	dragfinish: function(inSender, inEvent) {
 		if (this.dragging) {
 			this.dragging = false;
 			inEvent.preventTap();
-			var i = Math[inEvent[this.layout.dragDirectionProp] < 0 ? "ceil" : "floor"](this.state);
-			this.setIndex(i);
+			this.dragfinishTransition(inEvent);
 		}
 	},
-	calcDragState: function(inEvent) {
-		var s = this.state;
-		var dp = inEvent[this.layout.dragProp], ddp = inEvent[this.layout.dragDirectionProp];
-		if (dp) {
-			var f = Math.floor(this.state);
-			var r0 = this.fetchState(f);
-			var r1 = this.fetchState(f - ddp);
-			var ds = this.layout.measureArrangementDelta(-dp, r0, r1) || 0;
-			s = this.clamp(s + ds);
+	dragstartTransition: function(inEvent) {
+		if (!this.$.animator.isAnimating()) {
+			var f = this.fromIndex = this.index;
+			this.toIndex = f - inEvent[this.layout.dragDirectionProp];
+		} else {
+			this.verifyDragTransition(inEvent);
 		}
-		return s;
+		this.fromIndex = this.clamp(this.fromIndex);
+		this.toIndex = this.clamp(this.toIndex);
+		this.log(this.fromIndex, this.toIndex);
+		this.layout.start();
 	},
-	calcStateInfo: function() {
-		var s = this.state;
-		var last = this.startState != null ? this.startState : Math.floor(s);
-		var next = this.endState != null ? this.endState : last+1;
-		var frac = (s - last) / ((next - last) || 1);
-		return {last: last, next: next, fraction: frac};
-	},
-	// gambit: We choose to make arrangements only for integer states because this simplifies creation of arrangers.
-	// Then we interpolate between the states as needed; inState is a floating point number.
-	stateChanged: function() {
-		var i = this.calcStateInfo();
-		var s1 = this.fetchState(i.next);
-		var s0 = this.fetchState(i.last);
-		this.arrangement = enyo.Panels.lerpState(s0, s1, i.fraction);
-		this.layout.flowArrangement();
-	},
-	fetchState: function(inState) {
-		if (!this.states[inState]) {
-			this.layout._arrange(inState);
-			this.states[inState] = this.readState(this.children);
+	dragTransition: function(inEvent) {
+		var r0 = this.fetchArrangement(this.startState);
+		var r1 = this.fetchArrangement(this.endState);
+		this.fraction += this.layout.drag(inEvent, this.startState, r0, this.endState, r1);
+		var f = this.fraction;
+		if (f > 1 || f < 0) {
+			if (f > 0) {
+				this.dragfinishTransition(inEvent);
+			}
+			this.dragstartTransition(inEvent);
+			this.fraction = 0;
+			// FIXME: account for lost fraction
+			//this.dragTransition(inEvent);
 		}
-		return this.states[inState];
+		this.stepTransition();
 	},
-	readState: function(inC) {
+	dragfinishTransition: function(inEvent) {
+		this.verifyDragTransition(inEvent);
+		this.setIndex(this.toIndex);
+	},
+	verifyDragTransition: function(inEvent) {
+		var d = inEvent[this.layout.dragDirectionProp];
+		var f = Math.min(this.fromIndex, this.toIndex);
+		var t = Math.max(this.fromIndex, this.toIndex);
+		if (d > 0) {
+			var s = f;
+			f = t;
+			t = s;
+		}
+		if (f != this.fromIndex) {
+			this.fraction = 1 - this.fraction;
+		}
+		//this.log("old", this.fromIndex, this.toIndex, "new", f, t);
+		this.fromIndex = f;
+		this.toIndex = t;
+	},
+	refresh: function() {
+		this.startTransition()
+		this.fraction = 1;
+		this.stepTransition();
+		this.finishTransition();
+	},
+	startTransition: function() {
+		this.fromIndex = this.fromIndex != null ? this.fromIndex : this.lastIndex || 0;
+		this.toIndex = this.toIndex != null ? this.toIndex : this.index;
+		//this.log(this.fromIndex, this.toIndex);
+		this.layout.start();
+	},
+	finishTransition: function() {
+		this.layout.finish();
+		this.fraction = 0;
+		this.fromIndex = this.toIndex = null;
+		if (this.hasNode()) {
+			this.log();
+			this.doTransition();
+		}
+	},
+	// gambit: we interpolate between arrangements as needed.
+	stepTransition: function() {
+		if (this.hasNode()) {
+			var s0 = this.fetchArrangement(this.startState);
+			var s1 = this.fetchArrangement(this.endState);
+			var f = this.fraction || 0;
+			this.arrangement = s0 && s1 ? enyo.Panels.lerp(s0, s1, f) : (s0 || s1);
+			if (this.arrangement) {
+				this.layout.flowArrangement();
+			}
+		}
+	},
+	fetchArrangement: function(inName) {
+		if ((inName != null) && !this.arrangements[inName]) {
+			this.layout._arrange(inName);
+			this.arrangements[inName] = this.readArrangement(this.children);
+		}
+		return this.arrangements[inName];
+	},
+	readArrangement: function(inC) {
 		var r = [];
 		for (var i=0, c$=inC, c; c=c$[i]; i++) {
 			r.push(enyo.clone(c._arranger));
@@ -152,14 +209,14 @@
 		return r;
 	},
 	statics: {
-		lerpState: function(inState0, inState1, inFrac) {
+		lerp: function(inA0, inA1, inFrac) {
 			var r = [];
-			for (var i=0, k$=enyo.keys(inState0), k; k=k$[i]; i++) {
-				r.push(this.lerp(inState0[k], inState1[k], inFrac));
+			for (var i=0, k$=enyo.keys(inA0), k; k=k$[i]; i++) {
+				r.push(this.lerpObject(inA0[k], inA1[k], inFrac));
 			}
 			return r;
 		},
-		lerp: function(inNew, inOld, inFrac) {
+		lerpObject: function(inNew, inOld, inFrac) {
 			var b = enyo.clone(inNew), n, o;
 			for (var i in inNew) {
 				n = inNew[i];

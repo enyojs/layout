@@ -34,8 +34,10 @@
 			e += box;
 		}
 	},
-	calcArrangementDifference: function(inA0, inA1) {
-		return Math.abs(inA1[0][this.axisPosition] - inA0[0][this.axisPosition]);
+	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
+		var i = Math.abs(inI0 % this.c$.length);
+		//enyo.log(inI0, inI1);
+		return inA0[i][this.axisPosition] - inA1[i][this.axisPosition];
 	}
 });
 
@@ -63,7 +65,7 @@ enyo.kind({
 			c.setBounds({width: w, height: h});
 		}
 	},
-	arrange: function(inC, inState) {
+	arrange: function(inC, inName) {
 		var s = this.inc;
 		for (var i=0, l=inC.length, c; c=inC[i]; i++) {
 			var x = Math.cos(i/l * 2*Math.PI) * i * s + this.controlWidth;
@@ -71,14 +73,14 @@ enyo.kind({
 			this.arrangeControl(c, {left: x, top: y});
 		}
 	},
-	applyState: function() {
+	start: function() {
 		this.inherited(arguments);
-		var c$ = this.getOrderedControls(this.container.state);
+		var c$ = this.getOrderedControls(this.container.toIndex);
 		for (var i=0, c; c=c$[i]; i++) {
-			c.applyStyle("z-index", i);
+			c.applyStyle("z-index", c$.length - i);
 		}
 	},
-	calcArrangementDifference: function(inState0, inState1) {
+	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
 		return this.controlWidth;
 	}
 });
@@ -109,7 +111,7 @@ enyo.kind({
 		this.inherited(arguments);
 		inControl.applyStyle("opacity", inA.top % this.colHeight != 0 ? 0.25 : 1);
 	},
-	calcArrangementDifference: function(inState0, inState1) {
+	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
 		return this.colWidth;
 	}
 });
@@ -142,17 +144,17 @@ enyo.kind({
 			c.setBounds({top: padding.top, bottom: padding.bottom, width: c.fit ? c.width : null});
 		}
 	},
-	arrange: function(inC, inState) {
+	arrange: function(inC, inName) {
 		if (this.container.wrap) {
-			this.arrangeWrap(inC, inState);
+			this.arrangeWrap(inC, inName);
 		} else {
-			this.arrangeNoWrap(inC, inState);
+			this.arrangeNoWrap(inC, inName);
 		}
 		
 	},
-	arrangeNoWrap: function(inC, inState) {
+	arrangeNoWrap: function(inC, inName) {
 		var c$ = this.container.children;
-		var s = this.container.clamp(inState);
+		var s = this.container.clamp(inName);
 		var offset = 0;
 		for (var i=0, c; (i < s) && (c=c$[i]); i++) {
 			offset += c.width + c.marginWidth;
@@ -163,30 +165,38 @@ enyo.kind({
 			e += c.width + c.marginWidth;
 		}
 	},
-	arrangeWrap: function(inC, inState) {
+	arrangeWrap: function(inC, inName) {
 		for (var i=0, e=this.containerPadding.left, m, c; c=inC[i]; i++) {
 			this.arrangeControl(c, {left: e});
 			e += c.width + c.marginWidth;
 		}
 	},
-	calcArrangementDifference: function() {
-		return this.containerBounds.width / this.c$.length;
+	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
+		//enyo.log(inI0, inA0[inI0].left, inA1[inI0].left);
+		var i = Math.abs(inI0 % this.c$.length);
+		return inA0[i].left - inA1[i].left;
+		//return this.containerBounds.width / this.c$.length;
 	}
 });
 
 enyo.kind({
 	name: "SlidingArranger",
 	kind: "FittableColumnsArranger",
-	arrange: function(inC, inState) {
+	arrange: function(inC, inIndex) {
 		var c$ = this.container.children;
+		enyo.log(inIndex);
 		for (var i=0, e=this.containerPadding.left, m, c; c=c$[i]; i++) {
 			this.arrangeControl(c, {left: e});
-			if (i >= inState) {
+			if (i >= inIndex) {
 				e += c.width + c.marginWidth;
+			}
+			// FIXME: overdragging-ish
+			if (i == c$.length - 1 && inIndex < 0) {
+				this.arrangeControl(c, {left: e - inIndex});
 			}
 		}
 	},
-	calcArrangementDifference: function(inA0, inA1) {
+	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
 		var i = this.container.children.length-1;
 		return Math.abs(inA1[i].left - inA0[i].left);
 	}
@@ -196,40 +206,80 @@ enyo.kind({
 enyo.kind({
 	name: "FitArranger",
 	kind: "Arranger",
-	layoutClass: "enyo-arranger enyo-arranger-fit"
-});
-
-enyo.kind({
-	name: "FadeArranger",
-	kind: "FitArranger",
-	arrange: function(inC, inState) {
-		for (var i=0, c, b, v; c=inC[i]; i++) {
-			v = (i == 0) ? 1 : 0;
-			this.arrangeControl(c, {opacity: v});
-		}
-	},
-	calcArrangementDifference: function(inA0, inA1) {
+	layoutClass: "enyo-arranger enyo-arranger-fit",
+	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
 		return this.containerBounds.width;
 	}
 });
 
 enyo.kind({
-	name: "Fade1Arranger",
-	kind: "FadeArranger",
+	name: "FadeArranger",
+	kind: "FitArranger",
+	arrange: function(inC, inName) {
+		for (var i=0, c, b, v; c=inC[i]; i++) {
+			v = (i == 0) ? 1 : 0;
+			this.arrangeControl(c, {opacity: v});
+		}
+	},
+	start: function() {
+		this.inherited(arguments);
+		var c$ = this.container.children;
+		for (var i=0, c; c=c$[i]; i++) {
+			c.setShowing(i == this.container.fromIndex || i == (this.container.toIndex));
+			if (c.showing) {
+				c.resized();
+			}
+		}
+		
+	},
+	finish: function() {
+		this.inherited(arguments);
+		var c$ = this.container.children;
+		for (var i=0, c; c=c$[i]; i++) {
+			c.setShowing(i == this.container.toIndex);
+		}
+	}
+});
+
+enyo.kind({
+	name: "SlideInArranger",
+	kind: "FitArranger",
 	start: function() {
 		var c$ = this.container.children;
 		for (var i=0, c; c=c$[i]; i++) {
-			c.setShowing(i == this.container.index || i == this.container.state);
+			c.setShowing(i == this.container.fromIndex || i == this.container.toIndex);
+			if (c.showing) {
+				c.resized();
+			}
 		}
-		this.container.startState = this.container.state;
-		this.container.endState = this.container.index;
+		var l = this.container.fromIndex;
+		var i = this.container.toIndex;
+		this.container.startState = i + "." + l + ".s";
+		this.container.endState = i + "." + l + ".f";
 	},
 	finish: function() {
-		this.container.startState = null;
-		this.container.endState = null;
+		this.inherited(arguments);
 		var c$ = this.container.children;
 		for (var i=0, c; c=c$[i]; i++) {
-			c.setShowing(i == this.container.index);
+			c.setShowing(i == this.container.toIndex);
+		}
+	},
+	arrange: function(inC, inName) {
+		var p = inName.split(".");
+		var f = p[0], s= p[1], starting = (p[2] == "s");
+		var b = this.containerBounds.width;
+		for (var i=0, c$=this.container.children, c, b, v; c=c$[i]; i++) {
+			v = b;
+			if (s == i) {
+				v = starting ? 0 : -b;
+			}
+			if (f == i) {
+				v = starting ? b : 0;
+			}
+			if (s == i && s == f) {
+				v = 0;
+			}
+			this.arrangeControl(c, {left: v});
 		}
 	}
 });
