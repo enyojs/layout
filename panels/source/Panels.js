@@ -22,6 +22,7 @@
 	layoutKind: "LeftRightArranger",
 	fraction: 0,
 	create: function() {
+		this.transitionPoints = [];
 		this.inherited(arguments);
 		this.indexChanged();
 	},
@@ -139,9 +140,12 @@
 		this.layout.start();
 	},
 	dragTransition: function(inEvent) {
-		var r0 = this.fetchArrangement(this.startState);
-		var r1 = this.fetchArrangement(this.endState);
-		this.fraction += this.layout.drag(inEvent, this.startState, r0, this.endState, r1);
+		// note: for simplicity we choose to calculate the distance directly between
+		// the first and last transition point.
+		var t$ = this.transitionPoints, s = t$[0], f = t$[t$.length-1];
+		var as = this.fetchArrangement(s);
+		var af = this.fetchArrangement(f);
+		this.fraction += this.layout.drag(inEvent, s, as, f, af);
 		var f = this.fraction;
 		if (f > 1 || f < 0) {
 			if (f > 0) {
@@ -189,6 +193,7 @@
 	},
 	finishTransition: function() {
 		this.layout.finish();
+		this.transitionPoints = [];
 		this.fraction = 0;
 		this.fromIndex = this.toIndex = null;
 	},
@@ -205,10 +210,16 @@
 	// gambit: we interpolate between arrangements as needed.
 	stepTransition: function() {
 		if (this.hasNode()) {
-			var s0 = this.fetchArrangement(this.startState);
-			var s1 = this.fetchArrangement(this.endState);
-			var f = this.fraction || 0;
-			this.arrangement = s0 && s1 ? enyo.Panels.lerp(s0, s1, f) : (s0 || s1);
+			// select correct transition points and normalize fraction.
+			var t$ = this.transitionPoints;
+			var r = (this.fraction || 0) * (t$.length-1);
+			var i = Math.floor(r);
+			r = r - i;
+			var s = t$[i], f = t$[i+1];
+			// get arrangements and lerp between them
+			var s0 = this.fetchArrangement(s);
+			var s1 = this.fetchArrangement(f);
+			this.arrangement = s0 && s1 ? enyo.Panels.lerp(s0, s1, r) : (s0 || s1);
 			if (this.arrangement) {
 				this.layout.flowArrangement();
 			}

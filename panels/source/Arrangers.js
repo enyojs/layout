@@ -55,6 +55,7 @@ enyo.kind({
 enyo.kind({
 	name: "SpiralArranger",
 	kind: "Arranger",
+	incrementalPoints: true,
 	inc: 20,
 	size: function() {
 		var c$ = this.container.children;
@@ -89,6 +90,7 @@ enyo.kind({
 enyo.kind({
 	name: "GridArranger",
 	kind: "Arranger",
+	incrementalPoints: true,
 	colWidth: 100,
 	colHeight: 100,
 	size: function() {
@@ -254,8 +256,10 @@ enyo.kind({
 		}
 		var l = this.container.fromIndex;
 		var i = this.container.toIndex;
-		this.container.startState = i + "." + l + ".s";
-		this.container.endState = i + "." + l + ".f";
+		this.container.transitionPoints = [
+			i + "." + l + ".s",
+			i + "." + l + ".f"
+		]
 	},
 	finish: function() {
 		this.inherited(arguments);

@@ -11,12 +11,21 @@
 	size: function() {
 	},
 	start: function() {
-		this.container.startState = this.container.fromIndex;
-		this.container.endState = this.container.toIndex;
+		var f = this.container.fromIndex, t = this.container.toIndex;
+		var p$ = this.container.transitionPoints = [f];
+		// optionally add a transition point for each index between from and to.
+		if (this.incrementalPoints) {
+			var d = Math.abs(t - f) - 2;
+			var i = f;
+			while (d >= 0) {
+				i = i + (t < f ? -1 : 1)
+				p$.push(i);
+				d--;
+			}
+		}
+		p$.push(this.container.toIndex);
 	},
 	finish: function() {
-		this.container.startState = null;
-		this.container.endState = null;
 	},
 	drag: function(inEvent, inAn, inA, inBn, inB) {
 		var dp = inEvent[this.dragProp];
