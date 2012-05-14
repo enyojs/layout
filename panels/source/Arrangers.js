@@ -140,7 +140,8 @@ enyo.kind({
 			}
 		}
 		if (fit) {
-				fit.width = pb.width - s;
+				var w = pb.width - s;
+				fit.width = w >= 0 ? w : fit.width;
 			}
 		for (var i=0, e=padding.left, m, c; c=c$[i]; i++) {
 			c.setBounds({top: padding.top, bottom: padding.bottom, width: c.fit ? c.width : null});
@@ -157,14 +158,37 @@ enyo.kind({
 	arrangeNoWrap: function(inC, inName) {
 		var c$ = this.container.children;
 		var s = this.container.clamp(inName);
-		var offset = 0;
-		for (var i=0, c; (i < s) && (c=c$[i]); i++) {
-			offset += c.width + c.marginWidth;
+		var nw = this.containerBounds.width;
+		// do we have enough content to fill the width?
+		for (var i=s, cw=0, c; c=c$[i]; i++) {
+			cw += c.width + c.marginWidth;
+			if (cw > nw) {
+				break;
+			}
 		}
-		
-		for (var i=0, e=this.containerPadding.left - offset, m, c; c=c$[i]; i++) {
-			this.arrangeControl(c, {left: Math.floor(e)});
-			e += c.width + c.marginWidth;
+		// if content width is less than needed, adjust starting point index and offset
+		var n = nw - cw;
+		var o = 0;
+		if (n > 0) {
+			var s1 = s;
+			for (var i=s-1, aw=0, c; c=c$[i]; i--) {
+				aw += c.width + c.marginWidth;
+				if (n - aw <= 0) {
+					o = (n - aw);
+					s = i;
+					break;
+				}
+			}
+		}
+		// arrange starting from needed index with detected offset so we fill space
+		for (var i=0, e=this.containerPadding.left + o, w, c; c=c$[i]; i++) {
+			w = c.width + c.marginWidth;
+			if (i < s) {
+				this.arrangeControl(c, {left: -(w)});
+			} else {
+				this.arrangeControl(c, {left: Math.floor(e)});
+				e += w;
+			}
 		}
 	},
 	arrangeWrap: function(inC, inName) {
