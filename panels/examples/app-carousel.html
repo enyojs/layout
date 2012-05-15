@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-	<title>Panels</title>
+	<title>Panels App Test</title>
 	<!-- -->
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="viewport" content="width=device-width initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -12,25 +12,19 @@
 	<script src="../package.js" type="text/javascript"></script>
 	<!-- -->
 	<style>
-		.panels {
-			height: 33%;
-			width: 33%;
-			min-height: 320px;
-			min-width: 320px;
-			display: inline-block;
-			margin: 30px;
-			border: 10px solid orange;
-		}
-		
 		.panels > * {
-			border: 2px solid #333;
+			border: 4px solid orange;
 			font-size: 5em;
 			text-align: center;
+			width: 320px;
 		}
 
-		.wide > * {
-			min-width: 50%;
+		@media all and (max-width: 800px) {
+			.panels > * {
+				min-width: 100%;
+			}
 		}
+
 	</style>
 </head>
 <body>
@@ -38,14 +32,19 @@
 		enyo.kind({
 			name: "App",
 			kind: "Panels",
+			classes: "panels enyo-unselectable",
 			layoutKind: "FittableColumnsArranger",
 			wrap: false,
 			components: [
-				{name: "left", style: "width: 320px; background: beige; border: 1px solid black;"},
-				{name: "middle", style: "width: 320px; background: #666; border: 1px solid black;"},
-				{name: "body", style: "width: 100%; background: lightblue; border: 1px solid black;", components: [
-					{content: "Stuff"}
+				{name: "left", style: "background: beige;", components: [
+					{content: "Left"}
 				]},
+				{name: "middle", style: "background: tomato;", components: [
+					{content: "Middle"}
+				]},
+				{name: "body", Xfit: true, style: "background: lightblue; Xwidth: 100%;", components: [
+					{content: "Body"}
+				]}
 			],
 			rendered: function() {
 				this.size();
@@ -61,7 +60,7 @@
 				this.$.body.applyStyle("width", (this.getBounds().width - b.width) + "px")
 			}
 		});
-		new App({fit: true, classes: "enyo-unselectable"}).write();
+		new App({fit: true}).write();
 	</script>
 </body>
 </html>

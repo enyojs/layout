@@ -27,9 +27,8 @@
 	},
 	finish: function() {
 	},
-	drag: function(inEvent, inAn, inA, inBn, inB) {
-		var dp = inEvent[this.dragProp];
-		var f = this.measureArrangementDelta(-dp, inAn, inA, inBn, inB);
+	drag: function(inDp, inAn, inA, inBn, inB) {
+		var f = this.measureArrangementDelta(-inDp, inAn, inA, inBn, inB);
 		return f;
 	},
 	measureArrangementDelta: function(inX, inI0, inA0, inI1, inA1) {

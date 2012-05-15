@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+	<title>Panels App Test</title>
+	<!-- -->
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="viewport" content="width=device-width initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<!-- -->
+	<script src="../../../../enyo/enyo.js" type="text/javascript"></script>
+	<script src="../../../../lib/onyx/package.js" type="text/javascript"></script>
+	<script src="../../../../lib/layout/package.js" type="text/javascript"></script>
+	<script src="../package.js" type="text/javascript"></script>
+	<!-- -->
+	<style>
+		
+		.panels > * {
+			width: 320px;
+			background-color: #EAEAEA;
+			box-shadow: -4px -4px 4px rgba(0,0,0,0.3);
+		}
+
+		.item {
+			padding: 10px;
+			border-bottom: 1px solid black;
+		}
+
+		.content {
+			text-align: left;
+			padding: 10px;
+		}
+
+		@media all and (max-width: 200px) {
+			.panels > * {
+				min-width: 100%;
+			}
+		}
+
+	</style>
+</head>
+<body class="onyx">
+	<script>
+		enyo.kind({
+			name: "App",
+			kind: "FittableRows",
+			components: [
+				{kind: "onyx.Toolbar", components: [
+					{content: "Realtime"},
+					{kind: "onyx.Checkbox", onchange: "checkboxChange"}
+				]},
+				{kind: "Panels", fit: true, classes: "panels", layoutKind: "SlidingArranger", wrap: false, components: [
+					{name: "left", components: [
+						{kind: "List", classes: "enyo-fit", touch: true, rows: 1000, onSetupRow: "setupRow", item: "item1", components: [
+							{name: "item1", classes: "item"}
+						]}
+					]},
+					{name: "middle", components: [
+						{kind: "List", classes: "enyo-fit", touch: true, rows: 1000, onSetupRow: "setupRow", item: "item2", components: [
+							{name: "item2", classes: "item"}
+						]}
+					]},
+					{name: "body", fit: true, components: [
+						{kind: "Scroller", classes: "enyo-fit", touch: true, components: [
+							{classes: "content", content: "Broke, down dumb hospitality firewood chitlins. Has mud tired uncle everlastin' cold, out. Hauled thar, up thar tar heffer quarrel farmer fish water is. Simple gritts dogs soap give kickin'. Ain't shiney water range, preacher java rent thar go. Skinned wirey tin farm, trespassin' it, rodeo. Said roped caught creosote go simple. Buffalo butt, jig fried commencin' cipherin' maw, wash. Round-up barefoot jest bible rottgut sittin' trailer shed jezebel. Crop old over poker drinkin' dirt where tools skinned, city-slickers tools liniment mush tarnation. Truck lyin' snakeoil creosote, old a inbred pudneer, slap dirty cain't. Hairy, smokin', nothin' highway hootch pigs drinkin', barefoot bootleg hoosegow mule. Tax-collectors uncle wuz, maw watchin' had jumpin' got redblooded gimmie truck shootin' askin' hootch. No fat ails fire soap cabin jail, reckon if trespassin' fixin' rustle jest liniment. Ya huntin' catfish shot good bankrupt. Fishin' sherrif has, fat cooked shed old. Broke, down dumb hospitality firewood chitlins. Has mud tired uncle everlastin' cold, out. Hauled thar, up thar tar heffer quarrel farmer fish water is. Simple gritts dogs soap give kickin'. Ain't shiney water range, preacher java rent thar go. Skinned wirey tin farm, trespassin' it, rodeo. Said roped caught creosote go simple. Buffalo butt, jig fried commencin' cipherin' maw, wash. Round-up barefoot jest bible rottgut sittin' trailer shed jezebel. Crop old over poker drinkin' dirt where tools skinned, city-slickers tools liniment mush tarnation. Truck lyin' snakeoil creosote, old a inbred pudneer, slap dirty cain't. Hairy, smokin', nothin' highway hootch pigs drinkin', barefoot bootleg hoosegow mule. Tax-collectors uncle wuz, maw watchin' had jumpin' got redblooded gimmie truck shootin' askin' hootch. No fat ails fire soap cabin jail, reckon if trespassin' fixin' rustle jest liniment. Ya huntin' catfish shot good bankrupt. Fishin' sherrif has, fat cooked shed old. Broke, down dumb hospitality firewood chitlins. Has mud tired uncle everlastin' cold, out. Hauled thar, up thar tar heffer quarrel farmer fish water is. Simple gritts dogs soap give kickin'. Ain't shiney water range, preacher java rent thar go. Skinned wirey tin farm, trespassin' it, rodeo. Said roped caught creosote go simple. Buffalo butt, jig fried commencin' cipherin' maw, wash. Round-up barefoot jest bible rottgut sittin' trailer shed jezebel. Crop old over poker drinkin' dirt where tools skinned, city-slickers tools liniment mush tarnation. Truck lyin' snakeoil creosote, old a inbred pudneer, slap dirty cain't. Hairy, smokin', nothin' highway hootch pigs drinkin', barefoot bootleg hoosegow mule. Tax-collectors uncle wuz, maw watchin' had jumpin' got redblooded gimmie truck shootin' askin' hootch. No fat ails fire soap cabin jail, reckon if trespassin' fixin' rustle jest liniment. Ya huntin' catfish shot good bankrupt. Fishin' sherrif has, fat cooked shed old. Broke, down dumb hospitality firewood chitlins. Has mud tired uncle everlastin' cold, out. Hauled thar, up thar tar heffer quarrel farmer fish water is. Simple gritts dogs soap give kickin'. Ain't shiney water range, preacher java rent thar go. Skinned wirey tin farm, trespassin' it, rodeo. Said roped caught creosote go simple. Buffalo butt, jig fried commencin' cipherin' maw, wash. Round-up barefoot jest bible rottgut sittin' trailer shed jezebel. Crop old over poker drinkin' dirt where tools skinned, city-slickers tools liniment mush tarnation. Truck lyin' snakeoil creosote, old a inbred pudneer, slap dirty cain't. Hairy, smokin', nothin' highway hootch pigs drinkin', barefoot bootleg hoosegow mule. Tax-collectors uncle wuz, maw watchin' had jumpin' got redblooded gimmie truck shootin' askin' hootch. No fat ails fire soap cabin jail, reckon if trespassin' fixin' rustle jest liniment. Ya huntin' catfish shot good bankrupt. Fishin' sherrif has, fat cooked shed old."}
+						]}
+					]}
+				]}
+			],
+			setupRow: function(inSender, inEvent) {
+				this.$[inSender.item].setContent("This is row number: " + inEvent.index);
+			},
+			checkboxChange: function(inSender) {
+				this.log();
+				this.$.panels.realtimeFit = inSender.getValue();
+			}
+		});
+		new App({fit: true, classes: "enyo-unselectable"}).write();
+	</script>
+</body>
+</html>
+

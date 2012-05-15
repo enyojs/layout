@@ -142,13 +142,19 @@
 	dragTransition: function(inEvent) {
 		// note: for simplicity we choose to calculate the distance directly between
 		// the first and last transition point.
+		var d = inEvent[this.layout.dragProp];
 		var t$ = this.transitionPoints, s = t$[0], f = t$[t$.length-1];
 		var as = this.fetchArrangement(s);
 		var af = this.fetchArrangement(f);
-		this.fraction += this.layout.drag(inEvent, s, as, f, af);
+		var dx = this.layout.drag(d, s, as, f, af);
+		var dragFail = d && !dx;
+		if (dragFail) {
+			//this.log(dx, s, as, f, af);
+		}
+		this.fraction += dx;
 		var f = this.fraction;
-		if (f > 1 || f < 0) {
-			if (f > 0) {
+		if (f > 1 || f < 0 || dragFail) {
+			if (f > 0 || dragFail) {
 				this.dragfinishTransition(inEvent);
 			}
 			this.dragstartTransition(inEvent);
