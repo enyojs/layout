@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+	<title>Panels</title>
+	<!-- -->
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="viewport" content="width=device-width initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<!-- -->
+	<script src="../../../../enyo/enyo.js" type="text/javascript"></script>
+	<script src="../../../../lib/onyx/package.js" type="text/javascript"></script>
+	<script src="../../../../lib/layout/package.js" type="text/javascript"></script>
+	<script src="../package.js" type="text/javascript"></script>
+	<!-- -->
+	<style>
+		.panels {
+			height: 33%;
+			width: 33%;
+			min-height: 320px;
+			min-width: 320px;
+			display: inline-block;
+			margin: 30px;
+			border: 10px solid orange;
+		}
+		
+		.panels > * {
+			border: 2px solid #333;
+			font-size: 5em;
+			text-align: center;
+		}
+
+		.wide > * {
+			min-width: 50%;
+		}
+	</style>
+</head>
+<body>
+	<script>
+		enyo.kind({
+			name: "App",
+			kind: "Panels",
+			layoutKind: "FittableColumnsArranger",
+			wrap: false,
+			components: [
+				{name: "left", style: "width: 320px; background: beige; border: 1px solid black;"},
+				{name: "middle", style: "width: 320px; background: #666; border: 1px solid black;"},
+				{name: "body", style: "width: 100%; background: lightblue; border: 1px solid black;", components: [
+					{content: "Stuff"}
+				]},
+			],
+			rendered: function() {
+				this.size();
+				this.inherited(arguments);
+				
+			},
+			resizeHandler: function() {
+				this.size();
+				this.inherited(arguments);
+			},
+			size: function() {
+				var b = this.$.middle.getBounds();
+				this.$.body.applyStyle("width", (this.getBounds().width - b.width) + "px")
+			}
+		});
+		new App({fit: true, classes: "enyo-unselectable"}).write();
+	</script>
+</body>
+</html>
+
