@@ -5,7 +5,7 @@
 		index: 0,
 		draggable: true,
 		animate: true,
-		wrap: true
+		wrap: false
 	},
 	events: {
 		onTransitionStart: "",
