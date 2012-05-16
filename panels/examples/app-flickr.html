@@ -1,0 +1,193 @@
+<!doctype html>
+<html>
+<head>
+	<title>Panels Example: Flickr</title>
+	<!-- -->
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="viewport" content="width=device-width initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<!-- -->
+	<script src="../../../../enyo/enyo.js" type="text/javascript"></script>
+	<!-- -->
+	<script src="../../../layout/package.js" type="text/javascript"></script>
+	<script src="../../../onyx/package.js" type="text/javascript"></script>
+	<!-- -->
+	<script src="../package.js" type="text/javascript"></script>
+	<!-- -->
+	<style>
+		body {
+			color: white;
+			background: #555;
+		}
+		.panels > * {
+			width: 320px;
+			box-shadow: -4px -4px 4px rgba(0,0,0,0.3);
+		}
+		.item {
+			position: relative;
+			border-bottom: 1px solid #0E0E0E;
+			padding: 12px 16px;
+			background-color: #333333;
+		}
+		.title {
+			position: absolute;
+			top: 40px;
+			right: 0;
+			left: 100px;
+			
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+		.thumbnail {
+			width: 75px;
+			height: 75px;
+		}
+		.more-button {
+			color: white; margin: 10px;
+		}
+		.more-spinner {
+			vertical-align: middle;
+			margin: -4px 0 0 4px;
+		}
+		.center {
+			margin: auto;
+		}
+		.main {
+			background-color: #333;
+		}
+		.flickr-image {
+			max-height: 90%;
+			max-width: 90%;
+			border: solid 5px #CCC;
+        	box-shadow: 1px 1px 5px #999;
+		}
+	</style>
+</head>
+
+<body>
+	<script>
+		enyo.kind({
+			name: "App",
+			classes: "enyo-unselectable",
+			kind: "FittableRows",
+			components: [
+				{kind: "Panels", fit: true, classes: "panels", layoutKind: "SlidingArranger", wrap: false, components: [
+					{layoutKind: "FittableRowsLayout", components: [
+						{kind: "onyx.Toolbar", components: [
+							{kind: "onyx.InputDecorator", components: [
+								{name: "searchInput", kind: "onyx.Input", value: "Japan", onchange: "search"},
+								{kind: "Image", src: "images/search-input-search.png"}
+							]},
+							{name: "searchSpinner", kind: "Image", src: "images/spinner.gif", showing: false}
+						]},
+						{kind: "List", fit: true, touch: true, onSetupRow: "setupItem", components: [
+							{style: "padding: 10px;", classes: "item enyo-border-box", ontap: "itemTap", components: [
+								{name: "thumbnail", kind: "Image", classes: "thumbnail"},
+								{name: "title", classes: "title"}
+							]},
+							{name: "more", style: "background-color: #323232;", components: [
+								{kind: "onyx.Button", content: "more photos", classes: "onyx-dark more-button", ontap: "more"},
+								{name: "moreSpinner", kind: "Image", src: "images/spinner.gif", classes: "more-spinner"}
+							]}
+						]}
+					]},
+					{fit: true, components: [
+						{classes: "enyo-fit main", components: [
+							{name: "flickrImage", kind: "Image", classes: "enyo-fit center flickr-image", showing: false, onload: "imageLoaded", onerror: "imageLoaded"},
+							{name: "imageSpinner", kind: "Image", src: "images/spinner-large.gif", classes: "enyo-fit center", showing: false}
+						]}
+					]}
+				]},
+				{kind: "FlickrSearch", onResults: "searchResults"}
+			],
+			rendered: function() {
+				this.inherited(arguments);
+				this.search();
+			},
+			search: function() {
+				this.searchText = this.$.searchInput.getValue();
+				this.page = 0;
+				this.results = []
+				this.$.searchSpinner.show();
+				this.$.flickrSearch.search(this.searchText);
+			},
+			searchResults: function(inSender, inResults) {
+				this.$.searchSpinner.hide();
+				this.$.moreSpinner.hide();
+				this.results = this.results.concat(inResults);
+				this.$.list.setRows(this.results.length);
+				if (this.page == 0) {
+					this.$.list.reset();
+				} else {
+					this.$.list.refresh();
+				}
+			},
+			setupItem: function(inSender, inEvent) {
+				var i = inEvent.index;
+				var item = this.results[i];
+				this.$.thumbnail.setSrc(item.thumbnail);
+				this.$.title.setContent(item.title || "Untitled");
+				this.$.more.canGenerate = !this.results[i+1];
+			},
+			more: function() {
+				this.page++;
+				this.$.moreSpinner.show();
+				this.$.flickrSearch.search(this.searchText, this.page);
+			},
+			itemTap: function(inSender, inEvent) {
+				if (this.getBounds().width <= 480) {
+					this.$.panels.setIndex(1);
+				}
+				this.$.imageSpinner.show();
+				var item = this.results[inEvent.index];
+				this.$.flickrImage.setSrc(item.original);
+
+			},
+			imageLoaded: function() {
+				this.$.flickrImage.show();
+				this.$.imageSpinner.hide();
+			}
+		});
+
+		// A simple component to do a Flickr search.
+		enyo.kind({
+			name: "FlickrSearch",
+			kind: "Component",
+			published: {
+				searchText: ""
+			},
+			events: {
+				onResults: ""
+			},
+			url: "http://query.yahooapis.com/v1/public/yql",
+			pageSize: 200,
+			api_key: "2a21b46e58d207e4888e1ece0cb149a5",
+			search: function(inSearchText, inPage) {
+				this.searchText = inSearchText || this.searchText;
+				var i = (inPage || 0) * this.pageSize;
+				var range = i + "," + (i + this.pageSize);
+				var params = {
+					q: 'select * from flickr.photos.search(' + range + ') where text="' + this.searchText + '" and api_key="' + this.api_key + '" limit ' + this.pageSize,
+					format: "json"
+				};
+				return new enyo.Ajax({url: this.url})
+					.response(this, "processResponse")
+					.go(params)
+					;
+			},
+			processResponse: function(inSender, inResponse) {
+				var photos = inResponse.query.results ? inResponse.query.results.photo || [] : [];
+				for (var i=0, p; p=photos[i]; i++) {
+					var urlprefix = "http://farm" + p.farm + ".static.flickr.com/" + p.server + "/" + p.id + "_" + p.secret;
+					p.thumbnail = urlprefix + "_s.jpg";
+					p.original = urlprefix + ".jpg";
+				}
+				this.doResults(photos);
+				return photos;
+			}
+		});
+
+		new App({fit: true}).write();
+	</script>
+</body>
+</html>
