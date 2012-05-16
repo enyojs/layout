@@ -28,6 +28,11 @@
 			padding: 12px 16px;
 			background-color: #333333;
 		}
+
+		.item.onyx-selected {
+			background-color: MidnightBlue;
+		}
+
 		.title {
 			position: absolute;
 			top: 40px;
@@ -56,10 +61,21 @@
 			background-color: #333;
 		}
 		.flickr-image {
-			max-height: 90%;
-			max-width: 90%;
+			min-width: 80%;
 			border: solid 5px #CCC;
-        	box-shadow: 1px 1px 5px #999;
+			box-shadow: 1px 1px 5px #999;
+		}
+
+		.flickr-image.tall {
+			min-width: 0;
+			min-height: 80%;
+		}
+
+		/* be responsive */
+		@media all and (max-width: 800px) {
+			.panels > * {
+				min-width: 100%;
+			}
 		}
 	</style>
 </head>
@@ -68,34 +84,37 @@
 	<script>
 		enyo.kind({
 			name: "App",
-			classes: "enyo-unselectable",
-			kind: "FittableRows",
+			kind: "Panels",
+			classes: "panels enyo-unselectable",
+			realtimeFit: true,
+			layoutKind: "SlidingArranger",
 			components: [
-				{kind: "Panels", fit: true, classes: "panels", layoutKind: "SlidingArranger", wrap: false, components: [
-					{layoutKind: "FittableRowsLayout", components: [
-						{kind: "onyx.Toolbar", components: [
-							{kind: "onyx.InputDecorator", components: [
-								{name: "searchInput", kind: "onyx.Input", value: "Japan", onchange: "search"},
-								{kind: "Image", src: "images/search-input-search.png"}
-							]},
-							{name: "searchSpinner", kind: "Image", src: "images/spinner.gif", showing: false}
+				{layoutKind: "FittableRowsLayout", components: [
+					{kind: "onyx.Toolbar", components: [
+						{kind: "onyx.InputDecorator", style: "width: 90%;", layoutKind: "FittableColumnsLayout", components: [
+							{name: "searchInput", fit: true, kind: "onyx.Input", value: "Japan", onchange: "search"},
+							{kind: "Image", src: "images/search-input-search.png", style: "width: 20px; height: 20px;"}
 						]},
-						{kind: "List", fit: true, touch: true, onSetupRow: "setupItem", components: [
-							{style: "padding: 10px;", classes: "item enyo-border-box", ontap: "itemTap", components: [
-								{name: "thumbnail", kind: "Image", classes: "thumbnail"},
-								{name: "title", classes: "title"}
-							]},
-							{name: "more", style: "background-color: #323232;", components: [
-								{kind: "onyx.Button", content: "more photos", classes: "onyx-dark more-button", ontap: "more"},
-								{name: "moreSpinner", kind: "Image", src: "images/spinner.gif", classes: "more-spinner"}
-							]}
-						]}
+						{name: "searchSpinner", kind: "Image", src: "images/spinner.gif", showing: false}
 					]},
-					{fit: true, components: [
-						{classes: "enyo-fit main", components: [
-							{name: "flickrImage", kind: "Image", classes: "enyo-fit center flickr-image", showing: false, onload: "imageLoaded", onerror: "imageLoaded"},
-							{name: "imageSpinner", kind: "Image", src: "images/spinner-large.gif", classes: "enyo-fit center", showing: false}
+					{kind: "List", fit: true, touch: true, onSetupRow: "setupItem", components: [
+						{name: "item", style: "padding: 10px;", classes: "item enyo-border-box", ontap: "itemTap", components: [
+							{name: "thumbnail", kind: "Image", classes: "thumbnail"},
+							{name: "title", classes: "title"}
+						]},
+						{name: "more", style: "background-color: #323232;", components: [
+							{kind: "onyx.Button", content: "more photos", classes: "onyx-dark more-button", ontap: "more"},
+							{name: "moreSpinner", kind: "Image", src: "images/spinner.gif", classes: "more-spinner"}
 						]}
+					]}
+				]},
+				{name: "pictureView", fit: true, kind: "FittableRows", classes: "enyo-fit main", components: [
+					{name: "backToolbar", kind: "onyx.Toolbar", showing: false, components: [
+						{kind: "onyx.Button", content: "Back", ontap: "showList"}
+					]},
+					{fit: true, style: "position: relative;", components: [
+						{name: "flickrImage", kind: "Image", classes: "enyo-fit center flickr-image", showing: false, onload: "imageLoaded", onerror: "imageLoaded"},
+						{name: "imageSpinner", kind: "Image", src: "images/spinner-large.gif", classes: "enyo-fit center", showing: false}
 					]}
 				]},
 				{kind: "FlickrSearch", onResults: "searchResults"}
@@ -103,6 +122,17 @@
 			rendered: function() {
 				this.inherited(arguments);
 				this.search();
+			},
+			reflow: function() {
+				this.inherited(arguments);
+				var backShowing = this.$.backToolbar.showing;
+				this.$.backToolbar.setShowing(this.isSmall());
+				if (this.$.backToolbar.showing != backShowing) {
+					this.$.pictureView.resized();
+				}
+			},
+			isSmall: function() {
+				return window.matchMedia && window.matchMedia("all and (max-width:800px)").matches;
 			},
 			search: function() {
 				this.searchText = this.$.searchInput.getValue();
@@ -125,6 +155,7 @@
 			setupItem: function(inSender, inEvent) {
 				var i = inEvent.index;
 				var item = this.results[i];
+				this.$.item.addRemoveClass("onyx-selected", inSender.isSelected(inEvent.index));
 				this.$.thumbnail.setSrc(item.thumbnail);
 				this.$.title.setContent(item.title || "Untitled");
 				this.$.more.canGenerate = !this.results[i+1];
@@ -135,17 +166,23 @@
 				this.$.flickrSearch.search(this.searchText, this.page);
 			},
 			itemTap: function(inSender, inEvent) {
-				if (this.getBounds().width <= 480) {
-					this.$.panels.setIndex(1);
+				if (this.isSmall()) {
+					this.setIndex(1);
 				}
 				this.$.imageSpinner.show();
 				var item = this.results[inEvent.index];
+				this.$.flickrImage.hide();
 				this.$.flickrImage.setSrc(item.original);
 
 			},
 			imageLoaded: function() {
 				this.$.flickrImage.show();
+				var b = this.$.flickrImage.getBounds();
+				this.$.flickrImage.addRemoveClass("tall", b.height > b.width);
 				this.$.imageSpinner.hide();
+			},
+			showList: function() {
+				this.setIndex(0);
 			}
 		});
 
