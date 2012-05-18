@@ -1,7 +1,9 @@
 /**
 	A control that displays a scrolling list of rows. It is suitable for displaying very large
 	lists. List is optimized such that only a small portion of the list is rendered
-	at a given time. 
+	at a given time. A flyweight pattern is employed such that the controls placed inside the list
+	are created once but are rendered for each list item.  For this reason, it's best to use
+	only simple controls in an enyo.List like enyo.Control and enyo.Image.
 
 	## Basic Use
 
@@ -12,11 +14,25 @@
 
 		components: [
 			{kind: "List", fit: true, rows: 1000, onSetupRow: "setupRow", components: [
-				{name: "item"}
+				{classes: "item", ontap: "itemTap", components: [
+					{name: "name"},
+					{name: "index", style: "float: right;"}
+				]}
 			]}
 		],
 		setupRow: function(inSender, inEvent) {
-			this.$.item.setContent("I am row: " + inEvent.index);
+			// given some available data.
+			var data = this.data[inEvent.index];
+			// setup the controls for this item.
+			this.$.name.setContent(data.name);
+			this.$.index.setContent(inEvent.index);
+		}
+
+	Events fired from within list rows contain the _index_ property which can used to identify the row
+	in which the event is originated from.
+	
+		itemTap: function(inSender, inEvent) {
+			alert("You tapped on row: " + inEvent.index);
 		}
 
 	## Modifying List Rows
