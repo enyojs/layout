@@ -1,5 +1,5 @@
 ﻿enyo.kind({
-	name: "LeftRightArranger",
+	name: "enyo.LeftRightArranger",
 	kind: "Arranger",
 	margin: 40,
 	axisSize: "width",
@@ -42,7 +42,7 @@
 });
 
 enyo.kind({
-	name: "TopBottomArranger",
+	name: "enyo.TopBottomArranger",
 	kind: "LeftRightArranger",
 	dragProp: "ddy",
 	dragDirectionProp: "yDirection",
@@ -53,7 +53,7 @@ enyo.kind({
 });
 
 enyo.kind({
-	name: "SpiralArranger",
+	name: "enyo.SpiralArranger",
 	kind: "Arranger",
 	incrementalPoints: true,
 	inc: 20,
@@ -88,7 +88,7 @@ enyo.kind({
 
 
 enyo.kind({
-	name: "GridArranger",
+	name: "enyo.GridArranger",
 	kind: "Arranger",
 	incrementalPoints: true,
 	colWidth: 100,
@@ -120,7 +120,7 @@ enyo.kind({
 
 
 enyo.kind({
-	name: "FittableColumnsArranger",
+	name: "enyo.FittableColumnsArranger",
 	kind: "Arranger",
 	size: function() {
 		var c$ = this.container.children;
@@ -206,7 +206,7 @@ enyo.kind({
 });
 
 enyo.kind({
-	name: "SlidingArranger",
+	name: "enyo.SlidingArranger",
 	kind: "FittableColumnsArranger",
 	arrange: function(inC, inIndex) {
 		var c$ = this.container.children;
@@ -254,7 +254,7 @@ enyo.kind({
 
 
 enyo.kind({
-	name: "FitArranger",
+	name: "enyo.FitArranger",
 	kind: "Arranger",
 	layoutClass: "enyo-arranger enyo-arranger-fit",
 	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
@@ -263,7 +263,7 @@ enyo.kind({
 });
 
 enyo.kind({
-	name: "FadeArranger",
+	name: "enyo.FadeArranger",
 	kind: "FitArranger",
 	arrange: function(inC, inName) {
 		for (var i=0, c, b, v; c=inC[i]; i++) {
@@ -292,7 +292,7 @@ enyo.kind({
 });
 
 enyo.kind({
-	name: "SlideInArranger",
+	name: "enyo.SlideInArranger",
 	kind: "FitArranger",
 	start: function() {
 		var c$ = this.container.children;
