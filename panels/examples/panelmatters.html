@@ -1,3 +1,4 @@
+<!doctype html>
 <html>
 <head>
 	<title>PanelMatters</title>
@@ -99,7 +100,7 @@
 						{kind: "onyx.Grabber"},
 						{kind: "onyx.Button", content: "Previous", ontap: "prevPanel"},
 						{kind: "onyx.Button", content: "Next", ontap: "nextPanel"},
-						{kind: "onyx.InputDecorator", components: [
+						{kind: "onyx.InputDecorator", style: "width: 60px;", components: [
 							{kind: "onyx.Input", value: 0, onchange: "gotoPanel"}
 						]},
 						{kind: "onyx.Button", content: "Go", ontap: "gotoPanel"},
