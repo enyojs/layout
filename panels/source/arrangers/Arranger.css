@@ -19,4 +19,6 @@
 .enyo-arranger-fit > * {
 	bottom: 0;
 	right: 0;
+	width: auto !important;
+	height: auto !important;
 }
