@@ -10,6 +10,13 @@ enyo.kind({
 	dragProp: "ddx",
 	dragDirectionProp: "xDirection",
 	canDragProp: "horizontal",
+	destroy: function() {
+		var c$ = this.container.children;
+		for (var i=0, c; c=c$[i]; i++) {
+			c._arranger = {};
+		}
+		this.inherited(arguments);
+	},
 	arrange: function(inC, inIndex) {
 	},
 	size: function() {

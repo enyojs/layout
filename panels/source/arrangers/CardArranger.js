@@ -5,6 +5,15 @@
 	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
 		return this.containerBounds.width;
 	},
+	destroy: function() {
+		var c$ = this.container.children;
+		for (var i=0, c; c=c$[i]; i++) {
+			c.applyStyle("opacity",  1);
+			c.setShowing(true);
+			c.resized();
+		}
+		this.inherited(arguments);
+	},
 	arrange: function(inC, inName) {
 		for (var i=0, c, b, v; c=inC[i]; i++) {
 			v = (i == 0) ? 1 : 0;
