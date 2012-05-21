@@ -63,15 +63,15 @@
 					{kind: "onyx.Button", content: "Go", ontap: "gotoPanel"},
 				]},
 				{name: "samples", kind: "Scroller", fit: true, components: [
-					{kind: "SamplePanels", layoutKind: "LeftRightArranger"},
-					{kind: "SamplePanels", layoutKind: "FadeArranger", wrap: false},
-					{kind: "SamplePanels", layoutKind: "SlideInArranger", wrap: false},
-					{kind: "SamplePanels", layoutKind: "TopBottomArranger"},
-					{kind: "SamplePanels", layoutKind: "SpiralArranger"},
-					{kind: "SamplePanels", layoutKind: "GridArranger"},
-					{kind: "SamplePanels", layoutKind: "FittableColumnsArranger", style: "width: 80%;"},
-					{kind: "SamplePanels", layoutKind: "FittableColumnsArranger", classes: "wide", wrap: false, style: "width: 80%;"},
-					{kind: "SamplePanels", layoutKind: "SlidingArranger", style: "width: 80%;", wrap: false}
+					{kind: "SamplePanels", layoutKind: "CardArranger"},
+					{kind: "SamplePanels", layoutKind: "CardSlideInArranger"},
+					{kind: "SamplePanels", layoutKind: "CarouselArranger", style: "width: 80%;"},
+					{kind: "SamplePanels", layoutKind: "CarouselArranger", classes: "wide", style: "width: 80%;"},
+					{kind: "SamplePanels", layoutKind: "CollapsingArranger", style: "width: 80%;"},
+					{kind: "SamplePanels", layoutKind: "LeftRightArranger", wrap: true},
+					{kind: "SamplePanels", layoutKind: "TopBottomArranger", wrap: true},
+					{kind: "SamplePanels", layoutKind: "SpiralArranger", wrap: true},
+					{kind: "SamplePanels", layoutKind: "GridArranger", wrap: true}
 				]}
 			],
 			prevPanel: function() {

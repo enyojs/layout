@@ -1,7 +1,6 @@
 ﻿enyo.kind({
 	name: "enyo.TabPanels",
 	kind: "Panels",
-	layoutKind: "FadeArranger",
 	tabTools: [
 		{name: "scroller", kind: "Scroller", maxHeight: "100px", strategyKind: "TranslateScrollStrategy", thumb: false, vertical: "hidden", horizontal: "auto", components: [
 			{name: "tabs", kind: "onyx.RadioGroup", style: "text-align: left; white-space: nowrap", controlClasses: "onyx-tabbutton", onActivate: "tabActivate"}
@@ -78,7 +77,9 @@
 		if (this.hasNode()) {
 			if (inEvent.originator.active) {
 				var i = inEvent.originator.indexInContainer();
-				this.setIndex(i);
+				if (this.getIndex() != i) {
+					this.setIndex(i);
+				}
 			}
 		}
 	},
@@ -99,5 +100,6 @@
 	},
 	startTransition: enyo.nop,
 	finishTransition: enyo.nop,
-	stepTransition: enyo.nop
+	stepTransition: enyo.nop,
+	refresh: enyo.nop
 });

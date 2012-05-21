@@ -1,4 +1,8 @@
-﻿enyo.kind({
+﻿/**
+	enyo.Arranger is a enyo.Layout considers one of the controls it lays out as active.
+	The other controls are placed relative to the active control as makes sense in the layout.
+*/
+enyo.kind({
 	name: "enyo.Arranger",
 	kind: "Layout",
 	layoutClass: "enyo-arranger",
@@ -27,6 +31,16 @@
 	},
 	finish: function() {
 	},
+	//* @protected
+	canDragEvent: function(inEvent) {
+		return inEvent[this.canDragProp];
+	},
+	calcDragDirection: function(inEvent) {
+		return inEvent[this.dragDirectionProp];
+	},
+	calcDrag: function(inEvent) {
+		return inEvent[this.dragProp];
+	},
 	drag: function(inDp, inAn, inA, inBn, inB) {
 		var f = this.measureArrangementDelta(-inDp, inAn, inA, inBn, inB);
 		return f;
@@ -47,9 +61,6 @@
 	arrangeControl: function(inControl, inArrangement) {
 		inControl._arranger = enyo.mixin(inControl._arranger || {}, inArrangement);
 	},
-	canDragEvent: function(inEvent) {
-		return this.container.draggable && inEvent[this.canDragProp];
-	},
 	flow: function() {
 		this.c$ = [].concat(this.container.children);
 		this.controlsIndex = 0;
@@ -62,6 +73,7 @@
 		this.containerBounds = cn ? {width: cn.clientWidth, height: cn.clientHeight} : {};
 		this.size();
 	},
+	//* @public
 	flowArrangement: function() {
 		var a = this.container.arrangement;
 		if (a) {
@@ -78,6 +90,7 @@
 			inControl.applyStyle("opacity",  o);
 		}
 	},
+	//* @protected
 	// get an array of controls arranged in state order.
 	// note: optimization, dial around a single array.
 	getOrderedControls: function(inIndex) {

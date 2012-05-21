@@ -19,7 +19,7 @@
 	tools: [
 		{kind: "Animator", onStep: "step", onEnd: "completed"}
 	],
-	layoutKind: "LeftRightArranger",
+	layoutKind: "CardArranger",
 	fraction: 0,
 	create: function() {
 		this.transitionPoints = [];
@@ -51,7 +51,7 @@
 		this.refresh();
 	},
 	getPanels: function() {
-		return this.getClientControls();
+		return this.children;
 	},
 	getActive: function() {
 		var p$ = this.getPanels();
@@ -76,7 +76,14 @@
 		this.setIndex(this.index+1);
 	},
 	clamp: function(inValue) {
-		return this.wrap ? inValue : Math.max(0, Math.min(inValue, this.controls.length-1));
+		var l = this.getPanels().length-1;
+		if (this.wrap) {
+			// FIXME: dragging makes assumptions about direction and from->start indexes.
+			//return inValue < 0 ? l : (inValue > l ? 0 : inValue);
+			return inValue;
+		} else {
+			return Math.max(0, Math.min(inValue, l));
+		}
 	},
 	indexChanged: function(inOld) {
 		this.lastIndex = inOld;
@@ -105,7 +112,7 @@
 		this.finishTransition();
 	},
 	dragstart: function(inSender, inEvent) {
-		if (this.draggable && inEvent[this.layout.canDragProp]) {
+		if (this.draggable && this.layout.canDragEvent(inEvent)) {
 			inEvent.preventDefault();
 			this.dragstartTransition(inEvent);
 			this.dragging = true;
@@ -129,7 +136,7 @@
 	dragstartTransition: function(inEvent) {
 		if (!this.$.animator.isAnimating()) {
 			var f = this.fromIndex = this.index;
-			this.toIndex = f - inEvent[this.layout.dragDirectionProp];
+			this.toIndex = f - this.layout.calcDragDirection(inEvent);
 		} else {
 			this.verifyDragTransition(inEvent);
 		}
@@ -142,7 +149,7 @@
 	dragTransition: function(inEvent) {
 		// note: for simplicity we choose to calculate the distance directly between
 		// the first and last transition point.
-		var d = inEvent[this.layout.dragProp];
+		var d = this.layout.calcDrag(inEvent);
 		var t$ = this.transitionPoints, s = t$[0], f = t$[t$.length-1];
 		var as = this.fetchArrangement(s);
 		var af = this.fetchArrangement(f);
@@ -169,7 +176,7 @@
 		this.setIndex(this.toIndex);
 	},
 	verifyDragTransition: function(inEvent) {
-		var d = inEvent[this.layout.dragDirectionProp];
+		var d = this.layout.calcDragDirection(inEvent);
 		var f = Math.min(this.fromIndex, this.toIndex);
 		var t = Math.max(this.fromIndex, this.toIndex);
 		if (d > 0) {
@@ -193,7 +200,7 @@
 	startTransition: function() {
 		this.fromIndex = this.fromIndex != null ? this.fromIndex : this.lastIndex || 0;
 		this.toIndex = this.toIndex != null ? this.toIndex : this.index;
-		//this.log(this.fromIndex, this.toIndex);
+		//this.log(this.id, this.fromIndex, this.toIndex);
 		this.layout.start();
 		this.fireTransitionStart();
 	},
