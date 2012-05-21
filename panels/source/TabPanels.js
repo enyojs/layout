@@ -1,14 +1,36 @@
-﻿enyo.kind({
+﻿/**
+enyo.TabPanels is a kind of <a href="#enyo.Panels">enyo.Panels</a> which displays a set of tabs
+allowing navigation between the panels. Unlike enyo.Panels, by default, the user cannot drag between panels.
+This can be enabled by setting draggable to true.
+
+Here's an example:
+
+		enyo.kind({
+			name: "App",
+			kind: "TabPanels",
+			fit: true,
+			components: [
+				{kind: "MyStartPanel"},
+				{kind: "MyMiddlePanel"},
+				{kind: "MyLastPanel"}
+			]
+		});
+		new App().write();
+*/
+enyo.kind({
 	name: "enyo.TabPanels",
 	kind: "Panels",
+	//* @protected
+	draggable: false,
 	tabTools: [
 		{name: "scroller", kind: "Scroller", maxHeight: "100px", strategyKind: "TranslateScrollStrategy", thumb: false, vertical: "hidden", horizontal: "auto", components: [
 			{name: "tabs", kind: "onyx.RadioGroup", style: "text-align: left; white-space: nowrap", controlClasses: "onyx-tabbutton", onActivate: "tabActivate"}
 		]},
-		{name: "client", fit: true, kind: "Panels", onTransitionStart: "clientTransitionStart"}
+		{name: "client", fit: true, kind: "Panels", classes: "enyo-tab-panels", onTransitionStart: "clientTransitionStart"}
 	],
 	create: function() {
 		this.inherited(arguments);
+		this.$.client.getPanels = enyo.bind(this, "getClientPanels");
 		this.draggableChanged();
 		this.animateChanged();
 		this.wrapChanged();
@@ -16,6 +38,9 @@
 	initComponents: function() {
 		this.createChrome(this.tabTools);
 		this.inherited(arguments);
+	},
+	getClientPanels: function() {
+		return this.getPanels();
 	},
 	flow: function() {
 		this.inherited(arguments);
@@ -69,9 +94,6 @@
 			this.$.client.setIndex(this.index);
 		}
 		this.index = this.$.client.getIndex();
-	},
-	getPanels: function() {
-		return this.$.client.children;
 	},
 	tabActivate: function(inSender, inEvent) {
 		if (this.hasNode()) {

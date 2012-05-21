@@ -62,6 +62,7 @@ enyo.kind({
 	//* Render the list
 	generateChildHtml: function() {
 		var h = "";
+		this.index = null;
 		// note: can supply a rowOffset 
 		// and indicate if rows should be rendered top down or bottomUp
 		for (var i=0, r=0; i<this.rows; i++) {
@@ -74,8 +75,16 @@ enyo.kind({
 		return h;
 	},
 	previewDomEvent: function(inEvent) {
-		inEvent.rowIndex = inEvent.index = this.rowForEvent(inEvent);
-		inEvent.repeater = this;
+		var i = this.index = this.rowForEvent(inEvent);
+		inEvent.rowIndex = inEvent.index = i;
+		inEvent.flyweight = this;
+	},
+	decorateEvent: function(inEventName, inEvent, inSender) {
+		if (inEvent && this.index != null) {
+			inEvent.index = this.index;
+			inEvent.flyweight = this;
+		}
+		this.inherited(arguments);
 	},
 	tap: function(inSender, inEvent) {
 		if (this.toggleSelected) {
