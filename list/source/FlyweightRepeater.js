@@ -80,8 +80,10 @@ enyo.kind({
 		inEvent.flyweight = this;
 	},
 	decorateEvent: function(inEventName, inEvent, inSender) {
-		if (inEvent && this.index != null) {
-			inEvent.index = this.index;
+		// decorate event with index found via dom iff event does not already contain an index.
+		var i = (inEvent && inEvent.index != null) ? inEvent.index : this.index;
+		if (inEvent && i != null) {
+			inEvent.index = i;
 			inEvent.flyweight = this;
 		}
 		this.inherited(arguments);
@@ -107,6 +109,7 @@ enyo.kind({
 	},
 	//* Render the row specified by inIndex.
 	renderRow: function(inIndex) {
+		//this.index = null;
 		var node = this.fetchRowNode(inIndex);
 		if (node) {
 			this.setupRow(inIndex);
