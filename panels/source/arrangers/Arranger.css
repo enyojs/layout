@@ -19,6 +19,13 @@
 .enyo-arranger-fit > * {
 	bottom: 0;
 	right: 0;
+	/*
+	override any width/height set on panels
+	*/
 	width: auto !important;
 	height: auto !important;
+	min-width: 0 !important;
+	max-width: auto !important;
+	min-height: 0 !important;
+	max-height: auto !important;
 }
