@@ -281,6 +281,7 @@ enyo.kind({
 		this.transitionPoints = [];
 		this.fraction = 0;
 		this.fromIndex = this.toIndex = null;
+		this.fireTransitionFinish();
 	},
 	fireTransitionStart: function() {
 		if (this.hasNode()) {
