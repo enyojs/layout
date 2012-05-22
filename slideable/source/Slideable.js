@@ -1,6 +1,6 @@
 /**
 	Slideable is a control that can be dragged either left/right or up/down between a minimum and maximum value.
-	When relesed from dragging, a Slideable will animate to it's minimum or maximum position based on the direction dragged.
+	When relesed from dragging, a Slideable will animate to its minimum or maximum position based on the direction dragged.
 
 	The min value may be specified to indicate a position left or top of initial position to which the Slideable may be dragged.
 	The max value may be specified to indicate a position right or bottom of initial position to which the Slideable may be dragged.
