@@ -25,7 +25,7 @@
 		.item {
 			position: relative;
 			border-bottom: 1px solid #0E0E0E;
-			padding: 12px 16px;
+			padding: 16px 12px;
 			background-color: #333333;
 		}
 
@@ -54,6 +54,7 @@
 		enyo.kind({
 			name: "SamplePanels",
 			kind: "Panels",
+			realtimeFit: true,
 			classes: "panels enyo-border-box",
 			bgcolors: ["red", "orange", "yellow", "green", "blue", "indigo", "violet"],
 			components: [
@@ -92,20 +93,24 @@
 						{content: "Arrangers"}
 					]},
 					{kind: "List", fit: true, touch: true, onSetupRow: "setupItem", components: [
-						{name: "item", style: "padding: 10px;", classes: "item enyo-border-box", ontap: "itemTap"}
+						{name: "item", classes: "item enyo-border-box", ontap: "itemTap"}
 					]}
 				]},
 				{kind: "FittableRows", components: [
-					{kind: "onyx.Toolbar", components: [
+					{kind: "FittableColumns", noStretch: true, classes: "onyx-toolbar onyx-toolbar-inline", components: [
 						{kind: "onyx.Grabber"},
-						{kind: "onyx.Button", content: "Previous", ontap: "prevPanel"},
-						{kind: "onyx.Button", content: "Next", ontap: "nextPanel"},
-						{kind: "onyx.InputDecorator", style: "width: 60px;", components: [
-							{kind: "onyx.Input", value: 0, onchange: "gotoPanel"}
-						]},
-						{kind: "onyx.Button", content: "Go", ontap: "gotoPanel"},
-						{kind: "onyx.Button", content: "Add", ontap: "addPanel"},
-						{kind: "onyx.Button", content: "Delete", ontap: "deletePanel"}
+						{kind: "Scroller", thumb: false, fit: true, touch: true, vertical: "hidden", style: "margin: 0;", components: [
+							{classes: "onyx-toolbar-inline", style: "white-space: nowrap;", components: [
+								{kind: "onyx.Button", content: "Previous", ontap: "prevPanel"},
+								{kind: "onyx.Button", content: "Next", ontap: "nextPanel"},
+								{kind: "onyx.InputDecorator", style: "width: 60px;", components: [
+									{kind: "onyx.Input", value: 0, onchange: "gotoPanel"}
+								]},
+								{kind: "onyx.Button", content: "Go", ontap: "gotoPanel"},
+								{kind: "onyx.Button", content: "Add", ontap: "addPanel"},
+								{kind: "onyx.Button", content: "Delete", ontap: "deletePanel"}
+							]}
+						]}
 					]},
 					{kind: "SamplePanels", layoutKind: "CardArranger", fit: true}
 				]}
