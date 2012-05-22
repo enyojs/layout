@@ -47,7 +47,7 @@
 					]},
 					{kind: "onyx.Button", content: "search", ontap: "search"}
 				]},
-				{name: "list", kind: "PulldownList", classes: "list", fit: true, onSetupRow: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [
+				{name: "list", kind: "PulldownList", classes: "list", fit: true, onSetupItem: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [
 					{style: "padding: 10px;", classes: "item enyo-border-box", components: [
 						{name: "icon", kind: "Image", style: "float: left; width: 48px; height: 48px; padding: 0 10px 10px 0;"},
 						{name: "name", tag: "span", style: "font-weight: bold;"},
@@ -84,7 +84,7 @@
 			},
 			processSearchResults: function(inRequest, inResponse) {
 				this.results = inResponse.results;
-				this.$.list.setRows(this.results.length);
+				this.$.list.setCount(this.results.length);
 				if (this.pulled) {
 					this.$.list.completePull();
 				} else {

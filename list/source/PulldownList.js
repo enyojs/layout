@@ -4,7 +4,7 @@ A list that provides pull to refresh so new data can be retrieved and updated in
 The PulldownList provides onPullRelease event to allow an application to start retrieving new data.  And onPullComplete event
 indicates the pull is completed and it's time to update the list with the new data.
 
-	{name: "list", kind: "PulldownList", onSetupRow: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [
+	{name: "list", kind: "PulldownList", onSetupItem: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [
 		{name: "item"}
 	]}
 	
@@ -13,7 +13,7 @@ indicates the pull is completed and it's time to update the list with the new da
 	},
 	processSearchResults: function(inRequest, inResponse) {
 		this.results = inResponse.results;
-		this.$.list.setRows(this.results.length);
+		this.$.list.setCount(this.results.length);
 		this.$.list.completePull();
 	},
 	pullComplete: function() {

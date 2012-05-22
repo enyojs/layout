@@ -41,7 +41,7 @@
 		enyo.kind({
 			name: "App",
 			components: [
-				{name: "list", kind: "List", rows: 200000, multiSelect: false, classes: "enyo-fit list", onSetupRow: "setupRow", components: [
+				{name: "list", kind: "List", count: 200000, multiSelect: false, classes: "enyo-fit list", onSetupItem: "setupItem", components: [
 					{name: "item", classes: "item enyo-border-box", components: [
 						{name: "index", classes: "index"},
 						{name: "name"}
@@ -49,7 +49,7 @@
 				]}
 			],
 			names: [],
-			setupRow: function(inSender, inEvent) {
+			setupItem: function(inSender, inEvent) {
 				// this is the row we're setting up
 				var i = inEvent.index;
 				// make some mock data if we have none for this row

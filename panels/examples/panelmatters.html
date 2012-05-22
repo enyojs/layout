@@ -92,7 +92,7 @@
 					{kind: "onyx.Toolbar", components: [
 						{content: "Arrangers"}
 					]},
-					{kind: "List", fit: true, touch: true, onSetupRow: "setupItem", components: [
+					{kind: "List", fit: true, touch: true, onSetupItem: "setupItem", components: [
 						{name: "item", classes: "item enyo-border-box", ontap: "itemTap"}
 					]}
 				]},
@@ -117,7 +117,7 @@
 			],
 			create: function() {
 				this.inherited(arguments);
-				this.$.list.setRows(panels.length);
+				this.$.list.setCount(panels.length);
 			},
 			rendered: function() {
 				this.inherited(arguments);

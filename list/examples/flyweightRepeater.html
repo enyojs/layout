@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
 	<head>
 		<title>Flyweight Repeater: Enyo Ui Examples</title>
@@ -16,17 +16,17 @@
 	</head>
 	<body class="enyo-unselectable">
 		<script>
-			var rows = 500;
+			var count = 500;
 			var t = enyo.now();
 			new enyo.Control({
 				components: [
 					{name: "time"},
-					{name: "list", kind: "FlyweightRepeater", rows: rows, onSetupRow: "setupRow", components: [
+					{name: "list", kind: "FlyweightRepeater", count: count, onSetupItem: "setupItem", components: [
 						{name: "item", content: "Row Item", style: "padding: 8px;", ontap: "rowTap"}
 					]},
 					{kind: "onyx.Popup", floating: true, style: "position: fixed; right: 0; top: 0;"}
 				],
-				setupRow: function(inSender, inEvent) {
+				setupItem: function(inSender, inEvent) {
 					this.$.item.setContent("Row #" + inEvent.index);
 					this.$.item.applyStyle("background-color", inSender.isSelected(inEvent.index) ? "lightblue" : null);
 				},
@@ -36,7 +36,7 @@
 				}
 			}).write();
 			t = enyo.now() - t;
-			enyo.$.control_time.setContent("rendered " + rows + " rows in " + t + "ms");
+			enyo.$.control_time.setContent("rendered " + count + " rows in " + t + "ms");
 		</script>
 	</body>
 </html>

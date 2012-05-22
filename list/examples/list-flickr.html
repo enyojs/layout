@@ -64,7 +64,7 @@
 					{kind: "onyx.Button", content: "Scroll to start", ontap: "scrollToStart"},
 					{kind: "onyx.Button", content: "Scroll to end", ontap: "scrollToEnd"}
 				]},
-				{kind: "List", classes: "list", fit: true, touch: true, onSetupRow: "setupItem", components: [
+				{kind: "List", classes: "list", fit: true, touch: true, onSetupItem: "setupItem", components: [
 					{style: "padding: 10px;", classes: "item enyo-border-box", components: [
 						{name: "thumbnail", kind: "Image", classes: "thumbnail"},
 						{name: "title", classes: "title"}
@@ -87,7 +87,7 @@
 				this.$.searchSpinner.hide();
 				this.$.moreSpinner.hide();
 				this.results = this.results.concat(inResults);
-				this.$.list.setRows(this.results.length);
+				this.$.list.setCount(this.results.length);
 				if (this.page == 0) {
 					this.$.list.reset();
 				} else {

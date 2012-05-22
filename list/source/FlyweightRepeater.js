@@ -8,20 +8,20 @@ set of row controls as needed for as many rows as are contained in the repeater.
 A FlyweightRepeater's components block contains the controls to be used for a single row.
 This set of controls will be rendered for each row.
 
-The onSetupRow event allows for customization of row rendering. Here's a simple example:
+The onSetupItem event allows for customization of row rendering. Here's a simple example:
 
 	components: [
-		{kind: "FlyweightRepeater", rows: 100, onSetupRow: "setupRow", components: [
+		{kind: "FlyweightRepeater", count: 100, onSetupItem: "setupItem", components: [
 			{name: "item"}
 		]}
 	],
-	setupRow: function(inSender, inEvent) {
+	setupItem: function(inSender, inEvent) {
 		this.$.item.setContent("I am row: " + inEvent.index);
 	}
 	
 ##Modifying Rows
 
-Controls inside a FlyweightRepeater are non-interactive. This means that outside the onSetupRow event, 
+Controls inside a FlyweightRepeater are non-interactive. This means that outside the onSetupItem event, 
 calling methods that would otherwise cause rendering to occur will not do so (e.g. setContent).
 A row can be forced to render by calling the renderRow(inRow) method. In addition, a row can be 
 temporarily made interactive by calling the prepareRow(inRow) method. When interaction is complete, the
@@ -32,7 +32,7 @@ enyo.kind({
 	name: "enyo.FlyweightRepeater",
 	published: {
 		//* How many rows to render
-		rows: 0,
+		count: 0,
 		//* If true, allow multiple selections
 		multiSelect: false,
 		//* If true, the selected item will toggle
@@ -40,7 +40,7 @@ enyo.kind({
 	},
 	events: {
 		//* Fired once per row at render-time, with event object: {index: <index of row>}
-		onSetupRow: ""
+		onSetupItem: ""
 	},
 	components: [
 		{kind: "Selection", onSelect: "selectDeselect", onDeselect: "selectDeselect"},
@@ -56,8 +56,8 @@ enyo.kind({
 	multiSelectChanged: function() {
 		this.$.selection.setMulti(this.multiSelect);
 	},
-	setupRow: function(inIndex) {
-		this.doSetupRow({index: inIndex, selected: this.isSelected(inIndex)});
+	setupItem: function(inIndex) {
+		this.doSetupItem({index: inIndex, selected: this.isSelected(inIndex)});
 	},
 	//* Render the list
 	generateChildHtml: function() {
@@ -65,9 +65,9 @@ enyo.kind({
 		this.index = null;
 		// note: can supply a rowOffset 
 		// and indicate if rows should be rendered top down or bottomUp
-		for (var i=0, r=0; i<this.rows; i++) {
-			r = this.rowOffset + (this.bottomUp ? this.rows - i-1 : i);
-			this.setupRow(r);
+		for (var i=0, r=0; i<this.count; i++) {
+			r = this.rowOffset + (this.bottomUp ? this.count - i-1 : i);
+			this.setupItem(r);
 			this.$.client.setAttribute("index", r);
 			h += this.inherited(arguments);
 			this.$.client.teardownRender();
@@ -112,7 +112,7 @@ enyo.kind({
 		//this.index = null;
 		var node = this.fetchRowNode(inIndex);
 		if (node) {
-			this.setupRow(inIndex);
+			this.setupItem(inIndex);
 			node.innerHTML = this.$.client.generateChildHtml();
 			this.$.client.teardownChildren();
 		}
