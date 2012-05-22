@@ -157,6 +157,9 @@ enyo.kind({
 		this.lastIndex = inOld;
 		this.index = this.clamp(this.index);
 		if (!this.dragging) {
+			if (this.$.animator.isAnimating()) {
+				this.completed();
+			}
 			this.$.animator.stop();
 			if (this.hasNode() && this.animate) {
 				this.startTransition();
@@ -172,10 +175,11 @@ enyo.kind({
 		this.fraction = inSender.value;
 		this.stepTransition();
 	},
-	completed: function(inSender) {
+	completed: function() {
 		if (this.$.animator.isAnimating()) {
 			this.$.animator.stop();
 		}
+		this.fraction = 1;
 		this.stepTransition();
 		this.finishTransition();
 	},
