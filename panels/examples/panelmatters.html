@@ -47,6 +47,10 @@
 		.wide > * {
 			min-width: 50%;
 		}
+		
+		.collapsible > * {
+			min-width: 250px;
+		}
 	</style>
 </head>
 <body>
@@ -75,10 +79,10 @@
 		});
 		
 		var panels = [
-			{name: "CardArranger", layoutKind: "CardArranger"},
-			{name: "CardSlideInArranger", layoutKind: "CardSlideInArranger"},
-			{name: "CarouselArranger", layoutKind: "CarouselArranger", classes: "wide"},
-			{name: "CollapsingArranger", layoutKind: "CollapsingArranger"}
+			{name: "CardArranger", arrangerKind: "CardArranger"},
+			{name: "CardSlideInArranger", arrangerKind: "CardSlideInArranger"},
+			{name: "CarouselArranger", arrangerKind: "CarouselArranger", classes: "wide"},
+			{name: "CollapsingArranger", arrangerKind: "CollapsingArranger", classes: "collapsible"}
 		];
 		
 		enyo.kind({
@@ -86,13 +90,13 @@
 			kind: "Panels",
 			classes: "app enyo-unselectable",
 			realtimeFit: true,
-			layoutKind: "CollapsingArranger",
+			arrangerKind: "CollapsingArranger",
 			components: [
 				{kind: "FittableRows", classes: "left", components: [
 					{kind: "onyx.Toolbar", components: [
 						{content: "Arrangers"}
 					]},
-					{kind: "List", fit: true, touch: true, onSetupRow: "setupItem", components: [
+					{kind: "List", fit: true, touch: true, onSetupItem: "setupItem", components: [
 						{name: "item", classes: "item enyo-border-box", ontap: "itemTap"}
 					]}
 				]},
@@ -112,12 +116,12 @@
 							]}
 						]}
 					]},
-					{kind: "SamplePanels", layoutKind: "CardArranger", fit: true}
+					{kind: "SamplePanels", arrangerKind: "CardArranger", fit: true}
 				]}
 			],
 			create: function() {
 				this.inherited(arguments);
-				this.$.list.setRows(panels.length);
+				this.$.list.setCount(panels.length);
 			},
 			rendered: function() {
 				this.inherited(arguments);
@@ -141,7 +145,7 @@
 					sp.addClass(p.classes);
 					this.currentClass = p.classes;
 				}
-				sp.setLayoutKind(p.layoutKind);
+				sp.setArrangerKind(p.arrangerKind);
 				if (this.isSmall()) {
 					this.setIndex(1);
 				}

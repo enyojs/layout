@@ -87,7 +87,7 @@
 			kind: "Panels",
 			classes: "panels enyo-unselectable",
 			realtimeFit: true,
-			layoutKind: "CollapsingArranger",
+			arrangerKind: "CollapsingArranger",
 			components: [
 				{layoutKind: "FittableRowsLayout", components: [
 					{kind: "onyx.Toolbar", components: [
@@ -97,7 +97,7 @@
 						]},
 						{name: "searchSpinner", kind: "Image", src: "images/spinner.gif", showing: false}
 					]},
-					{kind: "List", fit: true, touch: true, onSetupRow: "setupItem", components: [
+					{kind: "List", fit: true, touch: true, onSetupItem: "setupItem", components: [
 						{name: "item", style: "padding: 10px;", classes: "item enyo-border-box", ontap: "itemTap", components: [
 							{name: "thumbnail", kind: "Image", classes: "thumbnail"},
 							{name: "title", classes: "title"}
@@ -145,7 +145,7 @@
 				this.$.searchSpinner.hide();
 				this.$.moreSpinner.hide();
 				this.results = this.results.concat(inResults);
-				this.$.list.setRows(this.results.length);
+				this.$.list.setCount(this.results.length);
 				if (this.page == 0) {
 					this.$.list.reset();
 				} else {

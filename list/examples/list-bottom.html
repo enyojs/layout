@@ -45,12 +45,12 @@
 			components: [
 				{kind: "onyx.Toolbar", components: [
 					{kind: "onyx.Button", content: "Add", ontap: "addRow"},
-					{kind: "onyx.Button", content: "Reset to 5 rows", ontap: "resetRows", rows: 5},
-					{kind: "onyx.Button", content: "Reset to 200 rows", ontap: "resetRows", rows: 200},
+					{kind: "onyx.Button", content: "Reset to 5 rows", ontap: "resetCount", count: 5},
+					{kind: "onyx.Button", content: "Reset to 200 rows", ontap: "resetCount", count: 200},
 					{content: "BottomUp"},
 					{kind: "onyx.Checkbox", value: true, onChange: "bottomUpCheckboxChanged"}
 				]},
-				{name: "list", kind: "List", fit: true, touch: true, rows: 5, bottomUp: true, classes: "list", onSetupRow: "setupRow", components: [
+				{name: "list", kind: "List", fit: true, touch: true, count: 5, bottomUp: true, classes: "list", onSetupItem: "setupItem", components: [
 					{name: "divider", content: "DIVIDE", classes: "divider"},
 					{classes: "item", components: [
 						{name: "index", classes: "index"},
@@ -61,7 +61,7 @@
 			create: function() {
 				this.inherited(arguments);
 				this.names = [];
-				for (var i=0; i<this.$.list.rows; i++) {
+				for (var i=0; i<this.$.list.count; i++) {
 					this.addName();
 				}
 			},
@@ -72,7 +72,7 @@
 				// add at beginning
 				this.names.unshift(this.generateName());
 			},
-			setupRow: function(inSender, inEvent) {
+			setupItem: function(inSender, inEvent) {
 				var i = inEvent.index;
 				// ensure some mock data.
 				if (!this.names[i]) {
@@ -83,13 +83,13 @@
 				var d = !((i-2) % 10);
 				this.$.divider.canGenerate = d;
 			},
-			resetRows: function(inSender) {
-				this.$.list.setRows(inSender.rows);
+			resetCount: function(inSender) {
+				this.$.list.setCount(inSender.count);
 				this.$.list.reset();
 			},
 			addRow: function() {
 				this.addName();
-				this.$.list.setRows(this.$.list.rows+1);
+				this.$.list.setCount(this.$.list.count+1);
 				this.$.list.refresh();
 				this.$.list.scrollToStart();
 			},

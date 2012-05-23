@@ -1,5 +1,4 @@
 enyo.depends(
 	"arrangers",
-	"Panels.js",
-	"TabPanels.js"
+	"Panels.js"
 );

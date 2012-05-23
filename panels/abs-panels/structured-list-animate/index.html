@@ -199,7 +199,7 @@
 			kind: "Scroller",
 			style: "background-color: #eee;",
 			components: [
-				{name: "headerList", kind: "FlyweightRepeater", rows: 100, onSetupRow: "setupHeaderRow", ontap: "headerTap", components: [
+				{name: "headerList", kind: "FlyweightRepeater", count: 100, onSetupItem: "setupHeaderItem", ontap: "headerTap", components: [
 					{name: "item", kind: "HeaderItem"}
 				]}
 			],
@@ -223,7 +223,7 @@
 				"draft": 0,
 				"blurb": "Made this list yesterday of place to eat.\r"
 			},
-			setupHeaderRow: function(inSender, inEvent) {
+			setupHeaderItem: function(inSender, inEvent) {
 				//this.$.item.addRemoveClass("selected-item", this.selected == inEvent.index);
 				this.$.item.setItem(this.data);
 			},

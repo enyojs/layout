@@ -10,17 +10,17 @@
 	A List's components block contains the controls to be used for a single row.
 	This set of controls will be rendered for each row.
 
-	The onSetupRow event allows for customization of row rendering. Here's a simple example:
+	The onSetupItem event allows for customization of row rendering. Here's a simple example:
 
 		components: [
-			{kind: "List", fit: true, rows: 1000, onSetupRow: "setupRow", components: [
+			{kind: "List", fit: true, count: 1000, onSetupItem: "setupItem", components: [
 				{classes: "item", ontap: "itemTap", components: [
 					{name: "name"},
 					{name: "index", style: "float: right;"}
 				]}
 			]}
 		],
-		setupRow: function(inSender, inEvent) {
+		setupItem: function(inSender, inEvent) {
 			// given some available data.
 			var data = this.data[inEvent.index];
 			// setup the controls for this item.
@@ -37,7 +37,7 @@
 
 	## Modifying List Rows
 
-	Controls inside a list are not interactive. This means that outside the onSetupRow event, 
+	Controls inside a list are not interactive. This means that outside the onSetupItem event, 
 	calling methods that would otherwise cause rendering to occur will not do so (e.g. setContent).
 	A row can be forced to render by calling the renderRow(inRow) method. In addition, a row can be 
 	temporarily made interactive by calling the prepareRow(inRow) method. When interaction is complete, the
@@ -50,8 +50,8 @@ enyo.kind({
 	published: {
 		//* The number of rows contained in the list. Note, as the amount of list data changes
 		//* setRows can be called to adjust the number of rows. To re-render the list at the 
-		//* current position when rows has changed, call the refresh() method.
-		rows: 0,
+		//* current position when count has changed, call the refresh() method.
+		count: 0,
 		//* The number of rows to be shown on a given list page segment. 
 		//* It is not common to need to adjust this.
 		rowsPerPage: 50,
@@ -65,7 +65,7 @@ enyo.kind({
 	},
 	events: {
 		//* Fired once per row at render-time, with event object: {index: <index of row>}
-		onSetupRow: ""
+		onSetupItem: ""
 	},
 	handlers: {
 		onAnimateFinish: "animateFinish"
@@ -122,14 +122,14 @@ enyo.kind({
 	toggleSelectedChanged: function() {
 		this.$.generator.setToggleSelected(this.toggleSelected);
 	},
-	rowsChanged: function() {
+	countChanged: function() {
 		if (this.hasNode()) {
 			this.updateMetrics();
 		}
 	},
 	updateMetrics: function() {
 		this.defaultPageHeight = this.rowsPerPage * (this.rowHeight || 100);
-		this.pageCount = Math.ceil(this.rows / this.rowsPerPage);
+		this.pageCount = Math.ceil(this.count / this.rowsPerPage);
 		this.portSize = 0;
 		for (var i=0; i < this.pageCount; i++) {
 			this.portSize += this.getPageHeight(i);
@@ -139,7 +139,7 @@ enyo.kind({
 	generatePage: function(inPageNo, inTarget) {
 		this.page = inPageNo;
 		var r = this.$.generator.rowOffset = this.rowsPerPage * this.page;
-		var rpp = this.$.generator.rows = Math.min(this.rows - r, this.rowsPerPage);
+		var rpp = this.$.generator.count = Math.min(this.count - r, this.rowsPerPage);
 		var html = this.$.generator.generateChildHtml();
 		inTarget.setContent(html);
 		// if rowHeight is not set, use the height from the first generated page

@@ -102,7 +102,7 @@
 			},
 			updateMetrics: function() {
 				this.defaultPageHeight = this.rowsPerPage * (this.rowHeight || 100);
-				this.pageCount = Math.ceil(this.rows / this.rowsPerPage);
+				this.pageCount = Math.ceil(this.count / this.rowsPerPage);
 				this.aboveHeight = this.$.aboveClient.getBounds().height;
 				this.belowHeight = this.$.belowClient.getBounds().height;
 				this.portSize = this.aboveHeight + this.belowHeight;
@@ -131,7 +131,7 @@
 			name: "App",
 			kind: "FittableRows",
 			components: [
-				{name: "list", kind: "AroundList", classes: "list", fit: true, multiSelect: true, onSetupRow: "setupRow", aboveComponents: [
+				{name: "list", kind: "AroundList", classes: "list", fit: true, multiSelect: true, onSetupItem: "setupItem", aboveComponents: [
 					{kind: "onyx.Toolbar", layoutKind: "FittableColumnsLayout", components: [
 						{kind: "onyx.InputDecorator", fit: true, noStretch: true, layoutKind: "FittableColumnsLayout", components: [
 							{kind: "onyx.Input", placeholder: "Search...", fit: true, oninput: "searchInputChange"},
@@ -144,9 +144,9 @@
 				]},
 				{name: "popup", kind: "onyx.Popup", modal: true, centered: true, classes: "popup", components: [
 					{components: [
-						{content: "rows:", classes: "label"},
+						{content: "count:", classes: "label"},
 						{kind: "onyx.InputDecorator", components: [
-							{name: "rowsInput", kind: "onyx.Input", style: "width: 80px", value: 200}
+							{name: "countInput", kind: "onyx.Input", style: "width: 80px", value: 200}
 						]}
 					]},
 					{components: [
@@ -168,7 +168,7 @@
 				this.inherited(arguments);
 				this.populateList();
 			},
-			setupRow: function(inSender, inEvent) {
+			setupItem: function(inSender, inEvent) {
 				var i = inEvent.index;
 				var data = this.filter ? this.filtered : this.db;
 				var item = data[i];
@@ -189,9 +189,9 @@
 			refreshList: function() {
 				if (this.filter) {
 					this.filtered = this.generateFilteredData(this.filter);
-					this.$.list.setRows(this.filtered.length);
+					this.$.list.setCount(this.filtered.length);
 				} else {
-					this.$.list.setRows(this.db.length);
+					this.$.list.setCount(this.db.length);
 				}
 				this.$.list.refresh();
 			},
@@ -231,8 +231,8 @@
 			},
 			populateList: function() {
 				this.$.popup.hide();
-				this.createDb(this.$.rowsInput.getValue());
-				this.$.list.setRows(this.db.length);
+				this.createDb(this.$.countInput.getValue());
+				this.$.list.setCount(this.db.length);
 				this.$.list.setRowsPerPage(this.$.rowsPerPageInput.getValue());
 				//
 				this.hideDivider = this.$.hideDividerCheckbox.getValue();
@@ -241,9 +241,9 @@
 				this.$.list.reset();
 				this.$.list.scrollToContentStart();
 			},
-			createDb: function(inRows) {
+			createDb: function(inCount) {
 				this.db = [];
-				for (var i=0; i<inRows; i++) {
+				for (var i=0; i<inCount; i++) {
 					this.db.push(this.generateItem(makeName(4, 6) + " " + makeName(5, 10)));
 				}
 				this.sortDb();
@@ -272,7 +272,7 @@
 				if (inFilter != this.filter) {
 					this.filter = inFilter;
 					this.filtered = this.generateFilteredData(inFilter);
-					this.$.list.setRows(this.filtered.length);
+					this.$.list.setCount(this.filtered.length);
 					this.$.list.reset();
 				}
 			},

@@ -1,5 +1,6 @@
 enyo.depends(
 	"fittable",
 	"list",
-	"slideable"
+	"slideable",
+	"panels"
 );
