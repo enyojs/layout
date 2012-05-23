@@ -173,14 +173,17 @@ enyo.kind({
 				this.completed();
 			}
 			this.$.animator.stop();
-			if (this.hasNode() && this.animate) {
-				this.startTransition();
-				this.$.animator.play({
-					startValue: this.fraction
-				});
-			} else {
-				this.refresh();
+			if (this.hasNode()) {
+				if (this.animate) {
+					this.startTransition();
+					this.$.animator.play({
+						startValue: this.fraction
+					});
+				} else {
+					this.refresh();
+				}		
 			}
+			
 		}
 	},
 	step: function(inSender) {
@@ -196,7 +199,7 @@ enyo.kind({
 		this.finishTransition();
 	},
 	dragstart: function(inSender, inEvent) {
-		if (this.draggable && this.layout.canDragEvent(inEvent)) {
+		if (this.draggable && this.layout && this.layout.canDragEvent(inEvent)) {
 			inEvent.preventDefault();
 			this.dragstartTransition(inEvent);
 			this.dragging = true;
@@ -220,7 +223,7 @@ enyo.kind({
 	dragstartTransition: function(inEvent) {
 		if (!this.$.animator.isAnimating()) {
 			var f = this.fromIndex = this.index;
-			this.toIndex = f - this.layout.calcDragDirection(inEvent);
+			this.toIndex = f - (this.layout ? this.layout.calcDragDirection(inEvent) : 0);
 		} else {
 			this.verifyDragTransition(inEvent);
 		}
@@ -228,16 +231,18 @@ enyo.kind({
 		this.toIndex = this.clamp(this.toIndex);
 		//this.log(this.fromIndex, this.toIndex);
 		this.fireTransitionStart();
-		this.layout.start();
+		if (this.layout) {
+			this.layout.start();
+		}
 	},
 	dragTransition: function(inEvent) {
 		// note: for simplicity we choose to calculate the distance directly between
 		// the first and last transition point.
-		var d = this.layout.calcDrag(inEvent);
+		var d = this.layout ? this.layout.calcDrag(inEvent) : 0;
 		var t$ = this.transitionPoints, s = t$[0], f = t$[t$.length-1];
 		var as = this.fetchArrangement(s);
 		var af = this.fetchArrangement(f);
-		var dx = this.layout.drag(d, s, as, f, af);
+		var dx = this.layout ? this.layout.drag(d, s, as, f, af) : 0;
 		var dragFail = d && !dx;
 		if (dragFail) {
 			//this.log(dx, s, as, f, af);
@@ -260,7 +265,7 @@ enyo.kind({
 		this.setIndex(this.toIndex);
 	},
 	verifyDragTransition: function(inEvent) {
-		var d = this.layout.calcDragDirection(inEvent);
+		var d = this.layout ? this.layout.calcDragDirection(inEvent) : 0;
 		var f = Math.min(this.fromIndex, this.toIndex);
 		var t = Math.max(this.fromIndex, this.toIndex);
 		if (d > 0) {
@@ -285,11 +290,15 @@ enyo.kind({
 		this.fromIndex = this.fromIndex != null ? this.fromIndex : this.lastIndex || 0;
 		this.toIndex = this.toIndex != null ? this.toIndex : this.index;
 		//this.log(this.id, this.fromIndex, this.toIndex);
-		this.layout.start();
+		if (this.layout) {
+			this.layout.start();
+		}
 		this.fireTransitionStart();
 	},
 	finishTransition: function() {
-		this.layout.finish();
+		if (this.layout) {
+			this.layout.finish();
+		}
 		this.transitionPoints = [];
 		this.fraction = 0;
 		this.fromIndex = this.toIndex = null;
@@ -318,13 +327,13 @@ enyo.kind({
 			var s0 = this.fetchArrangement(s);
 			var s1 = this.fetchArrangement(f);
 			this.arrangement = s0 && s1 ? enyo.Panels.lerp(s0, s1, r) : (s0 || s1);
-			if (this.arrangement) {
+			if (this.arrangement && this.layout) {
 				this.layout.flowArrangement();
 			}
 		}
 	},
 	fetchArrangement: function(inName) {
-		if ((inName != null) && !this.arrangements[inName]) {
+		if ((inName != null) && !this.arrangements[inName] && this.layout) {
 			this.layout._arrange(inName);
 			this.arrangements[inName] = this.readArrangement(this.children);
 		}
