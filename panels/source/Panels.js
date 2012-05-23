@@ -43,7 +43,9 @@ enyo.kind({
 		draggable: true,
 		//* Controls if the panels animate when transitioning; for example, when setIndex is called.
 		animate: true,
-		wrap: false
+		wrap: false,
+		//* Sets the arranger kind to be used for dynamic layout.
+		arrangerKind: "CardArranger"
 	},
 	events: {
 		/**
@@ -66,16 +68,19 @@ enyo.kind({
 	tools: [
 		{kind: "Animator", onStep: "step", onEnd: "completed"}
 	],
-	layoutKind: "CardArranger",
 	fraction: 0,
 	create: function() {
 		this.transitionPoints = [];
 		this.inherited(arguments);
+		this.arrangerKindChanged();
 		this.indexChanged();
 	},
 	initComponents: function() {
 		this.createChrome(this.tools);
 		this.inherited(arguments);
+	},
+	arrangerKindChanged: function() {
+		this.setLayoutKind(this.arrangerKind);
 	},
 	removeControl: function(inControl) {
 		this.inherited(arguments);

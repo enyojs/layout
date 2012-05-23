@@ -17,7 +17,6 @@
 	},
 	arrange: function(inC, inIndex) {
 		var c$ = this.container.children;
-		enyo.log(inIndex);
 		for (var i=0, e=this.containerPadding.left, m, c; c=c$[i]; i++) {
 			this.arrangeControl(c, {left: e});
 			if (i >= inIndex) {
