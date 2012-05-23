@@ -47,6 +47,10 @@
 		.wide > * {
 			min-width: 50%;
 		}
+		
+		.collapsible > * {
+			min-width: 250px;
+		}
 	</style>
 </head>
 <body>
@@ -78,7 +82,7 @@
 			{name: "CardArranger", layoutKind: "CardArranger"},
 			{name: "CardSlideInArranger", layoutKind: "CardSlideInArranger"},
 			{name: "CarouselArranger", layoutKind: "CarouselArranger", classes: "wide"},
-			{name: "CollapsingArranger", layoutKind: "CollapsingArranger"}
+			{name: "CollapsingArranger", layoutKind: "CollapsingArranger", classes: "collapsible"}
 		];
 		
 		enyo.kind({

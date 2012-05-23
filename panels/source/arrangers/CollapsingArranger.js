@@ -9,9 +9,9 @@
 	// (required for adding another control)
 	clearLastSize: function() {
 		for (var i=0, c$=this.container.children, c; c=c$[i]; i++) {
-			if (c._last && i != c$.length-1) {
+			if (c._fit && i != c$.length-1) {
 				c.applyStyle("width", null);
-				c._last = null;
+				c._fit = null;
 			}
 		}
 	},
@@ -40,8 +40,7 @@
 			var l = c$.length-1;
 			var last = c$[l];
 			if (inControl == last) {
-				last.applyStyle("width", (this.containerBounds.width - inA.left) + "px");
-				last.resized();
+				this.fitControl(inControl, inA.left);
 			}
 		}
 		
@@ -53,9 +52,12 @@
 			var a$ = this.container.arrangement;
 			var l = c$.length-1;
 			var c = c$[l];
-			c._last = true;
-			c.applyStyle("width", (this.containerBounds.width - a$[l].left) + "px");
-			c.resized();
+			this.fitControl(c, a$[l].left);
 		}
+	},
+	fitControl: function(inControl, inOffset) {
+		inControl._fit = true;
+		inControl.applyStyle("width", (this.containerBounds.width - inOffset) + "px");
+		inControl.resized();	
 	}
 });
