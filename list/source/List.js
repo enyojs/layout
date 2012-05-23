@@ -61,7 +61,7 @@ enyo.kind({
 		//* If true, allow multiple selections
 		multiSelect: false,
 		//* If true, the selected item will toggle
-		toggleSelected: false
+		toggleSelected: false,
 		//* If true, the list would assume all rows have the same height for optimization
 		fixedHeight: false
 	},
