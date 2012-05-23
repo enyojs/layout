@@ -193,11 +193,10 @@ enyo.kind({
 		positionControl: function(inControl, inBounds, inUnit) {
 			var unit = inUnit || "px";
 			if (!this.updating) {
-				var t = enyo.dom.getCssTransformProp();
-				if (t) {
+				if (enyo.dom.canTransform()) {
 					var l = inBounds.left, t = inBounds.top;
-					var l = enyo.isString(l) ? l : l && (l + "px");
-					var t = enyo.isString(t) ? t : t && (t + "px");
+					var l = enyo.isString(l) ? l : l && (l + unit);
+					var t = enyo.isString(t) ? t : t && (t + unit);
 					enyo.dom.transform(inControl, {translateX: l || null, translateY: t || null});
 				} else {
 					inControl.setBounds(inBounds, inUnit);
