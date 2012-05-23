@@ -45,7 +45,10 @@ enyo.kind({
 		animate: true,
 		wrap: false,
 		//* Sets the arranger kind to be used for dynamic layout.
-		arrangerKind: "CardArranger"
+		arrangerKind: "CardArranger",
+		//* By default each panel will be sized to fit the Panels' width when 
+		//* the screen size is narrow enough (~800px). Set narrowFit to false to avoid this behavior.
+		narrowFit: true
 	},
 	events: {
 		/**
@@ -73,6 +76,7 @@ enyo.kind({
 		this.transitionPoints = [];
 		this.inherited(arguments);
 		this.arrangerKindChanged();
+		this.avoidFitChanged();
 		this.indexChanged();
 	},
 	initComponents: function() {
@@ -81,6 +85,9 @@ enyo.kind({
 	},
 	arrangerKindChanged: function() {
 		this.setLayoutKind(this.arrangerKind);
+	},
+	avoidFitChanged: function() {
+		this.addRemoveClass("enyo-panels-fit-narrow", this.narrowFit);
 	},
 	removeControl: function(inControl) {
 		this.inherited(arguments);
@@ -331,6 +338,9 @@ enyo.kind({
 		return r;
 	},
 	statics: {
+		isScreenNarrow: function() {
+			return window.matchMedia && window.matchMedia("all and (max-width: 800px)").matches;
+		},
 		lerp: function(inA0, inA1, inFrac) {
 			var r = [];
 			for (var i=0, k$=enyo.keys(inA0), k; k=k$[i]; i++) {

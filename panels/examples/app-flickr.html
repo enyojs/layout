@@ -71,12 +71,6 @@
 			min-height: 80%;
 		}
 
-		/* be responsive */
-		@media all and (max-width: 800px) {
-			.panels > * {
-				min-width: 100%;
-			}
-		}
 	</style>
 </head>
 
@@ -131,9 +125,6 @@
 					this.$.pictureView.resized();
 				}
 			},
-			isSmall: function() {
-				return window.matchMedia && window.matchMedia("all and (max-width:800px)").matches;
-			},
 			search: function() {
 				this.searchText = this.$.searchInput.getValue();
 				this.page = 0;
@@ -166,7 +157,7 @@
 				this.$.flickrSearch.search(this.searchText, this.page);
 			},
 			itemTap: function(inSender, inEvent) {
-				if (this.isSmall()) {
+				if (enyo.Panels.isScreenNarrow()) {
 					this.setIndex(1);
 				}
 				this.$.imageSpinner.show();
