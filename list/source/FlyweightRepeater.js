@@ -39,7 +39,8 @@ enyo.kind({
 		toggleSelected: false
 	},
 	events: {
-		//* Fired once per row at render-time, with event object: {index: <index of row>}
+		/** Fired once per row at render-time, with event object: 
+			{index: <index of row>, selected: <true if row is selected>} */
 		onSetupItem: ""
 	},
 	components: [
