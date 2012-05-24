@@ -120,7 +120,7 @@
 			reflow: function() {
 				this.inherited(arguments);
 				var backShowing = this.$.backToolbar.showing;
-				this.$.backToolbar.setShowing(this.isSmall());
+				this.$.backToolbar.setShowing(enyo.Panels.isScreenNarrow());
 				if (this.$.backToolbar.showing != backShowing) {
 					this.$.pictureView.resized();
 				}
