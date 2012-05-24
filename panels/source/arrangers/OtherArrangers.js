@@ -111,7 +111,7 @@ enyo.kind({
 	},
 	flowControl: function(inControl, inA) {
 		this.inherited(arguments);
-		inControl.applyStyle("opacity", inA.top % this.colHeight != 0 ? 0.25 : 1);
+		enyo.Arranger.opacifyControl(inControl, inA.top % this.colHeight != 0 ? 0.25 : 1);
 	},
 	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
 		return this.colWidth;

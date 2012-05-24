@@ -38,6 +38,7 @@
 			if (s == i && s == f) {
 				v = 0;
 			}
+			enyo.log(inName, c.id, v);
 			this.arrangeControl(c, {left: v});
 		}
 	}

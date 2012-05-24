@@ -164,10 +164,7 @@ enyo.kind({
 		enyo.Arranger.positionControl(inControl, inArrangement);
 		var o = inArrangement.opacity;
 		if (o != null) {
-			// FIXME: very high/low settings of opacity can cause a control to
-			// blink so cap this here.
-			o = o > .99 ? 1 : (o < .01 ? 0 : o);
-			inControl.applyStyle("opacity",  o);
+			enyo.Arranger.opacifyControl(inControl, o);
 		}
 	},
 	//* @protected
@@ -201,6 +198,18 @@ enyo.kind({
 				} else {
 					inControl.setBounds(inBounds, inUnit);
 				}
+			}
+		},
+		opacifyControl: function(inControl, inOpacity) {
+			var o = inOpacity;
+			// FIXME: very high/low settings of opacity can cause a control to
+			// blink so cap this here.
+			o = o > .99 ? 1 : (o < .01 ? 0 : o);
+			// note: we only care about ie8
+			if (enyo.platform.ie < 9) {
+				inControl.applyStyle("filter", "progid:DXImageTransform.Microsoft.Alpha(Opacity=" + (o * 100) + ")");
+			} else {
+				inControl.applyStyle("opacity", o);
 			}
 		}
 	}

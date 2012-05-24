@@ -8,7 +8,7 @@
 	destroy: function() {
 		var c$ = this.container.children;
 		for (var i=0, c; c=c$[i]; i++) {
-			c.applyStyle("opacity",  1);
+			enyo.Arranger.opacifyControl(c, 1);
 			c.setShowing(true);
 			c.resized();
 		}
