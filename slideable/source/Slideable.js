@@ -80,7 +80,9 @@ enyo.kind({
 		}
 	},
 	acceleratedChanged: function() {
-		//enyo.dom.accelerate(this, this.accelerated);
+		if (!(enyo.platform.android > 2)) {
+			enyo.dom.accelerate(this, this.accelerated);
+		}
 	},
 	axisChanged: function() {
 		var h = this.axis == "h";
@@ -94,12 +96,16 @@ enyo.kind({
 		if (this.isOob(v) && !this.isAnimating()) {
 				this.value = this.overMoving ? this.dampValue(v) : this.clampValue(v);
 		}
-		if (this.value) {
-			if (inLast == 0 || inLast == undefined) {
-				enyo.dom.accelerate(this, this.accelerated);
+		// FIXME: android cannot handle nested compositing well so apply acceleration only if needed
+		// desktop chrome doesn't like this code path so avoid...
+		if (enyo.platform.android > 2) {
+			if (this.value) {
+				if (inLast == 0 || inLast == undefined) {
+					enyo.dom.accelerate(this, this.accelerated);
+				}
+			} else {
+				enyo.dom.accelerate(this, false);
 			}
-		} else {
-			enyo.dom.accelerate(this, false);
 		}
 		enyo.dom.transformValue(this, this.transform, this.value + this.unit);
 		this.doChange();

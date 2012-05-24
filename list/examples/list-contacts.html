@@ -148,7 +148,8 @@
 				} else {
 					this.$.list.setCount(this.db.length);
 				}
-				this.$.list.refresh();
+				//this.$.list.refresh();
+				this.$.list.reset();
 			},
 			addItem: function() {
 				var item = this.generateItem(enyo.cap(this.$.newContactInput.getValue()));
@@ -158,6 +159,10 @@
 						this.db.splice(i, 0, item);
 						break;
 					}
+				}
+				// if we hit end of for-loop, add to end of list
+				if (!di) {
+					this.db.push(item);
 				}
 				this.refreshList();
 				this.$.list.scrollToRow(i);
@@ -186,9 +191,9 @@
 			},
 			populateList: function() {
 				this.$.popup.hide();
-				this.createDb(this.$.countInput.getValue());
+				this.createDb(~~this.$.countInput.getValue());
 				this.$.list.setCount(this.db.length);
-				this.$.list.setRowsPerPage(this.$.rowsPerPageInput.getValue());
+				this.$.list.setRowsPerPage(~~this.$.rowsPerPageInput.getValue());
 				//
 				this.hideDivider = this.$.hideDividerCheckbox.getValue();
 				this.$.divider.canGenerate = !this.hideDivider;

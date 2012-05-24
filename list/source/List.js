@@ -61,7 +61,9 @@ enyo.kind({
 		//* If true, allow multiple selections
 		multiSelect: false,
 		//* If true, the selected item will toggle
-		toggleSelected: false
+		toggleSelected: false,
+		//* If true, the list would assume all rows have the same height for optimization
+		fixedHeight: false
 	},
 	events: {
 		//* Fired once per row at render-time, with event object: {index: <index of row>}
@@ -72,7 +74,6 @@ enyo.kind({
 	},
 	//* @protected
 	rowHeight: 0,
-	fixedHeight: false,
 	listTools: [
 		{name: "port", classes: "enyo-list-port enyo-border-box", components: [
 			{name: "generator", kind: "FlyweightRepeater", canGenerate: false, components: [
@@ -163,7 +164,7 @@ enyo.kind({
 		// zone line position
 		var pos = pi.pos + this.scrollerHeight/2;
 		// leap-frog zone position
-		var k = Math.floor(pos/pi.height + 1/2) + pi.no;
+		var k = Math.floor(pos/Math.max(pi.height, this.scrollerHeight) + 1/2) + pi.no;
 		// which page number for page0 (even number pages)?
 		var p = k % 2 == 0 ? k : k-1;
 		if (this.p0 != p && this.isPageInRange(p)) {
