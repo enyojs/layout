@@ -106,7 +106,7 @@ enyo.kind({
 	},
 	resizeHandler: function() {
 		this.inherited(arguments);
-		this.adjustPortSize();
+		this.refresh();
 	},
 	bottomUpChanged: function() {
 		this.$.generator.bottomUp = this.bottomUp;

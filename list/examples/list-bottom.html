@@ -48,7 +48,7 @@
 					{kind: "onyx.Button", content: "Reset to 5 rows", ontap: "resetCount", count: 5},
 					{kind: "onyx.Button", content: "Reset to 200 rows", ontap: "resetCount", count: 200},
 					{content: "BottomUp"},
-					{kind: "onyx.Checkbox", value: true, onChange: "bottomUpCheckboxChanged"}
+					{kind: "onyx.Checkbox", checked: true, onchange: "bottomUpCheckboxChanged"}
 				]},
 				{name: "list", kind: "List", fit: true, touch: true, count: 5, bottomUp: true, classes: "list", onSetupItem: "setupItem", components: [
 					{name: "divider", content: "DIVIDE", classes: "divider"},
@@ -94,7 +94,7 @@
 				this.$.list.scrollToStart();
 			},
 			bottomUpCheckboxChanged: function(inSender) {
-				this.$.list.setBottomUp(inSender.getValue());
+				this.$.list.setBottomUp(inSender.getChecked());
 			}
 		});
 		new App({fit: true, classes: "enyo-unselectable"}).write();
