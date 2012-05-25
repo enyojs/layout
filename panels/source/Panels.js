@@ -181,9 +181,8 @@ enyo.kind({
 					});
 				} else {
 					this.refresh();
-				}		
+				}
 			}
-			
 		}
 	},
 	step: function(inSender) {
@@ -263,6 +262,11 @@ enyo.kind({
 	dragfinishTransition: function(inEvent) {
 		this.verifyDragTransition(inEvent);
 		this.setIndex(this.toIndex);
+		// note: if we're still dragging, then we're at a transition boundary 
+		// and should fire the finish event
+		if (this.dragging) {
+			this.fireTransitionFinish();
+		}
 	},
 	verifyDragTransition: function(inEvent) {
 		var d = this.layout ? this.layout.calcDragDirection(inEvent) : 0;
@@ -305,13 +309,17 @@ enyo.kind({
 		this.fireTransitionFinish();
 	},
 	fireTransitionStart: function() {
-		if (this.hasNode()) {
-			this.doTransitionStart({fromIndex: this.fromIndex, toIndex: this.toIndex});
+		var t = this.startTransitionInfo;
+		if (this.hasNode() && (!t || (t.fromIndex != this.fromIndex || t.toIndex != this.toIndex))) {
+			this.startTransitionInfo = {fromIndex: this.fromIndex, toIndex: this.toIndex};
+			this.doTransitionStart(enyo.clone(this.startTransitionInfo));
 		}
 	},
 	fireTransitionFinish: function() {
-		if (this.hasNode()) {
-			this.doTransitionFinish({fromIndex: this.lastIndex, toIndex: this.index});
+		var t = this.finishTransitionInfo;
+		if (this.hasNode() && (!t || (t.fromIndex != this.lastIndex || t.toIndex != this.index))) {
+			this.finishTransitionInfo = {fromIndex: this.lastIndex, toIndex: this.index};
+			this.doTransitionFinish(enyo.clone(this.finishTransitionInfo));
 		}
 	},
 	// gambit: we interpolate between arrangements as needed.

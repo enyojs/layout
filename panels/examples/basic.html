@@ -63,7 +63,7 @@
 					{kind: "onyx.Button", content: "Go", ontap: "gotoPanel"},
 				]},
 				{name: "samples", kind: "Scroller", fit: true, components: [
-					{kind: "SamplePanels", arrangerKind: "CardArranger"},
+					{kind: "SamplePanels", arrangerKind: "CardArranger", onTransitionStart: "transitionStart", onTransitionFinish: "transitionFinish"},
 					{kind: "SamplePanels", arrangerKind: "CardSlideInArranger"},
 					{kind: "SamplePanels", arrangerKind: "CarouselArranger", classes: "wide", style: "width: 80%;"},
 					{kind: "SamplePanels", arrangerKind: "CollapsingArranger", style: "width: 80%;"},
@@ -89,6 +89,12 @@
 				for (var i=0, c; c=c$[i]; i++) {
 					c[inMethod].apply(c, a);
 				}
+			},
+			transitionStart: function(inSender, inEvent) {
+				this.log(inEvent.fromIndex, inEvent.toIndex);
+			},
+			transitionFinish: function(inSender, inEvent) {
+				this.log(inEvent.fromIndex, inEvent.toIndex);
 			}
 		});
 		new App({fit: true, classes: "enyo-unselectable"}).write();
