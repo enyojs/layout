@@ -285,6 +285,9 @@ enyo.kind({
 		this.toIndex = t;
 	},
 	refresh: function() {
+		if (this.$.animator.isAnimating()) {
+			this.$.animator.stop();
+		}
 		this.startTransition()
 		this.fraction = 1;
 		this.stepTransition();
@@ -356,7 +359,7 @@ enyo.kind({
 	},
 	statics: {
 		isScreenNarrow: function() {
-			return window.matchMedia && window.matchMedia("all and (max-width: 800px)").matches;
+			return enyo.dom.getWindowWidth() <= 800;
 		},
 		lerp: function(inA0, inA1, inFrac) {
 			var r = [];
