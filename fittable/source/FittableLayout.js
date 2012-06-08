@@ -58,7 +58,7 @@
 		var l = this.getLastControl();
 		if (l) {
 			// measure 4
-			var mb = enyo.FittableLayout.getComputedStyleValue(l.hasNode(), "margin-" + nAttr) || 0;
+			var mb = enyo.FittableLayout.getComputedStyleValue(l.hasNode(), "margin", nAttr) || 0;
 			if (l != f) {
 				// measure 5
 				var lb = l.getBounds();
@@ -110,12 +110,12 @@
 			return v;
 		},
 		_pxMatch: /px/i,
-		getComputedStyleValue: function(inNode, inProp, inComputedStyle) {
+		getComputedStyleValue: function(inNode, inProp, inBoundary, inComputedStyle) {
 			var s = inComputedStyle || enyo.dom.getComputedStyle(inNode);
 			if (s) {
-				return parseInt(s.getPropertyValue(inProp));
+				return parseInt(s.getPropertyValue(inProp + "-" + inBoundary));
 			} else if (inNode && inNode.currentStyle) {
-				var v = inNode.currentStyle[inProp];
+				var v = inNode.currentStyle[inProp + enyo.cap(inBoundary)];
 				if (!v.match(this._pxMatch)) {
 					v = this._ieCssToPixelValue(inNode, v);
 				}
@@ -126,10 +126,10 @@
 		calcBoxExtents: function(inNode, inBox) {
 			var s = enyo.dom.getComputedStyle(inNode);
 			return {
-				top: this.getComputedStyleValue(inNode, inBox + "-top", s),
-				right: this.getComputedStyleValue(inNode, inBox + "-right", s),
-				bottom: this.getComputedStyleValue(inNode, inBox + "-bottom", s),
-				left: this.getComputedStyleValue(inNode, inBox + "-left", s)
+				top: this.getComputedStyleValue(inNode, inBox, "top", s),
+				right: this.getComputedStyleValue(inNode, inBox, "right", s),
+				bottom: this.getComputedStyleValue(inNode, inBox, "bottom", s),
+				left: this.getComputedStyleValue(inNode, inBox, "left", s)
 			};
 		},
 		//* Get the calculated padding of a node
