@@ -8,7 +8,8 @@ rows. It's suitable for displaying very large lists and is optimized such that
 only a small portion of the list is rendered at a given time.
 
 Check out the [List sample](http://enyojs.com/samples/list/list-contacts.html)
-to see it in action.
+to see it in action and the [List documentation](https://github.com/enyojs/enyo/wiki/Lists)
+for more information.
 
 ## Fittable
 
@@ -42,24 +43,13 @@ see `FittableColumns` and `FittableRows` in action.
 
 ## Panels
 
-The enyo.Panels kind is designed to satisfy a variety of common application
-layout use cases. For example, controls can be arranged as a carousel, a set
-of collapsing panels, a card stack that fades between panels, a grid, and
-more.
+The `enyo.Panels` kind is designed to satisfy a variety of common use cases
+for application layout.  Using `enyo.Panels`, controls may be arranged as
+(among other things) a carousel, a set of collapsing panels, a card stack
+that fades between panels, or a grid.
 
-Of the set of controls contained inside an enyo.Panels, one is considered
-active. Any enyo kind can be placed inside an enyo.Panels but by convention we
-refer to each of these controls as a "panel." The active panel is set by index
-using the setIndex method.
-
-The layout of panels is controlled by the specified layoutKind. By default,
-panels fit to the size of the Panels that contains them and transition via
-fading. To setup a carousel,  specify a layoutKind of "CarouselArranger" and
-give each panel a width.
-
-Panels are also animate and are draggable by default. These behaviors can be
-defeated by setting the draggable and animate properties to false.
-
+For more information, see the [Panels documentation](https://github.com/enyojs/enyo/wiki/Panels)
+on the Enyo wiki.
 
 ## Slidable
 
