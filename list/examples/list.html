@@ -18,6 +18,7 @@
 			background-color: gray;
 		}
 		.list {
+			width: 50%;
 			max-width: 600px;
 			margin: auto;
 			background-color: #eee;
@@ -41,7 +42,7 @@
 		enyo.kind({
 			name: "App",
 			components: [
-				{name: "list", kind: "List", count: 200000, multiSelect: false, classes: "enyo-fit list", onSetupItem: "setupItem", components: [
+				{name: "list", kind: "List", count: 20000, multiSelect: false, classes: "enyo-fit list", onSetupItem: "setupItem", components: [
 					{name: "item", classes: "item enyo-border-box", components: [
 						{name: "index", classes: "index"},
 						{name: "name"}

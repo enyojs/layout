@@ -31,6 +31,15 @@
 		.wide > * {
 			min-width: 50%;
 		}
+		
+		/* IE8 panel height hack */
+		@media \0screen {
+			.panels {
+				height: 320px;
+				min-height: 0px;
+			}
+		}
+
 	</style>
 </head>
 <body>
