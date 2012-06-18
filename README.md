@@ -1,3 +1,8 @@
+### Looking for the issue tracker?  
+It's moved to [https://enyojs.atlassian.net](https://enyojs.atlassian.net).
+
+---
+
 This is a layout library for Enyo 2. This library provides a collection of
 layout functionality
 
