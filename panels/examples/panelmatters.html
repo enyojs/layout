@@ -51,10 +51,31 @@
 		.collapsible > * {
 			min-width: 250px;
 		}
+
+		.spiral > * {
+			min-width:150px;
+			min-height:150px;
+			max-height:150px;
+			max-width:150px;
+		}
+
+		.grid > * {
+			min-width:300px;
+			min-height:300px;
+			max-height:300px;
+			max-width:300px;
+		}
 	</style>
 </head>
 <body>
 	<script>
+		enyo.kind({
+			name: "MyGridArranger",
+			kind: "GridArranger",
+			colHeight: "300",
+			colWidth: "300"
+		});
+
 		enyo.kind({
 			name: "SamplePanels",
 			kind: "Panels",
@@ -82,7 +103,11 @@
 			{name: "CardArranger", arrangerKind: "CardArranger"},
 			{name: "CardSlideInArranger", arrangerKind: "CardSlideInArranger"},
 			{name: "CarouselArranger", arrangerKind: "CarouselArranger", classes: "wide"},
-			{name: "CollapsingArranger", arrangerKind: "CollapsingArranger", classes: "collapsible"}
+			{name: "CollapsingArranger", arrangerKind: "CollapsingArranger", classes: "collapsible"},
+			{name: "LeftRightArranger", arrangerKind: "LeftRightArranger"},
+			{name: "TopBottomArranger", arrangerKind: "TopBottomArranger", classes: "topbottom"},
+			{name: "SpiralArranger", arrangerKind: "SpiralArranger", classes: "spiral"},
+			{name: "MyGridArranger", arrangerKind: "MyGridArranger", classes: "grid"}
 		];
 		
 		enyo.kind({
