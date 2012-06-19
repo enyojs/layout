@@ -20,11 +20,15 @@
 			border-radius: 0 10px 10px 0;
 			background-color: #D8D8D8;
 			box-shadow: 4px 4px 4px rgba(0,0,0,0.3);
+			-moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.3);
+			-webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.3);
 		}
 
 		.pullout {
 			background-color: #D8D8D8;
 			box-shadow: 4px 4px 4px rgba(0,0,0,0.3);
+			-moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.3);
+			-webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.3);
 			border-radius: 0 0 10px 0;
 		}
 
@@ -38,7 +42,31 @@
 		.fitting-color {
 			background: #B7BFC4;
 		}
+
+		.shadow {
+			box-shadow: -6px 0px 6px rgba(0,0,0,0.3);
+			-moz-box-shadow: -6px 0px 6px rgba(0,0,0,0.3);
+			-webkit-box-shadow: -6px 0px 6px rgba(0,0,0,0.3);
+		}
 	
+		.shadow2 {
+			box-shadow: 6px 6px 6px rgba(0,0,0,0.3);
+			-moz-box-shadow: 6px 6px 6px rgba(0,0,0,0.3);
+			-webkit-box-shadow: 6px 6px 6px rgba(0,0,0,0.3);
+		}
+
+		.shadow3 {
+			box-shadow: 0 -6px 6px rgba(0,0,0,0.3);
+			-moz-box-shadow: 0 -6px 6px rgba(0,0,0,0.3);
+			-webkit-box-shadow: 0 -6px 6px rgba(0,0,0,0.3);
+		}
+
+		.shadow4 {
+			box-shadow: 6px 0px 6px rgba(0,0,0,0.3);
+			-moz-box-shadow: 6px 0px 6px rgba(0,0,0,0.3);
+			-webkit-box-shadow: 6px 0px 6px rgba(0,0,0,0.3);
+		}
+
 	</style>
 </head>
 <body class="onyx">
@@ -64,27 +92,27 @@
 					]}
 				]},
 				{kind: "FittableColumns", fit: true, components: [
-					{style: "width: 300px;"},
-					{kind: "FittableRows", fit: true, style: "box-shadow: -6px 0px 6px rgba(0,0,0,0.3);", components: [
-						{style: "height: 300px; box-shadow: 6px 6px 6px rgba(0,0,0,0.3); position: relative; z-index: 1;"},
+					{style: "width: 30%;"},
+					{kind: "FittableRows", fit: true, classes: "shadow", components: [
+						{classes: "shadow2", style: "height: 30%; position: relative; z-index: 1;"},
 						{fit: true, classes: "fitting-color"}
 					]}
 				]}
 			]},
 			{name: "layout2", showing: false, kind: "FittableColumns", classes: "enyo-fit", components: [
-				{kind: "FittableRows", style: "width: 300px;", components: [
+				{kind: "FittableRows", style: "width: 30%;", components: [
 					{fit: true},
 					{kind: "onyx.Toolbar", components: [
 						{kind: "onyx.Button", content: "1"}
 					]}
 				]},
-				{kind: "FittableRows", style: "width: 300px; box-shadow: -6px 0px 6px rgba(0,0,0,0.3);", components: [
+				{kind: "FittableRows", classes: "shadow", components: [
 					{fit: true, style: ""},
 					{kind: "onyx.Toolbar", components: [
 						{kind: "onyx.Button", content: "2"}
 					]}
 				]},
-				{kind: "FittableRows", fit: true, style: "box-shadow: -6px 0px 6px rgba(0,0,0,0.3);", components: [
+				{kind: "FittableRows", fit: true, classes: "shadow", components: [
 					{fit: true, classes: "fitting-color"},
 					{kind: "onyx.Toolbar", components: [
 						{kind: "onyx.Button", content: "3"}
@@ -94,12 +122,12 @@
 			{name: "layout3", showing: false, kind: "FittableColumns", classes: "enyo-fit", components: [
 				{kind: "FittableRows", fit: true, components: [
 					{fit: true, classes: "fitting-color"},
-					{style: "height: 300px; position: relative; box-shadow: 0 -6px 6px rgba(0,0,0,0.3);"},
+					{classes: "shadow3", style: "height: 30%; position: relative;"},
 					{kind: "onyx.Toolbar", components: [
 						{kind: "onyx.Button", content: "1"}
 					]}
 				]},
-				{kind: "FittableRows", style: "width: 300px; position: relative; box-shadow: -6px 0px 6px rgba(0,0,0,0.3);", components: [
+				{kind: "FittableRows", classes: "shadow", style: "width: 30%; position: relative;", components: [
 					{fit: true},
 					{kind: "onyx.Toolbar", components: [
 						{kind: "onyx.Button", content: "2"}
@@ -107,9 +135,9 @@
 				]}
 			]},
 			{name: "layout4", showing: false, kind: "FittableColumns", classes: "enyo-fit", components: [
-				{kind: "FittableRows", style: "width: 300px; box-shadow: 6px 0px 6px rgba(0,0,0,0.3); position: relative; z-index: 1;", components: [
-					{style: "height: 200px;"},
-					{style: "height: 200px;"},
+				{kind: "FittableRows", classes: "shadow4", style: "width: 30%; position: relative; z-index: 1;", components: [
+					{style: "height: 20%;"},
+					{style: "height: 20%;"},
 					{fit: true},
 					{kind: "onyx.Toolbar", style: "height: 57px;", components: [
 						{content: "Toolbar"}
