@@ -53,10 +53,13 @@ enyo.kind({
 	},
 	kDragScalar: 1,
 	dragEventProp: "dx",
+	unitModifier: false,
+	canTransform: false,
 	//* @protected
 	create: function() {
 		this.inherited(arguments);
 		this.acceleratedChanged();
+		this.transformChanged();
 		this.axisChanged();
 		this.valueChanged();
 		this.addClass("enyo-slideable");
@@ -67,17 +70,51 @@ enyo.kind({
 	},
 	rendered: function() {
 		this.inherited(arguments);
+		this.canModifyUnit();
 		this.updateDragScalar();
 	},
 	resizeHandler: function() {
 		this.inherited(arguments);
 		this.updateDragScalar();
 	},
+	canModifyUnit: function() {
+		if (!this.canTransform) {
+			var b = this.getInitialStyleValue(this.hasNode(), this.boundary);
+			// If inline style of "px" exists, while unit is "%"
+			if (b.match(/px/i) && (this.unit === "%")) {
+				// Set unitModifier - used to over-ride "%"
+				this.unitModifier = this.getBounds()[this.dimension];
+			}
+		}
+	},
+	getInitialStyleValue: function(inNode, inBoundary) {
+		var s = enyo.dom.getComputedStyle(inNode);
+		if (s) {
+			return s.getPropertyValue(inBoundary);
+		} else if (inNode && inNode.currentStyle) {
+			return inNode.currentStyle[inBoundary];
+		}
+		return 0;
+	},
+	updateBounds: function(inValue, inDimensions) {
+		var inBounds = {};
+		inBounds[this.boundary] = inValue;
+		this.setBounds(inBounds, this.unit);
+		
+		this.setInlineStyles(inValue, inDimensions);
+	},
 	updateDragScalar: function() {
 		if (this.unit == "%") {
 			var d = this.getBounds()[this.dimension];
 			this.kDragScalar = d ? 100 / d : 1;
+
+			if (!this.canTransform) {
+				this.updateBounds(this.value, 100);
+			}
 		}
+	},
+	transformChanged: function() {
+		this.canTransform = enyo.dom.canTransform();
 	},
 	acceleratedChanged: function() {
 		if (!(enyo.platform.android > 2)) {
@@ -90,6 +127,23 @@ enyo.kind({
 		this.shouldDragProp = h ? "horizontal" : "vertical";
 		this.transform = h ? "translateX" : "translateY";
 		this.dimension = h ? "width" : "height";
+		this.boundary = h ? "left" : "top";
+	},
+	setInlineStyles: function(inValue, inDimensions) {
+		var inBounds = {};
+		
+		if (this.unitModifier) {
+			inBounds[this.boundary] = this.percentToPixels(inValue, this.unitModifier);
+			inBounds[this.dimension] = this.unitModifier;
+			this.setBounds(inBounds);
+		} else {
+			if (inDimensions) {
+				inBounds[this.dimension] = inDimensions;
+			} else {
+				inBounds[this.boundary] = inValue;
+			}
+			this.setBounds(inBounds, this.unit);
+		}
 	},
 	valueChanged: function(inLast) {
 		var v = this.value;
@@ -107,7 +161,14 @@ enyo.kind({
 				enyo.dom.accelerate(this, false);
 			}
 		}
-		enyo.dom.transformValue(this, this.transform, this.value + this.unit);
+
+		// If platform supports transforms
+		if (this.canTransform) {
+			enyo.dom.transformValue(this, this.transform, this.value + this.unit);
+		// else update inline styles
+		} else {
+			this.setInlineStyles(this.value, false);
+		}
 		this.doChange();
 	},
 	getAnimator: function() {
@@ -140,6 +201,13 @@ enyo.kind({
 		}
 		return v;
 	},
+	percentToPixels: function(value, dimension) {
+		return Math.floor((dimension / 100) * value);
+	},
+	pixelsToPercent: function(value) {
+		var boundary = this.unitModifier ? this.getBounds()[this.dimension] : this.container.getBounds()[this.dimension];
+		return (value / boundary) * 100;
+	},
 	// dragging
 	shouldDrag: function(inEvent) {
 		return this.draggable && inEvent[this.shouldDragProp];
@@ -161,7 +229,7 @@ enyo.kind({
 	drag: function(inSender, inEvent) {
 		if (this.dragging) {
 			inEvent.preventDefault();
-			var d = inEvent[this.dragMoveProp] * this.kDragScalar;
+			var d = this.canTransform ? inEvent[this.dragMoveProp] * this.kDragScalar : this.pixelsToPercent(inEvent[this.dragMoveProp]);
 			var v = this.drag0 + d;
 			var dd = d - this.dragd0;
 			this.dragd0 = d;
