@@ -94,7 +94,7 @@ enyo.kind({
 		} else if (inNode && inNode.currentStyle) {
 			return inNode.currentStyle[inBoundary];
 		}
-		return 0;
+		return "0";
 	},
 	updateBounds: function(inValue, inDimensions) {
 		var inBounds = {};
