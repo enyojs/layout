@@ -24,6 +24,7 @@ enyo.kind({
 	name: "enyo.PulldownList",
 	kind: "List",
 	touch: true,
+	pully: null,
 	pulldownTools: [
 		{name: "pulldown", classes: "enyo-list-pulldown", components: [
 			{name: "puller", kind: "Puller"}
@@ -52,7 +53,7 @@ enyo.kind({
 	loadingIconClass: "",
 	//* @protected
 	create: function() {
-		var p = {name: "pully", kind: "Puller", showing: false, text: this.loadingMessage, iconClass: this.loadingIconClass};
+		var p = {kind: "Puller", showing: false, text: this.loadingMessage, iconClass: this.loadingIconClass, onCreate: "setPully"};
 		this.listTools.splice(0, 0, p);
 		this.inherited(arguments);
 		this.setPulling();
@@ -63,6 +64,9 @@ enyo.kind({
 		this.translation = this.accel ? "translate3d" : "translate";
 		this.inherited(arguments);
 	},
+	setPully: function(inSender, inEvent) {
+		this.pully = inEvent.originator;
+	},
 	scrollStartHandler: function() {
 		this.firedPullStart = false;
 		this.firedPull = false;
@@ -70,7 +74,7 @@ enyo.kind({
 	},
 	scrollHandler: function(inSender) {
 		if (this.completingPull) {
-			this.$.pully.setShowing(false);
+			this.pully.setShowing(false);
 		}
 		var s = this.getStrategy().$.scrollMath;
 		var over = s.y;
@@ -116,7 +120,7 @@ enyo.kind({
 	//* @protected
 	pullStart: function() {
 		this.setPulling();
-		this.$.pully.setShowing(false);
+		this.pully.setShowing(false);
 		this.$.puller.setShowing(true);
 		this.doPullStart();
 	},
@@ -130,7 +134,7 @@ enyo.kind({
 	},
 	pullRelease: function() {
 		this.$.puller.setShowing(false);
-		this.$.pully.setShowing(true);
+		this.pully.setShowing(true);
 		this.doPullRelease();
 	},
 	setPulling: function() {
@@ -150,12 +154,16 @@ enyo.kind({
 		text: "",
 		iconClass: ""
 	},
+	events: {
+		onCreate: ""
+	},
 	components: [
 		{name: "icon"},
 		{name: "text", tag: "span", classes: "enyo-puller-text"}
 	],
 	create: function() {
 		this.inherited(arguments);
+		this.doCreate();
 		this.textChanged();
 		this.iconClassChanged();
 	},
