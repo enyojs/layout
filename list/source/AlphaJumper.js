@@ -20,13 +20,14 @@ enyo.kind({
 	},
 	down: function(inSender, inEvent) {
 		if (this.tracking) {
-			this.log("error, should not be tracking");
 			enyo.dispatcher.release();
 		}
 		this.tracking = true;
 		if (this.hasNode()) {
 			var b = this.node.getBoundingClientRect();
-			this.x = b.left + b.width/2;
+			// IE8 does not return width
+			var w = (b.width === undefined) ? (b.right - b.left) : b.width;
+			this.x = b.left + w/2;
 		}
 		enyo.dispatcher.capture(this);
 		this.track(inEvent);
