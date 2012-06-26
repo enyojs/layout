@@ -1,6 +1,17 @@
+/**
+	A control that presents an alphabetic panel that you can select & track from, in order to perform
+	actions based on the item selected.
+	
+		{kind: "AlphaJumpList", onSetupItem: "setupItem", onAlphaJump: "alphaJump", components: [
+			{name: "divider"},
+			{kind: "onyx.Item"}
+		]}
+	
+*/
 enyo.kind({
 	name: "AlphaJumpList",
 	kind: "List",
+	//* @protected
 	scrollTools: [
 		{name: "jumper", kind: "AlphaJumper"}
 	],

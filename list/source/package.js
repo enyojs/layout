@@ -2,5 +2,10 @@ enyo.depends(
 	"Selection.js",
 	"FlyweightRepeater.js",
 	"List.css",
-	"List.js"
+	"List.js",
+	"AlphaJumper.css",
+	"AlphaJumper.js",
+	"AlphaJumpList.js",
+	"PulldownList.css",
+	"PulldownList.js"
 );
