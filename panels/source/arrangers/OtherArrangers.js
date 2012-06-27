@@ -49,7 +49,7 @@ enyo.kind({
 	canDragProp: "vertical",
 	axisSize: "height",
 	offAxisSize: "width",
-	axisPosition: "top",
+	axisPosition: "top"
 });
 
 enyo.kind({
