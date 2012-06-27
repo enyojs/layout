@@ -3,7 +3,7 @@
 <head>
 	<title>Panels Example: Flickr</title>
 	<!-- -->
-	<meta http-equiv="X-UA-Compatible" content="IE=IE9"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<!-- -->
@@ -194,7 +194,6 @@
 			search: function(inSearchText, inPage) {
 				this.searchText = inSearchText || this.searchText;
 				var i = (inPage || 0) * this.pageSize;
-				var range = i + "," + (i + this.pageSize);
 				var params = {
 					method: "flickr.photos.search",
 					format: "json",
