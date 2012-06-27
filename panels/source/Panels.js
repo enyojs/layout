@@ -94,7 +94,7 @@ enyo.kind({
 		if (this.isPanel(inControl)) {
 			this.flow();
 			this.reflow();
-			this.setIndex(0);
+			this.index > 0 ? this.setIndex(this.index-1) : this.setIndex(this.index);
 		}
 	},
 	isPanel: function() {
