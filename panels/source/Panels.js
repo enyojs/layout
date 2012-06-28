@@ -92,9 +92,9 @@ enyo.kind({
 	removeControl: function(inControl) {
 		this.inherited(arguments);
 		if (this.isPanel(inControl)) {
+			this.index > 0 ? this.setIndex(this.index-1) : this.setIndex(this.index);
 			this.flow();
 			this.reflow();
-			this.index > 0 ? this.setIndex(this.index-1) : this.setIndex(this.index);
 		}
 	},
 	isPanel: function() {
