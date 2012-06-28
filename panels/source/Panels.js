@@ -324,6 +324,7 @@ enyo.kind({
 			this.finishTransitionInfo = {fromIndex: this.lastIndex, toIndex: this.index};
 			this.doTransitionFinish(enyo.clone(this.finishTransitionInfo));
 		}
+		this.lastIndex=this.index;
 	},
 	// gambit: we interpolate between arrangements as needed.
 	stepTransition: function() {
@@ -381,3 +382,4 @@ enyo.kind({
 		}
 	}
 });
+
