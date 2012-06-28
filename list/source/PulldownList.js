@@ -1,13 +1,17 @@
 /**
-A list that provides pull to refresh so new data can be retrieved and updated in the list.
-	
-The PulldownList provides onPullRelease event to allow an application to start retrieving new data.  And onPullComplete event
-indicates the pull is completed and it's time to update the list with the new data.
+A list that provides a pull-to-refresh feature, which allows new data to be
+retrieved and updated in the list.
 
-	{name: "list", kind: "PulldownList", onSetupItem: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [
-		{name: "item"}
-	]}
-	
+PulldownList provides the onPullRelease event to allow an application to start
+retrieving new data.  The onPullComplete event indicates that the pull is
+complete and it's time to update the list with the new data.
+
+	{name: "list", kind: "PulldownList", onSetupItem: "setupItem",
+		onPullRelease: "pullRelease", onPullComplete: "pullComplete",
+		components: [
+			{name: "item"}
+		]}
+
 	pullRelease: function() {
 		this.search();
 	},
