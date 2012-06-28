@@ -220,15 +220,6 @@
 				this.removeItem(inEvent.index);
 				return true;
 			},
-			removeSelected: function() {
-				for (var l=this.$.list.getSelection().getSelected(), i=l.length-1; i>=0; i--) {
-					if (l[i]) {
-						this._removeItem(i);
-					}
-				}
-				this.$.list.getSelection().clear();
-				this.refreshList();
-			},
 			populateList: function() {
 				this.$.popup.hide();
 				this.createDb(this.$.countInput.getValue());
