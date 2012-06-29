@@ -42,11 +42,12 @@ enyo.kind({
 	destroy: function() {
 		var c$ = this.container.children;
 		for (var i=0, c; c=c$[i]; i++) {
+			enyo.Arranger.positionControl(c, {left: null, top: null});
+			enyo.Arranger.opacifyControl(c, 1);
 			c.applyStyle("left", null);
 			c.applyStyle("top", null);
 			c.applyStyle("height", null);
 			c.applyStyle("width", null);
-			enyo.Arranger.opacifyControl(c, 1);
 		}
 		this.inherited(arguments);
 	}
@@ -96,7 +97,6 @@ enyo.kind({
 		return this.controlWidth;
 	},
 	destroy: function() {
-		this.inherited(arguments);
 		var c$ = this.container.children;
 		for (var i=0, c; c=c$[i]; i++) {
 			c.applyStyle("z-index", null);
@@ -140,5 +140,16 @@ enyo.kind({
 	},
 	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
 		return this.colWidth;
+	},
+	destroy: function() {
+		var c$ = this.container.children;
+		for (var i=0, c; c=c$[i]; i++) {
+			enyo.Arranger.positionControl(c, {left: null, top: null});
+			c.applyStyle("left", null);
+			c.applyStyle("top", null);
+			c.applyStyle("height", null);
+			c.applyStyle("width", null);
+		}
+		this.inherited(arguments);
 	}
 });
