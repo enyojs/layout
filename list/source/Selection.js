@@ -60,7 +60,7 @@ enyo.kind({
 	//* @public
 	//* remove all selections
 	clear: function() {
-		this.selected = [];
+		this.selected = {};
 	},
 	//* returns true if the inKey row is selected
 	isSelected: function(inKey) {
@@ -101,7 +101,7 @@ enyo.kind({
 		}
 		this.setByKey(inKey, !this.isSelected(inKey), inData);
 	},
-	//* return the selection
+	//* return the selection as a hash, where each selected item has a value, unselected ones are undefined
 	getSelected: function() {
 		return this.selected;
 	}
