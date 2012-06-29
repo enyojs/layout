@@ -4,8 +4,9 @@ enyo.kind({
 	start: function() {
 		var c$ = this.container.children;
 		for (var i=0, c; c=c$[i]; i++) {
-			c.setShowing(i == this.container.fromIndex || i == this.container.toIndex);
-			if (c.showing) {
+			var wasShowing=c.showing;
+			c.setShowing(i == this.container.fromIndex || i == (this.container.toIndex));
+			if (c.showing && !wasShowing) {
 				c.resized();
 			}
 		}

@@ -15,8 +15,9 @@ enyo.kind({
 		this.inherited(arguments);
 		var c$ = this.container.children;
 		for (var i=0, c; c=c$[i]; i++) {
+			var wasShowing=c.showing;
 			c.setShowing(i == this.container.fromIndex || i == (this.container.toIndex));
-			if (c.showing) {
+			if (c.showing && !wasShowing) {
 				c.resized();
 			}
 		}
