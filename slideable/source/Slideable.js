@@ -19,7 +19,7 @@
 	The following control is placed 90% off the screen to the right, and slides
 	to its natural position.
 
-		{kind: "onyx.Slideable", value: -90, min: -90, unit: "%",
+		{kind: "enyo.Slideable", value: -90, min: -90, unit: "%",
 			classes: "enyo-fit", style: "width: 300px;",
 			components: [
 				{content: "stuff"}
@@ -165,7 +165,7 @@ enyo.kind({
 		// desktop chrome doesn't like this code path so avoid...
 		if (enyo.platform.android > 2) {
 			if (this.value) {
-				if (inLast == 0 || inLast == undefined) {
+				if (inLast === 0 || inLast === undefined) {
 					enyo.dom.accelerate(this, this.accelerated);
 				}
 			} else {
