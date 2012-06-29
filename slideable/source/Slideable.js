@@ -1,25 +1,36 @@
 /**
-	Slideable is a control that can be dragged either left/right or up/down between a minimum and maximum value.
-	When relesed from dragging, a Slideable will animate to its minimum or maximum position based on the direction dragged.
+	Slideable is a control that can be dragged either horizontally or vertically
+	between a minimum and a maximum value.  When released from dragging, a
+	Slideable will animate to its minimum or maximum position, depending on the
+	direction of the drag.
 
-	The min value may be specified to indicate a position left or top of initial position to which the Slideable may be dragged.
-	The max value may be specified to indicate a position right or bottom of initial position to which the Slideable may be dragged.
-	The value property may be specified to position the Slideable between its minimum and maximum positions.
+	The *min* value specifies a position left of or above the	initial position,
+	to which the Slideable may be dragged.
+	The *max* value specifies a position right of or below the initial position,
+	to which the Slideable may be dragged.
+	The *value* property specifies the current position of the Slideable,
+	between the minimum and maximum positions.
 
-	The units may be specified as "px" or "%" and indicate the unit for min, max, and value. The axis property controls if the 
-	Slideable slides left-right (h) or up-down (v).
+	*min*, *max*, and *value* may be specified in units of "px" or "%".
+	
+	The *axis* property controls whether the Slideable slides left-right (h) or
+	up-down (v).
 
-	The following control is placed 90% off the screen to the right and slides to its natural position.
+	The following control is placed 90% off the screen to the right, and slides
+	to its natural position.
 
-		{kind: "onyx.Slideable", value: -90, min: -90, unit: "%", classes: "enyo-fit", style: "width: 300px;", components: [
-			{content: "stuff"}
-		]}
+		{kind: "onyx.Slideable", value: -90, min: -90, unit: "%",
+			classes: "enyo-fit", style: "width: 300px;",
+			components: [
+				{content: "stuff"}
+			]
+		}
 */
 enyo.kind({
 	name: "enyo.Slideable",
 	kind: "Control",
 	published: {
-		//* Specifies direction of sliding h or v
+		//* Direction of sliding; can be "h" or "v"
 		axis: "h",
 		//* A value between min and max to position the Slideable
 		value: 0,
@@ -36,7 +47,7 @@ enyo.kind({
 		draggable: true
 	},
 	events: {
-		//* Event which fires when the Slideable finishes animating.
+		//* Fires when the Slideable finishes animating.
 		onAnimateFinish: "",
 		onChange: ""
 	},
@@ -265,15 +276,15 @@ enyo.kind({
 		});
 	},
 	//* @public
-	//* Animate to the given value.
+	//* Animates to the given value.
 	animateTo: function(inValue) {
 		this.play(this.value, inValue);
 	},
-	//* Animate to the minimum value
+	//* Animates to the minimum value.
 	animateToMin: function() {
 		this.animateTo(this.calcMin());
 	},
-	//* Animate to the maximum value
+	//* Animates to the maximum value.
 	animateToMax: function() {
 		this.animateTo(this.calcMax());
 	},
@@ -294,7 +305,7 @@ enyo.kind({
 		return true;
 	},
 	//* @public
-	//* Toggle between min and max with animation.
+	//* Toggles between min and max with animation.
 	toggleMinMax: function() {
 		this.animateToMinMax(!this.isAtMin());
 	}

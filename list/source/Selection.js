@@ -1,9 +1,9 @@
-﻿/** This is used to manage row selection state for lists. */
+﻿/** A component used to manage row selection state for lists. */
 enyo.kind({
 	name: "enyo.Selection",
 	kind: enyo.Component,
 	published: {
-		//* if true, allow multiple selections
+		//* If true, allows multiple selections.
 		multi: false
 	},
 	events: {
@@ -16,14 +16,14 @@ enyo.kind({
 					...
 
 			_inKey_ is whatever key was used to register 
-			the selection, usually a row index.
+			the selection (usually a row index).
 
 			_inPrivateData_ references data registered
 			with this key by the code that made the selection.
 		*/
 		onSelect: "",
 		/**
-			Fires when an items is  deselected.
+			Fires when an item is deselected.
 
 				{kind: "Selection", onSelect: "deselectRow"...
 				...
@@ -31,7 +31,7 @@ enyo.kind({
 					...
 
 			_inKey_ is whatever key was used to request
-			the deselection, usually a row index.
+			the deselection (usually a row index).
 
 			_inPrivateData_ references data registered
 			with this key by the code that made the original 
@@ -58,15 +58,15 @@ enyo.kind({
 		}
 	},
 	//* @public
-	//* remove all selections
+	//* Removes all selections.
 	clear: function() {
 		this.selected = {};
 	},
-	//* returns true if the inKey row is selected
+	//* Returns true if the inKey row is selected.
 	isSelected: function(inKey) {
 		return this.selected[inKey];
 	},
-	//* manually set a row to selected or unselected
+	//* Manually sets a row's state to selected or unselected.
 	setByKey: function(inKey, inSelected, inData) {
 		if (inSelected) {
 			this.selected[inKey] = (inData || true);
@@ -79,13 +79,13 @@ enyo.kind({
 		}
 		this.doChange();
 	},
-	//* deselect a row
+	//* Deselects a row.
 	deselect: function(inKey) {
 		if (this.isSelected(inKey)) {
 			this.setByKey(inKey, false);
 		}
 	},
-	//* select a row. If the selection has the multi property set to false, it will also deselect the previous selection.
+	//* Selects a row.  If the multi property is set to false, it will also deselect the previous selection.
 	select: function(inKey, inData) {
 		if (this.multi) {
 			this.setByKey(inKey, !this.isSelected(inKey), inData);
@@ -94,14 +94,14 @@ enyo.kind({
 			this.setByKey(inKey, true, inData);
 		}
 	},
-	//* toggle selection for a row. If the multi is false, toggling a selection on will deselect the previous selection
+	//* Toggles selection state for a row.  If the multi property is set to false, toggling a selection on will deselect the previous selection.
 	toggle: function(inKey, inData) {
 		if (!this.multi && this.lastSelected != inKey) {
 			this.deselect(this.lastSelected);
 		}
 		this.setByKey(inKey, !this.isSelected(inKey), inData);
 	},
-	//* return the selection as a hash, where each selected item has a value, unselected ones are undefined
+	//* Return the selection as a hash, where each selected item has a value, unselected ones are undefined.
 	getSelected: function() {
 		return this.selected;
 	}
