@@ -1,10 +1,34 @@
-﻿enyo.kind({
+/**
+	enyo.Node is a control that creates structured trees based off Enyo's child component heirachy format.
+
+		{kind: "Node", icon: "images/folder-open.png", content: "Tree", expandable: true, expanded: true, components: [
+			{icon: "images/file.png", content: "Alpha"},
+			{icon: "images/folder-open.png", content: "Bravo", expandable: true, expanded: false, components: [
+				{icon: "images/file.png", content: "Bravo-Alpha"},
+				{icon: "images/file.png", content: "Bravo-Bravo"},
+				{icon: "images/file.png", content: "Bravo-Charlie"}
+			]},
+		]}
+		
+	The default kind of components within a Node, are themselves enyo.Node, so only the top level Node of the tree needs to be explicitly defined as such.
+	
+	When an expandable tree node expands an onExpand event is sent, and when one is tapped it will send a nodeTap event.
+	
+	Optionally, there is a node property called onlyIconExpands (false by default) that when true, tapping the icon is the only way to open expandable Nodes; tapping the content label would still fire the nodeTap event, but wouldn't expand it.
+*/
+
+enyo.kind({
 	name: "enyo.Node",
 	published: {
 		//* @public
+		//* whether or not the Node is expandable and has children branches
 		expandable: false,
+		//* open/closed state of this current Node
 		expanded: false,
+		//* image path to be used for the icon for this Node
 		icon: "",
+		//* Optional flag that will have the icon trigger expanding of a Node, and not the Node contents too
+		onlyIconExpands: false,
 		//* @protected
 		//level: 0,
 		selected: false
@@ -88,8 +112,16 @@
 	},
 	//
 	tap: function(inSender, inEvent) {
-		this.toggleExpanded();
-		this.doNodeTap();
+		if(!this.onlyIconExpands) {
+			this.toggleExpanded();
+			this.doNodeTap();
+		} else {
+			if((inEvent.target==this.$.icon.hasNode())) {
+				this.toggleExpanded();
+			} else {
+				this.doNodeTap();
+			}
+		}
 		return true;
 	},
 	dblclick: function(inSender, inEvent) {
@@ -135,7 +167,7 @@
 			this.$.box.applyStyle("height", "0");
 			// slide the contents up
 			this.$.client.setBounds({top: -h});
-		}), 0);
+		}), 25);
 	},
 	expandedChanged: function(inOldExpanded) {
 		if (!this.expandable) {
