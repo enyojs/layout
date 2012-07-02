@@ -14,7 +14,7 @@
 	
 	When an expandable tree node expands an onExpand event is sent, and when one is tapped it will send a nodeTap event.
 	
-	Optionally, there is a node property called onlyIconExpands (false by default) that when true, tapping the icon is the only way to open expandable Nodes; tapping the content label would still fire the nodeTap event, but wouldn't expand it.
+	Optionally, there is a node property called onlyIconExpands (false by default) that, when true, tapping the icon is the only way to open expandable Nodes; tapping the content label would still fire the nodeTap event, but wouldn't expand it.
 */
 
 enyo.kind({
