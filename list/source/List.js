@@ -151,8 +151,9 @@ enyo.kind({
 		// update known page heights
 		if (!this.fixedHeight) {
 			var h0 = this.getPageHeight(inPageNo);
-			var h1 = this.pageHeights[inPageNo] = inTarget.getBounds().height;
-			if (h0 != h1) {
+			var h1 = inTarget.getBounds().height;
+			if (h0 != h1 && h1 != 0) {
+				this.pageHeights[inPageNo] = h1;
 				this.portSize += h1 - h0;
 			}
 		}
