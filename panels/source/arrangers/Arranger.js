@@ -1,4 +1,4 @@
-﻿/**
+/**
 	enyo.Arranger is an enyo.Layout that considers one of the controls it lays out as active.
 	The other controls are placed relative to the active control as makes sense for the layout.
 
@@ -83,7 +83,7 @@ enyo.kind({
 			var d = Math.abs(t - f) - 2;
 			var i = f;
 			while (d >= 0) {
-				i = i + (t < f ? -1 : 1)
+				i = i + (t < f ? -1 : 1);
 				p$.push(i);
 				d--;
 			}

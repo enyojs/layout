@@ -1,11 +1,12 @@
-﻿enyo.kind({
+enyo.kind({
 	name: "enyo.CardSlideInArranger",
 	kind: "CardArranger",
 	start: function() {
 		var c$ = this.container.children;
 		for (var i=0, c; c=c$[i]; i++) {
-			c.setShowing(i == this.container.fromIndex || i == this.container.toIndex);
-			if (c.showing) {
+			var wasShowing=c.showing;
+			c.setShowing(i == this.container.fromIndex || i == (this.container.toIndex));
+			if (c.showing && !wasShowing) {
 				c.resized();
 			}
 		}
@@ -14,7 +15,7 @@
 		this.container.transitionPoints = [
 			i + "." + l + ".s",
 			i + "." + l + ".f"
-		]
+		];
 	},
 	finish: function() {
 		this.inherited(arguments);
@@ -27,7 +28,7 @@
 		var p = inName.split(".");
 		var f = p[0], s= p[1], starting = (p[2] == "s");
 		var b = this.containerBounds.width;
-		for (var i=0, c$=this.container.children, c, b, v; c=c$[i]; i++) {
+		for (var i=0, c$=this.container.children, c, v; c=c$[i]; i++) {
 			v = b;
 			if (s == i) {
 				v = starting ? 0 : -b;
@@ -40,5 +41,12 @@
 			}
 			this.arrangeControl(c, {left: v});
 		}
+	},
+	destroy: function() {
+		var c$ = this.container.children;
+		for (var i=0, c; c=c$[i]; i++) {
+			enyo.Arranger.positionControl(c, {left: null});
+		}
+		this.inherited(arguments);
 	}
 });

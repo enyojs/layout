@@ -1,4 +1,4 @@
-﻿enyo.kind({
+enyo.kind({
 	name: "enyo.LeftRightArranger",
 	kind: "Arranger",
 	margin: 40,
@@ -38,6 +38,18 @@
 		var i = Math.abs(inI0 % this.c$.length);
 		//enyo.log(inI0, inI1);
 		return inA0[i][this.axisPosition] - inA1[i][this.axisPosition];
+	},
+	destroy: function() {
+		var c$ = this.container.children;
+		for (var i=0, c; c=c$[i]; i++) {
+			enyo.Arranger.positionControl(c, {left: null, top: null});
+			enyo.Arranger.opacifyControl(c, 1);
+			c.applyStyle("left", null);
+			c.applyStyle("top", null);
+			c.applyStyle("height", null);
+			c.applyStyle("width", null);
+		}
+		this.inherited(arguments);
 	}
 });
 
@@ -83,6 +95,18 @@ enyo.kind({
 	},
 	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
 		return this.controlWidth;
+	},
+	destroy: function() {
+		var c$ = this.container.children;
+		for (var i=0, c; c=c$[i]; i++) {
+			c.applyStyle("z-index", null);
+			enyo.Arranger.positionControl(c, {left: null, top: null});
+			c.applyStyle("left", null);
+			c.applyStyle("top", null);
+			c.applyStyle("height", null);
+			c.applyStyle("width", null);
+		}
+		this.inherited(arguments);
 	}
 });
 
@@ -103,6 +127,7 @@ enyo.kind({
 	arrange: function(inC, inIndex) {
 		var w=this.colWidth, h=this.colHeight;
 		var cols = Math.floor(this.containerBounds.width / w);
+		var c;
 		for (var y=0, i=0; i<inC.length; y++) {
 			for (var x=0; (x<cols) && (c=inC[i]); x++, i++) {
 				this.arrangeControl(c, {left: w*x, top: h*y});
@@ -115,5 +140,16 @@ enyo.kind({
 	},
 	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
 		return this.colWidth;
+	},
+	destroy: function() {
+		var c$ = this.container.children;
+		for (var i=0, c; c=c$[i]; i++) {
+			enyo.Arranger.positionControl(c, {left: null, top: null});
+			c.applyStyle("left", null);
+			c.applyStyle("top", null);
+			c.applyStyle("height", null);
+			c.applyStyle("width", null);
+		}
+		this.inherited(arguments);
 	}
 });

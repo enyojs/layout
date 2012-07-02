@@ -1,64 +1,50 @@
 ﻿/**
-The enyo.Panels kind is designed to satisfy a variety of common application layout use cases.
-For example, controls can be arranged as a carousel, a set of collapsing panels, a card stack
-that fades between panels, a grid, and more.
+The enyo.Panels kind is designed to satisfy a variety of common use cases for
+application layout.  Using enyo.Panels, controls may be arranged as (among other
+things) a carousel, a set of collapsing panels, a card stack that fades between
+panels, or a grid.
 
-Of the set of controls contained inside an enyo.Panels, one is considered active.
-Any enyo kind can be placed inside an enyo.Panels but by convention we refer to each of these
-controls as a "panel." The active panel is set by index using the setIndex method.
+Any Enyo control may be placed inside an enyo.Panels, but by convention we refer
+to each of these controls as a "panel."  From the set of panels in an enyo.Panels,
+one is considered active.  The active panel is set by index using the *setIndex*
+method.  The actual layout of the panels typically changes each time the active
+panel is set, such that the new active panel has the most prominent position.
 
-The layout of panels is controlled by the specified layoutKind. By default, panels fit to
-the size of the Panels that contains them and transition via fading. To setup a carousel, 
-specify a layoutKind of "CarouselArranger" and give each panel a width.
-
-Panels are also animate and are draggable by default. These behaviors can be defeated by
-setting the draggable and animate properties to false.
-
-Here's an example:
-
-		enyo.kind({
-			name: "App",
-			kind: "Panels",
-			fit: true,
-			components: [
-				{kind: "MyStartPanel"},
-				{kind: "MyMiddlePanel"},
-				{kind: "MyLastPanel"}
-			]
-		});
-		new App().write();
+For more information, see the [Panels documentation](https://github.com/enyojs/enyo/wiki/Panels)
+in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.Panels",
 	classes: "enyo-panels",
 	published: {
 		/**
-			Specify the index of the active panel. The layout of panels is
-			controlled by the layoutKind, but as a rule, the active panel is displayed
-			in the most prominent position. In the default, CardArranger layout, for example,
-			the active panel is shown and the other panels are hidden.
+			The index of the active panel. The layout of panels is controlled by
+			the layoutKind, but as a rule, the active panel is displayed in the
+			most prominent position. For example, in the (default) CardArranger
+			layout, the active panel is shown and the other panels are hidden.
 		*/
 		index: 0,
-		//* Controls if the user can drag between panels.
+		//* Controls whether the user can drag between panels.
 		draggable: true,
-		//* Controls if the panels animate when transitioning; for example, when setIndex is called.
+		//* Controls whether the panels animate when transitioning; for example, when setIndex is called.
 		animate: true,
 		wrap: false,
 		//* Sets the arranger kind to be used for dynamic layout.
 		arrangerKind: "CardArranger",
-		//* By default each panel will be sized to fit the Panels' width when 
-		//* the screen size is narrow enough (~800px). Set narrowFit to false to avoid this behavior.
+		//* By default, each panel will be sized to fit the Panels' width when 
+		//* the screen size is narrow enough (less than ~800px). Set narrowFit
+		//* to false to avoid this behavior.
 		narrowFit: true
 	},
 	events: {
 		/**
-			Event that fires at the start of a panel transition.
-			Note, this event fires when setIndex is called and also during dragging.
+			Fires at the start of a panel transition.
+			This event fires when setIndex is called and also during dragging.
 		*/
 		onTransitionStart: "",
 		/**
-			Event that fires at the end of a panel transition.
-			Note, this event fires when setIndex is called and also during dragging.
+			Fires at the end of a panel transition.
+			This event fires when setIndex is called and also during dragging.
 		*/
 		onTransitionFinish: ""
 	},
@@ -92,9 +78,9 @@ enyo.kind({
 	removeControl: function(inControl) {
 		this.inherited(arguments);
 		if (this.isPanel(inControl)) {
+			this.index > 0 ? this.setIndex(this.index-1) : this.setIndex(this.index);
 			this.flow();
 			this.reflow();
-			this.index > 0 ? this.setIndex(this.index-1) : this.setIndex(this.index);
 		}
 	},
 	isPanel: function() {
@@ -110,25 +96,27 @@ enyo.kind({
 		this.refresh();
 	},
 	//* @public
-	//* Return an array of contained panels.
+	//* Returns an array of contained panels.
 	getPanels: function() {
 		var p = this.controlParent || this;
 		return p.children;
 	},
-	//* Return a reference to the active panel; the panel at the specified index.
+	//* Returns a reference to the active panel--i.e., the panel at the specified index.
 	getActive: function() {
 		var p$ = this.getPanels();
 		return p$[this.index];
 	},
 	/**
-		Return a reference to the <a href="#enyo.Animator">enyo.Animator</a> 
+		Returns a reference to the <a href="#enyo.Animator">enyo.Animator</a> 
 		instance used to animate panel transitions. The Panels' animator can be used
-		to, for example set the duration of panel transitions: e.g. this.getAnimator().setDuration(1000);
+		to set the duration of panel transitions, e.g.:
+		
+		    this.getAnimator().setDuration(1000);
 	*/
 	getAnimator: function() {
 		return this.$.animator;
 	},
-	/** Set the active panel to the panel specified by the given index.
+	/** Sets the active panel to the panel specified by the given index.
 	Note that if the animate property is set to true, the active panel 
 	will animate into view.
 	*/
@@ -138,19 +126,21 @@ enyo.kind({
 		this.setPropertyValue("index", inIndex, "indexChanged");
 	},
 	/**
-		Set the active panel to the panel specified by the given index. 
-		Regardless of the setting of the animate property, the transition to the next panel
-		will not animate and will be immediate.
+		Sets the active panel to the panel specified by the given index. 
+		Regardless of the value of the animate property, the transition to the
+		next panel will not animate and will be immediate.
 	*/
 	setIndexDirect: function(inIndex) {
 		this.setIndex(inIndex);
 		this.completed();
 	},
-	//** Transition to the previous panel; the panel at the index one before the current active panel.
+	//* Transitions to the previous panel--i.e., the panel whose index value is
+	//* one less than that of the current active panel.
 	previous: function() {
 		this.setIndex(this.index-1);
 	},
-	//** Transition to the next panel; the panel at the index one after the current active panel.
+	//* Transitions to the next panel--i.e., the panel whose index value is one
+	//* greater than that of the current active panel.
 	next: function() {
 		this.setIndex(this.index+1);
 	},
@@ -324,6 +314,7 @@ enyo.kind({
 			this.finishTransitionInfo = {fromIndex: this.lastIndex, toIndex: this.index};
 			this.doTransitionFinish(enyo.clone(this.finishTransitionInfo));
 		}
+		this.lastIndex=this.index;
 	},
 	// gambit: we interpolate between arrangements as needed.
 	stepTransition: function() {
@@ -381,3 +372,4 @@ enyo.kind({
 		}
 	}
 });
+

@@ -1,4 +1,4 @@
-﻿enyo.kind({
+enyo.kind({
 	name: "enyo.CarouselArranger",
 	kind: "Arranger",
 	size: function() {
@@ -78,5 +78,16 @@
 	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
 		var i = Math.abs(inI0 % this.c$.length);
 		return inA0[i].left - inA1[i].left;
-	}
+	},
+	destroy: function() {
+		var c$ = this.container.children;
+		for (var i=0, c; c=c$[i]; i++) {
+			enyo.Arranger.positionControl(c, {left: null, top: null});
+			c.applyStyle("top", null);
+			c.applyStyle("bottom", null);
+			c.applyStyle("left", null);
+			c.applyStyle("width", null);
+		}
+		this.inherited(arguments);
+	}	
 });
