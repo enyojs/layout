@@ -3,17 +3,16 @@ enyo.kind({
 	kind: "FittableColumns", 
 	classes: "enyo-fit", 
 	components: [
-		{kind: "FittableRows", classes: "fittable-sample-shadow4", style: "width: 30%; position: relative; z-index: 1;", components: [
-			{style: "height: 20%;"},
-			{style: "height: 20%;"},
-			{fit: true},
-			{kind: "onyx.Toolbar", style: "height: 57px;", components: [
-				{content: "Toolbar"}
+		{kind: "FittableRows", fit: true, components: [
+			{fit: true, classes: "fittable-sample-fitting-color"},
+			{classes: "fittable-sample-shadow3", style: "height: 30%; position: relative;"},
+			{kind: "onyx.Toolbar", components: [
+				{kind: "onyx.Button", content: "1"}
 			]}
 		]},
-		{kind: "FittableRows", fit: true, components: [
-			{fit: true, classes: "fitting-color"},
-			{kind: "onyx.Toolbar", style: "height: 57px;",components: [
+		{kind: "FittableRows", classes: "fittable-sample-shadow", style: "width: 30%; position: relative;", components: [
+			{fit: true},
+			{kind: "onyx.Toolbar", components: [
 				{kind: "onyx.Button", content: "2"}
 			]}
 		]}
