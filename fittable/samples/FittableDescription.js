@@ -1,5 +1,5 @@
 enyo.kind({
-	name: "FittableDescription",
+	name: "enyo.sample.FittableDescription",
 	style: "padding:10px;",
 	components: [
 		{tag: "p", allowHtml: true, content: "FittableColumns, no margin on boxes (all divs have some padding). By default, boxes 'stretch' to fit the container (which must have a height)."},

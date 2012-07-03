@@ -1,5 +1,5 @@
 enyo.kind({
-	name: "FittableSample",
+	name: "enyo.sample.FittableSample",
 	kind: "FittableRows",
 	classes: "fittable-sample-box enyo-fit",
 	components: [

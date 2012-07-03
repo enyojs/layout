@@ -1,5 +1,5 @@
 enyo.kind({
-	name: "FittableAppLayout4",
+	name: "enyo.sample.FittableAppLayout4",
 	kind: "FittableColumns", 
 	classes: "enyo-fit", 
 	components: [
