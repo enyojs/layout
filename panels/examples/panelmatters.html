@@ -45,7 +45,7 @@
 		}
 
 		.wide > * {
-			min-width: 50%;
+			min-width: 33%;
 		}
 		
 		.collapsible > * {
@@ -80,6 +80,7 @@
 			name: "SamplePanels",
 			kind: "Panels",
 			realtimeFit: true,
+			wrap: false,
 			classes: "panels enyo-border-box",
 			bgcolors: ["red", "orange", "yellow", "green", "blue", "indigo", "violet"],
 			components: [
@@ -100,14 +101,14 @@
 		});
 		
 		var panels = [
-			{name: "CardArranger", arrangerKind: "CardArranger"},
-			{name: "CardSlideInArranger", arrangerKind: "CardSlideInArranger"},
-			{name: "CarouselArranger", arrangerKind: "CarouselArranger", classes: "wide"},
-			{name: "CollapsingArranger", arrangerKind: "CollapsingArranger", classes: "collapsible"},
-			{name: "LeftRightArranger", arrangerKind: "LeftRightArranger"},
-			{name: "TopBottomArranger", arrangerKind: "TopBottomArranger", classes: "topbottom"},
-			{name: "SpiralArranger", arrangerKind: "SpiralArranger", classes: "spiral"},
-			{name: "MyGridArranger", arrangerKind: "MyGridArranger", classes: "grid"}
+			{name: "CardArranger", arrangerKind: "CardArranger", wrap: false},
+			{name: "CardSlideInArranger", arrangerKind: "CardSlideInArranger", wrap: false},
+			{name: "CarouselArranger", arrangerKind: "CarouselArranger", classes: "wide", wrap: false},
+			{name: "CollapsingArranger", arrangerKind: "CollapsingArranger", classes: "collapsible", wrap: false},
+			{name: "LeftRightArranger", arrangerKind: "LeftRightArranger", wrap: true},
+			{name: "TopBottomArranger", arrangerKind: "TopBottomArranger", wrap: true},
+			{name: "SpiralArranger", arrangerKind: "SpiralArranger", classes: "spiral", wrap: true},
+			{name: "MyGridArranger", arrangerKind: "MyGridArranger", classes: "grid", wrap: true}
 		];
 		
 		enyo.kind({
@@ -133,11 +134,13 @@
 								{kind: "onyx.Button", content: "Previous", ontap: "prevPanel"},
 								{kind: "onyx.Button", content: "Next", ontap: "nextPanel"},
 								{kind: "onyx.InputDecorator", style: "width: 60px;", components: [
-									{kind: "onyx.Input", value: 0, onchange: "gotoPanel"}
+									{name: "panelIndex", kind: "onyx.Input", value: 0, onchange: "gotoPanel"}
 								]},
 								{kind: "onyx.Button", content: "Go", ontap: "gotoPanel"},
 								{kind: "onyx.Button", content: "Add", ontap: "addPanel"},
-								{kind: "onyx.Button", content: "Delete", ontap: "deletePanel"}
+								{kind: "onyx.Button", content: "Delete", ontap: "deletePanel"},
+								{content: "wrap"},
+								{name: "wrapCheckbox", kind: "onyx.Checkbox", disabled: true, onchange: "changeWrap"},
 							]}
 						]}
 					]},
@@ -159,6 +162,7 @@
 			},
 			itemTap: function(inSender, inEvent) {
 				var sp = this.$.samplePanels;
+				var i = sp.getIndex();
 				var p = panels[inEvent.index];
 				if (this.currentClass) {
 					sp.removeClass(this.currentClass)
@@ -167,20 +171,32 @@
 					sp.addClass(p.classes);
 					this.currentClass = p.classes;
 				}
+				if ((i < 0 || i >= (panels.length-1)) && !p.wrap) {
+					sp.setIndex(0);
+					this.$.panelIndex.setValue("0");
+				}
 				sp.setArrangerKind(p.arrangerKind);
+				sp.setWrap(p.wrap);
+				this.$.wrapCheckbox.setValue(p.wrap);
+				this.$.wrapCheckbox.setDisabled(!p.wrap);
 				if (enyo.Panels.isScreenNarrow()) {
 					this.setIndex(1);
 				}
 			},
+			changeWrap: function(inSender, inEvent) {
+				this.$.samplePanels.setWrap(inSender.getValue());
+			},
 			// panels
 			prevPanel: function() {
 				this.$.samplePanels.previous();
+				this.$.panelIndex.setValue(this.$.samplePanels.getIndex());
 			},
 			nextPanel: function() {
 				this.$.samplePanels.next();
+				this.$.panelIndex.setValue(this.$.samplePanels.getIndex());
 			},
 			gotoPanel: function() {
-				this.$.samplePanels.setIndex(this.$.input.getValue());
+				this.$.samplePanels.setIndex(this.$.panelIndex.getValue());
 			},
 			addPanel: function() {
 				var sp = this.$.samplePanels;
