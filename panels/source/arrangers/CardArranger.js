@@ -1,8 +1,8 @@
 /**
-	enyo.CardArranger is an enyo.Arranger that displays only one active 
-	control. The non-active controls are hidden with setShowing(false). 
-	Transitions between arrangements are handled by fading from one control
-	to the next.
+	_enyo.CardArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a> that
+	displays only one active control. The non-active controls are hidden with
+	_setShowing(false)_. Transitions between arrangements are handled by fading
+	from one control to the next.
 */
 enyo.kind({
 	name: "enyo.CardArranger",

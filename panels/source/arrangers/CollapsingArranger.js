@@ -1,17 +1,17 @@
 ﻿/**
-	enyo.CollapsingArranger is an enyo.Arranger that displays the active 
-	control, and some number of inactive controls, to fill the available 
-	space. The active control is positioned on the left side of the
-	container, and the rest of the views are laid out to the right, up to
-	the available space. The last control, if it's visible, expands to fill
-	whatever space is not taken by the previous controls.
-	
+	_enyo.CollapsingArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a>
+	that displays the active control, along with some number of inactive
+	controls to fill the available space. The active control is positioned on
+	the left side of the container and the rest of the views are laid out to the
+	right. The last control, if visible, will expand to fill whatever space is
+	not taken up by the previous controls.
+
 	For best results with CollapsingArranger, you should set a minimum width
-	for each control via a CSS style, for example { min-width: 25%; } or
-	{ min-width: 250px; }
-	
-	Transitions between arrangements are handled by sliding the new control
-	in from the right, and collapsing the old control to the left.
+	for each control via a CSS style, e.g., _min-width: 25%_ or
+	_min-width: 250px_.
+
+	Transitions between arrangements are handled by sliding the new control	in
+	from the right and collapsing the old control to the left.
 */
 enyo.kind({
 	name: "enyo.CollapsingArranger",
