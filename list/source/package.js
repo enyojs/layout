@@ -3,9 +3,6 @@ enyo.depends(
 	"FlyweightRepeater.js",
 	"List.css",
 	"List.js",
-	"AlphaJumper.css",
-	"AlphaJumper.js",
-	"AlphaJumpList.js",
 	"PulldownList.css",
 	"PulldownList.js"
 );
