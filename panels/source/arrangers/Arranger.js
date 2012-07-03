@@ -46,7 +46,17 @@ enyo.kind({
 	dragDirectionProp: "xDirection",
 	//* Property of the drag event that should be used to calculate if a drag should occur.
 	canDragProp: "horizontal",
-	//* @protected
+	/** 
+		if incrementalPoints is true, then transitions between non-adjacent arrangements will go through the 
+		intermediate arrangements. This is useful when direct transitions between arrangements would be visually 
+		jarring.
+	*/
+	incrementalPoints: false,
+	/**
+		Called when removing an arranger (for example, when switching a Panels to a different arrangerKind). Sub-classes
+		should implement this function to reset whatever properties they've changed on child controls. You *must* call
+		the superclass implementation in your subclass's destroy() function.
+	*/
 	destroy: function() {
 		var c$ = this.container.children;
 		for (var i=0, c; c=c$[i]; i++) {

@@ -1,4 +1,4 @@
-﻿/**
+/**
 The enyo.Panels kind is designed to satisfy a variety of common use cases for
 application layout.  Using enyo.Panels, controls may be arranged as (among other
 things) a carousel, a set of collapsing panels, a card stack that fades between
@@ -28,6 +28,7 @@ enyo.kind({
 		draggable: true,
 		//* Controls whether the panels animate when transitioning; for example, when setIndex is called.
 		animate: true,
+		//* Controls whether panels "wrap around" when moving past the end. Actual effect depends upon the arranger in use.
 		wrap: false,
 		//* Sets the arranger kind to be used for dynamic layout.
 		arrangerKind: "CardArranger",

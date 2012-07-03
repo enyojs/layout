@@ -1,7 +1,18 @@
+/**
+	enyo.LeftRightArranger is an enyo.Arranger that displays the active 
+	control, and some of the previous and next controls. The active control
+	is positioned horizontally centered in the container, and the previous
+	and next controls are laid out to the left and right, respectively.
+	
+	Transitions between arrangements are handled by sliding the new control
+	in from the right and sliding the active control out to the left.
+*/
 enyo.kind({
 	name: "enyo.LeftRightArranger",
 	kind: "Arranger",
+	//* sets the margin width in pixels (how much of the previous and next controls are visible)
 	margin: 40,
+	//* @protected
 	axisSize: "width",
 	offAxisSize: "height",
 	axisPosition: "left",
@@ -9,6 +20,7 @@ enyo.kind({
 		this.inherited(arguments);
 		this.margin = this.container.margin != null ? this.container.margin : this.margin;
 	},
+	//* @public
 	size: function() {
 		var c$ = this.container.children;
 		var port = this.containerBounds[this.axisSize];
@@ -53,21 +65,41 @@ enyo.kind({
 	}
 });
 
+/**
+	enyo.TopBottomArranger is an enyo.Arranger that displays the active 
+	control, and some of the previous and next controls. The active control
+	is positioned vertically centered in the container, and the previous
+	and next controls are laid out to the above and below, respectively.
+	
+	Transitions between arrangements are handled by sliding the new control
+	in from the bottom and sliding the active control out to the top.
+*/
 enyo.kind({
 	name: "enyo.TopBottomArranger",
 	kind: "LeftRightArranger",
 	dragProp: "ddy",
 	dragDirectionProp: "yDirection",
 	canDragProp: "vertical",
+	//* @protected
 	axisSize: "height",
 	offAxisSize: "width",
 	axisPosition: "top"
 });
 
+/**
+	enyo.SpiralArranger is an enyo.Arranger that arranges the controls 
+	in a spiral. The active control is positioned on top of the spiral, 
+	and the other controls are laid out in a spiral below.
+	
+	Transitions between arrangements are handled by rotating the new control
+	in from below and rotating the active panel down to the end of the spiral.
+*/
 enyo.kind({
 	name: "enyo.SpiralArranger",
 	kind: "Arranger",
+	//* always go through incremental arrangements when transitioning
 	incrementalPoints: true,
+	//* sets the amount of space between successive controls
 	inc: 20,
 	size: function() {
 		var c$ = this.container.children;
@@ -111,11 +143,25 @@ enyo.kind({
 });
 
 
+/**
+	enyo.GridArranger is an enyo.Arranger that arranges the controls 
+	in a grid. The active control is positioned at the top-left of 
+	the grid, and the other controls are laid out from left to right
+	and then from top to bottom.
+	
+	Transitions between arrangements are handled by moving the active
+	control to the end of the grid, and shifting the other controls
+	to the left or up to the previous row to fill the space.
+*/
 enyo.kind({
 	name: "enyo.GridArranger",
 	kind: "Arranger",
+	//* always go through incremental arrangements when transitioning
 	incrementalPoints: true,
+	//* @public
+	//* Column width
 	colWidth: 100,
+	//* Column height
 	colHeight: 100,
 	size: function() {
 		var c$ = this.container.children;

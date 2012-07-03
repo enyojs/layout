@@ -1,3 +1,20 @@
+/**
+	enyo.CarouselArranger is an enyo.Arranger that displays the active 
+	control, and some number of inactive controls, to fill the available 
+	space. The active control is positioned on the left side of the
+	container, and the rest of the views are laid out to the right, up to
+	the available space.
+	
+	One of the controls can have {fit: true} set, in which case it'll take any 
+	remaining space after all of the other controls have been sized.
+	
+	For best results with CarouselArranger, you should set a minimum width
+	for each control via a CSS style, like { min-width: 25%; } or 
+	{ min-width: 250px; }
+	
+	Transitions between arrangements are handled by sliding the new controls
+	in from the right, and sliding the old controls off to the left.
+*/
 enyo.kind({
 	name: "enyo.CarouselArranger",
 	kind: "Arranger",

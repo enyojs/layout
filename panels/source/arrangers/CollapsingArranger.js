@@ -1,10 +1,26 @@
-﻿enyo.kind({
+﻿/**
+	enyo.CollapsingArranger is an enyo.Arranger that displays the active 
+	control, and some number of inactive controls, to fill the available 
+	space. The active control is positioned on the left side of the
+	container, and the rest of the views are laid out to the right, up to
+	the available space. The last control, if it's visible, expands to fill
+	whatever space is not taken by the previous controls.
+	
+	For best results with CollapsingArranger, you should set a minimum width
+	for each control via a CSS style, for example { min-width: 25%; } or
+	{ min-width: 250px; }
+	
+	Transitions between arrangements are handled by sliding the new control
+	in from the right, and collapsing the old control to the left.
+*/
+enyo.kind({
 	name: "enyo.CollapsingArranger",
 	kind: "CarouselArranger",
 	size: function() {
 		this.clearLastSize();
 		this.inherited(arguments);
 	},
+	//* @protected
 	// clear size from last if it's not actually the last
 	// (required for adding another control)
 	clearLastSize: function() {
@@ -15,6 +31,7 @@
 			}
 		}
 	},
+	//* @public
 	arrange: function(inC, inIndex) {
 		var c$ = this.container.children;
 		for (var i=0, e=this.containerPadding.left, m, c; c=c$[i]; i++) {
@@ -54,6 +71,7 @@
 			this.fitControl(c, a$[l].left);
 		}
 	},
+	//* @protected
 	fitControl: function(inControl, inOffset) {
 		inControl._fit = true;
 		inControl.applyStyle("width", (this.containerBounds.width - inOffset) + "px");
