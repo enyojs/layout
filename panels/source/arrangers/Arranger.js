@@ -19,7 +19,7 @@ enyo.kind({
 	name: "enyo.Arranger",
 	kind: "Layout",
 	layoutClass: "enyo-arranger",
-	/** 
+	/**
 		Sets controls being laid out to use CSS compositing. A setting of "auto"
 		will mark controls for compositing if the platform supports it.
 	*/
@@ -30,16 +30,18 @@ enyo.kind({
 	dragDirectionProp: "xDirection",
 	//* Property of the drag event used to calculate whether a drag should occur
 	canDragProp: "horizontal",
-	/** 
-		if incrementalPoints is true, then transitions between non-adjacent arrangements will go through the 
-		intermediate arrangements. This is useful when direct transitions between arrangements would be visually 
-		jarring.
+	/**
+		If set to true, transitions between non-adjacent arrangements will go
+		through the intermediate arrangements. This is useful when direct
+		transitions between arrangements would be visually jarring.
 	*/
 	incrementalPoints: false,
 	/**
-		Called when removing an arranger (for example, when switching a Panels to a different arrangerKind). Sub-classes
-		should implement this function to reset whatever properties they've changed on child controls. You *must* call
-		the superclass implementation in your subclass's destroy() function.
+		Called when removing an arranger (for example, when switching a Panels
+		control to a different arrangerKind). Subclasses should implement this
+		function to reset whatever properties they've changed on child controls.
+		You *must* call the superclass implementation in your subclass's
+		_destroy_ function.
 	*/
 	destroy: function() {
 		var c$ = this.container.children;

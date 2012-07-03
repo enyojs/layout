@@ -26,26 +26,27 @@ enyo.kind({
 		index: 0,
 		//* Controls whether the user can drag between panels.
 		draggable: true,
-		//* Controls whether the panels animate when transitioning; for example, when setIndex is called.
+		//* Controls whether the panels animate when transitioning; for example,
+		//* when _setIndex_ is called.
 		animate: true,
 		//* Controls whether panels "wrap around" when moving past the end. Actual effect depends upon the arranger in use.
 		wrap: false,
 		//* Sets the arranger kind to be used for dynamic layout.
 		arrangerKind: "CardArranger",
 		//* By default, each panel will be sized to fit the Panels' width when 
-		//* the screen size is narrow enough (less than ~800px). Set narrowFit
-		//* to false to avoid this behavior.
+		//* the screen size is narrow enough (less than ~800px). Set to false
+		//* to avoid this behavior.
 		narrowFit: true
 	},
 	events: {
 		/**
 			Fires at the start of a panel transition.
-			This event fires when setIndex is called and also during dragging.
+			This event fires when _setIndex_ is called and also during dragging.
 		*/
 		onTransitionStart: "",
 		/**
 			Fires at the end of a panel transition.
-			This event fires when setIndex is called and also during dragging.
+			This event fires when _setIndex_ is called and also during dragging.
 		*/
 		onTransitionFinish: ""
 	},
@@ -117,9 +118,10 @@ enyo.kind({
 	getAnimator: function() {
 		return this.$.animator;
 	},
-	/** Sets the active panel to the panel specified by the given index.
-	Note that if the animate property is set to true, the active panel 
-	will animate into view.
+	/**
+		Sets the active panel to the panel specified by the given index.
+		Note that if the _animate_ property is set to true, the active panel 
+		will animate into view.
 	*/
 	setIndex: function(inIndex) {
 		// override setIndex so that indexChanged is called 
@@ -128,7 +130,7 @@ enyo.kind({
 	},
 	/**
 		Sets the active panel to the panel specified by the given index. 
-		Regardless of the value of the animate property, the transition to the
+		Regardless of the value of the _animate_ property, the transition to the
 		next panel will not animate and will be immediate.
 	*/
 	setIndexDirect: function(inIndex) {
