@@ -1,4 +1,4 @@
-﻿enyo.kind({
+enyo.kind({
 	name: "enyo.CollapsingArranger",
 	kind: "CarouselArranger",
 	size: function() {
@@ -8,15 +8,16 @@
 	// clear size from last if it's not actually the last
 	// (required for adding another control)
 	clearLastSize: function() {
+		var showing=this.showingChildren();
 		for (var i=0, c$=this.container.children, c; c=c$[i]; i++) {
-			if (c._fit && i != c$.length-1) {
+			if (c._fit && i != showing.length-1) {
 				c.applyStyle("width", null);
 				c._fit = null;
 			}
 		}
 	},
 	arrange: function(inC, inIndex) {
-		var c$ = this.container.children;
+		var c$ = this.showingChildren();
 		for (var i=0, e=this.containerPadding.left, m, c; c=c$[i]; i++) {
 			this.arrangeControl(c, {left: e});
 			if (i >= inIndex) {
@@ -35,7 +36,7 @@
 	flowControl: function(inControl, inA) {
 		this.inherited(arguments);
 		if (this.container.realtimeFit) {
-			var c$ = this.container.children;
+			var c$ = this.showingChildren();
 			var l = c$.length-1;
 			var last = c$[l];
 			if (inControl == last) {
@@ -47,7 +48,7 @@
 	finish: function() {
 		this.inherited(arguments);
 		if (!this.container.realtimeFit && this.containerBounds) {
-			var c$ = this.container.children;
+			var c$ = this.showingChildren();
 			var a$ = this.container.arrangement;
 			var l = c$.length-1;
 			var c = c$[l];
@@ -58,5 +59,14 @@
 		inControl._fit = true;
 		inControl.applyStyle("width", (this.containerBounds.width - inOffset) + "px");
 		inControl.resized();	
+	},
+	showingChildren: function() {
+		var kids=[];
+		for (var i=0, c$=this.container.children, c; c=c$[i]; i++) {
+			if (c.showing) {
+				kids.push(c);
+			}
+		}
+		return kids;
 	}
 });
