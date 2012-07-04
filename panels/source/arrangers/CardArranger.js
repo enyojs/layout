@@ -13,7 +13,7 @@ enyo.kind({
 	},
 	start: function() {
 		this.inherited(arguments);
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		for (var i=0, c; c=c$[i]; i++) {
 			var wasShowing=c.showing;
 			c.setShowing(i == this.container.fromIndex || i == (this.container.toIndex));
@@ -25,13 +25,13 @@ enyo.kind({
 	},
 	finish: function() {
 		this.inherited(arguments);
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		for (var i=0, c; c=c$[i]; i++) {
 			c.setShowing(i == this.container.toIndex);
 		}
 	},
 	destroy: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		for (var i=0, c; c=c$[i]; i++) {
 			enyo.Arranger.opacifyControl(c, 1);
 			if (!c.showing) {

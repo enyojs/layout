@@ -10,7 +10,7 @@ enyo.kind({
 		this.margin = this.container.margin != null ? this.container.margin : this.margin;
 	},
 	size: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		var port = this.containerBounds[this.axisSize];
 		var box = port - this.margin -this.margin;
 		for (var i=0, b, c; c=c$[i]; i++) {
@@ -21,7 +21,7 @@ enyo.kind({
 		}
 	},
 	arrange: function(inC, inIndex) {
-		var o = Math.floor(this.container.children.length/2);
+		var o = Math.floor(this.container.getPanels().length/2);
 		var c$ = this.getOrderedControls(Math.floor(inIndex)-o);
 		var box = this.containerBounds[this.axisSize] - this.margin -this.margin;
 		var e = this.margin - box * o;
@@ -40,7 +40,7 @@ enyo.kind({
 		return inA0[i][this.axisPosition] - inA1[i][this.axisPosition];
 	},
 	destroy: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		for (var i=0, c; c=c$[i]; i++) {
 			enyo.Arranger.positionControl(c, {left: null, top: null});
 			enyo.Arranger.opacifyControl(c, 1);
@@ -70,7 +70,7 @@ enyo.kind({
 	incrementalPoints: true,
 	inc: 20,
 	size: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		var b = this.containerBounds;
 		var w = this.controlWidth = b.width/3;
 		var h = this.controlHeight = b.height/3;
@@ -97,7 +97,7 @@ enyo.kind({
 		return this.controlWidth;
 	},
 	destroy: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		for (var i=0, c; c=c$[i]; i++) {
 			c.applyStyle("z-index", null);
 			enyo.Arranger.positionControl(c, {left: null, top: null});
@@ -118,7 +118,7 @@ enyo.kind({
 	colWidth: 100,
 	colHeight: 100,
 	size: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		var w=this.colWidth, h=this.colHeight;
 		for (var i=0, c; c=c$[i]; i++) {
 			c.setBounds({width: w, height: h});
@@ -142,7 +142,7 @@ enyo.kind({
 		return this.colWidth;
 	},
 	destroy: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		for (var i=0, c; c=c$[i]; i++) {
 			enyo.Arranger.positionControl(c, {left: null, top: null});
 			c.applyStyle("left", null);
