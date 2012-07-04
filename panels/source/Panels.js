@@ -98,7 +98,10 @@ enyo.kind({
 		this.refresh();
 	},
 	//* @public
-	//* Returns an array of contained panels.
+	/**
+		Returns an array of contained panels.
+		Subclasses can override this if they don't want the arranger to layout all of their children
+	*/
 	getPanels: function() {
 		var p = this.controlParent || this;
 		return p.children;
@@ -340,7 +343,7 @@ enyo.kind({
 	fetchArrangement: function(inName) {
 		if ((inName != null) && !this.arrangements[inName] && this.layout) {
 			this.layout._arrange(inName);
-			this.arrangements[inName] = this.readArrangement(this.children);
+			this.arrangements[inName] = this.readArrangement(this.getPanels());
 		}
 		return this.arrangements[inName];
 	},

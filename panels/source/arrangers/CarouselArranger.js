@@ -18,7 +18,7 @@ enyo.kind({
 	name: "enyo.CarouselArranger",
 	kind: "Arranger",
 	size: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		var padding = this.containerPadding = this.container.hasNode() ? enyo.FittableLayout.calcPaddingExtents(this.container.node) : {};
 		var pb = this.containerBounds;
 		pb.height -= padding.top + padding.bottom;
@@ -50,7 +50,7 @@ enyo.kind({
 		}
 	},
 	arrangeNoWrap: function(inC, inName) {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		var s = this.container.clamp(inName);
 		var nw = this.containerBounds.width;
 		// do we have enough content to fill the width?
@@ -96,7 +96,7 @@ enyo.kind({
 		return inA0[i].left - inA1[i].left;
 	},
 	destroy: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		for (var i=0, c; c=c$[i]; i++) {
 			enyo.Arranger.positionControl(c, {left: null, top: null});
 			c.applyStyle("top", null);

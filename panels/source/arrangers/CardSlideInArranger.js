@@ -12,7 +12,7 @@ enyo.kind({
 	name: "enyo.CardSlideInArranger",
 	kind: "CardArranger",
 	start: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		for (var i=0, c; c=c$[i]; i++) {
 			var wasShowing=c.showing;
 			c.setShowing(i == this.container.fromIndex || i == (this.container.toIndex));
@@ -29,7 +29,7 @@ enyo.kind({
 	},
 	finish: function() {
 		this.inherited(arguments);
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		for (var i=0, c; c=c$[i]; i++) {
 			c.setShowing(i == this.container.toIndex);
 		}
@@ -38,7 +38,7 @@ enyo.kind({
 		var p = inName.split(".");
 		var f = p[0], s= p[1], starting = (p[2] == "s");
 		var b = this.containerBounds.width;
-		for (var i=0, c$=this.container.children, c, v; c=c$[i]; i++) {
+		for (var i=0, c$=this.container.getPanels(), c, v; c=c$[i]; i++) {
 			v = b;
 			if (s == i) {
 				v = starting ? 0 : -b;
@@ -53,7 +53,7 @@ enyo.kind({
 		}
 	},
 	destroy: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		for (var i=0, c; c=c$[i]; i++) {
 			enyo.Arranger.positionControl(c, {left: null});
 		}

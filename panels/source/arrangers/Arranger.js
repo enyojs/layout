@@ -44,7 +44,7 @@ enyo.kind({
 		_destroy_ function.
 	*/
 	destroy: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		for (var i=0, c; c=c$[i]; i++) {
 			c._arranger = null;
 		}
@@ -136,9 +136,9 @@ enyo.kind({
 		inControl._arranger = enyo.mixin(inControl._arranger || {}, inArrangement);
 	},
 	flow: function() {
-		this.c$ = [].concat(this.container.children);
+		this.c$ = [].concat(this.container.getPanels());
 		this.controlsIndex = 0;
-		for (var i=0, c$=this.container.children, c; c=c$[i]; i++) {
+		for (var i=0, c$=this.container.getPanels(), c; c=c$[i]; i++) {
 			enyo.dom.accelerate(c, this.accelerated);
 		}
 	},
@@ -150,7 +150,7 @@ enyo.kind({
 	flowArrangement: function() {
 		var a = this.container.arrangement;
 		if (a) {
-			for (var i=0, c$=this.container.children, c; c=c$[i]; i++) {
+			for (var i=0, c$=this.container.getPanels(), c; c=c$[i]; i++) {
 				this.flowControl(c, a[i]);
 			}
 		}
