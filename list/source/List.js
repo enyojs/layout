@@ -1,72 +1,67 @@
 /**
-	A control that displays a scrolling list of rows. It is suitable for displaying very large
-	lists. List is optimized such that only a small portion of the list is rendered
-	at a given time. A flyweight pattern is employed such that the controls placed inside the list
-	are created once but are rendered for each list item.  For this reason, it's best to use
-	only simple controls in an enyo.List like enyo.Control and enyo.Image.
+	A control that displays a scrolling list of rows, suitable for displaying
+	very large lists. _enyo.List_ is optimized such that only a small portion of
+	the list is rendered at a given time. A flyweight pattern is employed, in
+	which controls placed inside the list are created once, but rendered for
+	each list item.  For this reason, it's best to use only simple controls in
+	a List, such as <a href="#enyo.Control">enyo.Control</a> and
+	<a href="#enyo.Image">enyo.Image</a>.
 
-	## Basic Use
+	A List's _components_ block contains the controls to be used for a single
+	row. This set of controls will be rendered for each row. You may customize
+	row rendering by handling the _onSetupItem_ event.
 
-	A List's components block contains the controls to be used for a single row.
-	This set of controls will be rendered for each row.
+	Events fired from within list rows contain the _index_ property, which may
+	be used to identify the row	from which the event originated.
 
-	The onSetupItem event allows for customization of row rendering. Here's a simple example:
+	The controls inside a List are non-interactive. This means that calling
+	methods that would normally cause rendering to occur (e.g., _setContent_)
+	will not do so. However, you can force a row to render by calling
+	_renderRow(inRow)_.
 
-		components: [
-			{kind: "List", fit: true, count: 1000, onSetupItem: "setupItem", components: [
-				{classes: "item", ontap: "itemTap", components: [
-					{name: "name"},
-					{name: "index", style: "float: right;"}
-				]}
-			]}
-		],
-		setupItem: function(inSender, inEvent) {
-			// given some available data.
-			var data = this.data[inEvent.index];
-			// setup the controls for this item.
-			this.$.name.setContent(data.name);
-			this.$.index.setContent(inEvent.index);
-		}
+	In addition, you can force a row to be temporarily interactive by calling
+	_prepareRow(inRow)_. Call the _lockRow_ method when the interaction is
+	complete.
 
-	Events fired from within list rows contain the _index_ property which can used to identify the row
-	in which the event is originated from.
-	
-		itemTap: function(inSender, inEvent) {
-			alert("You tapped on row: " + inEvent.index);
-		}
-
-	## Modifying List Rows
-
-	Controls inside a list are not interactive. This means that outside the onSetupItem event, 
-	calling methods that would otherwise cause rendering to occur will not do so (e.g. setContent).
-	A row can be forced to render by calling the renderRow(inRow) method. In addition, a row can be 
-	temporarily made interactive by calling the prepareRow(inRow) method. When interaction is complete, the
-	lockRow() method should be called.
+	For more information, see the
+	[documentation on Lists](https://github.com/enyojs/enyo/wiki/Lists) in the
+	Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.List",
 	kind: "Scroller",
 	classes: "enyo-list",
 	published: {
-		//* The number of rows contained in the list. Note, as the amount of list data changes
-		//* setRows can be called to adjust the number of rows. To re-render the list at the 
-		//* current position when count has changed, call the refresh() method.
+		/**
+			The number of rows contained in the list. Note that as the amount of
+			list data changes, _setRows_ can be called to adjust the number of
+			rows. To re-render the list at the current position when the count
+			has changed, call the _refresh_ method.
+		*/
 		count: 0,
-		//* The number of rows to be shown on a given list page segment. 
-		//* It is not common to need to adjust this.
+		/**
+			The number of rows to be shown on a given list page segment. 
+			There is generally no need to adjust this value.
+		*/
 		rowsPerPage: 50,
-		//* Render the list such that row 0 is at the bottom of the viewport
-		//* and the beginning position of the list is scrolled to the bottom.
+		/**
+			If true, renders the list such that row 0 is at the bottom of the
+			viewport and the beginning position of the list is scrolled to the
+			bottom
+		*/
 		bottomUp: false,
-		//* If true, allow multiple selections
+		//* If true, multiple selections are allowed
 		multiSelect: false,
 		//* If true, the selected item will toggle
 		toggleSelected: false,
-		//* If true, the list would assume all rows have the same height for optimization
+		//* If true, the list will assume all rows have the same height for optimization
 		fixedHeight: false
 	},
 	events: {
-		//* Fired once per row at render-time, with event object: {index: <index of row>}
+		/**
+			Fires once per row at render time, with event object:
+			_{index: <index of row>}_
+		*/
 		onSetupItem: ""
 	},
 	handlers: {
@@ -300,7 +295,7 @@ enyo.kind({
 	scrollToEnd: function() {
 		this[this.bottomUp ? "scrollToTop" : "scrollToBottom"]();
 	},
-	//* Re-render the list at the current position
+	//* Re-renders the list at the current position.
 	refresh: function() {
 		this.invalidatePages();
 		this.update(this.getScrollTop());
@@ -311,7 +306,7 @@ enyo.kind({
 			this.twiddle();
 		}
 	},
-	//* Re-render the list from the beginning
+	//* Re-renders the list from the beginning.
 	reset: function() {
 		this.getSelection().clear();
 		this.invalidateMetrics();
@@ -319,32 +314,41 @@ enyo.kind({
 		this.stabilize();
 		this.scrollToStart();
 	},
-	//* Returns the selection component (<a href="#enyo.Selection">enyo.Selection</a>) that manages the selection state for this list.
+	/**
+		Returns the _selection_ component that manages the selection state for
+		this list.
+	*/
 	getSelection: function() {
 		return this.$.generator.getSelection();
 	},
-	//* Set the selection state for the given row index. 
+	//* Sets the selection state for the given row index. 
 	select: function(inIndex, inData) {
 		return this.getSelection().select(inIndex, inData);
 	},
-	//* Get the selection state for the given row index.
+	//* Gets the selection state for the given row index.
 	isSelected: function(inIndex) {
 		return this.$.generator.isSelected(inIndex);
 	},
-	//* Re-render the specified row. Call after making modifications to the row to force it to render.
+	/**
+		Re-renders the specified row. Call after making modifications to a row,
+		to force it to render.
+	*/
 	renderRow: function(inIndex) {
 		this.$.generator.renderRow(inIndex);
 	},
-	//* Prepare the row to become interactive.
+	//* Prepares the row to become interactive.
 	prepareRow: function(inIndex) {
 		this.$.generator.prepareRow(inIndex);
 	},
-	//* Restore the row to being non-interactive.
+	//* Restores the row to being non-interactive.
 	lockRow: function() {
 		this.$.generator.lockRow();
 	},
-	//* Perform a set of tasks by runnin the function inFunc on a row that require it to be interactive
-	//* when those tasks are performed. Lock the row when done.
+	/**
+		Performs a set of tasks by running the function _inFunc_ on a row (which
+		must be interactive at the time the tasks are performed). Locks the	row
+		when done.
+	*/
 	performOnRow: function(inIndex, inFunc, inContext) {
 		this.$.generator.performOnRow(inIndex, inFunc, inContext);
 	},
