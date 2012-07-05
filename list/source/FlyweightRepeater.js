@@ -1,46 +1,37 @@
 /**
-A control that displays a repeating list of rows. It is suitable for displaying medium-sized
-lists (maximum of ~100 items). A flyweight strategy is employed to render one 
-set of row controls as needed for as many rows as are contained in the repeater.
+	A control that displays a repeating list of rows, suitable for displaying
+	medium-sized lists (up to ~100 items). A flyweight strategy is employed to
+	render one set of row controls, as needed, for as many rows as are contained
+	in the repeater.
 
-##Basic Use
+	The FlyweightRepeater's _components_ block contains the controls to be used
+	for a single row. This set of controls will be rendered for each row. You
+	may customize row rendering by handling the _onSetupItem_ event.
 
-A FlyweightRepeater's components block contains the controls to be used for a single row.
-This set of controls will be rendered for each row.
-
-The onSetupItem event allows for customization of row rendering. Here's a simple example:
-
-	components: [
-		{kind: "FlyweightRepeater", count: 100, onSetupItem: "setupItem", components: [
-			{name: "item"}
-		]}
-	],
-	setupItem: function(inSender, inEvent) {
-		this.$.item.setContent("I am row: " + inEvent.index);
-	}
+	The controls inside a FlyweightRepeater are non-interactive. This means that
+	calling methods that would normally cause rendering to occur (e.g.,
+	_setContent_) will not do so. However, you can force a row to render by
+	calling	_renderRow(inRow)_.
 	
-##Modifying Rows
-
-Controls inside a FlyweightRepeater are non-interactive. This means that outside the onSetupItem event, 
-calling methods that would otherwise cause rendering to occur will not do so (e.g. setContent).
-A row can be forced to render by calling the renderRow(inRow) method. In addition, a row can be 
-temporarily made interactive by calling the prepareRow(inRow) method. When interaction is complete, the
-lockRow method should be called.
-
+	In addition, you can force a row to be temporarily interactive by calling
+	_prepareRow(inRow)_. Call the _lockRow_ method when the	interaction is
+	complete. 
 */
 enyo.kind({
 	name: "enyo.FlyweightRepeater",
 	published: {
-		//* How many rows to render
+		//* Number of rows to render
 		count: 0,
-		//* If true, allow multiple selections
+		//* If true, multiple selections are allowed
 		multiSelect: false,
 		//* If true, the selected item will toggle
 		toggleSelected: false
 	},
 	events: {
-		/** Fired once per row at render-time, with event object: 
-			{index: <index of row>, selected: <true if row is selected>} */
+		/**
+			Fires once per row at render-time, with event object: 
+			_{index: <index of row>, selected: <true if row is selected>}_
+		*/
 		onSetupItem: ""
 	},
 	components: [
@@ -60,7 +51,7 @@ enyo.kind({
 	setupItem: function(inIndex) {
 		this.doSetupItem({index: inIndex, selected: this.isSelected(inIndex)});
 	},
-	//* Render the list
+	//* Renders the list.
 	generateChildHtml: function() {
 		var h = "";
 		this.index = null;
@@ -100,15 +91,15 @@ enyo.kind({
 		this.renderRow(inEvent.key);
 	},
 	//* @public
-	// return the repeater's <a href="#enyo.Selection">selection</a> component
+	//* Returns the repeater's _selection_ component.
 	getSelection: function() {
 		return this.$.selection;
 	},
-	//* Get the selection state for the given row index.
+	//* Gets the selection state for the given row index.
 	isSelected: function(inIndex) {
 		return this.getSelection().isSelected(inIndex);
 	},
-	//* Render the row specified by inIndex.
+	//* Renders the row specified by _inIndex_.
 	renderRow: function(inIndex) {
 		//this.index = null;
 		var node = this.fetchRowNode(inIndex);
@@ -118,14 +109,14 @@ enyo.kind({
 			this.$.client.teardownChildren();
 		}
 	},
-	//* Fetch the dom node for the given row index.
+	//* Fetches the DOM node for the given row index.
 	fetchRowNode: function(inIndex) {
 		if (this.hasNode()) {
 			var n$ = this.node.querySelectorAll('[index="' + inIndex + '"]');
 			return n$ && n$[0];
 		}
 	},
-	//* Fetch the dom node for the given event.
+	//* Fetches the DOM node for the given event.
 	rowForEvent: function(inEvent) {
 		var n = inEvent.target;
 		var id = this.hasNode().id;
@@ -138,19 +129,19 @@ enyo.kind({
 		}
 		return -1;
 	},
-	//* Prepare the row specified by inIndex such that changes effected on the 
+	//* Prepares the row specified by _inIndex_ such that changes made to the
 	//* controls inside the repeater will be rendered for the given row.
 	prepareRow: function(inIndex) {
 		var n = this.fetchRowNode(inIndex);
 		enyo.FlyweightRepeater.claimNode(this.$.client, n);
 	},
-	//* Prevent changes to the controls inside the repeater from being rendered
+	//* Prevents rendering of changes made to controls inside the repeater.
 	lockRow: function() {
 		this.$.client.teardownChildren();
 	},
-	//* Prepare the row specified by inIndex such that changes effected on the 
-	//* controls in the row will be rendered in the given row; then perform
-	//* the function inFunc; finally lock the row.
+	//* Prepares the row specified by _inIndex_ such that changes made to the 
+	//* controls in the row will be rendered in the given row; then performs the
+	//* function _inFunc_, and, finally, locks the row.
 	performOnRow: function(inIndex, inFunc, inContext) {
 		if (inFunc) {
 			this.prepareRow(inIndex);
@@ -159,7 +150,8 @@ enyo.kind({
 		}
 	},
 	statics: {
-		//* Associate a flyweight rendered control (inControl) with a rendering context specified by inNode
+		//* Associates a flyweight rendered control (_inControl_) with a
+		//* rendering context specified by _inNode_.
 		claimNode: function(inControl, inNode) {
 			var n = inNode && inNode.querySelectorAll("#" + inControl.id);
 			n = n && n[0];
