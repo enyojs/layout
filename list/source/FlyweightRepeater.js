@@ -15,7 +15,11 @@
 	
 	In addition, you can force a row to be temporarily interactive by calling
 	_prepareRow(inRow)_. Call the _lockRow_ method when the	interaction is
-	complete. 
+	complete.
+	
+	For more information, see the
+	[documentation on Lists](https://github.com/enyojs/enyo/wiki/Lists) in the
+	Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.FlyweightRepeater",
@@ -29,7 +33,7 @@ enyo.kind({
 	},
 	events: {
 		/**
-			Fires once per row at render-time, with event object: 
+			Fires once per row at render time, with event object: 
 			_{index: <index of row>, selected: <true if row is selected>}_
 		*/
 		onSetupItem: ""

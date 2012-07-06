@@ -1,10 +1,11 @@
 ﻿/**
-	_enyo.FittableRows_ provides a container to lay out items as a set of horizontal rows, 
-	with most of the items having a natural size, but one item expanding to fill the remaining space. 
-	The one that grows is labeled with the attribute _fit: true_.
+	_enyo.FittableRows_ provides a container in which items are laid out in a
+	set	of horizontal rows, with most of the items having natural size, but one
+	expanding to fill the remaining space. The one that expands is labeled with
+	the attribute _fit: true_.
 	
-	For example the following will align three components as rows with the second filling 
-	the available container space between the first and third.
+	For example, the following code will align three components as rows, with
+	the second filling the available container space between the first and third.
 
 		enyo.kind({
 			kind: "FittableRows",
@@ -14,9 +15,11 @@
 				{content: "3"}
 			]
 		});
-	
-	Or instead the _layoutKind_ attribute can be set to <a href="#enyo.FittableRowsLayout">enyo.FittableRowsLayout</a>
-	in order to use a different base kind while still using the fittable layout strategy:
+
+	Alternatively, you may set a kind's _layoutKind_ property to
+	<a href="#enyo.FittableRowsLayout">enyo.FittableRowsLayout</a>
+	to use a different base kind while still employing the fittable layout
+	strategy, e.g.:
 
 		enyo.kind({
 		  kind: enyo.Control,
