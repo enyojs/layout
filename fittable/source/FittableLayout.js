@@ -1,4 +1,28 @@
-﻿enyo.kind({
+﻿/** 
+	_enyo.FittableLayout_ provides the base positioning and boundary logic around the fittable layout strategy.
+	The fittable layout strategy is based on laying out items in either a set of rows or columns, with most of
+	the items having a natural size, but one item expanding to fill the remaining space. The one that grows is
+	labeled with the attribute _fit: true_.
+	
+	For example the following, which uses the subclassing <a href="#enyo.FittableRows">enyo.FittableRows</a>
+	kind, will result in the second component filling the available space in the container between the first
+	and third components.
+	
+		enyo.kind({
+			kind: "FittableRows",
+			components: [
+				{content: "1"},
+				{content: "2", fit:true},
+				{content: "3"}
+			]
+		});
+	
+	<a href="#enyo.FittableColumnsLayout">enyo.FittableColumnsLayout</a>,
+	<a href="#enyo.FittableRowsLayout">enyo.FittableRowsLayout</a> or their sub-kinds
+	are used for layout rather than _enyo.FittableLayout_ directly since they specify properties
+	that _enyo.FittableLayout_ expects when laying items out.
+*/
+enyo.kind({
 	name: "enyo.FittableLayout",
 	kind: "Layout",
 	//* @protected
@@ -79,6 +103,8 @@
 		// note: must be border-box;
 		f.applyStyle(measure, fs + "px");
 	},
+	//* @public
+	//* Update the layout to reflect any changes to contained components or the layout container
 	reflow: function() {
 		if (this.orient == "h") {
 			this._reflow("width", "clientWidth", "left", "right");
@@ -87,6 +113,7 @@
 		}
 	},
 	statics: {
+		//* @protected
 		_ieCssToPixelValue: function(inNode, inValue) {
 			var v = inValue;
 			// From the awesome hack by Dean Edwards
@@ -123,6 +150,7 @@
 			}
 			return 0;
 		},
+		//* Get the boundaries of a node's margin or padding box
 		calcBoxExtents: function(inNode, inBox) {
 			var s = enyo.dom.getComputedStyle(inNode);
 			return {
@@ -143,6 +171,40 @@
 	}
 });
 
+/** 
+	_enyo.FittableColumnsLayout_ provides a container to lay out items as a set of vertical columns, 
+	with most of the items having a natural size, but one item expanding to fill the remaining space. 
+	The one that grows is labeled with the attribute _fit: true_.
+
+	_enyo.FittableColumnsLayout_ is meant to be used in the _layoutKind_ property of other kinds.
+	_layoutKind_ provides a way to add layout behavior in a pluggable fashion while still being
+	able to use a specific base kind.
+	
+	For example the following will align three components as columns with the second filling 
+	the available container space between the first and third.
+
+		enyo.kind({
+		  kind: enyo.Control,
+		  layoutKind: "FittableColumnsLayout",
+			components: [
+				{content: "1"},
+				{content: "2", fit:true},
+				{content: "3"}
+			]
+		});
+	
+	Or if a specific base kind is unneeded then instead of using the layoutKind attribute the base kind
+	can be set to <a href="#enyo.FittableColumns">enyo.FittableColumns</a>:
+
+		enyo.kind({
+			kind: "FittableColumns",
+			components: [
+				{content: "1"},
+				{content: "2", fit:true},
+				{content: "3"}
+			]
+		});	
+*/
 enyo.kind({
 	name: "enyo.FittableColumnsLayout",
 	kind: "FittableLayout",
@@ -150,6 +212,42 @@ enyo.kind({
 	layoutClass: "enyo-fittable-columns-layout"
 });
 
+
+
+/** 
+	_enyo.FittableRowsLayout_ provides a container to lay out items as a set of horizontal rows, 
+	with most of the items having a natural size, but one item expanding to fill the remaining space. 
+	The one that grows is labeled with the attribute _fit: true_.
+
+	_enyo.FittableRowsLayout_ is meant to be used in the _layoutKind_ property of other kinds.
+	_layoutKind_ provides a way to add layout behavior in a pluggable fashion while still being
+	able to use a specific base kind.
+	
+	For example the following will align three components as rows with the second filling 
+	the available container space between the first and third.
+
+		enyo.kind({
+		  kind: enyo.Control,
+		  layoutKind: "FittableRowsLayout",
+			components: [
+				{content: "1"},
+				{content: "2", fit:true},
+				{content: "3"}
+			]
+		});
+	
+	Or if a specific base kind is unneeded then instead of using the layoutKind attribute the base kind
+	can be set to <a href="#enyo.FittableRows">enyo.FittableRows</a>:
+
+		enyo.kind({
+			kind: "FittableRows",
+			components: [
+				{content: "1"},
+				{content: "2", fit:true},
+				{content: "3"}
+			]
+		});	
+*/
 enyo.kind({
 	name: "enyo.FittableRowsLayout",
 	kind: "FittableLayout",
