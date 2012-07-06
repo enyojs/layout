@@ -139,8 +139,8 @@
 								{kind: "onyx.Button", content: "Go", ontap: "gotoPanel"},
 								{kind: "onyx.Button", content: "Add", ontap: "addPanel"},
 								{kind: "onyx.Button", content: "Delete", ontap: "deletePanel"},
-								{content: "wrap"},
-								{name: "wrapCheckbox", kind: "onyx.Checkbox", disabled: true, onchange: "changeWrap"},
+								{content: "wrap", name: "wrapLabel", showing: false},
+								{name: "wrapCheckbox", kind: "onyx.Checkbox", showing: false, onchange: "changeWrap"},
 							]}
 						]}
 					]},
@@ -178,7 +178,8 @@
 				sp.setArrangerKind(p.arrangerKind);
 				sp.setWrap(p.wrap);
 				this.$.wrapCheckbox.setValue(p.wrap);
-				this.$.wrapCheckbox.setDisabled(!p.wrap);
+				this.$.wrapLabel.setShowing(p.wrap);
+				this.$.wrapCheckbox.setShowing(p.wrap);
 				if (enyo.Panels.isScreenNarrow()) {
 					this.setIndex(1);
 				}
