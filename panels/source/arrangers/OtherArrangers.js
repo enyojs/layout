@@ -1,7 +1,19 @@
+/**
+	_enyo.LeftRightArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a>
+	that displays the active control and some of the previous and next controls.
+	The active control is centered horizontally in the container, and the
+	previous and next controls are laid out to the left and right, respectively.
+
+	Transitions between arrangements are handled by sliding the new control
+	in from the right and sliding the active control out to the left.
+*/
 enyo.kind({
 	name: "enyo.LeftRightArranger",
 	kind: "Arranger",
+	//* The margin width (i.e., how much of the previous and next controls
+	//* are visible) in pixels 
 	margin: 40,
+	//* @protected
 	axisSize: "width",
 	offAxisSize: "height",
 	axisPosition: "left",
@@ -9,8 +21,9 @@ enyo.kind({
 		this.inherited(arguments);
 		this.margin = this.container.margin != null ? this.container.margin : this.margin;
 	},
+	//* @public
 	size: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		var port = this.containerBounds[this.axisSize];
 		var box = port - this.margin -this.margin;
 		for (var i=0, b, c; c=c$[i]; i++) {
@@ -21,7 +34,7 @@ enyo.kind({
 		}
 	},
 	arrange: function(inC, inIndex) {
-		var o = Math.floor(this.container.children.length/2);
+		var o = Math.floor(this.container.getPanels().length/2);
 		var c$ = this.getOrderedControls(Math.floor(inIndex)-o);
 		var box = this.containerBounds[this.axisSize] - this.margin -this.margin;
 		var e = this.margin - box * o;
@@ -40,7 +53,7 @@ enyo.kind({
 		return inA0[i][this.axisPosition] - inA1[i][this.axisPosition];
 	},
 	destroy: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		for (var i=0, c; c=c$[i]; i++) {
 			enyo.Arranger.positionControl(c, {left: null, top: null});
 			enyo.Arranger.opacifyControl(c, 1);
@@ -53,24 +66,44 @@ enyo.kind({
 	}
 });
 
+/**
+	_enyo.TopBottomArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a>
+	that displays the active control and some of the previous and next controls.
+	The active control is centered vertically in the container, and the previous
+	and next controls are laid out above and below, respectively.
+
+	Transitions between arrangements are handled by sliding the new control
+	in from the bottom and sliding the active control out the top.
+*/
 enyo.kind({
 	name: "enyo.TopBottomArranger",
 	kind: "LeftRightArranger",
 	dragProp: "ddy",
 	dragDirectionProp: "yDirection",
 	canDragProp: "vertical",
+	//* @protected
 	axisSize: "height",
 	offAxisSize: "width",
 	axisPosition: "top"
 });
 
+/**
+	_enyo.SpiralArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a> that
+	arranges controls in a spiral. The active control is positioned on top and
+	the other controls are laid out in a spiral pattern below.
+
+	Transitions between arrangements are handled by rotating the new control
+	up from below and rotating the active control down to the end of the spiral.
+*/
 enyo.kind({
 	name: "enyo.SpiralArranger",
 	kind: "Arranger",
+	//* Always go through incremental arrangements when transitioning
 	incrementalPoints: true,
+	//* The amount of space between successive controls
 	inc: 20,
 	size: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		var b = this.containerBounds;
 		var w = this.controlWidth = b.width/3;
 		var h = this.controlHeight = b.height/3;
@@ -97,7 +130,7 @@ enyo.kind({
 		return this.controlWidth;
 	},
 	destroy: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		for (var i=0, c; c=c$[i]; i++) {
 			c.applyStyle("z-index", null);
 			enyo.Arranger.positionControl(c, {left: null, top: null});
@@ -111,14 +144,28 @@ enyo.kind({
 });
 
 
+/**
+	_enyo.GridArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a> that
+	arranges controls in a grid. The active control is positioned at the
+	top-left of the grid and the other controls are laid out from left to right
+	and then from top to bottom.
+
+	Transitions between arrangements are handled by moving the active control to
+	the end of the grid and shifting the other controls	to the left, or up to
+	the previous row, to fill the space.
+*/
 enyo.kind({
 	name: "enyo.GridArranger",
 	kind: "Arranger",
+	//* Always go through incremental arrangements when transitioning
 	incrementalPoints: true,
+	//* @public
+	//* Column width
 	colWidth: 100,
+	//* Column height
 	colHeight: 100,
 	size: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		var w=this.colWidth, h=this.colHeight;
 		for (var i=0, c; c=c$[i]; i++) {
 			c.setBounds({width: w, height: h});
@@ -142,7 +189,7 @@ enyo.kind({
 		return this.colWidth;
 	},
 	destroy: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		for (var i=0, c; c=c$[i]; i++) {
 			enyo.Arranger.positionControl(c, {left: null, top: null});
 			c.applyStyle("left", null);

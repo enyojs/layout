@@ -19,7 +19,7 @@ enyo.kind({
 	name: "enyo.Arranger",
 	kind: "Layout",
 	layoutClass: "enyo-arranger",
-	/** 
+	/**
 		Sets controls being laid out to use CSS compositing. A setting of "auto"
 		will mark controls for compositing if the platform supports it.
 	*/
@@ -30,9 +30,21 @@ enyo.kind({
 	dragDirectionProp: "xDirection",
 	//* Property of the drag event used to calculate whether a drag should occur
 	canDragProp: "horizontal",
-	//* @protected
+	/**
+		If set to true, transitions between non-adjacent arrangements will go
+		through the intermediate arrangements. This is useful when direct
+		transitions between arrangements would be visually jarring.
+	*/
+	incrementalPoints: false,
+	/**
+		Called when removing an arranger (for example, when switching a Panels
+		control to a different arrangerKind). Subclasses should implement this
+		function to reset whatever properties they've changed on child controls.
+		You *must* call the superclass implementation in your subclass's
+		_destroy_ function.
+	*/
 	destroy: function() {
-		var c$ = this.container.children;
+		var c$ = this.container.getPanels();
 		for (var i=0, c; c=c$[i]; i++) {
 			c._arranger = null;
 		}
@@ -124,9 +136,9 @@ enyo.kind({
 		inControl._arranger = enyo.mixin(inControl._arranger || {}, inArrangement);
 	},
 	flow: function() {
-		this.c$ = [].concat(this.container.children);
+		this.c$ = [].concat(this.container.getPanels());
 		this.controlsIndex = 0;
-		for (var i=0, c$=this.container.children, c; c=c$[i]; i++) {
+		for (var i=0, c$=this.container.getPanels(), c; c=c$[i]; i++) {
 			enyo.dom.accelerate(c, this.accelerated);
 		}
 	},
@@ -138,7 +150,7 @@ enyo.kind({
 	flowArrangement: function() {
 		var a = this.container.arrangement;
 		if (a) {
-			for (var i=0, c$=this.container.children, c; c=c$[i]; i++) {
+			for (var i=0, c$=this.container.getPanels(), c; c=c$[i]; i++) {
 				this.flowControl(c, a[i]);
 			}
 		}

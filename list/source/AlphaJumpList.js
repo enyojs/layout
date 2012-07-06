@@ -12,7 +12,7 @@
 	
 */
 enyo.kind({
-	name: "AlphaJumpList",
+	name: "enyo.AlphaJumpList",
 	kind: "List",
 	//* @protected
 	scrollTools: [

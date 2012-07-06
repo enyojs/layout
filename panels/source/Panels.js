@@ -1,4 +1,4 @@
-﻿/**
+/**
 The enyo.Panels kind is designed to satisfy a variety of common use cases for
 application layout.  Using enyo.Panels, controls may be arranged as (among other
 things) a carousel, a set of collapsing panels, a card stack that fades between
@@ -26,25 +26,27 @@ enyo.kind({
 		index: 0,
 		//* Controls whether the user can drag between panels.
 		draggable: true,
-		//* Controls whether the panels animate when transitioning; for example, when setIndex is called.
+		//* Controls whether the panels animate when transitioning; for example,
+		//* when _setIndex_ is called.
 		animate: true,
+		//* Controls whether panels "wrap around" when moving past the end. Actual effect depends upon the arranger in use.
 		wrap: false,
 		//* Sets the arranger kind to be used for dynamic layout.
 		arrangerKind: "CardArranger",
 		//* By default, each panel will be sized to fit the Panels' width when 
-		//* the screen size is narrow enough (less than ~800px). Set narrowFit
-		//* to false to avoid this behavior.
+		//* the screen size is narrow enough (less than ~800px). Set to false
+		//* to avoid this behavior.
 		narrowFit: true
 	},
 	events: {
 		/**
 			Fires at the start of a panel transition.
-			This event fires when setIndex is called and also during dragging.
+			This event fires when _setIndex_ is called and also during dragging.
 		*/
 		onTransitionStart: "",
 		/**
 			Fires at the end of a panel transition.
-			This event fires when setIndex is called and also during dragging.
+			This event fires when _setIndex_ is called and also during dragging.
 		*/
 		onTransitionFinish: ""
 	},
@@ -96,7 +98,10 @@ enyo.kind({
 		this.refresh();
 	},
 	//* @public
-	//* Returns an array of contained panels.
+	/**
+		Returns an array of contained panels.
+		Subclasses can override this if they don't want the arranger to layout all of their children
+	*/
 	getPanels: function() {
 		var p = this.controlParent || this;
 		return p.children;
@@ -116,9 +121,10 @@ enyo.kind({
 	getAnimator: function() {
 		return this.$.animator;
 	},
-	/** Sets the active panel to the panel specified by the given index.
-	Note that if the animate property is set to true, the active panel 
-	will animate into view.
+	/**
+		Sets the active panel to the panel specified by the given index.
+		Note that if the _animate_ property is set to true, the active panel 
+		will animate into view.
 	*/
 	setIndex: function(inIndex) {
 		// override setIndex so that indexChanged is called 
@@ -127,7 +133,7 @@ enyo.kind({
 	},
 	/**
 		Sets the active panel to the panel specified by the given index. 
-		Regardless of the value of the animate property, the transition to the
+		Regardless of the value of the _animate_ property, the transition to the
 		next panel will not animate and will be immediate.
 	*/
 	setIndexDirect: function(inIndex) {
@@ -337,7 +343,7 @@ enyo.kind({
 	fetchArrangement: function(inName) {
 		if ((inName != null) && !this.arrangements[inName] && this.layout) {
 			this.layout._arrange(inName);
-			this.arrangements[inName] = this.readArrangement(this.children);
+			this.arrangements[inName] = this.readArrangement(this.getPanels());
 		}
 		return this.arrangements[inName];
 	},
