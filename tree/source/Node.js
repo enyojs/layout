@@ -30,7 +30,7 @@ enyo.kind({
 		//* Optional flag that will have the icon trigger expanding of a Node, and not the Node contents too
 		onlyIconExpands: false,
 		//* @protected
-		//level: 0,
+		//* Adds or removes the enyo-selected css class
 		selected: false
 	},
 	style: "padding: 0 0 0 16px;",
@@ -47,14 +47,19 @@ enyo.kind({
 			{kind: "Control", name: "client", classes: "enyo-node-client", Xstyle: "border: 1px solid lightblue;"}
 		]}
 	],
-	events: {
-		onNodeTap: "nodeTap",
-		onNodeDblClick: "nodeDblClick",
-		onExpand: "nodeExpand",
-		onDestroyed: "nodeDestroyed"
-	},
 	handlers: {
 		ondblclick: "dblclick"
+	},
+	events: {
+		//* @public
+		//* Fired when the Node is tapped
+		onNodeTap: "nodeTap",
+		//* Fired when the Node is double-clicked
+		onNodeDblClick: "nodeDblClick",
+		//* Fired when the Node is expanded or contracted, indicated by the 'expanded' property in the event data
+		onExpand: "nodeExpand",
+		//* Fired when the Node is destroyed
+		onDestroyed: "nodeDestroyed"
 	},
 	//
 	//* @protected
