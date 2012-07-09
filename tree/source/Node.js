@@ -1,5 +1,6 @@
 /**
-	enyo.Node is a control that creates structured trees based off Enyo's child component heirachy format.
+	_enyo.Node_ is a control that creates structured trees based on Enyo's child
+	component hierarchy format.
 
 		{kind: "Node", icon: "images/folder-open.png", content: "Tree", expandable: true, expanded: true, components: [
 			{icon: "images/file.png", content: "Alpha"},
@@ -9,28 +10,35 @@
 				{icon: "images/file.png", content: "Bravo-Charlie"}
 			]},
 		]}
-		
-	The default kind of components within a Node, are themselves enyo.Node, so only the top level Node of the tree needs to be explicitly defined as such.
-	
-	When an expandable tree node expands an onExpand event is sent, and when one is tapped it will send a nodeTap event.
-	
-	Optionally, there is a node property called onlyIconExpands (false by default) that, when true, tapping the icon is the only way to open expandable Nodes; tapping the content label would still fire the nodeTap event, but wouldn't expand it.
+
+	The default kind of components within a node is itself _enyo.Node_, so only
+	the	top-level node of the tree needs to be explicitly defined as such.
+
+	When an expandable tree node expands, an _onExpand_ event is sent; when it
+	is tapped, a _nodeTap_ event is sent.
+
+	When the optional property _onlyIconExpands_ is set to true, expandable
+	nodes may only be opened by tapping the icon; tapping the content label
+	will fire the _nodeTap_ event, but will not expand the node.
 */
 
 enyo.kind({
 	name: "enyo.Node",
 	published: {
 		//* @public
-		//* whether or not the Node is expandable and has children branches
+		//* Whether or not the Node is expandable and has child branches
 		expandable: false,
-		//* open/closed state of this current Node
+		//* Open/closed state of the current Node
 		expanded: false,
-		//* image path to be used for the icon for this Node
+		//* Path to image to be used as the icon for this Node
 		icon: "",
-		//* Optional flag that will have the icon trigger expanding of a Node, and not the Node contents too
+		/**
+			Optional flag that, when true, causes the Node to expand only when
+			the icon is tapped; not when the contents are tapped.
+		*/
 		onlyIconExpands: false,
 		//* @protected
-		//* Adds or removes the enyo-selected css class
+		//* Adds or removes the Enyo-selected CSS class.
 		selected: false
 	},
 	style: "padding: 0 0 0 16px;",
@@ -56,7 +64,10 @@ enyo.kind({
 		onNodeTap: "nodeTap",
 		//* Fired when the Node is double-clicked
 		onNodeDblClick: "nodeDblClick",
-		//* Fired when the Node is expanded or contracted, indicated by the 'expanded' property in the event data
+		/**
+			Fired when the Node expands or contracts, as indicated by the
+			'expanded' property in the event data
+		*/
 		onExpand: "nodeExpand",
 		//* Fired when the Node is destroyed
 		onDestroyed: "nodeDestroyed"
