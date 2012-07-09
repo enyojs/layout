@@ -17,9 +17,9 @@
 	_prepareRow(inRow)_. Call the _lockRow_ method when the	interaction is
 	complete.
 	
-	For more information, see the
-	[documentation on Lists](https://github.com/enyojs/enyo/wiki/Lists) in the
-	Enyo Developer Guide.
+	For more information, see the documentation on
+	[Lists](https://github.com/enyojs/enyo/wiki/Lists)
+	in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.FlyweightRepeater",

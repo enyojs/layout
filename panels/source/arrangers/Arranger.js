@@ -10,9 +10,9 @@
 	the Arranger kind has an `accelerated` property, which marks controls for
 	CSS compositing. The default setting of "auto" ensures that this will occur
 	if enabled by the platform.
-	
-	For more information, see the
-	<a href="https://github.com/enyojs/enyo/wiki/Arrangers">documentation for Arrangers</a>
+
+	For more information, see the documentation on
+	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers)
 	in the Enyo	Developer Guide.
 */
 enyo.kind({
