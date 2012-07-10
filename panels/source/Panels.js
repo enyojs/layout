@@ -79,13 +79,15 @@ enyo.kind({
 	},
 	removeControl: function(inControl) {
 		this.inherited(arguments);
-		if (this.isPanel(inControl)) {
-			this.index > 0 ? this.setIndex(this.index-1) : this.setIndex(this.index);
+		if (this.controls.length > 1 && this.isPanel(inControl)) {
+			this.setIndex(Math.max(this.index - 1, 0));
 			this.flow();
 			this.reflow();
 		}
 	},
 	isPanel: function() {
+		// designed to be overridden in kinds derived from Panels that have 
+		// non-panel client controls
 		return true;
 	},
 	flow: function() {
@@ -116,7 +118,7 @@ enyo.kind({
 		instance used to animate panel transitions. The Panels' animator can be used
 		to set the duration of panel transitions, e.g.:
 		
-		    this.getAnimator().setDuration(1000);
+			this.getAnimator().setDuration(1000);
 	*/
 	getAnimator: function() {
 		return this.$.animator;
@@ -243,9 +245,9 @@ enyo.kind({
 			//this.log(dx, s, as, f, af);
 		}
 		this.fraction += dx;
-		var f = this.fraction;
-		if (f > 1 || f < 0 || dragFail) {
-			if (f > 0 || dragFail) {
+		var fr = this.fraction;
+		if (fr > 1 || fr < 0 || dragFail) {
+			if (fr > 0 || dragFail) {
 				this.dragfinishTransition(inEvent);
 			}
 			this.dragstartTransition(inEvent);
@@ -284,7 +286,7 @@ enyo.kind({
 		if (this.$.animator.isAnimating()) {
 			this.$.animator.stop();
 		}
-		this.startTransition()
+		this.startTransition();
 		this.fraction = 1;
 		this.stepTransition();
 		this.finishTransition();
@@ -349,7 +351,7 @@ enyo.kind({
 	},
 	readArrangement: function(inC) {
 		var r = [];
-		for (var i=0, c$=inC, c; c=c$[i]; i++) {
+		for (var i=0, c$=inC, c; (c=c$[i]); i++) {
 			r.push(enyo.clone(c._arranger));
 		}
 		return r;
@@ -360,18 +362,21 @@ enyo.kind({
 		},
 		lerp: function(inA0, inA1, inFrac) {
 			var r = [];
-			for (var i=0, k$=enyo.keys(inA0), k; k=k$[i]; i++) {
+			for (var i=0, k$=enyo.keys(inA0), k; (k=k$[i]); i++) {
 				r.push(this.lerpObject(inA0[k], inA1[k], inFrac));
 			}
 			return r;
 		},
 		lerpObject: function(inNew, inOld, inFrac) {
 			var b = enyo.clone(inNew), n, o;
-			for (var i in inNew) {
-				n = inNew[i];
-				o =  inOld[i];
-				if (n != o) {
-					b[i] = n - (n - o) * inFrac;
+			// inOld might be undefined when deleting panels
+			if (inOld) {
+				for (var i in inNew) {
+					n = inNew[i];
+					o = inOld[i];
+					if (n != o) {
+						b[i] = n - (n - o) * inFrac;
+					}
 				}
 			}
 			return b;
