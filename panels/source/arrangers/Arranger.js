@@ -200,7 +200,7 @@ enyo.kind({
 		positionControl: function(inControl, inBounds, inUnit) {
 			var unit = inUnit || "px";
 			if (!this.updating) {
-				if (enyo.dom.canTransform()) {
+				if (enyo.dom.canTransform() && !enyo.platform.android) {
 					var l = inBounds.left, t = inBounds.top;
 					var l = enyo.isString(l) ? l : l && (l + unit);
 					var t = enyo.isString(t) ? t : t && (t + unit);
