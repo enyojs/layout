@@ -47,3 +47,30 @@
 	-moz-box-shadow: 6px 0px 6px rgba(0,0,0,0.3);
 	-webkit-box-shadow: 6px 0px 6px rgba(0,0,0,0.3);
 }
+
+.fittable-sample-boxable {
+	margin: 0.5em;
+	padding: 1em;
+	border: 0.2em solid beige;
+}
+
+.fittable-sample-boxable > * {
+	border: 0.1em dotted orange;
+	padding: 0.5em;
+}
+
+.fittable-sample-test {
+	border-width: 0.2em;
+	border-color: red;
+}
+
+.fittable-sample-small-test {
+	border-width: 0.2em;
+	border-color: red;
+	height: 150px;
+}
+
+.fittable-sample-section {
+	padding: 30px 10px 10px;
+	font-weight: bold;
+}
