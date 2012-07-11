@@ -1,15 +1,19 @@
 /**
 	_enyo.Node_ is a control that creates structured trees based on Enyo's child
-	component hierarchy format.
+	component hierarchy format, e.g.:
 
-		{kind: "Node", icon: "images/folder-open.png", content: "Tree", expandable: true, expanded: true, components: [
-			{icon: "images/file.png", content: "Alpha"},
-			{icon: "images/folder-open.png", content: "Bravo", expandable: true, expanded: false, components: [
-				{icon: "images/file.png", content: "Bravo-Alpha"},
-				{icon: "images/file.png", content: "Bravo-Bravo"},
-				{icon: "images/file.png", content: "Bravo-Charlie"}
-			]},
-		]}
+		{kind: "Node", icon: "images/folder-open.png", content: "Tree",
+			expandable: true, expanded: true, components: [
+				{icon: "images/file.png", content: "Alpha"},
+				{icon: "images/folder-open.png", content: "Bravo",
+					expandable: true, expanded: false, components: [
+						{icon: "images/file.png", content: "Bravo-Alpha"},
+						{icon: "images/file.png", content: "Bravo-Bravo"},
+						{icon: "images/file.png", content: "Bravo-Charlie"}
+					]
+				}
+			]
+		}
 
 	The default kind of components within a node is itself _enyo.Node_, so only
 	the	top-level node of the tree needs to be explicitly defined as such.
