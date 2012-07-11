@@ -38,7 +38,7 @@ enyo.kind({
 		icon: "",
 		/**
 			Optional flag that, when true, causes the Node to expand only when
-			the icon is tapped; not when the contents are tapped.
+			the icon is tapped; not when the contents are tapped
 		*/
 		onlyIconExpands: false,
 		//* @protected
