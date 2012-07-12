@@ -31,13 +31,13 @@ enyo.kind({
 			]}
 		]},
 		{kind: "Panels", name:"samplePanels", fit:true, realtimeFit: true, classes: "panels-sample-panels enyo-border-box", components: [
-			{content:1, style:"background:red;"},
-			{content:2, style:"background:orange;"},
-			{content:3, style:"background:yellow;"},
-			{content:4, style:"background:green;"},
-			{content:5, style:"background:blue;"},
-			{content:6, style:"background:indigo;"},
-			{content:7, style:"background:violet;"}
+			{content:0, style:"background:red;"},
+			{content:1, style:"background:orange;"},
+			{content:2, style:"background:yellow;"},
+			{content:3, style:"background:green;"},
+			{content:4, style:"background:blue;"},
+			{content:5, style:"background:indigo;"},
+			{content:6, style:"background:violet;"}
 		]}
 	],
 	panelArrangers: [
@@ -56,6 +56,7 @@ enyo.kind({
 		for (var i=0; i<this.panelArrangers.length; i++) {
 			this.$.pickerScroller.createComponent({content:this.panelArrangers[i].name});
 		}
+		this.panelCount=this.$.samplePanels.getPanels().length;
 	},
 	rendered: function() {
 		this.inherited(arguments);
@@ -78,16 +79,19 @@ enyo.kind({
 	// panels
 	prevPanel: function() {
 		this.$.samplePanels.previous();
+		this.$.input.setValue(this.$.samplePanels.index);
 	},
 	nextPanel: function() {
 		this.$.samplePanels.next();
+		this.$.input.setValue(this.$.samplePanels.index);
 	},
 	gotoPanel: function() {
 		this.$.samplePanels.setIndex(this.$.input.getValue());
 	},
+	panelCount: 0,
 	addPanel: function() {
 		var sp = this.$.samplePanels;
-		var i = sp.getPanels().length;
+		var i = this.panelCount++;
 		var p = sp.createComponent({
 			style:"background:" + this.bgcolors[i % this.bgcolors.length],
 			content:i

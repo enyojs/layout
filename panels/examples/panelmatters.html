@@ -92,9 +92,10 @@
 				{},
 				{}
 			],
+			panelCount:0,
 			addControl: function(inControl) {
 				this.inherited(arguments);
-				var i = this.indexOfControl(inControl);
+				var i = this.panelCount++;
 				inControl.setContent(i);
 				inControl.applyStyle("background", this.bgcolors[i % this.bgcolors.length])
 			}
