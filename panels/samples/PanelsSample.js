@@ -16,7 +16,7 @@ enyo.kind({
 					{kind: "onyx.MenuDecorator", components: [
 						{content:"Arranger"},
 						{name:"arrangerPicker", kind: "onyx.Menu", floating:true, onSelect:"arrangerSelected", components: [
-							{name: "pickerScroller", kind: "Scroller", defaultKind:"onyx.MenuItem", vertical:"auto", maxHeight:"270px"}
+							{name: "pickerScroller", kind: "Scroller", defaultKind:"onyx.MenuItem", vertical:"auto", classes: "arranger-scroller"}
 						]}
 					]},
 					{kind: "onyx.Button", content: "Previous", ontap: "prevPanel"},
