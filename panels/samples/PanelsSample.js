@@ -15,9 +15,7 @@ enyo.kind({
 				{classes: "onyx-toolbar-inline", style: "white-space: nowrap;", components: [
 					{kind: "onyx.MenuDecorator", components: [
 						{content:"Arranger"},
-						{name:"arrangerPicker", kind: "onyx.Menu", floating:true, onSelect:"arrangerSelected", components: [
-							{name: "pickerScroller", kind: "Scroller", defaultKind:"onyx.MenuItem", vertical:"auto", classes: "arranger-scroller"}
-						]}
+						{name:"arrangerPicker", kind: "onyx.Menu", floating:true, onSelect:"arrangerSelected"}
 					]},
 					{kind: "onyx.Button", content: "Previous", ontap: "prevPanel"},
 					{kind: "onyx.Button", content: "Next", ontap: "nextPanel"},
@@ -54,7 +52,7 @@ enyo.kind({
 	create: function() {
 		this.inherited(arguments);
 		for (var i=0; i<this.panelArrangers.length; i++) {
-			this.$.pickerScroller.createComponent({content:this.panelArrangers[i].name});
+			this.$.arrangerPicker.createComponent({content:this.panelArrangers[i].name});
 		}
 		this.panelCount=this.$.samplePanels.getPanels().length;
 	},
@@ -63,7 +61,7 @@ enyo.kind({
 	},
 	arrangerSelected: function(inSender, inEvent) {
 		var sp = this.$.samplePanels;
-		var p = this.panelArrangers[inEvent.originator.indexInContainer()-1];
+		var p = this.panelArrangers[inEvent.originator.indexInContainer()];
 		if (this.currentClass) {
 			sp.removeClass(this.currentClass)
 		}
