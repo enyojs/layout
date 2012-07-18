@@ -5,7 +5,7 @@ enyo.kind({
 	components: [
 		{kind: "onyx.Toolbar", components: [
 			{kind: "onyx.InputDecorator", components: [
-				{name: "searchInput", kind: "onyx.Input", onchange: "search", value: "enyojs"},
+				{name: "searchInput", kind: "onyx.Input", value: "enyojs", placeholder: "Enter seach term"},
 				{kind: "Image", src: "assets/search-input-search.png", style: "width: 20px;"}
 			]},
 			{kind: "onyx.Button", content: "search", ontap: "search"}
@@ -37,13 +37,20 @@ enyo.kind({
 		this.$.list.reset();
 	},
 	search: function() {
-		var searchText = this.$.searchInput.getValue();
-		var req = new enyo.JsonpRequest({
-			url: "http://search.twitter.com/search.json",
-			callbackName: "callback"
-		});
-		req.response(enyo.bind(this, "processSearchResults"));
-		req.go({q: searchText, rpp: 20});
+		// Capture searchText and strip any whitespace
+		var searchText = this.$.searchInput.getValue().replace(/^\s+|\s+$/g, '');
+
+		if (searchText !== "") {
+			var req = new enyo.JsonpRequest({
+				url: "http://search.twitter.com/search.json",
+				callbackName: "callback"
+			});
+			req.response(enyo.bind(this, "processSearchResults"));
+			req.go({q: searchText, rpp: 20});
+		} else {
+			// For whitespace searches, set new content value in order to display placeholder
+			this.$.searchInput.setValue(searchText);
+		}
 	},
 	processSearchResults: function(inRequest, inResponse) {
 		this.results = inResponse.results;
