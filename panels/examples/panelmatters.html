@@ -209,7 +209,11 @@
 				sp.setIndex(i);
 			},
 			deletePanel: function() {
-				this.$.samplePanels.getActive().destroy();
+				var p = this.$.samplePanels.getActive();
+				// can be undefined if no panels exist
+				if (p) {
+					p.destroy();
+				}
 			}
 		});
 		new App({fit: true, classes: "enyo-unselectable"}).write();

@@ -99,6 +99,9 @@ enyo.kind({
 		sp.setIndex(i);
 	},
 	deletePanel: function() {
-		this.$.samplePanels.getActive().destroy();
+		var p = this.$.samplePanels.getActive();
+		if (p) {
+			p.destroy();
+		}
 	}
 });

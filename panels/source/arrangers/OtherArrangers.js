@@ -26,7 +26,7 @@ enyo.kind({
 		var c$ = this.container.getPanels();
 		var port = this.containerBounds[this.axisSize];
 		var box = port - this.margin -this.margin;
-		for (var i=0, b, c; c=c$[i]; i++) {
+		for (var i=0, b, c; (c=c$[i]); i++) {
 			b = {};
 			b[this.axisSize] = box;
 			b[this.offAxisSize] = "100%";
@@ -39,10 +39,10 @@ enyo.kind({
 		var box = this.containerBounds[this.axisSize] - this.margin -this.margin;
 		var e = this.margin - box * o;
 		var m = (c$.length - 1) / 2;
-		for (var i=0, c, b, v; c=c$[i]; i++) {
+		for (var i=0, c, b, v; (c=c$[i]); i++) {
 			b = {};
 			b[this.axisPosition] = e;
-			b.opacity  = (i == 0 || i == c$.length-1) ? 0 : 1;
+			b.opacity  = (i === 0 || i == c$.length-1) ? 0 : 1;
 			this.arrangeControl(c, b);
 			e += box;
 		}
@@ -54,7 +54,7 @@ enyo.kind({
 	},
 	destroy: function() {
 		var c$ = this.container.getPanels();
-		for (var i=0, c; c=c$[i]; i++) {
+		for (var i=0, c; (c=c$[i]); i++) {
 			enyo.Arranger.positionControl(c, {left: null, top: null});
 			enyo.Arranger.opacifyControl(c, 1);
 			c.applyStyle("left", null);
@@ -107,13 +107,13 @@ enyo.kind({
 		var b = this.containerBounds;
 		var w = this.controlWidth = b.width/3;
 		var h = this.controlHeight = b.height/3;
-		for (var i=0, c; c=c$[i]; i++) {
+		for (var i=0, c; (c=c$[i]); i++) {
 			c.setBounds({width: w, height: h});
 		}
 	},
 	arrange: function(inC, inName) {
 		var s = this.inc;
-		for (var i=0, l=inC.length, c; c=inC[i]; i++) {
+		for (var i=0, l=inC.length, c; (c=inC[i]); i++) {
 			var x = Math.cos(i/l * 2*Math.PI) * i * s + this.controlWidth;
 			var y = Math.sin(i/l * 2*Math.PI) * i * s + this.controlHeight;
 			this.arrangeControl(c, {left: x, top: y});
@@ -122,7 +122,7 @@ enyo.kind({
 	start: function() {
 		this.inherited(arguments);
 		var c$ = this.getOrderedControls(this.container.toIndex);
-		for (var i=0, c; c=c$[i]; i++) {
+		for (var i=0, c; (c=c$[i]); i++) {
 			c.applyStyle("z-index", c$.length - i);
 		}
 	},
@@ -131,7 +131,7 @@ enyo.kind({
 	},
 	destroy: function() {
 		var c$ = this.container.getPanels();
-		for (var i=0, c; c=c$[i]; i++) {
+		for (var i=0, c; (c=c$[i]); i++) {
 			c.applyStyle("z-index", null);
 			enyo.Arranger.positionControl(c, {left: null, top: null});
 			c.applyStyle("left", null);
@@ -167,13 +167,13 @@ enyo.kind({
 	size: function() {
 		var c$ = this.container.getPanels();
 		var w=this.colWidth, h=this.colHeight;
-		for (var i=0, c; c=c$[i]; i++) {
+		for (var i=0, c; (c=c$[i]); i++) {
 			c.setBounds({width: w, height: h});
 		}
 	},
 	arrange: function(inC, inIndex) {
 		var w=this.colWidth, h=this.colHeight;
-		var cols = Math.floor(this.containerBounds.width / w);
+		var cols = Math.max(1, Math.floor(this.containerBounds.width / w));
 		var c;
 		for (var y=0, i=0; i<inC.length; y++) {
 			for (var x=0; (x<cols) && (c=inC[i]); x++, i++) {
@@ -183,14 +183,14 @@ enyo.kind({
 	},
 	flowControl: function(inControl, inA) {
 		this.inherited(arguments);
-		enyo.Arranger.opacifyControl(inControl, inA.top % this.colHeight != 0 ? 0.25 : 1);
+		enyo.Arranger.opacifyControl(inControl, inA.top % this.colHeight !== 0 ? 0.25 : 1);
 	},
 	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
 		return this.colWidth;
 	},
 	destroy: function() {
 		var c$ = this.container.getPanels();
-		for (var i=0, c; c=c$[i]; i++) {
+		for (var i=0, c; (c=c$[i]); i++) {
 			enyo.Arranger.positionControl(c, {left: null, top: null});
 			c.applyStyle("left", null);
 			c.applyStyle("top", null);
