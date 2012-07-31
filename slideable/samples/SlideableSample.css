@@ -1,0 +1,31 @@
+.slideable-sample {
+	position: absolute;
+	background-color: #333;
+	color: #fff;
+	/*height: 100%;
+	width: 100%*/
+}
+
+.slideable-sample.top {
+	height: 150px;
+	border: solid 1px #f00;
+}
+
+.slideable-sample.right {
+	right: 0;
+	left: auto;
+	width: 150px;
+	border: solid 1px #ff0;
+}
+
+.slideable-sample.bottom {
+	top: auto;
+	bottom: 0;
+	height: 150px;
+	border: solid 1px #fff;
+}
+
+.slideable-sample.left {
+	width: 150px;
+	border: solid 1px #0ff;
+}
