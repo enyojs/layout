@@ -1,66 +1,16 @@
 enyo.kind({
-	name: "enyo.sample.SlideableInfo",
-	kind: enyo.Control,
-	published: {
-		info: null
-	},
-	components: [
-		{layoutKind: enyo.FittableColumnsLayout, components: [
-			{content: "Name:"},
-			{style: "padding-left: .25em"},
-			{name: "name", content: ""}
-		]},
-		{layoutKind: enyo.FittableColumnsLayout, components: [
-			{content: "Axis:"},
-			{style: "padding-left: .25em"},
-			{name: "axis", content: ""}
-		]},
-		{layoutKind: enyo.FittableColumnsLayout, components: [
-			{content: "Unit:"},
-			{style: "padding-left: .25em"},
-			{name: "unit", content: ""}
-		]},
-		{layoutKind: enyo.FittableColumnsLayout, components: [
-			{content: "Min:"},
-			{style: "padding-left: .25em"},
-			{name: "min", content: ""}
-		]},
-		{layoutKind: enyo.FittableColumnsLayout, components: [
-			{content: "Max:"},
-			{style: "padding-left: .25em"},
-			{name: "max", content: ""}
-		]},
-		/*{layoutKind: enyo.FittableColumnsLayout, components: [
-			{content: "Value:"},
-			{style: "padding-left: .25em"},
-			{name: "value", content: ""}
-		]}*/
-	],
-	create: function() {
-		this.inherited(arguments);
-		this.infoChanged();
-	},
-	infoChanged: function() {
-		for (var p in this.info) {
-			if (this.$[p]) {
-				this.$[p].setContent(this.info[p]);
-			}
-		}
-	}
-});
-
-enyo.kind({
 	name: "enyo.sample.SlideableSample",
-	classes: "enyo-unselectable",
-	style: "overflow: hidden;",
+	classes: "enyo-unselectable enyo-fit",
+	style: "overflow: hidden; background-color: #000;",
 	components: [
-		{ondragstart: "suppressPanelDrag", classes: "enyo-fit", components: [
-			{name: "startTop", kind: "Slideable", axis: "v", unit: "%", min: -90, max: 0, classes: "enyo-fit slideable-sample top", components: []},
-			{name: "startRight", kind: "Slideable", axis: "h", unit: "%", min: 0, max: 90, classes: "enyo-fit slideable-sample right", components: []},
-			{name: "startBottom", kind: "Slideable", axis: "v", unit: "%", min: 0, max: 90, classes: "enyo-fit slideable-sample bottom", components: []},
-			{name: "startLeft", kind: "Slideable", axis: "h", unit: "%", min: -90, max: 0, classes: "enyo-fit slideable-sample left", components: []}
-		]}
+		{name: "top", kind: "Slideable", axis: "v", unit: "%", min: -90, max: 0, classes: "enyo-fit slideable-sample top", onChange: "updateInfo"},
+		{name: "right", kind: "Slideable", axis: "h", unit: "%", min: 0, max: 90, classes: "enyo-fit slideable-sample right", onChange: "updateInfo"},
+		{name: "bottom", kind: "Slideable", axis: "v", unit: "%", min: 0, max: 90, classes: "enyo-fit slideable-sample bottom", onChange: "updateInfo"},
+		{name: "left", kind: "Slideable", axis: "h", unit: "%", min: -90, max: 0, classes: "enyo-fit slideable-sample left", onChange: "updateInfo"}
 	],
+	handlers: {
+		ondragstart: "suppressPanelDrag"
+	},
 	create: function() {
 		this.inherited(arguments);
 		var slideables = [];
@@ -76,11 +26,73 @@ enyo.kind({
 		var slideable;
 		for (var s in inSlideables) {
 			slideable = inSlideables[s];
-			slideable.createComponent({kind: "enyo.sample.SlideableInfo", layoutKind: (slideable.axis === "v") ? enyo.FittableColumnsLayout : enyo.FittableRowsLayout, classes: "enyo-center", info: {name: slideable.name, axis: slideable.axis, unit: slideable.unit, min: slideable.min, max: slideable.max, value: slideable.value}});
+			slideable.createComponents([
+				{style: slideable.axis === "h" ? "height: 38%;" : ""}, // cheating here for the horizontal Slideables to make everything nice and (almost) centered vertically
+				{
+					kind: "enyo.sample.SlideableInfo",
+					layoutKind: (slideable.axis === "v") ? enyo.FittableColumnsLayout : enyo.FittableRowsLayout,
+					classes: "enyo-center", // cheating here for the vertical Slideables to make everything nice and centered horizontally (no effect on horizontal Slideables)
+					info: {
+						name: slideable.name,
+						axis: slideable.axis,
+						unit: slideable.unit,
+						min: slideable.min,
+						max: slideable.max,
+						value: slideable.value
+					}
+				}
+			]);
 		}
 	},
-	// keeps the view panel from resizing in Sampler app
+	updateInfo: function(inSender) {
+		inSender.waterfallDown("onUpdateInfo", {
+			name: inSender.name,
+			axis: inSender.axis,
+			unit: inSender.unit,
+			min: inSender.min,
+			max: inSender.max,
+			value: Math.round(inSender.value)
+		});
+		return true;
+	},
+	// keeps the view panel from moving in Sampler app while dragging the Slideable
 	suppressPanelDrag: function() {
+		return true;
+	}
+});
+
+enyo.kind({
+	name: "enyo.sample.SlideableInfo",
+	kind: enyo.Control,
+	published: {
+		info: null
+	},
+	components: [
+		{kind: enyo.FittableRows, classes: "slideableinfo-sample", components: [
+			{name: "name"},
+			{name: "axis"},
+			{name: "unit"},
+			{name: "min"},
+			{name: "max"},
+			{name: "value"}
+		]}
+	],
+	handlers: {
+		onUpdateInfo: "updateInfo"
+	},
+	create: function() {
+		this.inherited(arguments);
+		this.infoChanged();
+	},
+	infoChanged: function() {
+		for (var p in this.info) {
+			if (this.$[p]) {
+				this.$[p].setContent(enyo.cap(p) + ": " + this.info[p]);
+			}
+		}
+	},
+	updateInfo: function(inSender, inEvent) {
+		this.setInfo(inEvent);
 		return true;
 	}
 });
