@@ -92,9 +92,10 @@
 				{},
 				{}
 			],
+			panelCount:0,
 			addControl: function(inControl) {
 				this.inherited(arguments);
-				var i = this.indexOfControl(inControl);
+				var i = this.panelCount++;
 				inControl.setContent(i);
 				inControl.applyStyle("background", this.bgcolors[i % this.bgcolors.length])
 			}
@@ -208,7 +209,11 @@
 				sp.setIndex(i);
 			},
 			deletePanel: function() {
-				this.$.samplePanels.getActive().destroy();
+				var p = this.$.samplePanels.getActive();
+				// can be undefined if no panels exist
+				if (p) {
+					p.destroy();
+				}
 			}
 		});
 		new App({fit: true, classes: "enyo-unselectable"}).write();

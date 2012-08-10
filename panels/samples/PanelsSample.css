@@ -30,3 +30,11 @@
 	max-height:150px;
 	max-width:150px;
 }
+.arranger-scroller {
+}
+
+@media screen and (max-width: 480px) {
+	.arranger-scroller {
+		max-height: 270px;
+	}
+}
