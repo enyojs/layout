@@ -2,8 +2,8 @@
 A list that provides a pull-to-refresh feature, which allows new data to be
 retrieved and updated in the list.
 
-PulldownList provides the onPullRelease event to allow an application to start
-retrieving new data.  The onPullComplete event indicates that the pull is
+PulldownList provides the _onPullRelease_ event to allow an application to start
+retrieving new data.  The _onPullComplete_ event indicates that the pull is
 complete and it's time to update the list with the new data.
 
 	{name: "list", kind: "PulldownList", onSetupItem: "setupItem",
@@ -35,10 +35,17 @@ enyo.kind({
 		]}
 	],
 	events: {
+		//* Fires when user initiates a pull action.
 		onPullStart: "",
+		//* Fires when user cancels a pull action.
 		onPullCancel: "",
+		//* Fires while a pull action is in progress.
 		onPull: "",
+		//* Fires when the list is released following a pull action, indicating
+		//* that we are ready to retrieve data.
 		onPullRelease: "",
+		//* Fires when data retrieval is complete, indicating that the data is
+		//* is ready to be displayed.
 		onPullComplete: ""
 	},
 	handlers: {
@@ -47,9 +54,11 @@ enyo.kind({
 		onScrollStop: "scrollStopHandler",
 		ondragfinish: "dragfinish"
 	},
-	//
+	//* Message displayed when list is not being pulled 
 	pullingMessage: "Pull down to refresh...",
+	//* Message displayed while a pull action is in progress
 	pulledMessage: "Release to refresh...",
+	//* Message displayed while data is being retrieved
 	loadingMessage: "Loading...",
 	//
 	pullingIconClass: "enyo-puller-arrow enyo-puller-arrow-down",
@@ -115,7 +124,8 @@ enyo.kind({
 		}
 	},
 	//* @public
-	//* To signal that the list should execute pull completion.  This usually be called after the application has received the new data.
+	//* Signals that the list should execute pull completion. This is usually
+	//* called after the application has received the new data.
 	completePull: function() {
 		this.completingPull = true;
 		this.$.strategy.$.scrollMath.setScrollY(this.pullHeight);

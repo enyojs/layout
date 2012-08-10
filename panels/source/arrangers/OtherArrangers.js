@@ -78,8 +78,12 @@ enyo.kind({
 enyo.kind({
 	name: "enyo.TopBottomArranger",
 	kind: "LeftRightArranger",
+	//* Property of the drag event used to calculate the amount a drag moves
+	//* the layout
 	dragProp: "ddy",
+	//* Property of the drag event used to calculate the direction of a drag
 	dragDirectionProp: "yDirection",
+	//* Property of the drag event used to calculate whether a drag should occur
 	canDragProp: "vertical",
 	//* @protected
 	axisSize: "height",
