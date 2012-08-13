@@ -1,10 +1,10 @@
 /**
-	A control that displays a scrolling list of rows, suitable for displaying
-	very large lists. _enyo.List_ is optimized such that only a small portion of
-	the list is rendered at a given time. A flyweight pattern is employed, in
-	which controls placed inside the list are created once, but rendered for
-	each list item.  For this reason, it's best to use only simple controls in
-	a List, such as <a href="#enyo.Control">enyo.Control</a> and
+	_enyo.List_ is a control that displays a scrolling list of rows, suitable
+	for displaying very large lists. It is optimized such that only a small
+	portion of the list is rendered at a given time. A flyweight pattern is
+	employed, in which controls placed inside the list are created once, but
+	rendered for each list item. For this reason, it's best to use only simple
+	controls in	a List, such as <a href="#enyo.Control">enyo.Control</a> and
 	<a href="#enyo.Image">enyo.Image</a>.
 
 	A List's _components_ block contains the controls to be used for a single

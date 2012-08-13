@@ -1,17 +1,19 @@
 /**
-The enyo.Panels kind is designed to satisfy a variety of common use cases for
-application layout.  Using enyo.Panels, controls may be arranged as (among other
-things) a carousel, a set of collapsing panels, a card stack that fades between
-panels, or a grid.
+The _enyo.Panels_ kind is designed to satisfy a variety of common use cases for
+application layout. Using _enyo.Panels_, controls may be arranged as (among
+other things) a carousel, a set of collapsing panels, a card stack that fades
+between panels, or a grid.
 
-Any Enyo control may be placed inside an enyo.Panels, but by convention we refer
-to each of these controls as a "panel."  From the set of panels in an enyo.Panels,
-one is considered active.  The active panel is set by index using the *setIndex*
-method.  The actual layout of the panels typically changes each time the active
-panel is set, such that the new active panel has the most prominent position.
+Any Enyo control may be placed inside an _enyo.Panels_, but by convention we
+refer to each of these controls as a "panel." From the set of panels in an
+_enyo.Panels_, one is considered to be active. The active panel is set by index
+using the _setIndex_ method. The actual layout of the panels typically changes
+each time the active panel is set, such that the new active panel has the most
+prominent position.
 
-For more information, see the [Panels documentation](https://github.com/enyojs/enyo/wiki/Panels)
-in the Enyo Developer Guide.
+For more information, see the
+[Panels documentation](https://github.com/enyojs/enyo/wiki/Panels) in the Enyo
+Developer Guide.
 */
 enyo.kind({
 	name: "enyo.Panels",

@@ -1,8 +1,8 @@
 /**
-	A control that displays a repeating list of rows, suitable for displaying
-	medium-sized lists (up to ~100 items). A flyweight strategy is employed to
-	render one set of row controls, as needed, for as many rows as are contained
-	in the repeater.
+	_enyo.FlyweightRepeater_ is a control that displays a repeating list of
+	rows, suitable for displaying medium-sized lists (up to ~100 items). A
+	flyweight strategy is employed to render one set of row controls, as needed,
+	for as many rows as are contained in the repeater.
 
 	The FlyweightRepeater's _components_ block contains the controls to be used
 	for a single row. This set of controls will be rendered for each row. You

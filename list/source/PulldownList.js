@@ -1,6 +1,6 @@
 /**
-A list that provides a pull-to-refresh feature, which allows new data to be
-retrieved and updated in the list.
+_enyo.PulldownList_ is a list that provides a pull-to-refresh feature, which
+allows new data to be retrieved and updated in the list.
 
 PulldownList provides the _onPullRelease_ event to allow an application to start
 retrieving new data.  The _onPullComplete_ event indicates that the pull is
