@@ -359,9 +359,16 @@ enyo.kind({
 		return r;
 	},
 	statics: {
+		//* @public
+		/**
+			returns true when window width is 800px or less. This value must
+			be the same as the "max-width" media query used for panel sizing
+			in _Panels.css_.
+		**/
 		isScreenNarrow: function() {
 			return enyo.dom.getWindowWidth() <= 800;
 		},
+		//* @protected
 		lerp: function(inA0, inA1, inFrac) {
 			var r = [];
 			for (var i=0, k$=enyo.keys(inA0), k; (k=k$[i]); i++) {
