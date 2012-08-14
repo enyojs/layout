@@ -42,13 +42,17 @@ enyo.kind({
 	},
 	events: {
 		/**
-			Fires at the start of a panel transition.
-			This event fires when _setIndex_ is called and also during dragging.
+			Fires at the start of a panel transition, when _setIndex_ is called
+			and also during dragging. The _fromIndex_ property contains the
+			index of the old panel; _toIndex_ contains the index of the new
+			panel.
 		*/
 		onTransitionStart: "",
 		/**
-			Fires at the end of a panel transition.
-			This event fires when _setIndex_ is called and also during dragging.
+			Fires at the end of a panel transition, when _setIndex_ is called
+			and also during dragging. The _fromIndex_ property contains the
+			index of the old panel; _toIndex_ contains the index of the new
+			panel.
 		*/
 		onTransitionFinish: ""
 	},

@@ -50,6 +50,7 @@ enyo.kind({
 	events: {
 		//* Fires when the Slideable finishes animating.
 		onAnimateFinish: "",
+		//* Fires when the position (i.e., _value_) of the Slideable changes.
 		onChange: ""
 	},
 	//* Set to true to prevent a drag from bubbling beyond the Slideable

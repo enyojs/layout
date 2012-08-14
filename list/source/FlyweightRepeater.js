@@ -33,8 +33,9 @@ enyo.kind({
 	},
 	events: {
 		/**
-			Fires once per row at render time, with event object: 
-			_{index: <index of row>, selected: <true if row is selected>}_
+			Fires once per row at render time. The _index_ property contains the
+			current row index; the _selected_ property is a boolean	indicating
+			whether the current row is selected.
 		*/
 		onSetupItem: ""
 	},

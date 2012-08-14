@@ -59,8 +59,8 @@ enyo.kind({
 	},
 	events: {
 		/**
-			Fires once per row at render time, with event object:
-			_{index: <index of row>}_
+			Fires once per row at render time. The _index_ property contains the
+			current row index.
 		*/
 		onSetupItem: ""
 	},
