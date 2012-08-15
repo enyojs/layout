@@ -31,7 +31,8 @@ enyo.kind({
 		//* Controls whether the panels animate when transitioning; for example,
 		//* when _setIndex_ is called.
 		animate: true,
-		//* Controls whether panels "wrap around" when moving past the end. Actual effect depends upon the arranger in use.
+		//* Controls whether panels "wrap around" when moving past the end.
+		//* The actual effect depends upon the arranger in use.
 		wrap: false,
 		//* Sets the arranger kind to be used for dynamic layout.
 		arrangerKind: "CardArranger",
@@ -43,16 +44,20 @@ enyo.kind({
 	events: {
 		/**
 			Fires at the start of a panel transition, when _setIndex_ is called
-			and also during dragging. The _fromIndex_ property contains the
-			index of the old panel; _toIndex_ contains the index of the new
-			panel.
+			and also during dragging.
+			
+			_inEvent.fromIndex_ contains the index of the old panel.
+			
+			_inEvent.toIndex_ contains the index of the new panel.
 		*/
 		onTransitionStart: "",
 		/**
 			Fires at the end of a panel transition, when _setIndex_ is called
-			and also during dragging. The _fromIndex_ property contains the
-			index of the old panel; _toIndex_ contains the index of the new
-			panel.
+			and also during dragging.
+			
+			_inEvent.fromIndex_ contains the index of the old panel.
+			
+			_inEvent.toIndex_ contains the index of the new panel.
 		*/
 		onTransitionFinish: ""
 	},
