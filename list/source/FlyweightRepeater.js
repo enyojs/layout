@@ -1,8 +1,8 @@
 /**
-	A control that displays a repeating list of rows, suitable for displaying
-	medium-sized lists (up to ~100 items). A flyweight strategy is employed to
-	render one set of row controls, as needed, for as many rows as are contained
-	in the repeater.
+	_enyo.FlyweightRepeater_ is a control that displays a repeating list of
+	rows, suitable for displaying medium-sized lists (up to ~100 items). A
+	flyweight strategy is employed to render one set of row controls, as needed,
+	for as many rows as are contained in the repeater.
 
 	The FlyweightRepeater's _components_ block contains the controls to be used
 	for a single row. This set of controls will be rendered for each row. You
@@ -30,15 +30,25 @@ enyo.kind({
 		multiSelect: false,
 		//* If true, the selected item will toggle
 		toggleSelected: false,
-		//* Used to specify CSS classes for the repeater's wrapper component (client). Input is identical to enyo.Control.setClasses()
+		/**
+			Used to specify CSS classes for the repeater's wrapper component 
+			(client). Input is identical to enyo.Control.setClasses()
+		*/
 		clientClasses: '',
-		//* Used to specify custom styling for the repeater's wrapper component (client). Input is identical to enyo.Control.setStyle()
+		/**
+			Used to specify custom styling for the repeater's wrapper component 
+			(client). Input is identical to enyo.Control.setStyle()
+		*/
 		clientStyle: ''
 	},
 	events: {
 		/**
-			Fires once per row at render time, with event object: 
-			_{index: <index of row>, selected: <true if row is selected>}_
+			Fires once per row at render time.
+			
+			_inEvent.index_ contains the current row index.
+			
+			_inEvent.selected_ is a boolean indicating whether the current row
+			is selected.
 		*/
 		onSetupItem: ""
 	},
