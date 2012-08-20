@@ -50,7 +50,6 @@ enyo.kind({
 	},
 	handlers: {
 		onScrollStart: "scrollStartHandler",
-		onScroll: "scrollHandler",
 		onScrollStop: "scrollStopHandler",
 		ondragfinish: "dragfinish"
 	},
@@ -85,7 +84,8 @@ enyo.kind({
 		this.firedPull = false;
 		this.firedPullCancel = false;
 	},
-	scrollHandler: function(inSender) {
+	scroll: function(inSender, inEvent) {
+		var r = this.inherited(arguments);
 		if (this.completingPull) {
 			this.pully.setShowing(false);
 		}
@@ -109,6 +109,7 @@ enyo.kind({
 				this.pullCancel();
 			}
 		}
+		return r;
 	},
 	scrollStopHandler: function() {
 		if (this.completingPull) {
