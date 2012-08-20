@@ -29,7 +29,17 @@ enyo.kind({
 		//* If true, multiple selections are allowed
 		multiSelect: false,
 		//* If true, the selected item will toggle
-		toggleSelected: false
+		toggleSelected: false,
+		/**
+			Used to specify CSS classes for the repeater's wrapper component 
+			(client). Input is identical to enyo.Control.setClasses()
+		*/
+		clientClasses: '',
+		/**
+			Used to specify custom styling for the repeater's wrapper component 
+			(client). Input is identical to enyo.Control.setStyle()
+		*/
+		clientStyle: ''
 	},
 	events: {
 		/**
@@ -52,9 +62,17 @@ enyo.kind({
 	create: function() {
 		this.inherited(arguments);
 		this.multiSelectChanged();
+		this.clientClassesChanged();
+		this.clientStyleChanged();
 	},
 	multiSelectChanged: function() {
 		this.$.selection.setMulti(this.multiSelect);
+	},
+	clientClassesChanged: function() {
+		this.$.client.setClasses(this.clientClasses);
+	},
+	clientStyleChanged: function() {
+		this.$.client.setStyle(this.clientStyle);
 	},
 	setupItem: function(inIndex) {
 		this.doSetupItem({index: inIndex, selected: this.isSelected(inIndex)});
