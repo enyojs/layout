@@ -66,7 +66,7 @@ enyo.kind({
 		// calculate available space
 		if (n) {
 			// measure 1
-			p = enyo.FittableLayout.calcPaddingExtents(n);
+			p = enyo.dom.calcPaddingExtents(n);
 			// measure 2
 			s = n[cMeasure] - (p[mAttr] + p[nAttr]);
 			//console.log("overall size", s);
@@ -83,7 +83,7 @@ enyo.kind({
 		var l = this.getLastControl();
 		if (l) {
 			// measure 4
-			var mb = enyo.FittableLayout.getComputedStyleValue(l.hasNode(), "margin", nAttr) || 0;
+			var mb = enyo.dom.getComputedBoxValue(l.hasNode(), "margin", nAttr) || 0;
 			if (l != f) {
 				// measure 5
 				var lb = l.getBounds();
@@ -115,63 +115,6 @@ enyo.kind({
 		} else {
 			this._reflow("height", "clientHeight", "top", "bottom");
 		}
-	},
-	statics: {
-		//* @protected
-		_ieCssToPixelValue: function(inNode, inValue) {
-			var v = inValue;
-			// From the awesome hack by Dean Edwards
-			// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
-			var s = inNode.style;
-			// store style and runtime style values
-			var l = s.left;
-			var rl = inNode.runtimeStyle && inNode.runtimeStyle.left;
-			// then put current style in runtime style.
-			if (rl) {
-				inNode.runtimeStyle.left = inNode.currentStyle.left;
-			}
-			// apply given value and measure its pixel value
-			s.left = v;
-			v = s.pixelLeft;
-			// finally restore previous state
-			s.left = l;
-			if (rl) {
-				s.runtimeStyle.left = rl;
-			}
-			return v;
-		},
-		_pxMatch: /px/i,
-		getComputedStyleValue: function(inNode, inProp, inBoundary, inComputedStyle) {
-			var s = inComputedStyle || enyo.dom.getComputedStyle(inNode);
-			if (s) {
-				return parseInt(s.getPropertyValue(inProp + "-" + inBoundary));
-			} else if (inNode && inNode.currentStyle) {
-				var v = inNode.currentStyle[inProp + enyo.cap(inBoundary)];
-				if (!v.match(this._pxMatch)) {
-					v = this._ieCssToPixelValue(inNode, v);
-				}
-				return parseInt(v);
-			}
-			return 0;
-		},
-		//* Gets the boundaries of a node's margin or padding box.
-		calcBoxExtents: function(inNode, inBox) {
-			var s = enyo.dom.getComputedStyle(inNode);
-			return {
-				top: this.getComputedStyleValue(inNode, inBox, "top", s),
-				right: this.getComputedStyleValue(inNode, inBox, "right", s),
-				bottom: this.getComputedStyleValue(inNode, inBox, "bottom", s),
-				left: this.getComputedStyleValue(inNode, inBox, "left", s)
-			};
-		},
-		//* Gets the calculated padding of a node.
-		calcPaddingExtents: function(inNode) {
-			return this.calcBoxExtents(inNode, "padding");
-		},
-		//* Gets the calculated margin of a node.
-		calcMarginExtents: function(inNode) {
-			return this.calcBoxExtents(inNode, "margin");
-		}
 	}
 });
 
@@ -190,8 +133,8 @@ enyo.kind({
 	the second filling the available container space between the first and third.
 
 		enyo.kind({
-		  kind: enyo.Control,
-		  layoutKind: "FittableColumnsLayout",
+			kind: enyo.Control,
+			layoutKind: "FittableColumnsLayout",
 			components: [
 				{content: "1"},
 				{content: "2", fit:true},
@@ -235,8 +178,8 @@ enyo.kind({
 	the second filling the available container space between the first and third.
 
 		enyo.kind({
-		  kind: enyo.Control,
-		  layoutKind: "FittableRowsLayout",
+			kind: enyo.Control,
+			layoutKind: "FittableRowsLayout",
 			components: [
 				{content: "1"},
 				{content: "2", fit:true},

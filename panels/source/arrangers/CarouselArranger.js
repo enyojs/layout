@@ -19,14 +19,14 @@ enyo.kind({
 	kind: "Arranger",
 	size: function() {
 		var c$ = this.container.getPanels();
-		var padding = this.containerPadding = this.container.hasNode() ? enyo.FittableLayout.calcPaddingExtents(this.container.node) : {};
+		var padding = this.containerPadding = this.container.hasNode() ? enyo.dom.calcPaddingExtents(this.container.node) : {};
 		var pb = this.containerBounds;
 		pb.height -= padding.top + padding.bottom;
 		pb.width -= padding.left + padding.right;
 		// used space
 		var fit;
 		for (var i=0, s=0, m, c; c=c$[i]; i++) {
-			m = enyo.FittableLayout.calcMarginExtents(c.hasNode());
+			m = enyo.dom.calcMarginExtents(c.hasNode());
 			c.width = c.getBounds().width;
 			c.marginWidth = m.right + m.left;
 			s += (c.fit ? 0 : c.width) + c.marginWidth;
