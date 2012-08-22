@@ -5,7 +5,6 @@ enyo.kind({
 	components: [
 		{kind: "onyx.MoreToolbar", layoutKind: "FittableColumnsLayout", style: "height: 55px;", components: [
 			{kind: "onyx.Button", content: "setup", ontap: "showSetupPopup"},
-			{kind: "onyx.Button", content: "remove selected", ontap: "removeSelected"},
 			{kind: "onyx.InputDecorator", components: [
 				{name: "newContactInput", kind: "onyx.Input", value: "Frankie Fu"},
 			]},
@@ -14,7 +13,8 @@ enyo.kind({
 			{kind: "onyx.InputDecorator", components: [
 				{kind: "onyx.Input", placeholder: "Search...", style: "width: 140px;", oninput: "searchInputChange"},
 				{kind: "Image", src: "assets/search-input-search.png", style: "width: 20px;"}
-			]}
+			]},
+			{kind: "onyx.Button", content: "remove selected", ontap: "removeSelected"},
 		]},
 		{kind: "List", classes: "list-sample-contacts-list", fit: true, multiSelect: true, onSetupItem: "setupItem", components: [
 			{name: "divider", classes: "list-sample-contacts-divider"},
@@ -22,16 +22,16 @@ enyo.kind({
 		]},
 		{name: "popup", kind: "onyx.Popup", modal: true, centered: true, classes: "list-sample-contacts-popup", components: [
 			{components: [
-				{content: "count:", classes: "list-sample-contacts-label"},
-				{kind: "onyx.InputDecorator", components: [
-					{name: "countInput", kind: "onyx.Input", style: "width: 80px", value: 200}
-				]}
+				{style:"display:inline-block", components:[
+					{content: "count:", classes: "list-sample-contacts-label"},
+					{name:"countOutput", style:"display:inline-block;", content: "200"}
+				]},
+				{kind: "onyx.Slider", value: 4, onChanging:"countSliderChanging"},
 			]},
 			{components: [
 				{content: "rowsPerPage:", classes: "list-sample-contacts-label"},
-				{kind: "onyx.InputDecorator", components: [
-					{name: "rowsPerPageInput", kind: "onyx.Input", style: "width: 80px", value: 50}
-				]}
+				{name:"rowsPerPageOutput", style:"display:inline-block;", content: "50"},
+				{kind: "onyx.Slider", value: 10, onChanging:"rowsSliderChanging"},
 			]},
 			{components: [
 				{content: "hide divider:", classes: "list-sample-contacts-label"},
@@ -112,9 +112,9 @@ enyo.kind({
 	},
 	populateList: function() {
 		this.$.popup.hide();
-		this.createDb(~~this.$.countInput.getValue());
+		this.createDb(~~this.$.countOutput.getContent());
 		this.$.list.setCount(this.db.length);
-		this.$.list.setRowsPerPage(~~this.$.rowsPerPageInput.getValue());
+		this.$.list.setRowsPerPage(~~this.$.rowsPerPageOutput.getContent());
 		//
 		this.hideDivider = this.$.hideDividerCheckbox.getValue();
 		this.$.divider.canGenerate = !this.hideDivider;
@@ -166,6 +166,12 @@ enyo.kind({
 			}
 		}
 		return r;
+	},
+	countSliderChanging: function(inSender, inEvent){
+		this.$.countOutput.setContent(Math.round(inSender.getValue()) * 50);
+	},
+	rowsSliderChanging: function(inSender, inEvent){
+		this.$.rowsPerPageOutput.setContent(Math.round(inSender.getValue()) * 5);
 	}
 });
 
