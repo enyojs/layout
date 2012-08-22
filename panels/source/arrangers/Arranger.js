@@ -129,12 +129,17 @@ enyo.kind({
 	},
 	//* @protected
 	_arrange: function(inIndex) {
+		// guard against being called before we've been rendered
+		if (!this.containerBounds) {
+			this.reflow();
+		}
 		var c$ = this.getOrderedControls(inIndex);
 		this.arrange(c$, inIndex);
 	},
 	arrangeControl: function(inControl, inArrangement) {
 		inControl._arranger = enyo.mixin(inControl._arranger || {}, inArrangement);
 	},
+	// called before HTML is generated
 	flow: function() {
 		this.c$ = [].concat(this.container.getPanels());
 		this.controlsIndex = 0;
@@ -150,6 +155,7 @@ enyo.kind({
 			} 
 		}
 	},
+	// called during "rendered" phase
 	reflow: function() {
 		var cn = this.container.hasNode();
 		this.containerBounds = cn ? {width: cn.clientWidth, height: cn.clientHeight} : {};
