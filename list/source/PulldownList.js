@@ -27,7 +27,10 @@ complete and it's time to update the list with the new data.
 enyo.kind({
 	name: "enyo.PulldownList",
 	kind: "List",
+	//* @protected
+	// Sets touch to true in inherited Scroller kind for touch-based scrolling strategy
 	touch: true,
+	// The pull notification area at the top of the list
 	pully: null,
 	pulldownTools: [
 		{name: "pulldown", classes: "enyo-list-pulldown", components: [
