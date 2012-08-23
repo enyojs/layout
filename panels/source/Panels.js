@@ -37,7 +37,7 @@ enyo.kind({
 		//* Sets the arranger kind to be used for dynamic layout.
 		arrangerKind: "CardArranger",
 		//* By default, each panel will be sized to fit the Panels' width when 
-		//* the screen size is narrow enough (less than ~800px). Set to false
+		//* the screen size is narrow enough (less than 800px). Set to false
 		//* to avoid this behavior.
 		narrowFit: true
 	},
@@ -370,10 +370,10 @@ enyo.kind({
 	statics: {
 		//* @public
 		/**
-			returns true when window width is 800px or less. This value must
-			be the same as the "max-width" media query used for panel sizing
-			in _Panels.css_.
-		**/
+			Returns true when window width is 800px or less. This value must be
+			the same as the "max-width" media query used for panel sizing in
+			_Panels.css_.
+		*/
 		isScreenNarrow: function() {
 			return enyo.dom.getWindowWidth() <= 800;
 		},
