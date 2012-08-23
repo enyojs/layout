@@ -33,21 +33,54 @@ enyo.kind({
 			c.setBounds(b);
 		}
 	},
+	start: function() {
+		this.inherited(arguments);
+
+		var s = this.container.fromIndex;
+		var f = this.container.toIndex;
+		var c$ = this.getOrderedControls(f);
+		var o = Math.floor(c$.length/2);
+
+		for (var i=0, c; (c=c$[i]); i++) {
+			if (s > f){
+				if (i == (c$.length - o)){
+					c.applyStyle("z-index", 0);				
+				} else {
+					c.applyStyle("z-index", 1);						
+				}
+			} else {
+				if (i == (c$.length-1 - o)){
+					c.applyStyle("z-index", 0);
+				} else {
+					c.applyStyle("z-index", 1);					
+				}
+			}
+		}
+	},
 	arrange: function(inC, inIndex) {
+		if (this.container.getPanels().length==1){	
+			var b = {};
+			b[this.axisPosition] = this.margin;
+			this.arrangeControl(this.container.getPanels()[0], b);
+			return;
+		}		
+		
 		var o = Math.floor(this.container.getPanels().length/2);
 		var c$ = this.getOrderedControls(Math.floor(inIndex)-o);
 		var box = this.containerBounds[this.axisSize] - this.margin -this.margin;
 		var e = this.margin - box * o;
-		var m = (c$.length - 1) / 2;
 		for (var i=0, c, b, v; (c=c$[i]); i++) {
 			b = {};
 			b[this.axisPosition] = e;
-			b.opacity  = (i === 0 || i == c$.length-1) ? 0 : 1;
 			this.arrangeControl(c, b);
 			e += box;
 		}
 	},
 	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
+		if (this.container.getPanels().length==1){	
+			return 0;
+		}
+		
 		var i = Math.abs(inI0 % this.c$.length);
 		//enyo.log(inI0, inI1);
 		return inA0[i][this.axisPosition] - inA1[i][this.axisPosition];
