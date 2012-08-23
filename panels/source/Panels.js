@@ -75,7 +75,7 @@ enyo.kind({
 		this.transitionPoints = [];
 		this.inherited(arguments);
 		this.arrangerKindChanged();
-		this.avoidFitChanged();
+		this.narrowFitChanged();
 		this.indexChanged();
 	},
 	initComponents: function() {
@@ -85,7 +85,7 @@ enyo.kind({
 	arrangerKindChanged: function() {
 		this.setLayoutKind(this.arrangerKind);
 	},
-	avoidFitChanged: function() {
+	narrowFitChanged: function() {
 		this.addRemoveClass("enyo-panels-fit-narrow", this.narrowFit);
 	},
 	removeControl: function(inControl) {

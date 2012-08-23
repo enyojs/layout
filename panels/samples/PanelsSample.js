@@ -61,7 +61,7 @@ enyo.kind({
 	},
 	arrangerSelected: function(inSender, inEvent) {
 		var sp = this.$.samplePanels;
-		var p = this.panelArrangers[inEvent.originator.indexInContainer()];
+		var p = this.panelArrangers[inEvent.originator.indexInContainer()-1];
 		if (this.currentClass) {
 			sp.removeClass(this.currentClass)
 		}
