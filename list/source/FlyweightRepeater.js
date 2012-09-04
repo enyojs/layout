@@ -86,7 +86,7 @@ enyo.kind({
 		for (var i=0, r=0; i<this.count; i++) {
 			r = this.rowOffset + (this.bottomUp ? this.count - i-1 : i);
 			this.setupItem(r);
-			this.$.client.setAttribute("index", r);
+			this.$.client.setAttribute("data-enyo-index", r);
 			h += this.inherited(arguments);
 			this.$.client.teardownRender();
 		}
@@ -138,7 +138,7 @@ enyo.kind({
 	//* Fetches the DOM node for the given row index.
 	fetchRowNode: function(inIndex) {
 		if (this.hasNode()) {
-			var n$ = this.node.querySelectorAll('[index="' + inIndex + '"]');
+			var n$ = this.node.querySelectorAll('[data-enyo-index="' + inIndex + '"]');
 			return n$ && n$[0];
 		}
 	},
@@ -147,7 +147,7 @@ enyo.kind({
 		var n = inEvent.target;
 		var id = this.hasNode().id;
 		while (n && n.parentNode && n.id != id) {
-			var i = n.getAttribute && n.getAttribute("index");
+			var i = n.getAttribute && n.getAttribute("data-enyo-index");
 			if (i !== null) {
 				return Number(i);
 			}
@@ -189,7 +189,7 @@ enyo.kind({
 			} else {
 				//enyo.log("Failed to find node for",  inControl.id, inControl.generated);
 			}
-			for (var i=0, c$=inControl.children, c; c=c$[i]; i++) {
+			for (var i=0, c$=inControl.children, c; (c=c$[i]); i++) {
 				this.claimNode(c, inNode);
 			}
 		}
