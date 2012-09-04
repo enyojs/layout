@@ -52,13 +52,15 @@ enyo.kind({
 		*/
 		onSetupItem: ""
 	},
+	//* design-time attribute, indicates if row indices run 
+	//* from [0.._count_-1] (false) or [_count_-1..0] (true)
+	bottomUp: false,
+	//* @protected
 	components: [
 		{kind: "Selection", onSelect: "selectDeselect", onDeselect: "selectDeselect"},
 		{name: "client"}
 	],
 	rowOffset: 0,
-	bottomUp: false,
-	//* @protected
 	create: function() {
 		this.inherited(arguments);
 		this.multiSelectChanged();
