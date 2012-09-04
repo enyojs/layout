@@ -21,7 +21,6 @@ enyo.kind({
 		this.inherited(arguments);
 		this.margin = this.container.margin != null ? this.container.margin : this.margin;
 	},
-	//* @public
 	size: function() {
 		var c$ = this.container.getPanels();
 		var port = this.containerBounds[this.axisSize];
@@ -58,18 +57,18 @@ enyo.kind({
 		}
 	},
 	arrange: function(inC, inIndex) {
+		var i,c,v,b;
 		if (this.container.getPanels().length==1){	
-			var b = {};
+			b = {};
 			b[this.axisPosition] = this.margin;
 			this.arrangeControl(this.container.getPanels()[0], b);
 			return;
 		}		
-		
 		var o = Math.floor(this.container.getPanels().length/2);
 		var c$ = this.getOrderedControls(Math.floor(inIndex)-o);
 		var box = this.containerBounds[this.axisSize] - this.margin -this.margin;
 		var e = this.margin - box * o;
-		for (var i=0, c, b, v; (c=c$[i]); i++) {
+		for (i=0; (c=c$[i]); i++) {
 			b = {};
 			b[this.axisPosition] = e;
 			this.arrangeControl(c, b);
@@ -99,6 +98,7 @@ enyo.kind({
 	}
 });
 
+//* @public
 /**
 	_enyo.TopBottomArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a>
 	that displays the active control and some of the previous and next controls.
@@ -124,6 +124,7 @@ enyo.kind({
 	axisPosition: "top"
 });
 
+//* @public
 /**
 	_enyo.SpiralArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a> that
 	arranges controls in a spiral. The active control is positioned on top and
@@ -139,6 +140,7 @@ enyo.kind({
 	incrementalPoints: true,
 	//* The amount of space between successive controls
 	inc: 20,
+	//* @protected
 	size: function() {
 		var c$ = this.container.getPanels();
 		var b = this.containerBounds;
@@ -180,7 +182,7 @@ enyo.kind({
 	}
 });
 
-
+//* @public
 /**
 	_enyo.GridArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a> that
 	arranges controls in a grid. The active control is positioned at the
@@ -201,6 +203,7 @@ enyo.kind({
 	colWidth: 100,
 	//* Column height
 	colHeight: 100,
+	//* @protected
 	size: function() {
 		var c$ = this.container.getPanels();
 		var w=this.colWidth, h=this.colHeight;

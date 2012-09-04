@@ -17,6 +17,7 @@
 enyo.kind({
 	name: "enyo.CarouselArranger",
 	kind: "Arranger",
+	//* @protected
 	size: function() {
 		var c$ = this.container.getPanels();
 		var padding = this.containerPadding = this.container.hasNode() ? enyo.dom.calcPaddingExtents(this.container.node) : {};
@@ -25,7 +26,7 @@ enyo.kind({
 		pb.width -= padding.left + padding.right;
 		// used space
 		var fit;
-		for (var i=0, s=0, m, c; c=c$[i]; i++) {
+		for (var i=0, s=0, m, c; (c=c$[i]); i++) {
 			m = enyo.dom.calcMarginExtents(c.hasNode());
 			c.width = c.getBounds().width;
 			c.marginWidth = m.right + m.left;
@@ -38,7 +39,7 @@ enyo.kind({
 				var w = pb.width - s;
 				fit.width = w >= 0 ? w : fit.width;
 			}
-		for (var i=0, e=padding.left, m, c; c=c$[i]; i++) {
+		for (i=0, e=padding.left, m, c; (c=c$[i]); i++) {
 			c.setBounds({top: padding.top, bottom: padding.bottom, width: c.fit ? c.width : null});
 		}
 	},
@@ -54,7 +55,7 @@ enyo.kind({
 		var s = this.container.clamp(inName);
 		var nw = this.containerBounds.width;
 		// do we have enough content to fill the width?
-		for (var i=s, cw=0, c; c=c$[i]; i++) {
+		for (var i=s, cw=0, c; (c=c$[i]); i++) {
 			cw += c.width + c.marginWidth;
 			if (cw > nw) {
 				break;
@@ -65,7 +66,7 @@ enyo.kind({
 		var o = 0;
 		if (n > 0) {
 			var s1 = s;
-			for (var i=s-1, aw=0, c; c=c$[i]; i--) {
+			for (i=s-1, aw=0, c; (c=c$[i]); i--) {
 				aw += c.width + c.marginWidth;
 				if (n - aw <= 0) {
 					o = (n - aw);
@@ -75,7 +76,7 @@ enyo.kind({
 			}
 		}
 		// arrange starting from needed index with detected offset so we fill space
-		for (var i=0, e=this.containerPadding.left + o, w, c; c=c$[i]; i++) {
+		for (i=0, e=this.containerPadding.left + o, w, c; (c=c$[i]); i++) {
 			w = c.width + c.marginWidth;
 			if (i < s) {
 				this.arrangeControl(c, {left: -w});
@@ -86,7 +87,7 @@ enyo.kind({
 		}
 	},
 	arrangeWrap: function(inC, inName) {
-		for (var i=0, e=this.containerPadding.left, m, c; c=inC[i]; i++) {
+		for (var i=0, e=this.containerPadding.left, m, c; (c=inC[i]); i++) {
 			this.arrangeControl(c, {left: e});
 			e += c.width + c.marginWidth;
 		}
@@ -97,7 +98,7 @@ enyo.kind({
 	},
 	destroy: function() {
 		var c$ = this.container.getPanels();
-		for (var i=0, c; c=c$[i]; i++) {
+		for (var i=0, c; (c=c$[i]); i++) {
 			enyo.Arranger.positionControl(c, {left: null, top: null});
 			c.applyStyle("top", null);
 			c.applyStyle("bottom", null);

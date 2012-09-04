@@ -45,12 +45,11 @@ enyo.kind({
 	*/
 	destroy: function() {
 		var c$ = this.container.getPanels();
-		for (var i=0, c; c=c$[i]; i++) {
+		for (var i=0, c; (c=c$[i]); i++) {
 			c._arranger = null;
 		}
 		this.inherited(arguments);
 	},
-	//* @public
 	/**
 		Arranges the given array of controls (_inC_) in the layout specified by
 		_inName_. When implementing this method, rather than apply styling
@@ -97,6 +96,14 @@ enyo.kind({
 	*/
 	finish: function() {
 	},
+	/**
+	Called when dragging the layout, this method returns the difference in
+	pixels between the arrangement _inA0_ for layout setting _inI0_	and
+	arrangement _inA1_ for layout setting _inI1_. This data is used to calculate
+	the percentage that a drag should move the layout between two active states.
+	*/
+	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
+	},
 	//* @protected
 	canDragEvent: function(inEvent) {
 		return inEvent[this.canDragProp];
@@ -118,16 +125,6 @@ enyo.kind({
 		//enyo.log("delta", s);
 		return s;
 	},
-	//* @public
-	/**
-	Called when dragging the layout, this method returns the difference in
-	pixels between the arrangement _inA0_ for layout setting _inI0_	and
-	arrangement _inA1_ for layout setting _inI1_. This data is used to calculate
-	the percentage that a drag should move the layout between two active states.
-	*/
-	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
-	},
-	//* @protected
 	_arrange: function(inIndex) {
 		// guard against being called before we've been rendered
 		if (!this.containerBounds) {
@@ -143,13 +140,13 @@ enyo.kind({
 	flow: function() {
 		this.c$ = [].concat(this.container.getPanels());
 		this.controlsIndex = 0;
-		for (var i=0, c$=this.container.getPanels(), c; c=c$[i]; i++) {
+		for (var i=0, c$=this.container.getPanels(), c; (c=c$[i]); i++) {
 			enyo.dom.accelerate(c, this.accelerated);
 			if (enyo.platform.safari) {
 				// On Safari-desktop, sometimes having the panel's direct child set to accelerate isn't sufficient
 				// this is most often the case with Lists contained inside another control, inside a Panels
 				var grands=c.children;
-				for (var j=0, kid; kid=grands[j]; j++) {
+				for (var j=0, kid; (kid=grands[j]); j++) {
 					enyo.dom.accelerate(kid, this.accelerated);
 				}
 			} 
@@ -164,7 +161,7 @@ enyo.kind({
 	flowArrangement: function() {
 		var a = this.container.arrangement;
 		if (a) {
-			for (var i=0, c$=this.container.getPanels(), c; c=c$[i]; i++) {
+			for (var i=0, c$=this.container.getPanels(), c; (c=c$[i]); i++) {
 				this.flowControl(c, a[i]);
 			}
 		}
@@ -208,8 +205,8 @@ enyo.kind({
 			if (!this.updating) {
 				if (enyo.dom.canTransform() && !enyo.platform.android) {
 					var l = inBounds.left, t = inBounds.top;
-					var l = enyo.isString(l) ? l : l && (l + unit);
-					var t = enyo.isString(t) ? t : t && (t + unit);
+					l = enyo.isString(l) ? l : l && (l + unit);
+					t = enyo.isString(t) ? t : t && (t + unit);
 					enyo.dom.transform(inControl, {translateX: l || null, translateY: t || null});
 				} else {
 					inControl.setBounds(inBounds, inUnit);
@@ -220,7 +217,7 @@ enyo.kind({
 			var o = inOpacity;
 			// FIXME: very high/low settings of opacity can cause a control to
 			// blink so cap this here.
-			o = o > .99 ? 1 : (o < .01 ? 0 : o);
+			o = o > 0.99 ? 1 : (o < 0.01 ? 0 : o);
 			// note: we only care about ie8
 			if (enyo.platform.ie < 9) {
 				inControl.applyStyle("filter", "progid:DXImageTransform.Microsoft.Alpha(Opacity=" + (o * 100) + ")");

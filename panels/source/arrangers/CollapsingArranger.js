@@ -16,25 +16,24 @@
 enyo.kind({
 	name: "enyo.CollapsingArranger",
 	kind: "CarouselArranger",
+	//* @protected
 	size: function() {
 		this.clearLastSize();
 		this.inherited(arguments);
 	},
-	//* @protected
 	// clear size from last if it's not actually the last
 	// (required for adding another control)
 	clearLastSize: function() {
-		for (var i=0, c$=this.container.getPanels(), c; c=c$[i]; i++) {
+		for (var i=0, c$=this.container.getPanels(), c; (c=c$[i]); i++) {
 			if (c._fit && i != c$.length-1) {
 				c.applyStyle("width", null);
 				c._fit = null;
 			}
 		}
 	},
-	//* @public
 	arrange: function(inC, inIndex) {
 		var c$ = this.container.getPanels();
-		for (var i=0, e=this.containerPadding.left, m, c; c=c$[i]; i++) {
+		for (var i=0, e=this.containerPadding.left, m, c; (c=c$[i]); i++) {
 			this.arrangeControl(c, {left: e});
 			if (i >= inIndex) {
 				e += c.width + c.marginWidth;
@@ -71,7 +70,6 @@ enyo.kind({
 			this.fitControl(c, a$[l].left);
 		}
 	},
-	//* @protected
 	fitControl: function(inControl, inOffset) {
 		inControl._fit = true;
 		inControl.applyStyle("width", (this.containerBounds.width - inOffset) + "px");
