@@ -11,7 +11,11 @@ enyo.kind({
 				{icon: "assets/folder-open.png", content: "Bravo", expandable: true, expanded: true, components: [
 					{icon: "assets/file.png", content: "Bravo-Alpha"},
 					{icon: "assets/file.png", content: "Bravo-Bravo"},
-					{icon: "assets/file.png", content: "Bravo-Charlie"}
+					{icon: "assets/folder-open.png", content: "Bravo", expandable: true, expanded: true, components: [
+						{icon: "assets/file.png", content: "Bravo-Alpha"},
+						{icon: "assets/file.png", content: "Bravo-Bravo"},
+						{icon: "assets/file.png", content: "Bravo-Charlie"}
+					]},
 				]},
 				{icon: "assets/folder.png", content: "Charlie", expandable: true, components: [
 					{icon: "assets/file.png", content: "Charlie-Alpha"},
