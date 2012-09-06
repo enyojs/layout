@@ -76,7 +76,8 @@ enyo.kind({
 			}
 		}
 		// arrange starting from needed index with detected offset so we fill space
-		for (i=0, e=this.containerPadding.left + o, w, c; (c=c$[i]); i++) {
+		var w;
+		for (i=0, e=this.containerPadding.left + o; (c=c$[i]); i++) {
 			w = c.width + c.marginWidth;
 			if (i < s) {
 				this.arrangeControl(c, {left: -w});
