@@ -129,31 +129,9 @@ enyo.kind({
 	layout behavior in a pluggable fashion while retaining the ability to use a
 	specific base kind.
 	
-	For example, the following code will align three components as columns, with
-	the second filling the available container space between the first and third.
-
-		enyo.kind({
-			kind: enyo.Control,
-			layoutKind: "FittableColumnsLayout",
-			components: [
-				{content: "1"},
-				{content: "2", fit:true},
-				{content: "3"}
-			]
-		});
-	
-	Alternatively, if a specific base kind is not needed, then instead of
-	setting the _layoutKind_ attribute, you can set the base kind to
-	<a href="#enyo.FittableColumns">enyo.FittableColumns</a>:
-
-		enyo.kind({
-			kind: "FittableColumns",
-			components: [
-				{content: "1"},
-				{content: "2", fit:true},
-				{content: "3"}
-			]
-		});
+	For more information, see the documentation on
+	[Fittables](https://github.com/enyojs/enyo/wiki/Fittables) in the Enyo
+	Developer Guide.
 */
 enyo.kind({
 	name: "enyo.FittableColumnsLayout",
@@ -174,31 +152,9 @@ enyo.kind({
 	layout behavior in a pluggable fashion while retaining the ability to use a
 	specific base kind.
 
-	For example, the following code will align three components as rows, with
-	the second filling the available container space between the first and third.
-
-		enyo.kind({
-			kind: enyo.Control,
-			layoutKind: "FittableRowsLayout",
-			components: [
-				{content: "1"},
-				{content: "2", fit:true},
-				{content: "3"}
-			]
-		});
-
-	Alternatively, if a specific base kind is not needed, then instead of
-	setting the _layoutKind_ attribute, you can set the base kind to
-	<a href="#enyo.FittableRows">enyo.FittableRows</a>:
-
-		enyo.kind({
-			kind: "FittableRows",
-			components: [
-				{content: "1"},
-				{content: "2", fit:true},
-				{content: "3"}
-			]
-		});	
+	For more information, see the documentation on
+	[Fittables](https://github.com/enyojs/enyo/wiki/Fittables) in the Enyo
+	Developer Guide.
 */
 enyo.kind({
 	name: "enyo.FittableRowsLayout",
