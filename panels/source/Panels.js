@@ -122,7 +122,10 @@ enyo.kind({
 	//* Returns a reference to the active panel--i.e., the panel at the specified index.
 	getActive: function() {
 		var p$ = this.getPanels();
-		return p$[this.index];
+		//Constrain the index within the array of panels, needed if wrapping is enabled
+		var index = this.index % p$.length;
+		index < 0 ? (index += p$.length) : enyo.nop;
+		return p$[index];
 	},
 	/**
 		Returns a reference to the <a href="#enyo.Animator">enyo.Animator</a> 
