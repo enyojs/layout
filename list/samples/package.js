@@ -1,5 +1,7 @@
 enyo.depends(
 	"NameGenerator.js",
+	"ListAroundSample.css",
+	"ListAroundSample.js",
 	"ListBasicSample.css",
 	"ListBasicSample.js",
 	"ListContactsSample.css",
