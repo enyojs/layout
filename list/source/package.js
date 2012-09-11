@@ -3,5 +3,6 @@ enyo.depends(
 	"List.css",
 	"List.js",
 	"PulldownList.css",
-	"PulldownList.js"
+	"PulldownList.js",
+	"AroundList.js"
 );
