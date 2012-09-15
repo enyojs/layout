@@ -90,7 +90,7 @@ enyo.kind({
 	},
 	removeControl: function(inControl) {
 		this.inherited(arguments);
-		if (this.controls.length > 1 && this.isPanel(inControl)) {
+		if (this.controls.length > 0 && this.isPanel(inControl)) {
 			this.setIndex(Math.max(this.index - 1, 0));
 			this.flow();
 			this.reflow();
@@ -180,7 +180,7 @@ enyo.kind({
 	indexChanged: function(inOld) {
 		this.lastIndex = inOld;
 		this.index = this.clamp(this.index);
-		if (!this.dragging) {
+		if (!this.dragging && this.$.animator) {
 			if (this.$.animator.isAnimating()) {
 				this.completed();
 			}
@@ -297,7 +297,7 @@ enyo.kind({
 		this.toIndex = t;
 	},
 	refresh: function() {
-		if (this.$.animator.isAnimating()) {
+		if (this.$.animator && this.$.animator.isAnimating()) {
 			this.$.animator.stop();
 		}
 		this.startTransition();
