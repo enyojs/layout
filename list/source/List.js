@@ -36,7 +36,9 @@ enyo.kind({
 			The number of rows contained in the list. Note that as the amount of
 			list data changes, _setRows_ can be called to adjust the number of
 			rows. To re-render the list at the current position when the count
-			has changed, call the _refresh_ method.
+			has changed, call the _refresh_ method.  If the whole data model of
+			the list has changed and you want to redisplay from the top, call
+			the _reset_ method instead.
 		*/
 		count: 0,
 		/**
@@ -163,7 +165,7 @@ enyo.kind({
 		// leap-frog zone position
 		var k = Math.floor(pos/Math.max(pi.height, this.scrollerHeight) + 1/2) + pi.no;
 		// which page number for page0 (even number pages)?
-		var p = k % 2 == 0 ? k : k-1;
+		var p = (k % 2 === 0) ? k : k-1;
 		if (this.p0 != p && this.isPageInRange(p)) {
 			//this.log("update page0", p);
 			this.generatePage(p, this.$.page0);
@@ -172,7 +174,7 @@ enyo.kind({
 			updated = true;
 		}
 		// which page number for page1 (odd number pages)?
-		p = k % 2 == 0 ? Math.max(1, k-1) : k;
+		p = (k % 2 === 0) ? Math.max(1, k-1) : k;
 		// position data page 1
 		if (this.p1 != p && this.isPageInRange(p)) {
 			//this.log("update page1", p);
@@ -307,7 +309,8 @@ enyo.kind({
 			this.twiddle();
 		}
 	},
-	//* Re-renders the list from the beginning.
+	//* Re-renders the list from the beginning.  This is used when changing the
+	//* data model for the list.
 	reset: function() {
 		this.getSelection().clear();
 		this.invalidateMetrics();
@@ -316,15 +319,32 @@ enyo.kind({
 		this.scrollToStart();
 	},
 	/**
-		Returns the _selection_ component that manages the selection state for
-		this list.
+		Returns the [enyo.Selection](#enyo.Selection) component that 
+		manages the selection state for	this list.
 	*/
 	getSelection: function() {
 		return this.$.generator.getSelection();
 	},
-	//* Sets the selection state for the given row index. 
+	/**
+		Sets the selection state for the given row index.
+		_inData_ is an optional data value stored in the selection object.
+
+		Modifying selection will not automatically rerender the row, 
+		so use [renderRow](#enyo.List::renderRow) or [refresh](#enyo.List::refresh)
+		to update the view.
+	*/
 	select: function(inIndex, inData) {
 		return this.getSelection().select(inIndex, inData);
+	},
+	/**
+		Clears the selection state for the given row index.
+
+		Modifying selection will not automatically rerender the row, 
+		so use [renderRow](#enyo.List::renderRow) or [refresh](#enyo.List::refresh)
+		to update the view.
+	*/
+	deselect: function(inIndex) {
+		return this.getSelection().deselect(inIndex);
 	},
 	//* Gets the selection state for the given row index.
 	isSelected: function(inIndex) {
