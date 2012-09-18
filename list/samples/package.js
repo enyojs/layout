@@ -7,5 +7,7 @@ enyo.depends(
 	"ListContactsSample.css",
 	"ListContactsSample.js",
 	"ListPulldownSample.css",
-	"ListPulldownSample.js"
+	"ListPulldownSample.js",
+	"FlyweightRepeater.css",
+	"FlyweightRepeater.js"
 );
