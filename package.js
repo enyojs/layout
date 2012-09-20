@@ -3,5 +3,6 @@ enyo.depends(
 	"list",
 	"slideable",
 	"panels",
-	"tree"
+	"tree",
+	"imageview"
 );
