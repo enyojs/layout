@@ -6,6 +6,10 @@
 
 	Transitions between arrangements are handled by sliding the new control
 	in from the right and sliding the active control out to the left.
+
+	For more information, see the documentation on
+	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
+	Developer Guide.
 */
 enyo.kind({
 	name: "enyo.LeftRightArranger",
@@ -107,6 +111,10 @@ enyo.kind({
 
 	Transitions between arrangements are handled by sliding the new control
 	in from the bottom and sliding the active control out the top.
+
+	For more information, see the documentation on
+	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
+	Developer Guide.
 */
 enyo.kind({
 	name: "enyo.TopBottomArranger",
@@ -132,6 +140,10 @@ enyo.kind({
 
 	Transitions between arrangements are handled by rotating the new control
 	up from below and rotating the active control down to the end of the spiral.
+
+	For more information, see the documentation on
+	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
+	Developer Guide.
 */
 enyo.kind({
 	name: "enyo.SpiralArranger",
@@ -192,6 +204,10 @@ enyo.kind({
 	Transitions between arrangements are handled by moving the active control to
 	the end of the grid and shifting the other controls	to the left, or up to
 	the previous row, to fill the space.
+
+	For more information, see the documentation on
+	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
+	Developer Guide.
 */
 enyo.kind({
 	name: "enyo.GridArranger",

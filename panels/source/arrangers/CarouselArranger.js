@@ -13,6 +13,10 @@
 
 	Transitions between arrangements are handled by sliding the new controls in
 	from the right and sliding the old controls off to the left.
+
+	For more information, see the documentation on
+	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
+	Developer Guide.
 */
 enyo.kind({
 	name: "enyo.CarouselArranger",

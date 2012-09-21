@@ -12,6 +12,10 @@
 
 	Transitions between arrangements are handled by sliding the new control	in
 	from the right and collapsing the old control to the left.
+
+	For more information, see the documentation on
+	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
+	Developer Guide.
 */
 enyo.kind({
 	name: "enyo.CollapsingArranger",

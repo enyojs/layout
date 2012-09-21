@@ -3,10 +3,14 @@
 	that displays only one active control. The non-active controls are hidden
 	with _setShowing(false)_. Transitions between arrangements are handled by
 	sliding the new control	over the current one.
-	
+
 	Note that CardSlideInArranger always slides controls in from the right. If
 	you want an arranger that slides to the right and left, try 
 	<a href="#enyo.LeftRightArranger">enyo.LeftRightArranger</a>.
+
+	For more information, see the documentation on
+	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
+	Developer Guide.
 */
 enyo.kind({
 	name: "enyo.CardSlideInArranger",
