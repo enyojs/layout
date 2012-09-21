@@ -5,23 +5,15 @@
 	the items having natural size, but one item expanding to fill the remaining
 	space. The item that expands is labeled with the attribute _fit: true_.
 
-	For example, in the following kind, the second component fills the available
-	space in the container between the first and third components.
+	The subkinds <a href="#enyo.FittableColumnsLayout">enyo.FittableColumnsLayout</a>
+	and	<a href="#enyo.FittableRowsLayout">enyo.FittableRowsLayout</a> (or
+	<i>their</i> subkinds) are used for layout rather than _enyo.FittableLayout_
+	because they specify properties that the framework expects to be available
+	when laying	items out.
 
-		enyo.kind({
-			kind: "FittableRows",
-			components: [
-				{content: "1"},
-				{content: "2", fit:true},
-				{content: "3"}
-			]
-		});
-	
-	<a href="#enyo.FittableColumnsLayout">enyo.FittableColumnsLayout</a> and
-	<a href="#enyo.FittableRowsLayout">enyo.FittableRowsLayout</a> (or their
-	subkinds) are used for layout rather than _enyo.FittableLayout_ because they
-	specify properties that _enyo.FittableLayout_ expects to be available when
-	laying items out.
+	For more information,see the documentation on
+	[Fittables](https://github.com/enyojs/enyo/wiki/Fittables) in the Enyo
+	Developer Guide.
 */
 enyo.kind({
 	name: "enyo.FittableLayout",
