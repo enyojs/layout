@@ -26,11 +26,12 @@ enyo.kind({
 		var c$ = this.container.getPanels();
 		var padding = this.containerPadding = this.container.hasNode() ? enyo.dom.calcPaddingExtents(this.container.node) : {};
 		var pb = this.containerBounds;
+		var i, e, s, m, c;
 		pb.height -= padding.top + padding.bottom;
 		pb.width -= padding.left + padding.right;
 		// used space
 		var fit;
-		for (var i=0, s=0, m, c; (c=c$[i]); i++) {
+		for (i=0, s=0; (c=c$[i]); i++) {
 			m = enyo.dom.calcMarginExtents(c.hasNode());
 			c.width = c.getBounds().width;
 			c.marginWidth = m.right + m.left;
@@ -43,7 +44,7 @@ enyo.kind({
 				var w = pb.width - s;
 				fit.width = w >= 0 ? w : fit.width;
 			}
-		for (i=0, e=padding.left, m, c; (c=c$[i]); i++) {
+		for (i=0, e=padding.left; (c=c$[i]); i++) {
 			c.setBounds({top: padding.top, bottom: padding.bottom, width: c.fit ? c.width : null});
 		}
 	},
@@ -55,11 +56,12 @@ enyo.kind({
 		}
 	},
 	arrangeNoWrap: function(inC, inName) {
+		var i, aw, cw, c;
 		var c$ = this.container.getPanels();
 		var s = this.container.clamp(inName);
 		var nw = this.containerBounds.width;
 		// do we have enough content to fill the width?
-		for (var i=s, cw=0, c; (c=c$[i]); i++) {
+		for (i=s, cw=0; (c=c$[i]); i++) {
 			cw += c.width + c.marginWidth;
 			if (cw > nw) {
 				break;
@@ -70,7 +72,7 @@ enyo.kind({
 		var o = 0;
 		if (n > 0) {
 			var s1 = s;
-			for (i=s-1, aw=0, c; (c=c$[i]); i--) {
+			for (i=s-1, aw=0; (c=c$[i]); i--) {
 				aw += c.width + c.marginWidth;
 				if (n - aw <= 0) {
 					o = (n - aw);
@@ -80,7 +82,7 @@ enyo.kind({
 			}
 		}
 		// arrange starting from needed index with detected offset so we fill space
-		var w;
+		var w, e;
 		for (i=0, e=this.containerPadding.left + o; (c=c$[i]); i++) {
 			w = c.width + c.marginWidth;
 			if (i < s) {
