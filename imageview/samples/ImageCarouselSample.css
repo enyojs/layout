@@ -1,0 +1,31 @@
+
+.demo {
+	width: 800px;
+	height:500px;
+	margin:auto;
+	background-color:#000;
+	margin-top:10px;
+}
+
+@media all and (max-width: 900px) {
+	.demo {
+		width: 550px;
+		height:400px;
+	}
+}
+
+@media all and (max-width: 650px) {
+	.demo {
+		width: 280px;
+		height:250px;
+	}
+}
+
+.imageCarouselInput {
+	margin:0px 10px;
+}
+
+.imageCarouselInput input {
+	text-align:center;
+	width:50px;
+}
