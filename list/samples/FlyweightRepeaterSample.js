@@ -1,18 +1,14 @@
 enyo.kind({
 	name: "enyo.sample.FlyweightRepeaterSample",
-	classes: "list-sample enyo-fit",
+	kind: "FittableRows",
+	classes: "flyweight-repeater-sample enyo-fit onyx",
 	components: [
-		{kind:"Scroller", classes:"enyo-fit", style:"height:100%;", components: [
-			{name:"repeater", kind:"enyo.FlyweightRepeater", classes:"enyo-fit list-sample-list", count: 26, onSetupItem: "setupItem", components: [
-				{name: "item", classes:"list-sample-item enyo-border-box",}
-			]},
+		{kind: "onyx.Toolbar", components: [
+			{content: "FlyweightRepeater Result"},
 		]},
-		{tag: "br"},
-		{tag: "br"},
-		{tag: "br"},
-		{kind: "onyx.Groupbox", style:"width:240px;", components: [
-			{kind: "onyx.GroupboxHeader", style:"margin-left:10px;", content: "FlyweightRepeater Result"},
-			{name:"result", style:"margin-left:10px; padding:10px; color:white;", content: "Nothing slected yet."}
+		{name:"result", style:"padding:12px; font-size: 20px;", content: "Nothing slected yet."},
+		{name:"repeater", kind:"enyo.FlyweightRepeater", classes:"flyweight-repeater-sample-list", count: 26, onSetupItem: "setupItem", components: [
+			{name: "item", classes:"flyweight-repeater-sample-item"}
 		]}
 	],
 	handlers: {
