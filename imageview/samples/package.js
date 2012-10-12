@@ -1,7 +1,6 @@
 enyo.depends(
-	"app.css",
-	"imageViewSample.js",
-	"imageViewSample.css",
+	"ImageViewSample.js",
+	"ImageViewSample.css",
 	"ImageCarouselSample.js",
 	"ImageCarouselSample.css"
 );
