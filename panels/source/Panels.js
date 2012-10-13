@@ -65,7 +65,8 @@ enyo.kind({
 	handlers: {
 		ondragstart: "dragstart",
 		ondrag: "drag",
-		ondragfinish: "dragfinish"
+		ondragfinish: "dragfinish",
+		onscroll: "domScroll"
 	},
 	tools: [
 		{kind: "Animator", onStep: "step", onEnd: "completed"}
@@ -77,6 +78,15 @@ enyo.kind({
 		this.arrangerKindChanged();
 		this.narrowFitChanged();
 		this.indexChanged();
+		this.setAttribute("onscroll", enyo.bubbler);
+	},
+	domScroll: function(inSender, inEvent) {
+		if (this.hasNode()) {
+			if (this.node.scrollLeft > 0) {
+				// Reset scrollLeft position
+				this.node.scrollLeft = 0;
+			}
+		}
 	},
 	initComponents: function() {
 		this.createChrome(this.tools);
