@@ -309,8 +309,10 @@ enyo.kind({
 			this.twiddle();
 		}
 	},
-	//* Re-renders the list from the beginning.  This is used when changing the
-	//* data model for the list.
+	/**
+		Re-renders the list from the beginning.  This is used when changing the
+		data model for the list.  This will also clear the selection state.
+	*/
 	reset: function() {
 		this.getSelection().clear();
 		this.invalidateMetrics();
