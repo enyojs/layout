@@ -1,12 +1,11 @@
 /**
-_enyo.AroundList_ is a list that allows content around the rows.
+    _enyo.AroundList_ is a list that allows content around the rows.
 
-	{kind: "enyo.AroundList", onSetupItem: "setupItem", aboveComponents: [
-		{content: "Content above the list"}
-	], components: [
-		{content: "List item"}
-	]}
-
+        {kind: "enyo.AroundList", onSetupItem: "setupItem", aboveComponents: [
+            {content: "Content above the list"}
+        ], components: [
+            {content: "List item"}
+        ]}
 */
 enyo.kind({
 	name: "enyo.AroundList",
@@ -24,7 +23,7 @@ enyo.kind({
 		]}
 	],
 	//* @public
-	//* Component(s) block to be rendered above the list
+	//* Block of components to be rendered above the list
 	aboveComponents: null,
 	//* @protected
 	initComponents: function() {
