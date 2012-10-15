@@ -1,21 +1,16 @@
-.list-sample {
+.flyweight-repeater-sample {
 	background-color: gray;
+	position: relative;
 }
-.list-sample-list {
-	width: 50%;
-	min-width: 300px;
-	max-width: 600px;
+.flyweight-repeater-sample-list {
+	position: relative;
+	width: 100%;
 	margin: auto;
 	background-color: #eee;
 }
-.list-sample-item {
+.flyweight-repeater-sample-item {
 	border: 1px solid silver;
 	padding: 18px;
 	font-size: 18px;
 	font-weight: bold;
-}
-.list-sample-index {
-	float: right;
-	font-size: 16px;
-	font-weight: normal;
 }
