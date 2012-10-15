@@ -20,7 +20,7 @@ enyo.kind({
 		var n = this.names[i];
 		var ni = ("00000000" + i).slice(-7);
 		// apply selection style if inSender (the list) indicates that this row is selected.
-		this.$.item.addRemoveClass("onyx-selected", inSender.isSelected(i));
+		this.$.item.addRemoveClass("list-sample-selected", inSender.isSelected(i));
 		this.$.name.setContent(n);
 		this.$.index.setContent(ni);
 	}
