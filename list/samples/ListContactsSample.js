@@ -6,7 +6,7 @@ enyo.kind({
 		{kind: "onyx.MoreToolbar", layoutKind: "FittableColumnsLayout", style: "height: 55px;", components: [
 			{kind: "onyx.Button", content: "setup", ontap: "showSetupPopup"},
 			{kind: "onyx.InputDecorator", components: [
-				{name: "newContactInput", kind: "onyx.Input", value: "Frankie Fu"},
+				{name: "newContactInput", kind: "onyx.Input", value: "Frankie Fu"}
 			]},
 			{kind: "onyx.Button", content: "new contact", ontap: "addItem"},
 			{fit: true},
@@ -14,7 +14,7 @@ enyo.kind({
 				{kind: "onyx.Input", placeholder: "Search...", style: "width: 140px;", oninput: "searchInputChange"},
 				{kind: "Image", src: "assets/search-input-search.png", style: "width: 20px;"}
 			]},
-			{kind: "onyx.Button", content: "remove selected", ontap: "removeSelected"},
+			{kind: "onyx.Button", content: "remove selected", ontap: "removeSelected"}
 		]},
 		{kind: "List", classes: "list-sample-contacts-list", fit: true, multiSelect: true, onSetupItem: "setupItem", components: [
 			{name: "divider", classes: "list-sample-contacts-divider"},
@@ -26,12 +26,12 @@ enyo.kind({
 					{content: "count:", classes: "list-sample-contacts-label"},
 					{name:"countOutput", style:"display:inline-block;", content: "200"}
 				]},
-				{kind: "onyx.Slider", value: 4, onChanging:"countSliderChanging"},
+				{kind: "onyx.Slider", value: 4, onChanging:"countSliderChanging"}
 			]},
 			{components: [
 				{content: "rowsPerPage:", classes: "list-sample-contacts-label"},
 				{name:"rowsPerPageOutput", style:"display:inline-block;", content: "50"},
-				{kind: "onyx.Slider", value: 10, onChanging:"rowsSliderChanging"},
+				{kind: "onyx.Slider", value: 10, onChanging:"rowsSliderChanging"}
 			]},
 			{components: [
 				{content: "hide divider:", classes: "list-sample-contacts-label"},
@@ -71,13 +71,12 @@ enyo.kind({
 		} else {
 			this.$.list.setCount(this.db.length);
 		}
-		//this.$.list.refresh();
-		this.$.list.reset();
+		this.$.list.refresh();
 	},
 	addItem: function() {
 		var item = this.generateItem(enyo.cap(this.$.newContactInput.getValue()));
 		var i = 0;
-		for (var di; di=this.db[i]; i++) {
+		for (var di; (di=this.db[i]); i++) {
 			if (di.name > item.name) {
 				this.db.splice(i, 0, item);
 				break;
@@ -92,8 +91,8 @@ enyo.kind({
 	},
 	removeItem: function(inIndex) {
 		this._removeItem(inIndex);
+		this.$.list.getSelection().remove(inIndex);
 		this.refreshList();
-		this.$.list.getSelection().deselect(inIndex);
 	},
 	_removeItem: function(inIndex) {
 		var i = this.filter ? this.filtered[inIndex].dbIndex : inIndex;
@@ -104,10 +103,16 @@ enyo.kind({
 		return true;
 	},
 	removeSelected: function() {
-		for (var i in this.$.list.getSelection().getSelected()) {
-			this._removeItem(i);
+		// get selected items, sort numerically in decending order
+		var selected = enyo.keys(this.$.list.getSelection().getSelected());
+		selected.sort(function(a,b) { return b-a; });
+		// remove items one-by-one, starting with last in the list
+		for (var i=0; i < selected.length; i++) {
+			this._removeItem(selected[i]);
 		}
+		// clear selection, since all selected items are now gone
 		this.$.list.getSelection().clear();
+		// re-render list in current position
 		this.refreshList();
 	},
 	populateList: function() {
@@ -133,7 +138,7 @@ enyo.kind({
 			name: inName,
 			avatar: "assets/avatars/" + avatars[enyo.irand(avatars.length)],
 			title: titles[enyo.irand(titles.length)]
-		}
+		};
 	},
 	sortDb: function() {
 		this.db.sort(function(a, b) {
@@ -159,7 +164,7 @@ enyo.kind({
 	generateFilteredData: function(inFilter) {
 		var re = new RegExp("^" + inFilter, "i");
 		var r = [];
-		for (var i=0, d; d=this.db[i]; i++) {
+		for (var i=0, d; (d=this.db[i]); i++) {
 			if (d.name.match(re)) {
 				d.dbIndex = i;
 				r.push(d);
