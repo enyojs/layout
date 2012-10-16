@@ -72,7 +72,6 @@ enyo.kind({
 			this.$.list.setCount(this.db.length);
 		}
 		this.$.list.refresh();
-		//this.$.list.reset();
 	},
 	addItem: function() {
 		var item = this.generateItem(enyo.cap(this.$.newContactInput.getValue()));
