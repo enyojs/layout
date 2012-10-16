@@ -26,6 +26,11 @@ enyo.kind({
 	published: {
 		//* Number of rows to render
 		count: 0,
+		/** 
+			If true, disable selection mechanism. Tap events will still be sent, but 
+			items won't be automatically re-rendered when tapped.
+		*/
+		noSelect: false,
 		//* If true, multiple selections are allowed
 		multiSelect: false,
 		//* If true, the selected item will toggle
@@ -63,9 +68,15 @@ enyo.kind({
 	rowOffset: 0,
 	create: function() {
 		this.inherited(arguments);
+		this.noSelectChanged();
 		this.multiSelectChanged();
 		this.clientClassesChanged();
 		this.clientStyleChanged();
+	},
+	noSelectChanged: function() {
+		if (this.noSelect) {
+			this.$.selection.clear();
+		}
 	},
 	multiSelectChanged: function() {
 		this.$.selection.setMulti(this.multiSelect);
@@ -109,6 +120,9 @@ enyo.kind({
 		this.inherited(arguments);
 	},
 	tap: function(inSender, inEvent) {
+		if (this.noSelect) {
+			return;
+		}
 		if (this.toggleSelected) {
 			this.$.selection.toggle(inEvent.index);
 		} else {

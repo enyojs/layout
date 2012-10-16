@@ -1,8 +1,9 @@
 enyo.kind({
-	name: "enyo.sample.ListBasicSample",
+	name: "enyo.sample.ListNoSelectSample",
 	classes: "list-sample enyo-fit",
 	components: [
-		{name: "list", kind: "List", count: 20000, multiSelect: false, classes: "enyo-fit list-sample-list", onSetupItem: "setupItem", components: [
+		{name: "list", kind: "List", count: 20000, noSelect: true, multiSelect: false, classes: "enyo-fit list-sample-list", 
+			onSetupItem: "setupItem", components: [
 			{name: "item", classes: "list-sample-item enyo-border-box", components: [
 				{name: "index", classes: "list-sample-index"},
 				{name: "name"}
@@ -19,8 +20,6 @@ enyo.kind({
 		}
 		var n = this.names[i];
 		var ni = ("00000000" + i).slice(-7);
-		// apply selection style if inSender (the list) indicates that this row is selected.
-		this.$.item.addRemoveClass("list-sample-selected", inSender.isSelected(i));
 		this.$.name.setContent(n);
 		this.$.index.setContent(ni);
 	}

@@ -52,6 +52,11 @@ enyo.kind({
 			bottom
 		*/
 		bottomUp: false,
+		/** 
+			If true, disable selection mechanism. Tap events will still be sent, but 
+			items won't be automatically re-rendered when tapped.
+		*/
+		noSelect: false,
 		//* If true, multiple selections are allowed
 		multiSelect: false,
 		//* If true, the selected item will toggle
@@ -86,6 +91,7 @@ enyo.kind({
 		this.inherited(arguments);
 		this.getStrategy().translateOptimized = true;
 		this.bottomUpChanged();
+		this.noSelectChanged();
 		this.multiSelectChanged();
 		this.toggleSelectedChanged();
 	},
@@ -114,6 +120,9 @@ enyo.kind({
 		if (this.hasNode()) {
 			this.reset();
 		}
+	},
+	noSelectChanged: function() {
+		this.$.generator.setNoSelect(this.noSelect);
 	},
 	multiSelectChanged: function() {
 		this.$.generator.setMultiSelect(this.multiSelect);
