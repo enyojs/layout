@@ -8,7 +8,6 @@
 	height:500px;
 	margin:auto;
 	background-color:#000;
-	margin-top:10px;
 }
 
 @media all and (max-width: 900px) {
@@ -26,10 +25,10 @@
 }
 
 .imageCarouselInput {
-	margin:0px 10px;
+	margin:0px 6px;
 }
 
 .imageCarouselInput input {
 	text-align:center;
-	width:50px;
+	width:30px;
 }
