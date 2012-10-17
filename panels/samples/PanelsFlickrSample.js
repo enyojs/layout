@@ -83,9 +83,13 @@ enyo.kind({
 		}
 		this.$.imageSpinner.show();
 		var item = this.results[inEvent.index];
-		this.$.flickrImage.hide();
-		this.$.flickrImage.setSrc(item.original);
 
+		if (item.original == this.$.flickrImage.getSrc()) {
+			this.imageLoaded();
+		} else {
+	    	this.$.flickrImage.hide();			
+			this.$.flickrImage.setSrc(item.original);	
+		}
 	},
 	imageLoaded: function() {
 		this.$.flickrImage.show();
@@ -93,7 +97,7 @@ enyo.kind({
 		this.$.flickrImage.addRemoveClass("tall", b.height > b.width);
 		this.$.imageSpinner.hide();
 	},
-	showList: function() {
+	showList: function() {		
 		this.setIndex(0);
 	}
 });
