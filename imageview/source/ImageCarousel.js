@@ -1,8 +1,9 @@
 /**
-	enyo.ImageCarousel is a kind of <a href="#enyo.Panels">enyo.Panels</a>,
-	using the <a href="#enyo.CarouselArranger">enyo.CarouselArranger</a>, that
-	dynamically creates and loads <a href="#enyo.ImageView">enyo.ImageView</a>
-	controls as they're needed, to create an image gallery or sorts.
+	_enyo.ImageCarousel_ is an <a href="#enyo.Panels">enyo.Panels</a> that
+	uses <a href="#enyo.CarouselArranger">enyo.CarouselArranger</a> as its
+	arrangerKind. An ImageCarousel dynamically creates and loads instances of
+	<a href="#enyo.ImageView">enyo.ImageView</a> as needed, creating a gallery
+	of images.
 
 		{kind:"ImageCarousel", images:[
 			"assets/mercury.jpg",
@@ -14,39 +15,43 @@
 			"assets/uranus.jpg",
 			"assets/neptune.jpg"
 		], defaultScale:"auto"},
-	
-	All of the inner ImageViews' events (onload, onerror, and onZoom) will
-	bubble up, and the ImageCarousel inherits the onTransitionStart and
-	onTransitionFinish events.
-	
-	The images array property can be altered and updated at any time, and the
-	index can be manipulated at runtime via the inherited getIndex() and
-	setIndex() functions.
-	
-    Note: It's best to specify a size for the ImageCarousel to avoid
-	complications   
+
+	All of the events (_onload_, _onerror_, and _onZoom_) from the contained
+	ImageView objects are bubbled up to the ImageCarousel, which also inherits
+	the	_onTransitionStart_ and	_onTransitionFinish_ events from _enyo.Panels_.
+
+	The _images_ property is an array containing the file paths of the images in
+	the	gallery.  The _images_ array may be altered and updated at any time, and
+	the	current index may be manipulated at runtime via the inherited
+	_getIndex()_ and _setIndex()_ functions.
+
+    Note that it's best to specify a size for the ImageCarousel in order to
+    avoid complications.
 */
 
 enyo.kind({
 	name: "enyo.ImageCarousel",
 	kind: enyo.Panels,
 	arrangerKind: "enyo.CarouselArranger",
-	//* The default scale value to be applied to each ImageView. Can be "auto", "width", "height", or any positive numeric value
+	/**
+	    The default scale value to be applied to each ImageView. Can be "auto",
+	    "width", "height", or any positive numeric value.
+	*/
 	defaultScale: "auto",
-	//* Disables the zoom on ImageViews when they're created
+	//* If true, ImageView instances are created with zooming disabled.
 	disableZoom:  false,
 	/**
-		When true, will destroy any ImageViews that are not in the immediate
-		viewing area (the currently active image and the first image on either
-		side of it) to free up memory. The has the benefit of using minimal
-		memory which is good for mobile devices, but has the downside that
-		ImagesViews will be recreated and the images re-fetched if you want to
-		view them again, increasing the number of GET calls needed for the
-		image files. Default is false.
+		If true, any ImageViews that are not in the immediate viewing area
+		(i.e., the currently active image and the first image on either
+		side of it) will be destroyed to free up memory. This has the benefit of
+		using minimal memory (which is good for mobile devices), but has the
+		downside that, if you want to view the images again, the ImageViews will
+		have to be re-created and the images re-fetched (thus increasing the
+		number of image-related GET calls). Defaults to false.
 	*/
 	lowMemory: false,
 	published: {
-		//* Array of image source filepaths
+		//* Array of image source file paths
 		images:[]
 	},
 	//* @protected
@@ -144,18 +149,20 @@ enyo.kind({
 		}
 	},
 	//* @public
-	//* Returns the currently displayed ImageView
+	//* Returns the currently displayed ImageView.
 	getActiveImage: function() {
 		return this.getImageByIndex(this.index);
 	},
-	//* Returns a given ImageView control by it's index
+	//* Returns the ImageView with the specified index.
 	getImageByIndex: function(index) {
 		return this.$["image" + index] || this.loadImageView(index);
 	},
 	/**
-		Destroys any ImageViews that are not in the immediate viewing area (the currently active image
-		and the first image on either side of it) to free up memory. Alternatively, you just set the lowMemory
-		propert of the ImageCarousel to true and this function will get called automatically as needed.
+	    Destroys any ImageView objects that are not in the immediate viewing
+	    area (i.e., the currently active image and the first image on either
+	    side of	it) to free up memory. If you set the Image Carousel's
+	    _lowMemory_ property to true, this function will be called automatically
+	    as needed.
 	*/
 	cleanupMemory: function() {
 		for(var i=0; i<this.images.length; i++) {

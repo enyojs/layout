@@ -1,40 +1,58 @@
 /**
-	enyo.ImageView is control that can display an image at a given scale
-	factor, with enhanced support for double-tap/click to zoom, panning,
-	mousewheel zooming and pinch-zoom (on touchscreen devices that support
-	it).
+    _enyo.ImageView_ is a control that displays an image at a given scaling
+    factor, with enhanced support for double-tap/double-click to zoom, panning,
+    mousewheel zooming and pinch-zoom (on touchscreen devices that support it).
 
-		{kind:"ImageView", src:"assets/globe.jpg", scale:"auto", style:"width:500px; height:400px;"}
-		
-	The onload and onerror events bubble up from the underlying image element
-	and an onZoom event is triggered when the user changes the zoom level of
-	the image.
-	
-	Optionally you disable the zoom, add
-	<a href="#enyo.ScrollThumb">enyo.ScrollThumb</a> indicators, disable zoom
-	animation, allow panning overscroll (with a bounce back) and control the
-	drag propagations, via boolean properties.
-	
-	Note: It's best to specify a size for the ImageView to avoid complications
+        {kind: "ImageView", src: "assets/globe.jpg", scale: "auto",
+            style: "width:500px; height:400px;"}
+
+	The _onload_ and _onerror_ events bubble up from the underlying image
+	element	and an _onZoom_ event is triggered when the user changes the zoom
+	level of the image.
+
+    If you wish, you may add <a href="#enyo.ScrollThumb">enyo.ScrollThumb</a>
+    indicators, disable zoom animation, allow panning overscroll (with a
+    bounce-back effect), and control the propagation of drag events, all via
+    boolean properties.
+
+	Note that it's best to specify a size for the ImageView in order to avoid
+	complications.
 */
 
 enyo.kind({
 	name: "enyo.ImageView",
 	kind: enyo.Scroller,
-	//* Allows for overscrolling during panning, with a bounce back (defaults to false)
+	/**
+	    If true, allows for overscrolling during panning, with a bounce-back
+	    effect. (Defaults to false.)
+	*/
 	touchOverscroll: false,
-	//* Specifies if a ScrollThumb should be used to indicate scroll position/bounds (defaults to false)
+	/**
+	    If true, a ScrollThumb is used to indicate scroll position/bounds.
+	    (Defaults to false.)
+	*/
 	thumb: false,
-	//* Whether or not double-tapping/clicking should animate it's zoom-in/out (defaults to true)
+	/**
+	    If true (the default), the zoom action triggered by a double-tap (or
+	    double-click) will be animated.
+	*/
 	animate: true,
-	//* Allows vertical drag events, when already at the top or bottom of the pannable area, to propagate (defaults to true)
+	/**
+	    If true (the default), allows propagation of vertical drag events when
+	    already at the top or bottom of the pannable area.
+	*/
 	verticalDragPropagation: true,
-	//* Allows horizontal drag events, when already at the left or right of the pannable area, to propagate (defaults to true)
+	/**
+	    If true (the default), allows propagation of horizontal drag events when
+	    already at the left or right edge of the pannable area.
+	*/
 	horizontalDragPropagation: true,
 	published: {
 		/**
-			Specifies the scale factor the image should be displayed at. It may be any positive numeric value or one of the following key words that will get resolved to a value dynamically:
-				
+			The scale at which the image should be displayed. It may be any
+			positive numeric value or one of the following key words (which will
+			be resolved to a value dynamically):
+	
 			* "auto": Fits the image to the size of the ImageView
 			* "width": Fits the image the width of the ImageView
 			* "height": Fits the image to the height of the ImageView
@@ -42,11 +60,16 @@ enyo.kind({
 		scale: "auto",
 		//* Disables the zoom functionality
 		disableZoom: false,
-		//* The source filepath of the image to be displayed
+		//* The file path of the image to be displayed
 		src: undefined
 	},
 	events: {
-		//* Fired whenever the user adjusts the zoom of the image, via double-tapping/clicks, mousewheel, or pinch-zoom. The scale value is passed in the event data
+		/**
+		    Fires whenever the user adjusts the zoom of the image, via
+		    double-tap/double-click, mousewheel, or pinch-zoom.
+		    
+		    _inEvent.scale_ contains the new scaling factor for the image.
+		*/
 		onZoom:""
 	},
 	//* @protected
