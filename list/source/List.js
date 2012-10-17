@@ -52,9 +52,9 @@ enyo.kind({
 			bottom
 		*/
 		bottomUp: false,
-		/** 
-			If true, disable selection mechanism. Tap events will still be sent, but 
-			items won't be automatically re-rendered when tapped.
+		/**
+			If true, the selection mechanism is disabled. Tap events are still
+			sent, but items won't be automatically re-rendered when tapped.
 		*/
 		noSelect: false,
 		//* If true, multiple selections are allowed
