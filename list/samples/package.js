@@ -4,7 +4,6 @@ enyo.depends(
 	"ListAroundSample.js",
 	"ListBasicSample.css",
 	"ListBasicSample.js",
-	"ListNoSelectSample.css",
 	"ListNoSelectSample.js",
 	"ListContactsSample.css",
 	"ListContactsSample.js",
