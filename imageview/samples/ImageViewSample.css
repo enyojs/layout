@@ -1,0 +1,19 @@
+
+.demoImageView {
+	width: 800px;
+	height:600px;
+}
+
+@media all and (max-width: 900px) {
+	.demoImageView {
+		width: 500px;
+		height:375px;
+	}
+}
+
+@media all and (max-width: 650px) {
+	.demoImageView {
+		width: 280px;
+		height:210px;
+	}
+}

@@ -4,14 +4,12 @@ enyo.kind({
 		onresize: "resized"
 	},
 	components: [
-		{kind: "onyx.Toolbar", components: [
-			{kind: "onyx.Button", content:"previous", ontap:"previous"},
-			{kind: "onyx.Button", content:"next", ontap:"next"},
+		{kind: "onyx.MoreToolbar", components: [
+			{kind: "onyx.Button", content:"&larr;", allowHtml: true, ontap:"previous"},
+			{kind: "onyx.Button", content:"&rarr;", allowHtml: true, ontap:"next"},
 			{kind: "onyx.InputDecorator", classes: "imageCarouselInput", components: [
-				{name: "carouselIndexInput", kind: "onyx.Input", value: "0"}
-			]},
-			{kind: "onyx.Button", content:"setIndex", ontap:"indexAnimated"},
-			{kind: "onyx.Button", content:"setIndexDirect", ontap:"indexDirect"}
+				{name: "carouselIndexInput", kind: "onyx.Input", value: "0", onchange: "updateIndex"}
+			]}
 		]},
 		{name:"carousel", kind:"ImageCarousel", classes:"demo", onload:"load", onZoom:"zoom", onerror:"error", onTransitionStart: "transitionStart", onTransitionFinish: "transitionFinish"}
 	],
@@ -64,10 +62,15 @@ enyo.kind({
 		}
 		return i;
 	},
-	indexAnimated: function(inSender, inEvent) {
-		this.$.carousel.setIndex(parseInt(this.$.carouselIndexInput.getValue()));
+	updateIndex: function(inSender, inEvent) {
+		var index = this.trimWhitespace(this.$.carouselIndexInput.getValue());
+		if(index == "" || isNaN(index)) {
+			enyo.log("Numbers only please.")
+			return;
+		}
+		this.$.carousel.setIndex(parseInt(index));
 	},
-	indexDirect: function(inSender, inEvent) {
-		this.$.carousel.setIndexDirect(parseInt(this.$.carouselIndexInput.getValue()));
+	trimWhitespace: function(inString) {
+		return inString.replace(/^\s+|\s+$/g,"");
 	}
 });
