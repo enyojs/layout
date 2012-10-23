@@ -74,6 +74,8 @@ enyo.kind({
 		this.bufferImage.onload = enyo.bind(this, "imageLoaded");
 		this.bufferImage.onerror = enyo.bind(this, "imageError");
 		this.srcChanged();
+		//	For image view, disable drags during gesture (to fix flicker: ENYO-1208)
+		this.getStrategy().setDragDuringGesture(false);
 	},
 	down: function(inSender, inEvent) {
 		// Fix to prevent image drag in Firefox
@@ -101,7 +103,8 @@ enyo.kind({
 		this.transformImage(this.scale);
 		if(oldScale != this.scale) {
 			this.doZoom({scale:this.scale});
-		}		
+		}
+		this.ratioX = this.ratioY = null;
 		// Prevent default scroll wheel action and prevent event from bubbling up to to touch scroller
 		inEvent.preventDefault();
 		return true;
@@ -150,7 +153,7 @@ enyo.kind({
 	},
 	gestureTransform: function(inSender, inEvent) {
 		this.eventPt = this.calcEventLocation(inEvent);
-		this.transformImage(this.scale * inEvent.scale);
+		this.transformImage(this.limitScale(this.scale * inEvent.scale));
 	},
 	calcEventLocation: function(inEvent) {
 		//determine the target coordinates on the imageview from an event
@@ -179,21 +182,18 @@ enyo.kind({
 		this.$.viewport.setBounds({width: this.imageBounds.width + "px", height: this.imageBounds.height + "px"});
 		
 		//determine the exact ratio where on the image was tapped
-		this.ratioX = (this.eventPt.x + this.getScrollLeft()) / prevBounds.width;
-		this.ratioY = (this.eventPt.y + this.getScrollTop()) / prevBounds.height;
+		this.ratioX = this.ratioX || (this.eventPt.x + this.getScrollLeft()) / prevBounds.width;
+		this.ratioY = this.ratioY || (this.eventPt.y + this.getScrollTop()) / prevBounds.height;
 		var scrollLeft, scrollTop;
 		if(this.$.animator.ratioLock) { //locked for smartzoom
 			scrollLeft = (this.$.animator.ratioLock.x * this.imageBounds.width) - (this.containerWidth / 2);
 			scrollTop = (this.$.animator.ratioLock.y * this.imageBounds.height) - (this.containerHeight / 2);
 		} else {
-			scrollLeft = (this.ratioX * this.imageBounds.width) - (this.containerWidth / 2);
-			scrollTop = (this.ratioY * this.imageBounds.height) - (this.containerHeight / 2);
+			scrollLeft = (this.ratioX * this.imageBounds.width) - this.eventPt.x;
+			scrollTop = (this.ratioY * this.imageBounds.height) - this.eventPt.y;
 		}
 		scrollLeft = Math.max(0, Math.min((this.imageBounds.width - this.containerWidth), scrollLeft));
 		scrollTop = Math.max(0, Math.min((this.imageBounds.height - this.containerHeight), scrollTop));
-		//adjust scroller to new position that keeps ratio with the new image size
-		this.setScrollLeft(scrollLeft);
-		this.setScrollTop(scrollTop);
 		
 		if(this.canTransform) {
 			var params = {scale: scale};
@@ -208,8 +208,13 @@ enyo.kind({
 		} else { //pretty much just IE8
 			//use top/left and width/height to adjust
 			this.$.image.setBounds({width: this.imageBounds.width + "px", height: this.imageBounds.height + "px",
-					left:this.imageBounds.left + "px", top:this.imageBounds.top + "px"});
+			left:this.imageBounds.left + "px", top:this.imageBounds.top + "px"});
 		}
+		
+		//adjust scroller to new position that keeps ratio with the new image size
+		this.setScrollLeft(scrollLeft);
+		this.setScrollTop(scrollTop);
+		
 		//this.stabilize();
 	},
 	limitScale: function(scale) {
@@ -245,6 +250,7 @@ enyo.kind({
 		if(oldScale != this.scale) {
 			this.doZoom({scale:this.scale});
 		}
+		this.ratioX = this.ratioY = null;
 	},
 	doubleClick: function(inSender, inEvent) {
 		//IE 8 fix; dblclick fires rather than multiple successive click events
@@ -306,3 +312,4 @@ enyo.kind({
 		this.$.animator.ratioLock = undefined;
 	}
 });
+
