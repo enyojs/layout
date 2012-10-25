@@ -1,34 +1,8 @@
-
-.demoButton {
-	margin:8px;
-}
-
-.demo {
-	width: 800px;
-	height:500px;
-	margin:auto;
-	background-color:#000;
-}
-
-@media all and (max-width: 900px) {
-	.demo {
-		width: 550px;
-		height:400px;
-	}
-}
-
-@media all and (max-width: 650px) {
-	.demo {
-		width: 280px;
-		height:250px;
-	}
-}
-
-.imageCarouselInput {
+.imagecarousel-sample-input {
 	margin:0px 6px;
 }
 
-.imageCarouselInput input {
+.imagecarousel-sample-input input {
 	text-align:center;
 	width:30px;
 }
