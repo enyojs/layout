@@ -145,6 +145,13 @@ enyo.kind({
 		this.scaleChanged();
 		this.$.image.setSrc(this.bufferImage.src);
 	},
+	resizeHandler: function() {
+		this.inherited(arguments);
+		// Once we've loaded the image, adjust the min/max scale anytime we resize
+		if (this.$.image.src) {
+			this.scaleChanged();
+		}
+	},
 	scaleChanged: function() {
 		var containerNode = this.hasNode();
 		if(containerNode) {
