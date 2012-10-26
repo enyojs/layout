@@ -47,6 +47,7 @@ enyo.kind({
 	    already at the left or right edge of the pannable area.
 	*/
 	horizontalDragPropagation: true,
+	defaultKind: "enyo.ImageViewPin",
 	published: {
 		/**
 			The scale at which the image should be displayed. It may be any
@@ -80,7 +81,7 @@ enyo.kind({
 	},
 	components:[
 		{name: "animator", kind: "Animator", onStep: "zoomAnimationStep", onEnd: "zoomAnimationEnd"},
-		{name:"viewport", style:"overflow:hidden;min-height:100%;min-width:100%;", classes:"enyo-fit", ongesturechange: "gestureTransform", ongestureend: "saveState", ontap: "singleTap", ondblclick:"doubleClick", onmousewheel:"mousewheel", components:[
+		{name:"viewport", kind:"enyo.Control", style:"overflow:hidden;min-height:100%;min-width:100%;", classes:"enyo-fit", ongesturechange: "gestureTransform", ongestureend: "saveState", ontap: "singleTap", ondblclick:"doubleClick", onmousewheel:"mousewheel", components:[
 			{kind:"Image", ondown: "down"}
 		]}
 	],
@@ -99,6 +100,8 @@ enyo.kind({
 		this.srcChanged();
 		//	For image view, disable drags during gesture (to fix flicker: ENYO-1208)
 		this.getStrategy().setDragDuringGesture(false);
+		//	Needed to kickoff pin redrawing (otherwise they wont' redraw on intitial scroll)
+		this.getStrategy().$.scrollMath.start();
 	},
 	down: function(inSender, inEvent) {
 		// Fix to prevent image drag in Firefox
@@ -147,6 +150,8 @@ enyo.kind({
 		
 		//Needed to ensure scroller contents height/width is calculated correctly when contents use enyo-fit
 		enyo.dom.transformValue(this.getStrategy().$.client, "translate3d", "0px, 0px, 0");
+		
+		this.positionClientControls(this.scale);
 	},
 	resizeHandler: function() {
 		this.inherited(arguments);
@@ -248,6 +253,8 @@ enyo.kind({
 		this.setScrollLeft(scrollLeft);
 		this.setScrollTop(scrollTop);
 		
+		this.positionClientControls(scale);
+		
 		//this.stabilize();
 	},
 	limitScale: function(scale) {
@@ -343,6 +350,13 @@ enyo.kind({
 	zoomAnimationEnd: function(inSender, inEvent) {
 		this.doZoom({scale:this.scale});
 		this.$.animator.ratioLock = undefined;
+	},
+	positionClientControls: function(scale) {
+		var controls = this.getClientControls();
+		for(var i=0;i<controls.length;i++) {
+			if(controls[i].reAnchor) {
+				controls[i].reAnchor(scale, this.imageBounds);
+			}
+		}
 	}
 });
-
