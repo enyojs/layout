@@ -80,7 +80,7 @@ enyo.kind({
 	},
 	components:[
 		{name: "animator", kind: "Animator", onStep: "zoomAnimationStep", onEnd: "zoomAnimationEnd"},
-		{name:"viewport", style:"overflow:hidden;min-width:100%; min-height:100%;", ongesturechange: "gestureTransform", ongestureend: "saveState", ontap: "singleTap", ondblclick:"doubleClick", onmousewheel:"mousewheel", components:[
+		{name:"viewport", style:"overflow:hidden;min-height:100%;min-width:100%;", classes:"enyo-fit", ongesturechange: "gestureTransform", ongestureend: "saveState", ontap: "singleTap", ondblclick:"doubleClick", onmousewheel:"mousewheel", components:[
 			{kind:"Image", ondown: "down"}
 		]}
 	],
@@ -144,6 +144,9 @@ enyo.kind({
 		//scale to fit before setting src, so unscaled image isn't visible
 		this.scaleChanged();
 		this.$.image.setSrc(this.bufferImage.src);
+		
+		//Needed to ensure scroller contents height/width is calculated correctly when contents use enyo-fit
+		enyo.dom.transformValue(this.getStrategy().$.client, "translate3d", "0px, 0px, 0");
 	},
 	resizeHandler: function() {
 		this.inherited(arguments);
