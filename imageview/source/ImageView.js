@@ -47,7 +47,6 @@ enyo.kind({
 	    already at the left or right edge of the pannable area.
 	*/
 	horizontalDragPropagation: true,
-	defaultKind: "enyo.ImageViewPin",
 	published: {
 		/**
 			The scale at which the image should be displayed. It may be any
@@ -81,7 +80,7 @@ enyo.kind({
 	},
 	components:[
 		{name: "animator", kind: "Animator", onStep: "zoomAnimationStep", onEnd: "zoomAnimationEnd"},
-		{name:"viewport", kind:"enyo.Control", style:"overflow:hidden;min-height:100%;min-width:100%;", classes:"enyo-fit", ongesturechange: "gestureTransform", ongestureend: "saveState", ontap: "singleTap", ondblclick:"doubleClick", onmousewheel:"mousewheel", components:[
+		{name:"viewport", style:"overflow:hidden;min-height:100%;min-width:100%;", classes:"enyo-fit", ongesturechange: "gestureTransform", ongestureend: "saveState", ontap: "singleTap", ondblclick:"doubleClick", onmousewheel:"mousewheel", components:[
 			{kind:"Image", ondown: "down"}
 		]}
 	],
@@ -352,11 +351,9 @@ enyo.kind({
 		this.$.animator.ratioLock = undefined;
 	},
 	positionClientControls: function(scale) {
-		var controls = this.getClientControls();
-		for(var i=0;i<controls.length;i++) {
-			if(controls[i].reAnchor) {
-				controls[i].reAnchor(scale, this.imageBounds);
-			}
-		}
+		this.waterfallDown("onPositionPin", {
+			scale: scale,
+			bounds: this.imageBounds
+		});
 	}
 });
