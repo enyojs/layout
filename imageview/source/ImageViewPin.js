@@ -46,7 +46,6 @@ enyo.kind({
 	},
 	//* @protected
 	style: "position:absolute;z-index:1000;width:0px;height:0px;",
-	
 	handlers: {
 		onPositionPin: "reAnchor"
 	},
@@ -75,10 +74,11 @@ enyo.kind({
 	},
 	// Update styling on anchor point
 	highlightAnchorPointChanged: function() {
-		var bkgnd = (this.highlightAnchorPoint) ? "yellow" : "transparent";
-		var border = (this.highlightAnchorPoint) ? "1px solid yellow" : "none";
-		this.applyStyle("background",bkgnd);
-		this.applyStyle("border",border);
+		if(this.highlightAnchorPoint) {
+		 	this.addClass("pinDebug");
+		} else {
+			this.removeClass("pinDebug");
+		}
 	},
 	// Create coords{} object for each anchor containing value and units
 	anchorChanged: function() {
@@ -102,7 +102,6 @@ enyo.kind({
 	reAnchor: function(inSender, inEvent) {
 		var scale = inEvent.scale;
 		var bounds = inEvent.bounds;
-		
 		var left = (this.anchor.right)
 			// Right
 			? (this.anchor.rightCoords.units == "px")
@@ -112,7 +111,6 @@ enyo.kind({
 			: (this.anchor.leftCoords.units == "px")
 				? (this.anchor.leftCoords.value*scale + bounds.x)
 				: (bounds.width*this.anchor.leftCoords.value/100 + bounds.x);
-				
 		var top = (this.anchor.bottom)
 			// Bottom
 			? (this.anchor.bottomCoords.units == "px")
@@ -122,7 +120,6 @@ enyo.kind({
 			: (this.anchor.topCoords.units == "px")
 				? (this.anchor.topCoords.value*scale + bounds.y)
 				: (bounds.height*this.anchor.topCoords.value/100 + bounds.y);
-		
 		this.applyStyle("left", left+"px");
 		this.applyStyle("top", top+"px");
 	}
