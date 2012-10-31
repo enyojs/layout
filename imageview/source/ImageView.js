@@ -99,6 +99,8 @@ enyo.kind({
 		this.srcChanged();
 		//	For image view, disable drags during gesture (to fix flicker: ENYO-1208)
 		this.getStrategy().setDragDuringGesture(false);
+		//	Needed to kickoff pin redrawing (otherwise they wont' redraw on intitial scroll)
+		this.getStrategy().$.scrollMath.start();
 	},
 	down: function(inSender, inEvent) {
 		// Fix to prevent image drag in Firefox
@@ -147,6 +149,8 @@ enyo.kind({
 		
 		//Needed to ensure scroller contents height/width is calculated correctly when contents use enyo-fit
 		enyo.dom.transformValue(this.getStrategy().$.client, "translate3d", "0px, 0px, 0");
+		
+		this.positionClientControls(this.scale);
 	},
 	resizeHandler: function() {
 		this.inherited(arguments);
@@ -248,6 +252,8 @@ enyo.kind({
 		this.setScrollLeft(scrollLeft);
 		this.setScrollTop(scrollTop);
 		
+		this.positionClientControls(scale);
+		
 		//this.stabilize();
 	},
 	limitScale: function(scale) {
@@ -343,6 +349,11 @@ enyo.kind({
 	zoomAnimationEnd: function(inSender, inEvent) {
 		this.doZoom({scale:this.scale});
 		this.$.animator.ratioLock = undefined;
+	},
+	positionClientControls: function(scale) {
+		this.waterfallDown("onPositionPin", {
+			scale: scale,
+			bounds: this.imageBounds
+		});
 	}
 });
-
