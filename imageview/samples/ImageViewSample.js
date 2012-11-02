@@ -1,3 +1,9 @@
+/**
+	Our map pin icon is based in whole or in part on the OpenStructs open source information and documentation,
+	largely developed by Structured Dynamics LLC. You are free to use this content and system as you wish, so long
+	as any derivative works acknowledge these contributions. TechWiki is provided under the Creative Commons
+	Attribution License, version 3.0. - http://techwiki.openstructs.org/index.php/Open_Source_Icons
+*/
 enyo.kind({
 	name: "enyo.sample.ImageViewSample",
 	components: [
