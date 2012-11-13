@@ -146,9 +146,9 @@ enyo.kind({
 			} else {
 				if(this.$["image" + index].src != this.images[index]) {
 					this.$["image" + index].setSrc(this.images[index]);
+					this.$["image" + index].setScale(this.defaultScale);
+					this.$["image" + index].setDisableZoom(this.disableZoom);
 				}
-				this.$["image" + index].setScale(this.defaultScale);
-				this.$["image" + index].setDisableZoom(this.disableZoom);
 			}
 		}
 		return this.$["image" + index];
