@@ -9,9 +9,9 @@ enyo.kind({
 				{kind: "Image", src: "assets/search-input-search.png", style: "width: 20px;"}
 			]},
 			{name: "sourceToggle", kind: "onyx.RadioGroup", components: [
-                {content: "Twitter", active: true, ontap: "setSourceTwitter"},
-               	{content: "Flickr", ontap: "setSourceFlickr"},
-	            {content: "Netflix", ontap: "setSourceNetflix"}
+                {content: "Fixed Size", active: true, ontap: "setSourceTwitter"},
+               	{content: "Variable Size", ontap: "setSourceFlickr"},
+	            {content: "Fluid Size", ontap: "setSourceNetflix"}
             ]},
 	        {name:"tileSpacingSlider", kind:"onyx.Slider", onChange: "tileSpacingChanged", style:"width:400px;", value: 40}
 		]},
