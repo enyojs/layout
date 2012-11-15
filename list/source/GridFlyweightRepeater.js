@@ -46,17 +46,14 @@ enyo.kind({
   		var cw = this.owner.hasNode().clientWidth;
 		var cl = this.$.client, ht = "";
 		var itemWidthPercent = 0;
-		if (this.itemFixedSize) {
+		if (this.itemFluidWidth) {
 			this.itemsPerRow = Math.floor(cw/(this.itemWidth));
 			if (this.itemSpacing >= 0) {
 				this.itemsPerRow = Math.floor((cw - this.itemSpacing)/(this.itemWidth + this.itemSpacing));
 			}
-		} else if (this.itemFluidWidth) {
-			this.itemsPerRow = Math.floor(cw/(this.itemDefaultWidth));
 			itemWidthPercent = 100/this.itemsPerRow;
 	  		var totalMargin = 0;
 			if (this.itemSpacing >= 0) {
-				this.itemsPerRow = Math.floor((cw - this.itemSpacing)/(this.itemMinWidth + this.itemSpacing));
 				totalMargin = (this.itemsPerRow + 1) * this.itemSpacing;
 				itemWidthPercent = 100/this.itemsPerRow - ((100 * totalMargin)/(this.itemsPerRow * cw));
 			}

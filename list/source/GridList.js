@@ -12,57 +12,57 @@
  * 
  * Usage:
  * enyo.kind( { 
- *		name: "App",
- *		components: [
- *			{ name: "gridList", kind: "enyo.GridList", onSizeupTile: "sizeupTile", onSetupTile: "setupTile", itemMinWidth: 160, itemSpacing: 2, components: [ {name: "img", kind: "enyo.Image"} ] },
- *		],
- *		... 
- *		//array of all tile data 
- *		_data: [], 		//example: [{width: 100, height: 100, source: "http://www.flickr.com/myimage.jpg"},....]
- *		sizeupTile: function(inSender, inEvent) {
- *			var tile = this._data[inEvent.index];
- *			inSender.setItemWidth(tile.width);
- *			inSender.setItemHeight(tile.height);
- *		},
- *		setupTile: function(inSender, inEvent) {
- *			var tile = this._data[inEvent.index];
- *			this.$.img.setSrc(tile.source);
- *			this.$.img.addStyles("width:100%; height: auto;");
- *		}
- *		...
+ *      name: "App",
+ *      components: [
+ *          { name: "gridList", kind: "enyo.GridList", onSizeupTile: "sizeupTile", onSetupTile: "setupTile", itemMinWidth: 160, itemSpacing: 2, components: [ {name: "img", kind: "enyo.Image"} ] },
+ *      ],
+ *      ... 
+ *      //array of all tile data 
+ *      _data: [],      //example: [{width: 100, height: 100, source: "http://www.flickr.com/myimage.jpg"},....]
+ *      sizeupTile: function(inSender, inEvent) {
+ *          var tile = this._data[inEvent.index];
+ *          inSender.setItemWidth(tile.width);
+ *          inSender.setItemHeight(tile.height);
+ *      },
+ *      setupTile: function(inSender, inEvent) {
+ *          var tile = this._data[inEvent.index];
+ *          this.$.img.setSrc(tile.source);
+ *          this.$.img.addStyles("width:100%; height: auto;");
+ *      }
+ *      ...
  * });
 */
 
 enyo.kind(
-	{
-		name: "enyo.GridList", 
-		kind: "enyo.List", 
-		classes: "enyo-gridlist", 
-		published: {
+    {
+        name: "enyo.GridList", 
+        kind: "enyo.List", 
+        classes: "enyo-gridlist", 
+        published: {
             //Set to true if you want all items to be of same size with fluid width (%-based width depending on how many items can fit in the available container width while honoring itemMinWidth). 
             //sizeupItem event is not fired in this case.  
             itemFluidWidth: false,
             //Set to true if you want all items to be of same size with fixed dimensions (configured by setting itemWidth and itemHeight upfront). 
             //sizeupItem event is not fired in this case. 
-    		itemFixedSize: false,
+            itemFixedSize: false,
             //Default width (in pixels) of items. This value is used if the itemWidth is not set explicitly OR if itemWidth cannot be calculated for any reason. 
-    		itemDefaultWidth: 160,
+            itemDefaultWidth: 160,
             //Minimum width (in pixels) of items. This is used to calculate the optimal rowsPerPage (items per page) setting based on available width of container. 
-    		itemMinWidth: 160,
+            itemMinWidth: 160,
             //Width (in pixels) of each item. sizeupItem event can be used to set the width of each item at run-time. 
-    		itemWidth: 160,
+            itemWidth: 160,
             //Default height (in pixels) of items. This value is used if the itemHeight is not set explicitly OR if itemHeight cannot be calculated for any reason. 
-    		itemDefaultHeight: 120,
+            itemDefaultHeight: 120,
             //Minimum height (in pixels) of items. This is used to calculate the optimal rowsPerPage (items per page) setting based on available width of container. 
-    		itemMinHeight: 120,
+            itemMinHeight: 120,
             //Height (in pixels) of each item. sizeupItem event can be used to set the height of each item at run-time. 
-    		itemHeight: 120,
-            //Spacing (in units. 1 unit = 8px) between GridList items. The max allowed/supported value is 5. 
-    		itemSpacing: 0,
+            itemHeight: 120,
+            //Spacing (in units. 1 unit = 8px) between GridList items. The max allowed/supported value is 4.  
+            itemSpacing: 0,
             //Set this to true if you want the items in each GridList row to be normalized to the same height. 
             //This setting is ignored (meaning rows are not normalized for performance benefits since we already know that the items have the same height) for the cases when either of itemFluidWidth or itemFixedSize is set to true. 
-    		normalizeRows: true
-    	},
+            normalizeRows: true
+        },
         events: {
             /**
             Fires once per tile (GridList item) at pre-render (before rendering) time to give the developer an opportunity to set the dimensions of the item.
@@ -83,82 +83,82 @@ enyo.kind(
             this.reset();
         },
         horizontal: "hidden",
-    	create: function() {
-    		this.inherited(arguments);
+        create: function() {
+            this.inherited(arguments);
             this.itemFluidWidthChanged();
-    		this.itemFixedSizeChanged();
-    		this.itemDefaultWidthChanged();
-    		this.itemMinWidthChanged();
-    		this.itemDefaultHeightChanged();
-    		this.itemMinHeightChanged();
-    		this.itemSpacingChanged();
-    		this.normalizeRowsChanged();
-    		this.$.generator.setClientClasses("enyo-gridlist-row");
+            this.itemFixedSizeChanged();
+            this.itemDefaultWidthChanged();
+            this.itemMinWidthChanged();
+            this.itemDefaultHeightChanged();
+            this.itemMinHeightChanged();
+            this.itemSpacingChanged();
+            this.normalizeRowsChanged();
+            this.$.generator.setClientClasses("enyo-gridlist-row");
             if (this.fixedHeight) {
                 this.rowHeight = this.itemHeight + this.itemSpacing;
             }
-    	},
-    	//Relay the published-property changes over to the GridFlyweightRepeater
-    	itemFluidWidthChanged: function() {
-    		if (this.itemFluidWidth) {
-    			this.setItemHeight(this.itemDefaultHeight); 
-    		}
-    		this.$.generator.itemFluidWidth = this.itemFluidWidth;
+        },
+        //Relay the published-property changes over to the GridFlyweightRepeater
+        itemFluidWidthChanged: function() {
+            if (this.itemFluidWidth) {
+                this.setItemHeight(this.itemDefaultHeight); 
+            }
+            this.$.generator.itemFluidWidth = this.itemFluidWidth;
             this.fixedHeight = this.$.generator.itemFixedSize || this.$.generator.itemFluidWidth;
-    	},
-    	itemFixedSizeChanged: function() {
-    		this.$.generator.itemFixedSize = this.itemFixedSize;
+        },
+        itemFixedSizeChanged: function() {
+            this.$.generator.itemFixedSize = this.itemFixedSize;
             this.fixedHeight = this.$.generator.itemFixedSize || this.$.generator.itemFluidWidth;
-    	},
-    	itemDefaultWidthChanged: function() {
-    		this.itemDefaultWidth = Math.max(this.itemDefaultWidth, this.itemMinWidth);
-    		this.$.generator.itemDefaultWidth = this.itemDefaultWidth;
-    		this._calculateRowsPerPage();
-    	},
-    	itemDefaultHeightChanged: function() {
-    		this.itemDefaultHeight = Math.max(this.itemDefaultHeight, this.itemMinHeight);
-    		this.$.generator.itemDefaultHeight = this.itemDefaultHeight;
-    	},
-    	itemWidthChanged: function() {
-    		if (this.itemWidth >=0 && !this.itemFixedSize) {
-    			this.itemWidth = Math.max(this.itemWidth, this.itemMinWidth);
-    		}
-    		this.$.generator.itemWidth = this.itemWidth;
-    	},
-    	itemHeightChanged: function() {
-    		this.$.generator.itemHeight = this.itemHeight;
-    	},
-    	itemMinWidthChanged: function() {
-    		var n = this.hasNode();
-			if (n) {
-	    		if (!this.itemMinWidth || isNaN(this.itemMinWidth) || this.itemMinWidth == 0) {
-					this.itemMinWidth = this.itemDefaultWidth;
-				}
-	    		this.itemMinWidth = Math.min(this.itemMinWidth, n.clientWidth);
-			}
-    		this.$.generator.itemMinWidth = this.itemMinWidth;
-    	},
-    	itemMinHeightChanged: function() {
-    		var n = this.hasNode();
-			if (n) {
-	    		if (!this.itemMinHeight || isNaN(this.itemMinHeight) || this.itemMinHeight == 0) {
-					this.itemMinHeight = this.itemDefaultHeight;
-				}
-	    		this.itemMinHeight = Math.min(this.itemMinHeight, n.clientHeight);
-			}
-    		this.$.generator.itemMinHeight = this.itemMinHeight;
-    	},
-    	itemSpacingChanged: function() {
-			if (this.itemSpacing < 0) {
-				this.itemSpacing = 0;
-			}
-			this.itemSpacing = Math.min(5, this.itemSpacing);
-			this.$.generator.itemSpacing = 8 * this.itemSpacing;
+        },
+        itemDefaultWidthChanged: function() {
+            this.itemDefaultWidth = Math.max(this.itemDefaultWidth, this.itemMinWidth);
+            this.$.generator.itemDefaultWidth = this.itemDefaultWidth;
+            this._calculateRowsPerPage();
+        },
+        itemDefaultHeightChanged: function() {
+            this.itemDefaultHeight = Math.max(this.itemDefaultHeight, this.itemMinHeight);
+            this.$.generator.itemDefaultHeight = this.itemDefaultHeight;
+        },
+        itemWidthChanged: function() {
+            if (this.itemWidth >=0 && !this.itemFixedSize) {
+                this.itemWidth = Math.max(this.itemWidth, this.itemMinWidth);
+            }
+            this.$.generator.itemWidth = this.itemWidth;
+        },
+        itemHeightChanged: function() {
+            this.$.generator.itemHeight = this.itemHeight;
+        },
+        itemMinWidthChanged: function() {
+            var n = this.hasNode();
+            if (n) {
+                if (!this.itemMinWidth || isNaN(this.itemMinWidth) || this.itemMinWidth == 0) {
+                    this.itemMinWidth = this.itemDefaultWidth;
+                }
+                this.itemMinWidth = Math.min(this.itemMinWidth, n.clientWidth);
+            }
+            this.$.generator.itemMinWidth = this.itemMinWidth;
+        },
+        itemMinHeightChanged: function() {
+            var n = this.hasNode();
+            if (n) {
+                if (!this.itemMinHeight || isNaN(this.itemMinHeight) || this.itemMinHeight == 0) {
+                    this.itemMinHeight = this.itemDefaultHeight;
+                }
+                this.itemMinHeight = Math.min(this.itemMinHeight, n.clientHeight);
+            }
+            this.$.generator.itemMinHeight = this.itemMinHeight;
+        },
+        itemSpacingChanged: function() {
+            if (this.itemSpacing < 0) {
+                this.itemSpacing = 0;
+            }
+            this.itemSpacing = 8 * Math.min(4, this.itemSpacing);
+            this.$.generator.itemSpacing = this.itemSpacing;
             this.show(this.count);
-    	},
-    	normalizeRowsChanged: function() {
-    		this.$.generator.normalizeRows = this.normalizeRows;
-    	},
+        },
+        normalizeRowsChanged: function() {
+            this.$.generator.normalizeRows = this.normalizeRows;
+        },
         rowsPerPageChanged: function() {
             //Don't let users change this (rowsPerPage is a published property of List but is not supported by GridList)
             this._calculateRowsPerPage();
@@ -179,7 +179,7 @@ enyo.kind(
             if (n) {
                 this.itemsPerRow = Math.floor((n.clientWidth - this.itemSpacing)/(this.itemMinWidth + this.itemSpacing));
                 var visibleRows = Math.round((n.clientHeight - this.itemSpacing)/(this.itemMinHeight + this.itemSpacing));
-                if (this.itemFixedSize) {
+                if (this.itemFixedSize || this.itemFluidWidth) {
                     this.itemsPerRow = Math.floor((n.clientWidth - this.itemSpacing)/(this.itemWidth + this.itemSpacing));
                     visibleRows = Math.round((n.clientHeight - this.itemSpacing)/(this.itemHeight + this.itemSpacing));
                 }
@@ -213,23 +213,23 @@ enyo.kind(
             this._calculateRowsPerPage();
         },
         //Override List's listTools array to a) use GridFlyweightRepeater instead of FlyweightRepeater and b) define an extra "_dummy_" component used to measure the dimensions of items at run-time. 
-		listTools: [ 
-    		{
-    			name: "port", classes: "enyo-list-port enyo-border-box", 
-    			components: [
-	    			{
-	    				name: "generator", kind: "GridFlyWeightRepeater", showing: false, 
-	    				components: [
-				             {kind: "Selection", onSelect: "selectDeselect", onDeselect: "selectDeselect"},
-	    			         {tag: null, name: "client"}
-	    			    ]
-	    			},
-	    			{name: "page0", allowHtml: true, classes: "enyo-list-page"},
-	    			{name: "page1", allowHtml: true, classes: "enyo-list-page"},
+        listTools: [ 
+            {
+                name: "port", classes: "enyo-list-port enyo-border-box", 
+                components: [
+                    {
+                        name: "generator", kind: "GridFlyWeightRepeater", showing: false, 
+                        components: [
+                             {kind: "Selection", onSelect: "selectDeselect", onDeselect: "selectDeselect"},
+                             {tag: null, name: "client"}
+                        ]
+                    },
+                    {name: "page0", allowHtml: true, classes: "enyo-list-page"},
+                    {name: "page1", allowHtml: true, classes: "enyo-list-page"},
                     //Use this component to dynamically compute the dimensions of an item based on the actual content inside the item. 
-	    			{name: "_dummy_", allowHtml: true, classes: "enyo-gridlist-dummy", showing: false}
-    			]
-    		}
-    	]
-	}	
+                    {name: "_dummy_", allowHtml: true, classes: "enyo-gridlist-dummy", showing: false}
+                ]
+            }
+        ]
+    }   
 );
