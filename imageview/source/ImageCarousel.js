@@ -96,7 +96,7 @@ enyo.kind({
 		if (this.layout.containerBounds) {
 			var prefetchRange = 1;
 			var bounds = this.layout.containerBounds;
-			var m, img, c, i, x;
+			var m, img, c, i, x, xEnd;
 			// get the lower range
 			i=this.index-1;
 			x=0;
@@ -160,7 +160,7 @@ enyo.kind({
 	},
 	imagesChanged: function() {
 		this.initContainers();
-		this.loadNearby();		
+		this.loadNearby();
 	},
 	indexChanged: function() {
 		this.loadNearby();
