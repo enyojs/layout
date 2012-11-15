@@ -36,20 +36,49 @@ enyo.kind({
     normalizeRows: true,
     itemsPerRow: 0,
 	_tilesFromPreviousPage: 0,
-	_itemWidthPercent: 0,
-
-	create: function() {
-		this.inherited(arguments);
-		this.itemsPerPage = this.owner.rowsPerPage;
-	},
-
 	generateChildHtml: function() {
-		var start = new Date();
-		
 		if (this.itemFluidWidth || this.itemFixedSize) {
 			return this._generateChildHtmlEqualSizedItems();
 		} 
-		
+		return this._generateChildHtmlVariableSizedItems();
+	},
+	_generateChildHtmlEqualSizedItems: function() {
+  		var cw = this.owner.hasNode().clientWidth;
+		var cl = this.$.client, ht = "";
+		var itemWidthPercent = 0;
+		if (this.itemFixedSize) {
+			this.itemsPerRow = Math.floor(cw/(this.itemWidth));
+			if (this.itemSpacing >= 0) {
+				this.itemsPerRow = Math.floor((cw - this.itemSpacing)/(this.itemWidth + this.itemSpacing));
+			}
+		} else if (this.itemFluidWidth) {
+			this.itemsPerRow = Math.floor(cw/(this.itemDefaultWidth));
+			itemWidthPercent = 100/this.itemsPerRow;
+	  		var totalMargin = 0;
+			if (this.itemSpacing >= 0) {
+				this.itemsPerRow = Math.floor((cw - this.itemSpacing)/(this.itemMinWidth + this.itemSpacing));
+				totalMargin = (this.itemsPerRow + 1) * this.itemSpacing;
+				itemWidthPercent = 100/this.itemsPerRow - ((100 * totalMargin)/(this.itemsPerRow * cw));
+			}
+		}
+		for (var i=this.rowOffset; i < this.rowOffset + this.count; i++) {
+			//Setup each item
+			cl.setAttribute("data-enyo-index", i);
+			this.doSetupItem({index: i, selected: this.isSelected(i)});
+			if (this.itemFluidWidth) {
+				cl.addStyles("width:" + itemWidthPercent + "%;height:" + this.itemHeight + "px;");
+			} else {
+				cl.addStyles("width:" + this.itemWidth + "px;height:" + this.itemHeight + "px;");
+			}
+			if (this.itemSpacing >= 0) {
+				cl.addStyles("margin-top:" + this.itemSpacing + "px;margin-left:" + this.itemSpacing + "px;");
+			}
+			ht += cl.generateHtml();
+			cl.teardownRender();
+		}
+		return ht;
+	},
+	_generateChildHtmlVariableSizedItems: function() {
 		this.index = null;
 		var tile = null;
 		var cl = this.$.client;
@@ -59,7 +88,6 @@ enyo.kind({
   		var lastTile = false;
   		var dummy = this.owner.$._dummy_.hasNode();
   		
-  		var start1 = new Date();
   		if (this.owner.page == 0) {
   			this._tilesFromPreviousPage = 0;
   		}
@@ -70,14 +98,12 @@ enyo.kind({
 			this.doSizeupItem({index: r, selected: this.isSelected(r)});
 			tileW = this.itemWidth;
 			tileH = this.itemHeight;
-			this.log(tileW, tileH);
 			if (!tileW || tileW==undefined || isNaN(tileW) || tileW <= 0) {
 				//Try setupitem
 				this.doSetupItem({index: r, selected: this.isSelected(r)});
 				dummy.innerHTML = cl.generateChildHtml();
 				tileW = dummy.clientWidth;
 				tileH = dummy.clientHeight;
-				this.log("Setup dummy item ", tileW, tileH);
 			}
 			if (!tileW || tileW==undefined || isNaN(tileW) || tileW <= 0) {
 				//Use default values
@@ -87,7 +113,6 @@ enyo.kind({
 			if (!tileH || tileH==undefined || isNaN(tileH) || tileH <= 0) {
 				tileH = this.itemDefaultHeight;
 			}
-			this.log(tileW, tileH);
 			w2h = tileW/tileH;
 			w = Math.min(tileW, cw);
 			if (this.itemMinWidth && this.itemMinWidth > 0) {
@@ -121,7 +146,6 @@ enyo.kind({
 				this._tilesFromPreviousPage = 0;
 				if ((lastRowInPage && gutterPerTile + raw > (1.5 * raw))) {
 					//Remove all these tiles from this row and push them to next page
-					//this.log("This is the last row in the page and the items in the row don't fit well if scaled. Spill all the " + tilesInRow + " tiles from this row into next page.");
 					this._tilesFromPreviousPage = tilesInRow;
 					rows[rowIndex] = {avgHeight: 0, index: rowIndex, tiles: []};
 					break;
@@ -135,13 +159,9 @@ enyo.kind({
 			}
 		}
 		dummy.innerHTML = "";
-  		//this.log("NORMALIZE took " + (new Date() - start1) + " millis");
   		
-  		// Now that we have completed normalization of tiles into rows and pages, we have the computed tile widths and heights.
-  		// Render the tiles now 
+  		// Now that we have completed normalization of tiles into rows and pages, we have the computed tile widths and heights. Render the tiles now. 
   		var ht = "", clh = "";
-  		cl = this.$.client;
-  		
   		var row;
   		for (var i=0; i < rows.length; i++) {
   			row = rows[i];
@@ -160,17 +180,17 @@ enyo.kind({
   				ht += clh;
   			}
   		}
-  		//this.log("Took " + (new Date() - start) + " millis");
   		return ht;
 	},
 	//Normalizes items in each GridList row so that they maintain the correct (original) aspect ratio while ensuring the height of each item is the same. 
 	_normalizeRow: function(inRowData) {
-		var start = new Date();
-		if (!inRowData.tiles || inRowData.tiles.length == 0)
+		if (!this.normalizeRows) {
 			return;
-		
-		var start = new Date();
-  		var cw = this.owner.hasNode().clientWidth;
+		}
+		if (!inRowData.tiles || inRowData.tiles.length == 0) {
+			return;
+		}
+		var cw = this.owner.hasNode().clientWidth;
   		//Use avg height to scale heights of all items in row to the same height
 		var tile;
 		var runningWidth = 0, nw = 0;
@@ -232,48 +252,5 @@ enyo.kind({
 		tileH = tile.height;
 		tile.width = (tileW + gutter);
   		tile.height = tileH;
-  		//this.log("Took " + (new Date() - start) + " millis");
-  	},
-  	
-	_generateChildHtmlEqualSizedItems: function() {
-  		var start = new Date();
-		var cw = this.owner.hasNode().clientWidth;
-		var cl = this.$.client, ht = "";
-		if (this.itemFixedSize) {
-			this.itemsPerRow = Math.floor(cw/(this.itemWidth));
-			if (this.itemSpacing >= 0) {
-				this.itemsPerRow = Math.floor((cw - this.itemSpacing)/(this.itemWidth + this.itemSpacing));
-			}
-		} else if (this.itemFluidWidth) {
-			this.itemsPerRow = Math.floor(cw/(this.itemDefaultWidth));
-			this._itemWidthPercent = 100/this.itemsPerRow;
-	  		var totalMargin = 0;
-			if (this.itemSpacing >= 0) {
-				totalMargin = (this.itemsPerRow + 1) * this.itemSpacing;
-				this.itemsPerRow = Math.floor((cw - this.itemSpacing)/(this.itemMinWidth + totalMargin));
-				this._itemWidthPercent = 100/this.itemsPerRow - ((100 * totalMargin)/(this.itemsPerRow * cw));
-			}
-		}
-		//this.log("this.owner.count = " + this.owner.count, "this.count = " + this.count, "this.rowOffset = " + this.rowOffset, "this.itemsPerRow = " + this.itemsPerRow);
-		for (var i=this.rowOffset; i < this.rowOffset + this.count; i++) {
-			ht += this._generateHtmlForItem(i, cl);
-		}
-		//this.log("Took " + (new Date() - start) + " millis");
-		return ht;
-	},
-	_generateHtmlForItem: function(inIndex, inClient) {
-		inClient.setAttribute("data-enyo-index", inIndex);
-		this.doSetupItem({index: inIndex, selected: this.isSelected(inIndex)});
-		if (this.itemFluidWidth) {
-			inClient.addStyles("width:" + this._itemWidthPercent + "%;height:" + this.itemHeight + "px;");
-		} else {
-			inClient.addStyles("width:" + this.itemWidth + "px;height:" + this.itemHeight + "px;");
-		}
-		if (this.itemSpacing >= 0) {
-			inClient.addStyles("margin-top:" + this.itemSpacing + "px;margin-left:" + this.itemSpacing + "px;");
-		}
-		var h = inClient.generateHtml();
-		inClient.teardownRender();
-		return h;
-	}
+  	}
 });

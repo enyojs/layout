@@ -140,7 +140,7 @@ enyo.kind({
 	setupNetflixItem: function(inSender, inEvent) {
 		var i = inEvent.index;
 		var item = this.results[i];
-		this.log(item);
+		//this.log(item);
 		var color = this.generateRandomColor();
 		this.$.tile.addStyles("background:" + color['bg'] + ";color:" + color['fg'] + ";");
 		this.$.icon.setSrc(item.BoxArt.LargeUrl || "assets/netflix.jpg");
@@ -158,7 +158,7 @@ enyo.kind({
 		this.$.tile.addStyles("background:" + color['bg'] + ";color:" + color['fg'] + ";");
 		this.$.icon.setSrc(item.profile_image_url);
 		this.$.date.setContent(this.getRelativeDateString(item.created_at));
-		this.$.name.setContent(inEvent.index + ". " + item.from_user_name);
+		this.$.name.setContent(item.from_user_name);
 		this.$.text.setContent(item.text);
 		this.$.caption.setContent('');
 		this.$.caption.addStyles("display:none;");
@@ -186,7 +186,7 @@ enyo.kind({
 	sizeupItem: function(inSender, inEvent) {
 		if (this.source == 'flickr') {
 			var i = inEvent.index;
-			this.log("Index = " + i);
+			//this.log("Index = " + i);
 			var item = this.results[i];
 			this.$.list.setItemWidth(item.width_m);
 			this.$.list.setItemHeight(item.height_m);
