@@ -9,6 +9,8 @@ enyo.depends(
 	"ListContactsSample.js",
 	"ListPulldownSample.css",
 	"ListPulldownSample.js",
+	"GridListSample.css",
+	"GridListSample.js",
 	"FlyweightRepeaterSample.css",
 	"FlyweightRepeaterSample.js"
 );
