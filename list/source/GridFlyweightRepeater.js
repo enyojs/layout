@@ -47,10 +47,6 @@ enyo.kind({
 		var cl = this.$.client, ht = "";
 		var itemWidthPercent = 0;
 		if (this.itemFluidWidth) {
-			this.itemsPerRow = Math.floor(cw/(this.itemWidth));
-			if (this.itemSpacing >= 0) {
-				this.itemsPerRow = Math.floor((cw - this.itemSpacing)/(this.itemWidth + this.itemSpacing));
-			}
 			itemWidthPercent = 100/this.itemsPerRow;
 	  		var totalMargin = 0;
 			if (this.itemSpacing >= 0) {
@@ -68,7 +64,12 @@ enyo.kind({
 				cl.addStyles("width:" + this.itemWidth + "px;height:" + this.itemHeight + "px;");
 			}
 			if (this.itemSpacing >= 0) {
-				cl.addStyles("margin-top:" + this.itemSpacing + "px;margin-left:" + this.itemSpacing + "px;");
+				cl.addStyles("margin-top:" + this.itemSpacing + "px; margin-left:" + this.itemSpacing + "px;");
+				if (i % this.itemsPerRow == this.itemsPerRow-1) {
+					cl.addStyles("margin-right:" + this.itemSpacing + "px;");
+				} else {
+					cl.addStyles("margin-right: 0px;");
+				}
 			}
 			ht += cl.generateHtml();
 			cl.teardownRender();

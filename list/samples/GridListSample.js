@@ -8,16 +8,21 @@ enyo.kind({
 				{name: "searchInput", kind: "onyx.Input", value: "Hurricane", placeholder: "Enter seach term"},
 				{kind: "Image", src: "assets/search-input-search.png", style: "width: 20px;"}
 			]},
-			{name: "sourceToggle", kind: "onyx.RadioGroup", components: [
-                {content: "Fixed Size", active: true, ontap: "setSourceTwitter"},
-               	{content: "Variable Size", ontap: "setSourceFlickr"},
-	            {content: "Fluid Size", ontap: "setSourceNetflix"}
+			{name: "sizeToggle", kind: "onyx.RadioGroup", components: [
+                {content: "Fixed Size", active: true, ontap: "setSizeFixed"},
+               	{content: "Variable Size", ontap: "setSizeVariable"},
+	            {content: "Fluid Size", ontap: "setSizeFluid"}
+            ]},
+            {name: "sourceToggle", kind: "onyx.RadioGroup", components: [
+                {content: "Twitter", active: true, ontap: "setSourceTwitter"},
+               	{content: "Flickr", ontap: "setSourceFlickr"},
+	            {content: "Netflix", ontap: "setSourceNetflix"}
             ]},
 	        {name:"tileSpacingSlider", kind:"onyx.Slider", onChange: "tileSpacingChanged", style:"width:400px;", value: 40}
 		]},
 		{
 			name: "list", kind: "enyo.GridList", fit:true, onSetupItem: "setupItem", onSizeupItem: "sizeupItem", style: "background:#000;", 
-			itemMinWidth: 200, itemSpacing: 5, 
+			itemMinWidth: 200, itemSpacing: 2, 
 			components: [
 				{
 					name: "tile",
@@ -50,6 +55,27 @@ enyo.kind({
 		this.source = 'twitter';
 		this.search();
 	},
+	setSizeFixed: function() {
+		this.$.list.setItemFixedSize(true);
+		this.$.list.setItemFluidWidth(false);
+		this.$.list.setItemWidth(160);
+		this.$.list.setItemMinWidth(160);
+		this.$.list.setItemHeight(160);
+		this.$.list.setItemMinHeight(160);
+		this.search();
+	},
+	setSizeVariable: function() {
+		this.$.list.setItemFixedSize(false);
+		this.$.list.setItemFluidWidth(false);
+		this.$.list.setItemMinWidth(160);
+		this.search();
+	},
+	setSizeFluid: function() {
+		this.$.list.setItemFluidWidth(true);
+		this.$.list.setItemFixedSize(false);
+		this.$.list.setItemMinWidth(320);
+		this.search();
+	},
 	search: function() {
 		// Capture searchText and strip any whitespace
 		var searchText = this.$.searchInput.getValue().replace(/^\s+|\s+$/g, '');
@@ -67,12 +93,6 @@ enyo.kind({
 		}
 	},
 	searchTwitter: function(inSearchText) {
-		this.$.list.setItemFixedSize(true);
-		this.$.list.setItemFluidWidth(false);
-		this.$.list.setItemWidth(160);
-		this.$.list.setItemMinWidth(160);
-		this.$.list.setItemHeight(160);
-		this.$.list.setItemMinHeight(160);
 		var req = new enyo.JsonpRequest({
 			url: "http://search.twitter.com/search.json",
 			callbackName: "callback"
@@ -81,9 +101,6 @@ enyo.kind({
 		req.go({q: inSearchText, rpp: 100});
 	},
 	searchFlickr: function(inSearchText) {
-		this.$.list.setItemFixedSize(false);
-		this.$.list.setItemFluidWidth(false);
-		this.$.list.setItemMinWidth(160);
 		var params = {
 			method: "flickr.photos.search",
 			format: "json",
@@ -97,9 +114,6 @@ enyo.kind({
 		new enyo.JsonpRequest({url: "http://api.flickr.com/services/rest/", callbackName: "jsoncallback"}).response(this, "processFlickrResults").go(params);
 	},
 	searchNetflix: function(inSearchText) {
-		this.$.list.setItemFluidWidth(true);
-		this.$.list.setItemFixedSize(false);
-		this.$.list.setItemMinWidth(320);
 		var req = new enyo.JsonpRequest({
 			url: "http://odata.netflix.com/Catalog/Titles?$filter=substringof('" + escape(inSearchText) + "',Name)" + "&$format=json",
 			callbackName: "$callback"
@@ -140,7 +154,6 @@ enyo.kind({
 	setupNetflixItem: function(inSender, inEvent) {
 		var i = inEvent.index;
 		var item = this.results[i];
-		//this.log(item);
 		var color = this.generateRandomColor();
 		this.$.tile.addStyles("background:" + color['bg'] + ";color:" + color['fg'] + ";");
 		this.$.icon.setSrc(item.BoxArt.LargeUrl || "assets/netflix.jpg");
@@ -184,16 +197,22 @@ enyo.kind({
 		}
 	},
 	sizeupItem: function(inSender, inEvent) {
-		if (this.source == 'flickr') {
-			var i = inEvent.index;
-			//this.log("Index = " + i);
-			var item = this.results[i];
+		var i = inEvent.index;
+		var item = this.results[i];
+		this.log(item);
+		if (this.source == 'twitter') {
+			this.$.list.setItemWidth(300);
+			this.$.list.setItemHeight(200);
+		} else if(this.source == 'flickr') {
 			this.$.list.setItemWidth(item.width_m);
 			this.$.list.setItemHeight(item.height_m);
-		} 
+		} else if(this.source == 'netflix') {
+			this.$.list.setItemWidth(300);
+			this.$.list.setItemHeight(400);
+		}
 	},
 	tileSpacingChanged: function() {
-		var spacing = Math.round(10 * this.$.tileSpacingSlider.value/100);
+		var spacing = Math.round(5 * this.$.tileSpacingSlider.value/100);
 		this.$.list.setItemSpacing(spacing);
 	},
 	getRelativeDateString: function(inDateString) {

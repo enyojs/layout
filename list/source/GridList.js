@@ -180,10 +180,15 @@ enyo.kind(
                 this.itemsPerRow = Math.floor((n.clientWidth - this.itemSpacing)/(this.itemMinWidth + this.itemSpacing));
                 var visibleRows = Math.round((n.clientHeight - this.itemSpacing)/(this.itemMinHeight + this.itemSpacing));
                 if (this.itemFixedSize || this.itemFluidWidth) {
-                    this.itemsPerRow = Math.floor((n.clientWidth - this.itemSpacing)/(this.itemWidth + this.itemSpacing));
+                    var itemsPerRow = Math.floor((n.clientWidth - this.itemSpacing)/(this.itemWidth + this.itemSpacing));
+                    var low = Math.floor(itemsPerRow);
+                    var high = Math.ceil(itemsPerRow);
+                    var gutter = n.clientWidth - this.itemSpacing - (high * (this.itemWidth + this.itemSpacing));
+                    this.itemsPerRow = (gutter > 0) ? high : low;
                     visibleRows = Math.round((n.clientHeight - this.itemSpacing)/(this.itemHeight + this.itemSpacing));
                 }
                 this.rowsPerPage = 3 * this.itemsPerRow * visibleRows;
+                this.$.generator.itemsPerRow = this.itemsPerRow;
             }
         },
         //Override List functions that use rowsPerPage to repaint UI because rowsPerPage is really itemsPerPage in GridList
