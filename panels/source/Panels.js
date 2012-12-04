@@ -412,7 +412,7 @@ enyo.kind({
 					n = inNew[i];
 					o = inOld[i];
 					if (n != o) {
-						b[i] = (n - (n - o) * inFrac).toFixed(20);
+						b[i] = n - (n - o) * inFrac;
 					}
 				}
 			}
