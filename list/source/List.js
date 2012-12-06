@@ -62,18 +62,24 @@ enyo.kind({
 		//* If true, the selected item will toggle
 		toggleSelected: false,
 		//* If true, the list will assume all rows have the same height for optimization
-		fixedHeight: false
+		fixedHeight: false,
+		//* If true, the list will allow the user to reorder list items
+		reorderable: true
 	},
 	events: {
 		/**
 			Fires once per row at render time.
-			
 			_inEvent.index_ contains the current row index.
 		*/
-		onSetupItem: ""
+		onSetupItem: "",
+		onReorder: ""
 	},
 	handlers: {
-		onAnimateFinish: "animateFinish"
+		onAnimateFinish: "animateFinish",
+        onhold: "hold",
+		ondrag: "drag",
+		onup: "dragfinish",
+		//ondragout: "dragfinish"
 	},
 	//* @protected
 	rowHeight: 0,
@@ -82,10 +88,607 @@ enyo.kind({
 			{name: "generator", kind: "FlyweightRepeater", canGenerate: false, components: [
 				{tag: null, name: "client"}
 			]},
-			{name: "page0", allowHtml: true, classes: "enyo-list-page"},
-			{name: "page1", allowHtml: true, classes: "enyo-list-page"}
+			{name: "page0", allowHtml: true, classes: "enyo-list-page", style: "border:2px solid yellow"},
+			{name: "page1", allowHtml: true, classes: "enyo-list-page", style: "border:2px solid red"},
+			{name: "reorderContainer", classes: "list-reorder-container"},
+			{name: "placeholder", classes: "listPlaceholder", style: "height:0px;"},
+			{name: "pinnedPlaceholder", classes: "pinned-list-placeholder", components: [
+				{name: "pinnedPlaceholderContents", allowHtml: true},
+				{name: "testButton", kind:"onyx.Button", content: "Drop", ontap: "dropPinnedRow"}
+			]}
 		]}
 	],
+	
+	draggingRowIndex: -1,
+	dragToScrollThreshold: 0.1,
+	prevScrollTop: 0,
+	autoScrollTimeoutMS: 20,
+	autoScrollTimeout: null,
+	pinnedReorderMode: false,
+	initialPinPosition: -1,
+	itemMoved: false,
+	currentPage: null,
+	
+	//* Hold event handler
+    hold:function(inSender, inEvent){
+		inEvent.preventDefault();
+		
+		// determine if we should handle the hold event
+		if(!this.shouldHold(inEvent)) {
+			return false;
+		}
+		
+		// disable drag to scroll on strategy
+		this.$.strategy.listReordering = true;
+		
+		// setup floating reorder container
+        this.setupReorderContainer(inEvent);
+
+		this.draggingRowIndex = this.placeholderRowIndex = inEvent.rowIndex;
+		this.itemMoved = false;
+		this.initialPageNumber = this.currentPageNumber = Math.floor(inEvent.rowIndex/this.rowsPerPage);
+		this.currentPage = this.currentPageNumber%2;
+		this.prevScrollTop = this.getScrollTop();
+		
+		// fill row being reordered with placeholder
+		this.replaceNodeWithPlacholder(inEvent.rowIndex);
+		
+		return false;
+    },
+	//* Determine whether we should handle the hold event
+	shouldHold: function(inEvent) {
+		// if list is not set to be reorderable, ignore hold event
+		if(!this.getReorderable()) {
+			return false;
+		}
+        // if not holding a row in the list, ignore hold event
+        if(inEvent.rowIndex < 0) {
+            return false;
+        }
+		// if currently pinned, don't allow additional holds
+		if(this.pinnedReorderMode) {
+			return false;
+		}
+		
+		return true;
+	},
+	//* Prepare floating reorder container
+	setupReorderContainer: function(e) {
+		this.setItemPosition(this.$.reorderContainer, e.rowIndex);
+		this.setItemBounds(this.$.reorderContainer, e.rowIndex);
+		this.appendNodeToReorderContainer(this.cloneRowNode(e.rowIndex));
+		this.$.reorderContainer.setShowing(true);
+	},
+	appendNodeToReorderContainer: function(node) {
+		this.$.reorderContainer.createComponent({allowHtml: true, content: node.innerHTML}).render();
+	},
+	
+	//* Drag event handler
+	drag: function(inSender, inEvent) {
+		inEvent.preventDefault();
+		
+		// determine if we should handle the drag event
+		if(!this.shouldDrag(inEvent)) {
+			return true;
+		}
+		
+		// position reorder node under mouse/pointer
+		this.positionReorderNode(inEvent);
+		
+		// determine if we need to auto-scroll the list
+		this.checkForAutoScroll(inEvent);
+		
+		// if the current index the user is dragging over has changed, move the placeholder
+		var index = this.getRowIndexFromCoordinate(inEvent.pageY);
+		if(index != this.placeholderRowIndex) {
+			this.movePlaceholderToIndex(index);
+		}
+		
+		return true;
+	},
+	//* Determine whether we should handle the drag event
+	shouldDrag: function(inEvent) {
+		if(!this.getReorderable()) {
+			return false;
+		}
+		
+		if(this.draggingRowIndex < 0) {
+			return false;
+		}
+		
+		if(this.pinnedReorderMode) {
+			return false;
+		}
+		
+		return true;
+	},
+	//* Position the reorder node based on the dx and dy of the drag event
+	positionReorderNode: function(e) {
+		var reorderNodeStyle = this.$.reorderContainer.hasNode().style;
+		var left = parseInt(reorderNodeStyle.left) + e.ddx;
+		var scrollTopDelta = this.getScrollTop() - this.prevScrollTop;
+		var top = parseInt(reorderNodeStyle.top) + parseInt(e.ddy) + scrollTopDelta;
+		this.$.reorderContainer.addStyles("top: "+top+"px ; left: "+left+"px");
+		this.prevScrollTop = this.getScrollTop();
+	},
+	/**
+		Checks if the list should scroll when dragging and starts the scroll timeout
+		if so. Auto-scrolling happens when the user is dragging an item within the top/bottom
+		boundary percentage defined in _this.dragToScrollThreshold_
+	*/
+    checkForAutoScroll:function(inEvent) {
+        var position = this.getNodePosition(this.hasNode());
+        var bounds = this.getBounds();
+        if(inEvent.pageY - position.top < bounds.height * this.dragToScrollThreshold) {
+			var perc = 100*(1 - ((inEvent.pageY - position.top) / (bounds.height * this.dragToScrollThreshold)));
+			this.scrollDistance = -1*perc;
+        } else if(inEvent.pageY - position.top > bounds.height * (1 - this.dragToScrollThreshold)) {
+			var perc = 100*((inEvent.pageY - position.top - bounds.height*(1 - this.dragToScrollThreshold)) / (bounds.height - (bounds.height * (1 - this.dragToScrollThreshold))));
+			this.scrollDistance = 1*perc;
+        } else {
+			this.scrollDistance = 0;
+		}
+		// stop scrolling if distance is zero (i.e. user isn't scrolling to the edges of
+		// the list), otherwise start it if not already started
+        if(this.scrollDistance == 0) {
+			this.stopAutoScrolling();
+		} else {
+			if(!this.autoScrollTimeout) {
+				this.startAutoScrolling();
+			}
+		}
+    },
+	//* Stop auto-scrolling
+	stopAutoScrolling: function() {
+		if(this.autoScrollTimeout) {
+			clearTimeout(this.autoScrollTimeout);
+			this.autoScrollTimeout = null;
+		}
+	},
+	//* Start auto-scrolling
+	startAutoScrolling: function() {
+		this.autoScrollTimeout = setTimeout(enyo.bind(this,this.autoScroll), this.autoScrollTimeoutMS);
+	},
+	//* Scroll the list by the distance specified in _this.scrollDistance_
+    autoScroll:function() {
+		if(this.scrollDistance == 0) {
+			this.stopAutoScrolling();
+		} else {
+			if(!this.autoScrollTimeout) {
+				this.startAutoScrolling();
+			}
+		}
+		this.setScrollPosition(this.getScrollPosition() + this.scrollDistance);
+		this.positionReorderNode({ddx: 0, ddy: 0});
+		
+		this.startAutoScrolling();
+	},
+	/**
+		Move the placeholder (i.e. gap between rows) to the row currently under
+		the user's pointer. This provides a visual cue, showing the user where the item
+		they are dragging will go if they drop it.
+	*/
+	movePlaceholderToIndex: function(index) {
+		var node = this.$.generator.fetchRowNode(index);
+		// safety first
+		if(!node) {
+			enyo.log("No node - "+index);
+			return;
+		}
+		
+		// figure next page and position for placeholder
+		var newPlaceholderIndex = (index > this.draggingRowIndex) ? index + 1 : index;
+		var nextPageNumber = Math.floor(newPlaceholderIndex/this.rowsPerPage);
+		var nextPage = nextPageNumber%2;
+		
+		// don't add pages beyond the original page count
+		if(nextPageNumber >= this.pageCount) {
+			nextPageNumber = this.currentPageNumber;
+			nextPage = this.currentPage;
+		}
+		
+		// if moving to same page, simply move the placeholder to new position
+		if(this.currentPage == nextPage) {
+			this.$["page"+this.currentPage].hasNode().insertBefore(this.placeholderNode, this.$.generator.fetchRowNode(newPlaceholderIndex));
+		// if moving to different page, recalculate page heights and reposition pages
+		} else {
+			this.updatePageHeights(nextPageNumber);
+			this.updatePagePositions(nextPageNumber,nextPage);
+			this.$["page"+nextPage].hasNode().insertBefore(this.placeholderNode, this.$.generator.fetchRowNode(newPlaceholderIndex));
+		}
+		
+		// save updated state
+		this.placeholderRowIndex = index;
+		this.currentPageNumber = nextPageNumber;
+		this.currentPage = nextPage;
+		
+		// remember that we moved an item (to prevent pinning at the wrong time)
+		this.itemMoved = true;
+	},
+
+	//* Dragfinish event handler
+	dragfinish: function(inSender, inEvent) {
+		if(this.getReorderable()) {
+			this.finishReordering(inSender, inEvent);
+		}
+	},
+	/**
+		Turn off reordering. If the user didn't drag the item being reordered
+		outside of it's original position, go into pinned reorder mode.
+	*/
+	finishReordering: function(inSender, inEvent) {
+		if(this.draggingRowIndex < 0 || this.pinnedReorderMode) {
+			return;
+		}
+		
+		this.stopAutoScrolling();
+		this.removePlaceholderNode();
+
+		// enable drag-scrolling on strategy
+		this.$.strategy.listReordering = false;
+		
+		// if the user dropped the item in the same location where it was picked up, and they
+		// didn't move any other items in the process, pin the item and go into pinned reorder mode
+		if(this.draggingRowIndex == this.placeholderRowIndex && !this.itemMoved) {
+			this.beginPinnedReorder(inEvent);
+			return;
+		}
+		
+		// release the row being reordered and complete the reordered event
+		this.dropReorderedRow(inEvent);
+		
+		if(!this.shouldDoRefresh() && this.currentPageNumber != this.initialPageNumber) {
+			this.correctPageHeights();		// TODO - fix the page height / port size problem
+			this.adjustPortSize();
+		}
+		
+		this.resetRerorderState();
+		
+		inEvent.preventDefault();
+		return true;
+	},
+	//* Go into pinned reorder mode
+	beginPinnedReorder: function(e) {
+		this.emptyAndHideReorderContainer();
+		this.setupPinnedPlaceholder();
+		this.pinnedReorderMode = true;
+		this.initialPinPosition = e.pageY;
+	},
+	//* clear contents of reorder container and re-render, then hide
+	emptyAndHideReorderContainer: function() {
+		this.$.reorderContainer.destroyComponents();
+		this.$.reorderContainer.setShowing(false);
+	},
+	/**
+		Show the pinned placeholder, match it's size to that of the item being reordered, and
+		fill it with a clone of the item being reordered
+	*/
+	setupPinnedPlaceholder: function() {
+		this.$.pinnedPlaceholderContents.setContent(this.cloneRowNode(this.draggingRowIndex).innerHTML);
+		this.showNode(this.hiddenNode);
+		this.setItemBounds(this.$.pinnedPlaceholder, this.draggingRowIndex);
+		this.hideNode(this.hiddenNode);
+		this.$["page"+this.currentPage].hasNode().insertBefore(this.$.pinnedPlaceholder.hasNode(), this.$.generator.fetchRowNode(this.draggingRowIndex));
+		this.$.pinnedPlaceholder.setShowing(true);
+	},
+	//* Put away reorder container and bubble a reorder event
+	dropReorderedRow: function(e) {
+		this.emptyAndHideReorderContainer();
+		this.doReorder(this.makeReorderEvent(e));
+		this.positionReorderedNode();
+		this.updateListIndices();
+	},
+	//* Add _reorderTo_ and _reorderFrom_ properties to the reorder event
+	makeReorderEvent: function(e) {
+		e.reorderFrom = this.draggingRowIndex;
+		e.reorderTo = this.placeholderRowIndex;
+		return e;
+	},
+	//* Move the node being reordered to the new position and show it
+	positionReorderedNode: function() {
+		var insertIndex = (this.placeholderRowIndex > this.draggingRowIndex) ? this.placeholderRowIndex+1 : this.placeholderRowIndex;
+		var insertNode = this.$.generator.fetchRowNode(insertIndex);
+		this.$["page"+this.currentPage].hasNode().insertBefore(this.hiddenNode, insertNode);
+		this.showNode(this.hiddenNode);
+	},
+	//* Reset back to original values
+	resetRerorderState: function() {
+		this.draggingRowIndex = this.placeholderRowIndex = -1;
+	},
+	//* Update indices as needed in list to preserve reordering
+	updateListIndices: function() {
+		// don't do update if we've moved further than one page, refresh instead
+		if(this.shouldDoRefresh()) {
+			this.refresh();
+			this.log("REFRESH");
+			return;
+		}
+		
+		var from = Math.min(this.draggingRowIndex, this.placeholderRowIndex);
+		var to = Math.max(this.draggingRowIndex, this.placeholderRowIndex);
+		var delta = (this.draggingRowIndex - this.placeholderRowIndex > 0) ? 1 : -1;
+		
+		if(delta === 1) {
+			//this.log("moving up - "+this.draggingRowIndex, this.placeholderRowIndex, to, from);
+			
+			var node = this.$.generator.fetchRowNode(this.draggingRowIndex);
+			//this.log("reordered: ",name, node, currentIndex+" ----> ", "reordered");
+			node.setAttribute("data-enyo-index", "reordered");
+			
+			for(var i=(to-1),newIndex=to;i>=from;i--) {
+				//this.log(i);
+				var node = this.$.generator.fetchRowNode(i);
+				if(!node) {
+					this.log("no node - "+i);
+					continue;
+				}
+				//var name = node.innerHTML.split('listContactsSample_item_name">')[1].split("<")[0];
+				var currentIndex = parseInt(node.getAttribute("data-enyo-index"));
+				newIndex = currentIndex + 1;
+				//this.log(name, node, currentIndex+" ----> ", newIndex);
+				node.setAttribute("data-enyo-index", newIndex);
+			}
+			
+			//this.log(this.draggingRowIndex);
+			var node = document.querySelectorAll('[data-enyo-index="reordered"]')[0];
+			//var name = node.innerHTML.split('listContactsSample_item_name">')[1].split("<")[0];
+			//this.log("reordered: ",name, node, node.getAttribute("data-enyo-index")+" ----> ", this.placeholderRowIndex);
+			node.setAttribute("data-enyo-index", this.placeholderRowIndex);
+			
+		} else {
+			//this.log("moving down - "+this.draggingRowIndex, this.placeholderRowIndex, to, from);
+			
+			//this.log(this.draggingRowIndex);
+			var node = this.$.generator.fetchRowNode(this.draggingRowIndex);
+			//var name = node.innerHTML.split('listContactsSample_item_name">')[1].split("<")[0];
+			//this.log("reordered: ",name, node, node.getAttribute("data-enyo-index")+" ----> ", this.placeholderRowIndex);
+			node.setAttribute("data-enyo-index", this.placeholderRowIndex);
+			
+			for(var i=(from+1), newIndex=from;i<=to;i++) {
+				var node = this.$.generator.fetchRowNode(i);
+				if(!node) {
+					this.log("no node - "+i);
+					continue;
+				}
+				//var name = node.innerHTML.split('listContactsSample_item_name">')[1].split("<")[0];
+				var currentIndex = parseInt(node.getAttribute("data-enyo-index"));
+				newIndex = currentIndex - 1;
+				//this.log(name, node, currentIndex+" ----> ", newIndex);
+				node.setAttribute("data-enyo-index", newIndex);
+			}
+		}
+	},
+	//* Determine if an item was reordered far enough that it warrants a refresh()
+	shouldDoRefresh: function() {
+		return (Math.abs(this.initialPageNumber - this.currentPageNumber) > 1)
+	},
+	//* Get node height, width, top, left
+	getNodeStyle: function(index) {
+		var node = this.$.generator.fetchRowNode(index);
+		if(!node) {
+			enyo.log("No node - "+index);
+			return;
+		}
+		var offset = this.getRelativeOffset(node, this.hasNode());
+		var dimensions = this.getDimensions(node);
+		return {h: parseInt(dimensions.height), w: parseInt(dimensions.width), left: parseInt(offset.left), top: parseInt(offset.top)};
+	},
+	//* Get offset relative to a positioned ancestor node
+    getRelativeOffset: function (n, p) {
+        var ro = {top: 0, left: 0};
+        if (n !== p && n.parentNode) {
+            do {
+                ro.top += n.offsetTop || 0;
+                ro.left += n.offsetLeft || 0;
+                n = n.offsetParent;
+            } while (n && n !== p);
+        }
+        return ro;
+    },
+	//* Get height and width dimensions of the given dom node
+	getDimensions: function(node) {
+		var style = getComputedStyle(node,null);
+		return {height: style.getPropertyValue("height"), width: style.getPropertyValue("width")};
+	},
+	/**
+		Overloaded domScroll function for TouchScrollStrategy. When we are in pinned reorder mode,
+		reposition the pinned placeholder when user has scrolled far enough.
+	*/
+	domScroll: function(inSender, e) {
+		this.inherited(arguments);
+		
+		if(!this.getReorderable()) {
+			return;
+		}
+		
+		if(!this.pinnedReorderMode) {
+			return;
+		}
+		
+		var index = this.getRowIndexFromCoordinate(this.initialPinPosition);
+		if(index != this.placeholderRowIndex) {
+			this.movePinnedRow(index);
+		}
+	},
+	//* Move the pinned row to a new index (determined by the current scroll position)
+	movePinnedRow: function(index) {
+		var node = this.$.generator.fetchRowNode(index);
+		if(!node) {
+			this.log("no node - "+index);
+			return;
+		}
+		
+		// figure next page and position for placeholder
+		var nextPageNumber = Math.floor(index/this.rowsPerPage);
+		var nextPage = nextPageNumber%2;
+		
+		// don't add pages beyond the original page count
+		if(nextPageNumber >= this.pageCount) {
+			nextPageNumber = this.currentPageNumber;
+			nextPage = this.currentPage;
+		}
+		
+		// if moving to same page, simply move the pinned row to new position
+		if(this.currentPage == nextPage) {
+			this.$["page"+this.currentPage].hasNode().insertBefore(this.$.pinnedPlaceholder.hasNode(), node);
+		// if moving to different page, recalculate page heights and reposition pages
+		} else {
+			this.updatePageHeights(nextPageNumber);
+			this.updatePagePositions(nextPageNumber,nextPage);
+			this.$["page"+nextPage].hasNode().insertBefore(this.$.pinnedPlaceholder.hasNode(), node);
+		}
+		
+		// save updated state
+		this.placeholderRowIndex = index > this.draggingRowIndex ? index - 1 : index;
+		this.currentPageNumber = nextPageNumber;
+		this.currentPage = nextPage;
+	},
+	replaceNodeWithPlacholder: function(index) {
+		var node = this.$.generator.fetchRowNode(index);
+		if(!node) {
+			enyo.log("No node - "+index);
+			return;
+		}
+		// create and style placeholder node
+		this.placeholderNode = this.createPlaceholderNode(node);
+		// hide existing node
+		this.hiddenNode = this.hideNode(node);
+		// insert placeholder node where original node was
+		this.$["page"+this.currentPage].hasNode().insertBefore(this.placeholderNode,this.hiddenNode);
+	},
+	//* Create and return a placeholder node with dimensions that match the input node
+	createPlaceholderNode: function(node) {
+		var placeholderNode = this.$.placeholder.hasNode().cloneNode(true);
+		var nodeDimensions = this.getDimensions(node);
+		placeholderNode.style.height = nodeDimensions.height;
+		placeholderNode.style.width = nodeDimensions.width;
+		return placeholderNode;
+	},
+	//* Remove the placeholder node from the DOM
+	removePlaceholderNode: function() {
+		this.removeNode(this.placeholderNode);
+		this.placeholderNode = null;
+	},
+	//* Remove the placeholder node from the DOM
+	removeHiddenNode: function() {
+		this.removeNode(this.hiddenNode);
+		this.hiddenNode = null;
+	},
+	//* Remove the node from the DOM
+	removeNode: function(node) {
+		if(!node || !node.parentNode) {
+			return;
+		}
+		node.parentNode.removeChild(node);
+	},
+	//* Update _this.pageHeights_ to support the placeholder node jumping from one page to the next
+	updatePageHeights: function(nextPageNumber) {
+		this.pageHeights[this.currentPageNumber] = this.getPageHeight(this.currentPageNumber) - this.rowHeight;
+		this.pageHeights[nextPageNumber] = this.getPageHeight(nextPageNumber) + this.rowHeight;
+		//this.log("p"+this.currentPageNumber,this.pageHeights[this.currentPageNumber], "p"+nextPageNumber,this.pageHeights[nextPageNumber])
+	},
+	//* Reposition the two pages to support the placeholder node jumping from one page to the next
+	updatePagePositions: function(nextPageNumber,nextPage) {
+		this.positionPage(this.currentPageNumber, this.$["page"+this.currentPage]);
+		this.positionPage(nextPageNumber, this.$["page"+nextPage]);
+	},
+	correctPageHeights: function() {
+		var otherPage = (this.currentPage == 1) ? 0 : 1;
+		
+		
+		
+		// if moved down, move current page's firstChild to the end of previous page
+		if(this.initialPageNumber < this.currentPageNumber) {
+			var mover = this.$["page"+this.currentPage].hasNode().firstChild;
+			this.$["page"+otherPage].hasNode().appendChild(mover);
+			//this.log("moving page"+this.currentPage+"'s firstChild (",mover,") to the end of page"+otherPage);
+		// if moved up, move current page's lastChild before previous page's firstChild
+		} else {
+			var mover = this.$["page"+this.currentPage].hasNode().lastChild;
+			var movee = this.$["page"+otherPage].hasNode().firstChild;
+			this.$["page"+otherPage].hasNode().insertBefore(mover, movee);
+			//this.log("moving page"+this.currentPage+"'s lastChild (",mover,") in front of page"+otherPage+"'s firstChild (",movee,")");
+		}
+		this.pageHeights[this.initialPageNumber] = this.getPageHeight(this.initialPageNumber) + this.rowHeight;
+		this.pageHeights[this.currentPageNumber] = this.getPageHeight(this.currentPageNumber) - this.rowHeight;
+		this.updatePagePositions(this.initialPageNumber,otherPage);
+	},
+	hideNode: function(node) {
+		node.style.display = "none";
+		return node;
+	},
+	showNode: function(node) {
+		node.style.display = "block";
+		return node;
+	},
+	//* Called when the "Drop" button is pressed on the pinned placeholder row
+	dropPinnedRow: function(inSender, inEvent) {
+		this.pinnedReorderMode = false;
+		this.dropReorderedRow(inEvent);
+		this.$.pinnedPlaceholder.setShowing(false);
+		this.resetRerorderState();
+	},
+	//* Returns the row index that is under the given position on the page
+    getRowIndexFromCoordinate: function(y) {
+        var positionInList = this.getScrollTop() + y - this.getNodePosition(this.hasNode()).top;
+        return Math.floor(positionInList/this.rowHeight); // TODO assumes all nodes have same height
+    },
+	//* Get the position of a node (identified via index) on the page
+	getIndexPosition: function(index) {
+		return this.getNodePosition(this.$.generator.fetchRowNode(index));
+	},
+	//* Gets the position of a node on the page, taking translations into account
+    getNodePosition:function(node) {
+        var originalNode=node;
+        var offsetTop=0;
+        var offsetLeft=0;
+        while(node && node.offsetParent){
+            offsetTop+=node.offsetTop;
+            offsetLeft+=node.offsetLeft;
+            node=node.offsetParent;
+        }
+        // second pass to get transforms 
+        node=originalNode;
+        var cssTransformProp=enyo.dom.getCssTransformProp();
+        while(node && node.getAttribute){
+            var matrix=enyo.dom.getComputedStyleValue(node,cssTransformProp);
+            if(matrix && matrix != "none"){
+                var last=matrix.lastIndexOf(",");
+                var secondToLast=matrix.lastIndexOf(",",last-1);
+                if(last>=0 && secondToLast>=0){
+                    offsetTop+=parseFloat(matrix.substr(last+1,matrix.length-last));
+                    offsetLeft+=parseFloat(matrix.substr(secondToLast+1,last-secondToLast));             
+                }
+            }
+            node=node.parentNode;
+        }
+        return {top:offsetTop,left:offsetLeft};
+    },
+	cloneRowNode: function(index) {
+		return this.$.generator.fetchRowNode(index).cloneNode(true);
+	},
+	//* Set the _$item_'s position to match that of the item at _index_
+	setItemPosition: function($item,index) {
+		var clonedNodeStyle = this.getNodeStyle(index);
+		var styleStr = "top:"+clonedNodeStyle.top+"px; left:"+clonedNodeStyle.left+"px;";
+		$item.addStyles(styleStr);
+	},
+	//* Set the _$item_'s width and height to match that of the item at _index_
+	setItemBounds: function($item,index) {
+		var clonedNodeStyle = this.getNodeStyle(index);
+		var styleStr = "width:"+clonedNodeStyle.w+"px; height:"+clonedNodeStyle.h+"px;";
+		$item.addStyles(styleStr);
+	},
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	create: function() {
 		this.pageHeights = [];
 		this.inherited(arguments);
@@ -107,6 +710,17 @@ enyo.kind({
 		this.$.generator.node = this.$.port.hasNode();
 		this.$.generator.generated = true;
 		this.reset();
+	},
+	initComponents: function() {
+		this.inherited(arguments);
+		this.hideReorderableContainer();
+		this.hidePinnedPlaceholderContainer();
+	},
+	hideReorderableContainer: function() {
+		this.$.reorderContainer.setShowing(false);
+	},
+	hidePinnedPlaceholderContainer: function() {
+		this.$.pinnedPlaceholder.setShowing(false);
 	},
 	resizeHandler: function() {
 		this.inherited(arguments);
@@ -362,12 +976,12 @@ enyo.kind({
 		return this.$.generator.isSelected(inIndex);
 	},
 	/**
-		Re-renders the specified row. Call after making modifications to a row,
-		to force it to render.
-	*/
-	renderRow: function(inIndex) {
-		this.$.generator.renderRow(inIndex);
-	},
+    	Re-renders the specified row. Call after making modifications to a row,
+        to force it to render.
+    */
+    renderRow: function(inIndex) {
+    	this.$.generator.renderRow(inIndex);
+    },
 	//* Prepares the row to become interactive.
 	prepareRow: function(inIndex) {
 		this.$.generator.prepareRow(inIndex);
