@@ -13,3 +13,22 @@
 	left: 0;
 	right: 0;
 }
+
+.listPlaceholder { }
+.pinned-list-placeholder {
+	border:1px solid pink;
+	position:relative;
+}
+.pinned-list-placeholder button {
+	width:100px; height:100%;
+	position:absolute;
+	top:0px; right:0px;
+}
+.list-reorder-container {
+	position:absolute;
+	top:0px; left:0px;
+	z-index:1000;
+	background:transparent;
+	overflow:hidden;
+	border:1px solid red;
+}

@@ -64,7 +64,7 @@ enyo.kind({
 		//* If true, the list will assume all rows have the same height for optimization
 		fixedHeight: false,
 		//* If true, the list will allow the user to reorder list items
-		reorderable: true
+		reorderable: false
 	},
 	events: {
 		/**
@@ -94,7 +94,7 @@ enyo.kind({
 			{name: "placeholder", classes: "listPlaceholder", style: "height:0px;"},
 			{name: "pinnedPlaceholder", classes: "pinned-list-placeholder", components: [
 				{name: "pinnedPlaceholderContents", allowHtml: true},
-				{name: "testButton", kind:"onyx.Button", content: "Drop", ontap: "dropPinnedRow"}
+				{name: "testButton", kind:"enyo.Button", content: "Drop", ontap: "dropPinnedRow"}
 			]}
 		]}
 	],
@@ -400,6 +400,10 @@ enyo.kind({
 		// don't do update if we've moved further than one page, refresh instead
 		if(this.shouldDoRefresh()) {
 			this.refresh();
+			// Account for the row movement
+			if(this.draggingRowIndex < this.placeholderRowIndex) {
+				this.setScrollPosition(this.getScrollPosition()-this.rowHeight);
+			}
 			this.log("REFRESH");
 			return;
 		}
@@ -569,7 +573,7 @@ enyo.kind({
 		this.removeNode(this.placeholderNode);
 		this.placeholderNode = null;
 	},
-	//* Remove the placeholder node from the DOM
+	//* Remove the hidden node from the DOM
 	removeHiddenNode: function() {
 		this.removeNode(this.hiddenNode);
 		this.hiddenNode = null;
