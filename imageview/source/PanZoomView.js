@@ -268,12 +268,15 @@ enyo.kind({
 				params = enyo.mixin({translate: this.imageBounds.left + "px, " + this.imageBounds.top + "px"}, params);
 			}
 			enyo.dom.transform(this.$.content, params);
-		} else { //pretty much just IE8
-			//use top/left and width/height to adjust
-			// IE8 does not support transforms, but filter might work... somehow
-			// see http://www.useragentman.com/blog/2010/03/09/cross-browser-css-transforms-even-in-ie/
-			this.$.content.setBounds({width: this.imageBounds.width + "px", height: this.imageBounds.height + "px",
-					left:this.imageBounds.left + "px", top:this.imageBounds.top + "px"});
+		} else if (enyo.platform.ie) {
+			// IE8 does not support transforms, but filter should work
+			// http://www.useragentman.com/IETransformsTranslator/
+			var matrix = "\"progid:DXImageTransform.Microsoft.Matrix(M11="+scale+", M12=0, M21=0, M22="+scale+", SizingMethod='auto expand')\"";
+			this.$.content.applyStyle("-ms-filter", matrix);
+//			this.$.content.setBounds({width: this.imageBounds.width + "px", height: this.imageBounds.height + "px",
+//					left:this.imageBounds.left + "px", top:this.imageBounds.top + "px"});
+		} else {
+			// ...no transforms and not IE... there's nothin' I can do.
 		}
 		
 		//adjust scroller to new position that keeps ratio with the new image size
