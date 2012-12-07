@@ -22,6 +22,7 @@ enyo.kind({
 	name: "enyo.ImageView",
 	kind: "enyo.PanZoomView",
 	components:[
+		// @TODO: reduce all this to {kind:"Image", ondown: "down"}
 		{name: "animator", kind: "Animator", onStep: "zoomAnimationStep", onEnd: "zoomAnimationEnd"},
 		{name:"viewport", style:"overflow:hidden;min-height:100%;min-width:100%;", classes:"enyo-fit", ongesturechange: "gestureTransform", ongestureend: "saveState", ontap: "singleTap", ondblclick:"doubleClick", onmousewheel:"mousewheel", components:[
 			{name: "content", components: [
@@ -30,6 +31,8 @@ enyo.kind({
 		]}
 	],
 	create: function() {
+		this.unscaledComponents = this.components;
+		this.components = [];
 		this.inherited(arguments);
 		//offscreen buffer image to get initial image dimensions
 		//before displaying a scaled down image that can fit in the container
