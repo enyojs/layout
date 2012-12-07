@@ -25,8 +25,8 @@ enyo.kind({
 		// @TODO: reduce all this to {kind:"Image", ondown: "down"}
 		{name: "animator", kind: "Animator", onStep: "zoomAnimationStep", onEnd: "zoomAnimationEnd"},
 		{name:"viewport", style:"overflow:hidden;min-height:100%;min-width:100%;", classes:"enyo-fit", ongesturechange: "gestureTransform", ongestureend: "saveState", ontap: "singleTap", ondblclick:"doubleClick", onmousewheel:"mousewheel", components:[
-			{name: "content", components: [
-				{kind:"Image", ondown: "down"}
+			{name: "content", style: "display: inline-block;", components: [
+				{kind:"Image", ondown: "down", style: "vertical-align: text-top;"}
 			]}
 		]}
 	],
