@@ -16,7 +16,7 @@
 
 .listPlaceholder { }
 .pinned-list-placeholder {
-	border:1px solid pink;
+	border:1px solid red;
 	position:relative;
 }
 .pinned-list-placeholder button {
@@ -31,4 +31,11 @@
 	background:transparent;
 	overflow:hidden;
 	border:1px solid red;
+}
+
+.animatedTopAndLeft {
+	transition: top 0.1s linear, left 0.1s linear;
+	-webkit-transition: top 0.1s linear, left 0.1s linear;
+	-moz-transition: top 0.1s linear, left 0.1s linear;
+	-o-transition: top 0.1s linear, left 0.1s linear;
 }

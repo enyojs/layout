@@ -16,10 +16,10 @@ enyo.kind({
 			]},
 			{kind: "onyx.Button", content: "remove selected", ontap: "removeSelected"}
 		]},
-		{kind: "List", classes: "list-sample-contacts-list enyo-unselectable", fit: true, multiSelect: true, reorderable: true, onSetupItem: "setupItem", onReorder: "listReorder", components: [
-			{name: "divider", classes: "list-sample-contacts-divider"},
+		{kind: "List", classes: "list-sample-contacts-list enyo-unselectable", fit: true, multiSelect: true, reorderable: true, fixedHeight:true, onSetupItem: "setupItem", onReorder: "listReorder", components: [
+			//{name: "divider", classes: "list-sample-contacts-divider"},
 			{name: "item", kind: "ContactItem", classes: "list-sample-contacts-item enyo-border-box", onRemove: "removeTap"},
-			{name: "myIndex"}
+			//{name: "myIndex"}
 		]},
 		{name: "popup", kind: "onyx.Popup", modal: true, centered: true, classes: "list-sample-contacts-popup", components: [
 			{components: [
@@ -63,8 +63,9 @@ enyo.kind({
 		// selection
 		this.$.item.setSelected(inSender.isSelected(i));
 		// index
-		this.$.myIndex.setContent(i);
+		//this.$.myIndex.setContent(i);
 		// divider
+		/*
 		if (!this.hideDivider) {
 			var d = item.name[0];
 			var prev = data[i-1];
@@ -73,6 +74,7 @@ enyo.kind({
 			this.$.divider.canGenerate = showd;
 			this.$.item.applyStyle("border-top", showd ? "none" : null);
 		}
+		*/
 	},
 	refreshList: function() {
 		if (this.filter) {
@@ -132,7 +134,7 @@ enyo.kind({
 		this.$.list.setRowsPerPage(~~this.$.rowsPerPageOutput.getContent());
 		//
 		this.hideDivider = this.$.hideDividerCheckbox.getValue();
-		this.$.divider.canGenerate = !this.hideDivider;
+		//this.$.divider.canGenerate = !this.hideDivider;
 		//
 		this.$.list.reset();
 	},
