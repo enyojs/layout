@@ -93,7 +93,6 @@ enyo.kind({
 		var instanceComponents = this.components;
 		this.components = [];
 		this.inherited(arguments);
-console.log(this.$)
 		this.$.content.applyStyle("width", this.contentWidth + "px");
 		this.$.content.applyStyle("height", this.contentHeight + "px");
 
@@ -261,8 +260,10 @@ console.log(this.$)
 			// http://www.useragentman.com/IETransformsTranslator/
 			var matrix = "\"progid:DXImageTransform.Microsoft.Matrix(M11="+scale+", M12=0, M21=0, M22="+scale+", SizingMethod='auto expand')\"";
 			this.$.content.applyStyle("-ms-filter", matrix);
-//			this.$.content.setBounds({width: this.bounds.width + "px", height: this.bounds.height + "px",
-//					left:this.bounds.left + "px", top:this.bounds.top + "px"});
+			this.$.content.setBounds({width: this.bounds.width*scale + "px", height: this.bounds.height*scale + "px",
+					left:this.bounds.left + "px", top:this.bounds.top + "px"});
+			this.$.content.applyStyle("width", scale*this.bounds.width);
+			this.$.content.applyStyle("height", scale*this.bounds.height);
 		} else {
 			// ...no transforms and not IE... there's nothin' I can do.
 		}

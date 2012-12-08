@@ -11,7 +11,7 @@ enyo.kind({
 	planets: ["assets/globe.jpg", "assets/earth.jpg", "assets/jupiter.jpg", "assets/mars.jpg", "assets/mercury.jpg", "assets/neptune.jpg", "assets/saturn.jpg", "assets/uranus.jpg", "assets/venus.jpg"],
 	changeImage: function(){
 		var imageview = this.$.panZoomView.$.imagesView;
-		imageview.setSrc( this.planets[ (this.planets.indexOf(imageview.src)+1)%this.planets.length ] )
+		imageview.setSrc( this.planets[ (enyo.indexOf(imageview.src, this.planets)+1)%this.planets.length ] )
 	}
 });
 
