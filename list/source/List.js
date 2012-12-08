@@ -76,9 +76,10 @@ enyo.kind({
 	},
 	handlers: {
 		onAnimateFinish: "animateFinish",
-        onhold: "hold",
+        //onhold: "hold",
 		ondrag: "drag",
-		onup: "dragfinish"
+		onup: "dragfinish",
+		onholdpulse: "holdpulse"
 	},
 	//* @protected
 	rowHeight: 0,
@@ -98,6 +99,9 @@ enyo.kind({
 		]}
 	],
 	
+	initHoldCounter: 3,
+	holdCounter: 3,
+	holding: false,
 	draggingRowIndex: -1,
 	dragToScrollThreshold: 0.1,
 	prevScrollTop: 0,
@@ -185,12 +189,29 @@ enyo.kind({
 		}
 		this.adjustPortSize();
 	},
+	//* Hold pulse handler - use this to delay before running hold logic
+	holdpulse: function(inSender,inEvent) {
+		if(!this.getReorderable() || this.holding) {
+			return;
+		}
+		// When _holdCounter_ hits 0, process hold event.
+		if(this.holdCounter <= 0) {
+			this.resetHoldCounter();
+			this.hold(inSender,inEvent);
+			return;
+		}
+		this.holdCounter--;
+	},
+	resetHoldCounter: function() {
+		this.holdCounter = this.initHoldCounter;
+	},
 	//* Hold event handler
-    hold:function(inSender, inEvent){
+    hold: function(inSender, inEvent) {
 		inEvent.preventDefault();
 		
 		// determine if we should handle the hold event
 		if(this.shouldDoReorderHold(inSender, inEvent)) {
+			this.holding = true;
 			this.reorderHold(inEvent);
 			return false;
 		}
@@ -208,6 +229,7 @@ enyo.kind({
 	//* Dragfinish event handler
 	dragfinish: function(inSender, inEvent) {
 		if(this.getReorderable()) {
+			this.resetHoldCounter();
 			this.finishReordering(inSender, inEvent);
 		}
 	},
@@ -247,7 +269,6 @@ enyo.kind({
 		// which page number for page0 (even number pages)?
 		var p = (k % 2 === 0) ? k : k-1;
 		if (this.p0 != p && this.isPageInRange(p)) {
-			//this.log("update page0", p);
 			this.generatePage(p, this.$.page0);
 			this.positionPage(p, this.$.page0);
 			this.p0 = p;
@@ -257,7 +278,6 @@ enyo.kind({
 		p = (k % 2 === 0) ? Math.max(1, k-1) : k;
 		// position data page 1
 		if (this.p1 != p && this.isPageInRange(p)) {
-			//this.log("update page1", p);
 			this.generatePage(p, this.$.page1);
 			this.positionPage(p, this.$.page1);
 			this.p1 = p;
@@ -703,14 +723,13 @@ enyo.kind({
 			}
 			// release the row being reordered
 			this.dropReorderedRow(inEvent);
-		} else {
-			// release the row being reordered
-			this.dropReorderedRow(inEvent);
-			// reorder rows
-			this.reorderRows(inEvent);
 		}
+		// release the row being reordered
+		this.dropReorderedRow(inEvent);
+		// reorder rows
+		this.reorderRows(inEvent);
 		// reset related variables
-		this.resetRerorderState();
+		this.resetReorderState();
 	},
 	//* Go into pinned reorder mode
 	beginPinnedReorder: function(e) {
@@ -770,8 +789,10 @@ enyo.kind({
 		this.showNode(this.hiddenNode);
 	},
 	//* Reset back to original values
-	resetRerorderState: function() {
+	resetReorderState: function() {
 		this.draggingRowIndex = this.placeholderRowIndex = -1;
+		// re-enable holding
+		this.holding = false;
 	},
 	//* Update indices as needed in list to preserve reordering
 	updateListIndices: function() {
@@ -968,7 +989,7 @@ enyo.kind({
 			// reorder rows
 			this.reorderRows(inEvent);
 		}
-		this.resetRerorderState();
+		this.resetReorderState();
 	},
 	//* Returns the row index that is under the given position on the page
     getRowIndexFromCoordinate: function(y) {
