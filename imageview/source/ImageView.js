@@ -68,18 +68,11 @@ enyo.kind({
 		enyo.dom.transformValue(this.getStrategy().$.client, "translate3d", "0px, 0px, 0");
 		
 		this.positionClientControls(this.scale);
-		this.alignImage();
+		this.align();
 	},
 	imageError: function(inEvent) {
 		enyo.error("Error loading image: " + this.src);
 		//bubble up the error event
 		this.bubble("onerror", inEvent);
-	},
-	alignImage: function() {
-		if ( this.fitAlignment && this.fitAlignment === "center") {
-			var sb = this.getScrollBounds();
-			this.setScrollLeft( sb.maxLeft / 2);
-			this.setScrollTop( sb.maxTop / 2);
-		}
 	}
 });

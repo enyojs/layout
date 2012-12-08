@@ -86,15 +86,17 @@ enyo.kind({
 		]}
 	],
 	create: function() {
+		// remember scale keyword
 		this.scaleKeyword = this.scale;
+
 		// Cache instance components
 		var instanceComponents = this.components;
 		this.components = [];
 		this.inherited(arguments);
-
+console.log(this.$)
 		this.$.content.applyStyle("width", this.contentWidth + "px");
 		this.$.content.applyStyle("height", this.contentHeight + "px");
-		
+
 		if(this.unscaledComponents){
 			this.createComponents(this.unscaledComponents);
 		}
@@ -189,6 +191,16 @@ enyo.kind({
 		}
 		this.eventPt = this.calcEventLocation();
 		this.transform(this.scale);
+		// start scroller
+		this.getStrategy().$.scrollMath.start();
+		this.align();
+	},
+	align: function() {
+		if ( this.fitAlignment && this.fitAlignment === "center") {
+			var sb = this.getScrollBounds();
+			this.setScrollLeft( sb.maxLeft / 2);
+			this.setScrollTop( sb.maxTop / 2);
+		}
 	},
 	gestureTransform: function(inSender, inEvent) {
 		this.eventPt = this.calcEventLocation(inEvent);
@@ -264,6 +276,7 @@ enyo.kind({
 		//this.stabilize();
 	},
 	limitScale: function(scale) {
+		enyo.log(scale, this.maxScale, this.minScale)
 		if(this.disableZoom) {
 			scale = this.scale;
 		} else if(scale > this.maxScale) {
