@@ -38,7 +38,7 @@ enyo.kind({
 	load: function(inSender, inEvent){
 		this.width += inEvent.originator.node.clientWidth;
 		this.height = Math.max(this.height, inEvent.originator.node.clientHeight);
-		this.bubble("setDimensions", { width: this.width, height: this.height })
+		this.bubble("onSetDimensions", { width: this.width, height: this.height })
 	},
 	down: function(inSender, inEvent) {
 		// Fix to prevent image drag in Firefox

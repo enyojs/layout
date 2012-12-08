@@ -1,9 +1,10 @@
 /**
-    _enyo.PanZoomView_ is a control that displays an content at a given scaling
-    factor, with enhanced support for double-tap/double-click to zoom, panning,
-    mousewheel zooming and pinch-zoom (on touchscreen devices that support it).
+    _enyo.PanZoomView_ is a control that displays arbitrary content at a given 
+    scaling factor, with enhanced support for double-tap/double-click to zoom,
+    panning, mousewheel zooming and pinch-zoom (on touchscreen devices that
+    support it).
 
-        {kind: "PanZoomView", scale: "auto", style: "width:500px; height:400px;",
+        {kind: "PanZoomView", scale: "auto", contentWidth: 500, contentHeight: 500, style: "width:500px; height:400px;",
           components: [{content: "Hello World"}]
         }
 
@@ -13,6 +14,11 @@
     indicators, disable zoom animation, allow panning overscroll (with a
     bounce-back effect), and control the propagation of drag events, all via
     boolean properties.
+
+    For the PanZoomView to work you need to specify width and height of the 
+    scaled content via the contentWidth and contentHeight properties.
+    Alternatively you may bubble an onSetDimensions event from on of the
+    underlying components at a later time.
 
     Note that it's best to specify a size for the PanZoomView in order to avoid
     complications.
@@ -77,7 +83,7 @@ enyo.kind({
 	preventDragPropagation: false,
 	handlers: {
 		ondragstart: "dragPropagation",
-		setDimensions:"setDimensions"
+		onSetDimensions: "setDimensions"
 	},
 	components:[
 		{name: "animator", kind: "Animator", onStep: "zoomAnimationStep", onEnd: "zoomAnimationEnd"},
