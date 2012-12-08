@@ -25,9 +25,10 @@ enyo.kind({
 		{kind:"onyx.Groupbox",  style:"padding-top:10px; width:60%; margin:auto;", components: [
 			{kind:"onyx.GroupboxHeader", content: "panZoomView Scale"},
 			{style:"text-align:center;", components: [
-				{kind:"onyx.Button", content:"\"auto\"", ontap:"autoScale", classes:"demoButton"},
-				{kind:"onyx.Button", content:"\"width\"", ontap:"widthScale", classes:"demoButton"},
-				{kind:"onyx.Button", content:"\"height\"", ontap:"heightScale",  classes:"demoButton"},
+				{kind:"onyx.Button", content:"\"auto\"",   ontap:"autoScale",   classes:"demoButton"},
+				{kind:"onyx.Button", content:"\"width\"",  ontap:"widthScale",  classes:"demoButton"},
+				{kind:"onyx.Button", content:"\"height\"", ontap:"heightScale", classes:"demoButton"},
+				{kind:"onyx.Button", content:"\"fit\"",    ontap:"fitScale",    classes:"demoButton"},
 				{kind:"onyx.Button", content:"0.5", ontap:"halfScale", classes:"demoButton"},
 				{kind:"onyx.Button", content:"1.0", ontap:"normalScale", classes:"demoButton"},
 				{kind:"onyx.Button", content:"2.0", ontap:"doubleScale", classes:"demoButton"}
@@ -60,6 +61,10 @@ enyo.kind({
 	},
 	heightScale: function(inSender, inEvent) {
 		this.scale = "height";
+		this.$.panZoomView.setScale(this.scale);
+	},
+	fitScale: function(inSender, inEvent) {
+		this.scale = "fit";
 		this.$.panZoomView.setScale(this.scale);
 	},
 	halfScale: function(inSender, inEvent) {
