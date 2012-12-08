@@ -21,27 +21,28 @@
 enyo.kind({
 	name: "enyo.ImageView",
 	kind: "enyo.PanZoomView",
-	components:[
-		// @TODO: reduce all this to {kind:"Image", ondown: "down"}
-		{name: "animator", kind: "Animator", onStep: "zoomAnimationStep", onEnd: "zoomAnimationEnd"},
-		{name:"viewport", style:"overflow:hidden;min-height:100%;min-width:100%;", classes:"enyo-fit", ongesturechange: "gestureTransform", ongestureend: "saveState", ontap: "singleTap", ondblclick:"doubleClick", onmousewheel:"mousewheel", components:[
-			{name: "content", style: "display: inline-block;", components: [
-				{kind:"Image", ondown: "down", style: "vertical-align: text-top;"}
-			]}
-		]}
+	subKindComponents: [
+		{kind:"Image", ondown: "down", style: "vertical-align: text-top;"}
 	],
 	create: function() {
+		// move components (most likely imageViewPins) to unscaledComponents
 		this.unscaledComponents = this.components;
 		this.components = [];
+
+		//amend kindComponents
+		this.kindComponents[1].components[0].components = this.subKindComponents;
+
 		this.inherited(arguments);
+
+		// set content as inline-block to mimic behaviour of an image
+		this.$.content.applyStyle("display", "inline-block");
+
 		//offscreen buffer image to get initial image dimensions
 		//before displaying a scaled down image that can fit in the container
 		this.bufferImage = new Image();
 		this.bufferImage.onload = enyo.bind(this, "imageLoaded");
 		this.bufferImage.onerror = enyo.bind(this, "imageError");
 		this.srcChanged();
-		//	For image view, disable drags during gesture (to fix flicker: ENYO-1208)
-		this.getStrategy().setDragDuringGesture(false);
 		//	Needed to kickoff pin redrawing (otherwise they wont' redraw on intitial scroll)
 		this.getStrategy().$.scrollMath.start();
 	},
@@ -67,10 +68,18 @@ enyo.kind({
 		enyo.dom.transformValue(this.getStrategy().$.client, "translate3d", "0px, 0px, 0");
 		
 		this.positionClientControls(this.scale);
+		this.alignImage();
 	},
 	imageError: function(inEvent) {
 		enyo.error("Error loading image: " + this.src);
 		//bubble up the error event
 		this.bubble("onerror", inEvent);
+	},
+	alignImage: function() {
+		if ( this.fitAlignment && this.fitAlignment === "center") {
+			var sb = this.getScrollBounds();
+			this.setScrollLeft( sb.maxLeft / 2);
+			this.setScrollTop( sb.maxTop / 2);
+		}
 	}
 });

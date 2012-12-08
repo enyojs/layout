@@ -1,21 +1,20 @@
 /**
-    _enyo.ImageView_ is a control that displays an image at a given scaling
+    _enyo.PanZoomView_ is a control that displays an content at a given scaling
     factor, with enhanced support for double-tap/double-click to zoom, panning,
     mousewheel zooming and pinch-zoom (on touchscreen devices that support it).
 
-        {kind: "ImageView", src: "assets/globe.jpg", scale: "auto",
-            style: "width:500px; height:400px;"}
+        {kind: "PanZoomView", scale: "auto", style: "width:500px; height:400px;",
+          components: [{content: "Hello World"}]
+        }
 
-    The _onload_ and _onerror_ events bubble up from the underlying image
-    element	and an _onZoom_ event is triggered when the user changes the zoom
-    level of the image.
+    An _onZoom_ event is triggered when the user changes the zoom level.
 
     If you wish, you may add <a href="#enyo.ScrollThumb">enyo.ScrollThumb</a>
     indicators, disable zoom animation, allow panning overscroll (with a
     bounce-back effect), and control the propagation of drag events, all via
     boolean properties.
 
-    Note that it's best to specify a size for the ImageView in order to avoid
+    Note that it's best to specify a size for the PanZoomView in order to avoid
     complications.
 */
 
@@ -49,29 +48,27 @@ enyo.kind({
 	horizontalDragPropagation: true,
 	published: {
 		/**
-			The scale at which the image should be displayed. It may be any
+			The scale at which the content should be displayed. It may be any
 			positive numeric value or one of the following key words (which will
 			be resolved to a value dynamically):
 	
-			* "auto": Fits the image to the size of the ImageView
-			* "width": Fits the image the width of the ImageView
-			* "height": Fits the image to the height of the ImageView
-			* "fit": Fits the image to the height and width of the ImageView.
-				 Overflow of the larger dimension is cropped and the image is centered
+			* "auto": Fits the content to the size of the PanZoomView
+			* "width": Fits the content the width of the PanZoomView
+			* "height": Fits the content to the height of the PanZoomView
+			* "fit": Fits the content to the height and width of the PanZoomView.
+				 Overflow of the larger dimension is cropped and the content is centered
 				 on this axis
 		*/
 		scale: "auto",
 		//* Disables the zoom functionality
-		disableZoom: false,
-		//* The file path of the image to be displayed
-		src: undefined
+		disableZoom: false
 	},
 	events: {
 		/**
-		    Fires whenever the user adjusts the zoom of the image, via
+		    Fires whenever the user adjusts the zoom, via
 		    double-tap/double-click, mousewheel, or pinch-zoom.
 		    
-		    _inEvent.scale_ contains the new scaling factor for the image.
+		    _inEvent.scale_ contains the new scaling factor.
 		*/
 		onZoom:""
 	},
@@ -112,17 +109,16 @@ enyo.kind({
 			this.$.content.applyStyle("position", "relative");
 		}
 		this.canAccelerate = enyo.dom.canAccelerate();
-	},
-	down: function(inSender, inEvent) {
-		// Fix to prevent image drag in Firefox
-		inEvent.preventDefault();
+
+		//	For panzoomview, disable drags during gesture (to fix flicker: ENYO-1208)
+		this.getStrategy().setDragDuringGesture(false);
 	},
 	rendered: function(){
 		this.inherited(arguments);
 		this.getOriginalScale();
 	},
 	dragPropagation: function(inSender, inEvent) {
-		// Propagate drag events at the edges of the image as desired by the
+		// Propagate drag events at the edges of the content as desired by the
 		// verticalDragPropagation and horizontalDragPropagation properties
 		var bounds = this.getStrategy().getScrollBounds();
 		var verticalEdge = ((bounds.top===0 && inEvent.dy>0) || (bounds.top>=bounds.maxTop-2 && inEvent.dy<0));
@@ -140,7 +136,7 @@ enyo.kind({
 			this.scale = this.limitScale(this.scale - zoomInc);
 		}
 		this.eventPt = this.calcEventLocation(inEvent);
-		this.transformImage(this.scale);
+		this.transform(this.scale);
 		if(oldScale != this.scale) {
 			this.doZoom({scale:this.scale});
 		}
@@ -149,31 +145,9 @@ enyo.kind({
 		inEvent.preventDefault();
 		return true;
 	},
-	srcChanged: function() {
-		if(this.src && this.src.length>0 && this.bufferImage && this.src!=this.bufferImage.src) {
-			this.bufferImage.src = this.src;
-		}
-	},
-	imageLoaded: function(inEvent) {
-		this.originalWidth = this.bufferImage.width;
-		this.originalHeight = this.bufferImage.height;
-		
-		//scale to fit before setting src, so unscaled image isn't visible
-		this.scaleChanged();
-		this.$.image.setSrc(this.bufferImage.src);
-		
-		//Needed to ensure scroller contents height/width is calculated correctly when contents use enyo-fit
-		enyo.dom.transformValue(this.getStrategy().$.client, "translate3d", "0px, 0px, 0");
-		
-		this.positionClientControls(this.scale);
-		this.alignImage();
-	},
 	resizeHandler: function() {
 		this.inherited(arguments);
-		// Once we've loaded the image, adjust the min/max scale anytime we resize
-//		if (this.$.image.src) {
-			this.scaleChanged();
-//		}
+		this.scaleChanged();
 	},
 	setDimensions: function(inEvent, payload){
 		this.$.content.applyStyle("width", payload.width + "px");
@@ -214,72 +188,60 @@ enyo.kind({
 			}
 		}
 		this.eventPt = this.calcEventLocation();
-		this.transformImage(this.scale);
-	},
-	imageError: function(inEvent) {
-		enyo.error("Error loading image: " + this.src);
-		//bubble up the error event
-		this.bubble("onerror", inEvent);
-	},
-	alignImage: function() {
-		if ( this.fitAlignment && this.fitAlignment === "center") {
-			var sb = this.getScrollBounds();
-			this.setScrollLeft( sb.maxLeft / 2);
-			this.setScrollTop( sb.maxTop / 2);
-		}
+		this.transform(this.scale);
 	},
 	gestureTransform: function(inSender, inEvent) {
 		this.eventPt = this.calcEventLocation(inEvent);
-		this.transformImage(this.limitScale(this.scale * inEvent.scale));
+		this.transform(this.limitScale(this.scale * inEvent.scale));
 	},
 	calcEventLocation: function(inEvent) {
-		//determine the target coordinates on the imageview from an event
+		//determine the target coordinates on the panzoomview from an event
 		var eventPt = {x: 0, y:0};
 		if(inEvent && this.hasNode()) {
 			var rect = this.node.getBoundingClientRect();
-			eventPt.x = Math.round((inEvent.pageX - rect.left) - this.imageBounds.x);
-			eventPt.x = Math.max(0, Math.min(this.imageBounds.width, eventPt.x));
-			eventPt.y = Math.round((inEvent.pageY - rect.top) - this.imageBounds.y);
-			eventPt.y = Math.max(0, Math.min(this.imageBounds.height, eventPt.y));
+			eventPt.x = Math.round((inEvent.pageX - rect.left) - this.bounds.x);
+			eventPt.x = Math.max(0, Math.min(this.bounds.width, eventPt.x));
+			eventPt.y = Math.round((inEvent.pageY - rect.top) - this.bounds.y);
+			eventPt.y = Math.max(0, Math.min(this.bounds.height, eventPt.y));
 		}
 		return eventPt;
 	},
-	transformImage: function(scale) {
+	transform: function(scale) {
 		this.tapped = false;
 		
-		var prevBounds = this.imageBounds || this.innerImageBounds(scale);
-		this.imageBounds = this.innerImageBounds(scale);
+		var prevBounds = this.bounds || this.innerBounds(scale);
+		this.bounds = this.innerBounds(scale);
 		
-		//style cursor if needed to indicate the image is movable
+		//style cursor if needed to indicate the content is movable
 		if(this.scale>this.minScale) {
 			this.$.viewport.applyStyle("cursor", "move");
 		} else {
 			this.$.viewport.applyStyle("cursor", null);
 		}
-		this.$.viewport.setBounds({width: this.imageBounds.width + "px", height: this.imageBounds.height + "px"});
+		this.$.viewport.setBounds({width: this.bounds.width + "px", height: this.bounds.height + "px"});
 		
-		//determine the exact ratio where on the image was tapped
+		//determine the exact ratio where on the content was tapped
 		this.ratioX = this.ratioX || (this.eventPt.x + this.getScrollLeft()) / prevBounds.width;
 		this.ratioY = this.ratioY || (this.eventPt.y + this.getScrollTop()) / prevBounds.height;
 		var scrollLeft, scrollTop;
 		if(this.$.animator.ratioLock) { //locked for smartzoom
-			scrollLeft = (this.$.animator.ratioLock.x * this.imageBounds.width) - (this.containerWidth / 2);
-			scrollTop = (this.$.animator.ratioLock.y * this.imageBounds.height) - (this.containerHeight / 2);
+			scrollLeft = (this.$.animator.ratioLock.x * this.bounds.width) - (this.containerWidth / 2);
+			scrollTop = (this.$.animator.ratioLock.y * this.bounds.height) - (this.containerHeight / 2);
 		} else {
-			scrollLeft = (this.ratioX * this.imageBounds.width) - this.eventPt.x;
-			scrollTop = (this.ratioY * this.imageBounds.height) - this.eventPt.y;
+			scrollLeft = (this.ratioX * this.bounds.width) - this.eventPt.x;
+			scrollTop = (this.ratioY * this.bounds.height) - this.eventPt.y;
 		}
-		scrollLeft = Math.max(0, Math.min((this.imageBounds.width - this.containerWidth), scrollLeft));
-		scrollTop = Math.max(0, Math.min((this.imageBounds.height - this.containerHeight), scrollTop));
+		scrollLeft = Math.max(0, Math.min((this.bounds.width - this.containerWidth), scrollLeft));
+		scrollTop = Math.max(0, Math.min((this.bounds.height - this.containerHeight), scrollTop));
 		
 		if(this.canTransform) {
 			var params = {scale: scale};
 			// translate needs to be first, or scale and rotation will not be in the correct spot
 			if(this.canAccelerate) {
 				//translate3d rounded values to avoid distortion; ref: http://martinkool.com/post/27618832225/beware-of-half-pixels-in-css
-				params = enyo.mixin({translate3d: Math.round(this.imageBounds.left) + "px, " + Math.round(this.imageBounds.top) + "px, 0px"}, params);
+				params = enyo.mixin({translate3d: Math.round(this.bounds.left) + "px, " + Math.round(this.bounds.top) + "px, 0px"}, params);
 			} else {
-				params = enyo.mixin({translate: this.imageBounds.left + "px, " + this.imageBounds.top + "px"}, params);
+				params = enyo.mixin({translate: this.bounds.left + "px, " + this.bounds.top + "px"}, params);
 			}
 			enyo.dom.transform(this.$.content, params);
 		} else if (enyo.platform.ie) {
@@ -287,13 +249,13 @@ enyo.kind({
 			// http://www.useragentman.com/IETransformsTranslator/
 			var matrix = "\"progid:DXImageTransform.Microsoft.Matrix(M11="+scale+", M12=0, M21=0, M22="+scale+", SizingMethod='auto expand')\"";
 			this.$.content.applyStyle("-ms-filter", matrix);
-//			this.$.content.setBounds({width: this.imageBounds.width + "px", height: this.imageBounds.height + "px",
-//					left:this.imageBounds.left + "px", top:this.imageBounds.top + "px"});
+//			this.$.content.setBounds({width: this.bounds.width + "px", height: this.bounds.height + "px",
+//					left:this.bounds.left + "px", top:this.bounds.top + "px"});
 		} else {
 			// ...no transforms and not IE... there's nothin' I can do.
 		}
 		
-		//adjust scroller to new position that keeps ratio with the new image size
+		//adjust scroller to new position that keeps ratio with the new content size
 		this.setScrollLeft(scrollLeft);
 		this.setScrollTop(scrollTop);
 		
@@ -311,7 +273,7 @@ enyo.kind({
 		}
 		return scale;
 	},
-	innerImageBounds: function(scale) {
+	innerBounds: function(scale) {
 		var width = this.originalWidth * scale;
 		var height = this.originalHeight * scale;
 		var offset = {x:0, y:0, transX:0, transY:0};
@@ -321,7 +283,7 @@ enyo.kind({
 		if(height<this.containerHeight) {
 			offset.y += (this.containerHeight - height)/2;
 		}
-		if(this.canTransform) { //adjust for the css translate, which doesn't alter image offsetWidth and offsetHeight
+		if(this.canTransform) { //adjust for the css translate, which doesn't alter content offsetWidth and offsetHeight
 			offset.transX -= (this.originalWidth - width)/2;
 			offset.transY -= (this.originalHeight - height)/2;
 		}
@@ -372,8 +334,8 @@ enyo.kind({
 			if(this.animate) {
 				//lock ratio position of event, and animate the scale change
 				var ratioLock = {
-					x: ((this.eventPt.x + this.getScrollLeft()) / this.imageBounds.width),
-					y: ((this.eventPt.y + this.getScrollTop()) / this.imageBounds.height)
+					x: ((this.eventPt.x + this.getScrollLeft()) / this.bounds.width),
+					y: ((this.eventPt.y + this.getScrollTop()) / this.bounds.height)
 				};
 				this.$.animator.play({
 					duration:350,
@@ -382,14 +344,14 @@ enyo.kind({
 					deltaScale:this.scale - prevScale
 				});
 			} else {
-				this.transformImage(this.scale);
+				this.transform(this.scale);
 				this.doZoom({scale:this.scale});
 			}
 		}
 	},
 	zoomAnimationStep: function(inSender, inEvent) {
 		var currScale = this.$.animator.baseScale + (this.$.animator.deltaScale * this.$.animator.value);
-		this.transformImage(currScale);
+		this.transform(currScale);
 	},
 	zoomAnimationEnd: function(inSender, inEvent) {
 		this.stabilize();
@@ -399,7 +361,7 @@ enyo.kind({
 	positionClientControls: function(scale) {
 		this.waterfallDown("onPositionPin", {
 			scale: scale,
-			bounds: this.imageBounds
+			bounds: this.bounds
 		});
 	}
 });
