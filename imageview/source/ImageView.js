@@ -6,17 +6,17 @@
         {kind: "ImageView", src: "assets/globe.jpg", scale: "auto",
             style: "width:500px; height:400px;"}
 
-	The _onload_ and _onerror_ events bubble up from the underlying image
-	element	and an _onZoom_ event is triggered when the user changes the zoom
-	level of the image.
+    The _onload_ and _onerror_ events bubble up from the underlying image
+    element	and an _onZoom_ event is triggered when the user changes the zoom
+    level of the image.
 
     If you wish, you may add <a href="#enyo.ScrollThumb">enyo.ScrollThumb</a>
     indicators, disable zoom animation, allow panning overscroll (with a
     bounce-back effect), and control the propagation of drag events, all via
     boolean properties.
 
-	Note that it's best to specify a size for the ImageView in order to avoid
-	complications.
+    Note that it's best to specify a size for the ImageView in order to avoid
+    complications.
 */
 
 enyo.kind({

@@ -1,29 +1,29 @@
 /**
-	_enyo.ImageViewPin_ is a control that can be used to display non-zooming
-	content inside of a zoomable _enyo.ImageView_ control. The _anchor_ and
-	_position_ properties can be used to position both the ImageViewPin and
-	it's content in a specific location inside of the ImageView.
-	
+    _enyo.ImageViewPin_ is a control that can be used to display non-zooming
+    content inside of a zoomable _enyo.ImageView_ control. The _anchor_ and
+    _position_ properties can be used to position both the ImageViewPin and	its
+    content in a specific location inside of the ImageView.
 */
 enyo.kind({
 	name: "enyo.ImageViewPin",
 	kind: "enyo.Control",
 	published: {
 		/**
-			If true, the anchor point for this pin will be highlighted in yellow.
-			Useful for debugging. Defaults to false.
+		    If true, the anchor point for this pin will be highlighted in yellow,
+		    which can be useful for debugging. Defaults to false.
 		*/
 		highlightAnchorPoint: false,
 		/**
 			The coordinates at which this control should be anchored inside
-			of the parent ImageViewControl. This position is relative to the
-			ImageViewControl's original size. Works like standard css positioning,
-			and accepts both px and percentage values. Defaults to top:0px, left:0px.
+			of the parent ImageView control. This position is relative to the
+			ImageView control's original size. Works like standard CSS positioning,
+			and accepts both px and percentage values. Defaults to _{top: 0px,
+			left: 0px}_.
 			
-			* Top: specifies distance from the parent's top edge
-			* Bottom: specifies distance from the parent's bottom edge (overrides top)
-			* Left: specifies distance from the parent's left edge
-			* Right: specifies distance from the parennt's right edge (overrides left)
+			* top: distance from the parent's top edge
+			* bottom: distance from the parent's bottom edge (overrides top)
+			* left: distance from the parent's left edge
+			* right: distance from the parennt's right edge (overrides left)
 		*/
 		anchor: {
 			top: 0,
@@ -32,12 +32,13 @@ enyo.kind({
 		/**
 			The coordinates at which the contents of this control should be
 			positioned relative to the ImageViewPin itself. Works like standard
-			css positioning. Only accepts px values. Defaults to top:0px, left:0px.
+			CSS positioning. Only accepts px values. Defaults to _{top: 0px,
+			left: 0px}_.
 			
-			* Top: specifies distance from the ImageViewPin's top edge
-			* Bottom: specifies distance from the ImageViewPin's bottom edge
-			* Left: specifies distance from the ImageViewPin's left edge
-			* Right: specifies distance from the ImageViewPin's right edge
+			* top: distance from the ImageViewPin's top edge
+			* bottom: distance from the ImageViewPin's bottom edge
+			* left: distance from the ImageViewPin's left edge
+			* right: distance from the ImageViewPin's right edge
 		*/
 		position: {
 			top: 0,
