@@ -92,7 +92,6 @@ enyo.kind({
 		}
 	},
 	imageLoaded: function() {
-		this.log();
 		var img = this.$.flickrImage;
 		img.removeClass("tall");
 		img.removeClass("wide");
@@ -143,7 +142,6 @@ enyo.kind({
 	processResponse: function(inSender, inResponse) {
 		var photos = inResponse.photos ? inResponse.photos.photo || [] : [];
 		for (var i=0, p; p=photos[i]; i++) {
-			this.log(p);
 			var urlprefix = "http://farm" + p.farm + ".static.flickr.com/" + p.server + "/" + p.id + "_" + p.secret;
 			p.thumbnail = urlprefix + "_s.jpg";
 			p.original = urlprefix + ".jpg";
