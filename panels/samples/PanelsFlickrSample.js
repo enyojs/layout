@@ -92,9 +92,18 @@ enyo.kind({
 		}
 	},
 	imageLoaded: function() {
-		this.$.flickrImage.show();
-		var b = this.$.flickrImage.getBounds();
-		this.$.flickrImage.addRemoveClass("tall", b.height > b.width);
+		this.log();
+		var img = this.$.flickrImage;
+		img.removeClass("tall");
+		img.removeClass("wide");
+		img.show();
+		var b = img.getBounds();
+		var r = b.height / b.width;
+		if (r >= 1.25) {
+			img.addClass("tall");
+		} else if (r <= 0.8 ) {
+			img.addClass("wide");
+		}
 		this.$.imageSpinner.hide();
 	},
 	showList: function() {		
@@ -134,6 +143,7 @@ enyo.kind({
 	processResponse: function(inSender, inResponse) {
 		var photos = inResponse.photos ? inResponse.photos.photo || [] : [];
 		for (var i=0, p; p=photos[i]; i++) {
+			this.log(p);
 			var urlprefix = "http://farm" + p.farm + ".static.flickr.com/" + p.server + "/" + p.id + "_" + p.secret;
 			p.thumbnail = urlprefix + "_s.jpg";
 			p.original = urlprefix + ".jpg";
