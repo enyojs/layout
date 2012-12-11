@@ -92,8 +92,8 @@ enyo.kind({
 		if (this.completingPull) {
 			this.pully.setShowing(false);
 		}
-		var s = this.getStrategy().$.scrollMath;
-		var over = s.y;
+		var s = this.getStrategy().$.scrollMath || this.getStrategy();
+		var over = -1*this.getScrollTop();
 		if (s.isInOverScroll() && over > 0) {
 			enyo.dom.transformValue(this.$.pulldown, this.translation, "0," + over + "px" + (this.accel ? ",0" : ""));
 			if (!this.firedPullStart) {
@@ -122,8 +122,8 @@ enyo.kind({
 	},
 	dragfinish: function() {
 		if (this.firedPull) {
-			var s = this.getStrategy().$.scrollMath;
-			s.setScrollY(s.y - this.pullHeight);
+			var s = this.getStrategy().$.scrollMath || this.getStrategy();
+			s.setScrollY(-1*this.getScrollTop() - this.pullHeight);
 			this.pullRelease();
 		}
 	},
@@ -132,8 +132,9 @@ enyo.kind({
 	//* called after the application has received the new data.
 	completePull: function() {
 		this.completingPull = true;
-		this.$.strategy.$.scrollMath.setScrollY(this.pullHeight);
-		this.$.strategy.$.scrollMath.start();
+		var s = this.getStrategy().$.scrollMath || this.getStrategy();
+		s.setScrollY(this.pullHeight);
+		s.start();
 	},
 	//* @protected
 	pullStart: function() {
