@@ -4,7 +4,7 @@ enyo.kind({
 	classes: "flyweight-repeater-sample enyo-fit onyx",
 	components: [
 		{kind: "onyx.Toolbar", components: [
-			{content: "FlyweightRepeater Result"},
+			{content: "FlyweightRepeater Result"}
 		]},
 		{name:"result", style:"padding:12px; font-size: 20px;", content: "Nothing slected yet."},
 		{name:"repeater", kind:"enyo.FlyweightRepeater", classes:"flyweight-repeater-sample-list", count: 26, onSetupItem: "setupItem", components: [
@@ -40,7 +40,7 @@ enyo.kind({
 		{name: "Wendy"},
 		{name: "Xin"},
 		{name: "Yulia"},
-		{name: "Zoltan"},
+		{name: "Zoltan"}
 	],
 	setupItem: function(inSender, inEvent) {
 		var index = inEvent.index;
@@ -54,5 +54,4 @@ enyo.kind({
 			this.$.result.setContent(" [" + (index+1) + ". " + this.people[index].name + "] is selected");
 		}
 	}
-
 });

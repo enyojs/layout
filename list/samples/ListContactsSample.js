@@ -18,7 +18,7 @@ enyo.kind({
 		]},
 		{kind: "List", classes: "list-sample-contacts-list enyo-unselectable", fit: true, multiSelect: true, reorderable: true, fixedHeight:true, onSetupItem: "setupItem", onReorder: "listReorder", components: [
 			//{name: "divider", classes: "list-sample-contacts-divider"},
-			{name: "item", kind: "ContactItem", classes: "list-sample-contacts-item enyo-border-box", onRemove: "removeTap"},
+			{name: "item", kind: "ContactItem", classes: "list-sample-contacts-item enyo-border-box", onRemove: "removeTap"}
 			//{name: "myIndex"}
 		]},
 		{name: "popup", kind: "onyx.Popup", modal: true, centered: true, classes: "list-sample-contacts-popup", components: [
