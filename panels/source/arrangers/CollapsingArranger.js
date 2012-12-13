@@ -54,11 +54,16 @@ enyo.kind({
 				if (i >= inIndex) {
 					e += c.width + c.marginWidth - this.peekWidth;
 				}
-				// FIXME: overdragging-ish
-				if (i == c$.length - 1 && inIndex < 0) {
-					this.arrangeControl(c, {left: e - inIndex});
-				}
 				n++;
+			} else {
+				this.arrangeControl(c, {left: e + n});
+				if (i >= inIndex) {
+					e += c.width + c.marginWidth;
+				}
+			}
+			// FIXME: overdragging-ish
+			if (i == c$.length - 1 && inIndex < 0) {
+				this.arrangeControl(c, {left: e - inIndex});
 			}
 		}
 	},
