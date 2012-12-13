@@ -42,7 +42,7 @@ enyo.kind({
 		*/
 		count: 0,
 		/**
-			The number of rows to be shown on a given list page segment. 
+			The number of rows to be shown on a given list page segment.
 			There is generally no need to adjust this value.
 		*/
 		rowsPerPage: 50,
@@ -76,7 +76,7 @@ enyo.kind({
 	},
 	handlers: {
 		onAnimateFinish: "animateFinish",
-        //onhold: "hold",
+		//onhold: "hold",
 		ondrag: "drag",
 		onup: "dragfinish",
 		onholdpulse: "holdpulse"
@@ -98,7 +98,7 @@ enyo.kind({
 			]}
 		]}
 	],
-	
+
 	initHoldCounter: 3,
 	holdCounter: 3,
 	holding: false,
@@ -111,7 +111,7 @@ enyo.kind({
 	initialPinPosition: -1,
 	itemMoved: false,
 	currentPage: null,
-	
+
 	create: function() {
 		this.pageHeights = [];
 		this.inherited(arguments);
@@ -206,20 +206,20 @@ enyo.kind({
 		this.holdCounter = this.initHoldCounter;
 	},
 	//* Hold event handler
-    hold: function(inSender, inEvent) {
+	hold: function(inSender, inEvent) {
 		inEvent.preventDefault();
-		
+
 		// determine if we should handle the hold event
 		if(this.shouldDoReorderHold(inSender, inEvent)) {
 			this.holding = true;
 			this.reorderHold(inEvent);
 			return false;
 		}
-    },
+	},
 	//* Drag event handler
 	drag: function(inSender, inEvent) {
 		inEvent.preventDefault();
-		
+
 		// determine if we should handle the drag event
 		if(this.shouldDoReorderDrag(inEvent)) {
 			this.reorderDrag(inEvent);
@@ -424,7 +424,7 @@ enyo.kind({
 		this.scrollToStart();
 	},
 	/**
-		Returns the [enyo.Selection](#enyo.Selection) component that 
+		Returns the [enyo.Selection](#enyo.Selection) component that
 		manages the selection state for	this list.
 	*/
 	getSelection: function() {
@@ -434,7 +434,7 @@ enyo.kind({
 		Sets the selection state for the given row index.
 		_inData_ is an optional data value stored in the selection object.
 
-		Modifying selection will not automatically rerender the row, 
+		Modifying selection will not automatically rerender the row,
 		so use [renderRow](#enyo.List::renderRow) or [refresh](#enyo.List::refresh)
 		to update the view.
 	*/
@@ -444,7 +444,7 @@ enyo.kind({
 	/**
 		Clears the selection state for the given row index.
 
-		Modifying selection will not automatically rerender the row, 
+		Modifying selection will not automatically rerender the row,
 		so use [renderRow](#enyo.List::renderRow) or [refresh](#enyo.List::refresh)
 		to update the view.
 	*/
@@ -456,12 +456,12 @@ enyo.kind({
 		return this.$.generator.isSelected(inIndex);
 	},
 	/**
-    	Re-renders the specified row. Call after making modifications to a row,
-        to force it to render.
-    */
-    renderRow: function(inIndex) {
-    	this.$.generator.renderRow(inIndex);
-    },
+		Re-renders the specified row. Call after making modifications to a row,
+		to force it to render.
+	*/
+	renderRow: function(inIndex) {
+		this.$.generator.renderRow(inIndex);
+	},
 	//* Prepares the row to become interactive.
 	prepareRow: function(inIndex) {
 		this.$.generator.prepareRow(inIndex);
@@ -483,7 +483,7 @@ enyo.kind({
 		this.twiddle();
 		return true;
 	},
-	// FIXME: Android 4.04 has issues with nested composited elements; for example, a SwipeableItem, 
+	// FIXME: Android 4.04 has issues with nested composited elements; for example, a SwipeableItem,
 	// can incorrectly generate taps on its content when it has slid off the screen;
 	// we address this BUG here by forcing the Scroller to "twiddle" which corrects the bug by
 	// provoking a dom update.
@@ -491,12 +491,12 @@ enyo.kind({
 		var s = this.getStrategy();
 		enyo.call(s, "twiddle");
 	},
-	
-	
+
+
 	/**
 		---- Reorder functionality ------------
 	*/
-	
+
 	//* Determine whether we should handle the hold event as a reorder hold
 	shouldDoReorderHold: function(inSender, inEvent) {
 		if(!this.getReorderable() || inEvent.rowIndex < 0 || this.pinnedReorderMode || inSender !== this.$.strategy) {
@@ -508,16 +508,16 @@ enyo.kind({
 	reorderHold: function(inEvent) {
 		// disable drag to scroll on strategy
 		this.$.strategy.listReordering = true;
-	
+
 		// setup floating reorder container
-	    this.setupReorderContainer(inEvent);
+		this.setupReorderContainer(inEvent);
 
 		this.draggingRowIndex = this.placeholderRowIndex = inEvent.rowIndex;
 		this.itemMoved = false;
 		this.initialPageNumber = this.currentPageNumber = Math.floor(inEvent.rowIndex/this.rowsPerPage);
 		this.currentPage = this.currentPageNumber%2;
 		this.prevScrollTop = this.getScrollTop();
-	
+
 		// fill row being reordered with placeholder
 		this.replaceNodeWithPlacholder(inEvent.rowIndex);
 	},
@@ -536,8 +536,8 @@ enyo.kind({
 	//* Center the floating reorder container on the user's pointer
 	centerReorderContainerOnPointer: function(e) {
 		var containerPosition = this.getNodePosition(this.hasNode());
-		var x = e.pageX - containerPosition.left - parseInt(this.$.reorderContainer.domStyles.width)/2;
-		var y = e.pageY - containerPosition.top + this.getScrollTop() - parseInt(this.$.reorderContainer.domStyles.height)/2;
+		var x = e.pageX - containerPosition.left - parseInt(this.$.reorderContainer.domStyles.width, 10)/2;
+		var y = e.pageY - containerPosition.top + this.getScrollTop() - parseInt(this.$.reorderContainer.domStyles.height, 10)/2;
 		this.positionReorderContainer(x,y);
 	},
 	//* Move the reorder container to the specified x,y coordinates. Animate and kickoff timeout to turn off animation.
@@ -571,10 +571,10 @@ enyo.kind({
 	reorderDrag: function(inEvent) {
 		// position reorder node under mouse/pointer
 		this.positionReorderNode(inEvent);
-	
+
 		// determine if we need to auto-scroll the list
 		this.checkForAutoScroll(inEvent);
-	
+
 		// if the current index the user is dragging over has changed, move the placeholder
 		var index = this.getRowIndexFromCoordinate(inEvent.pageY);
 		if(index != this.placeholderRowIndex) {
@@ -584,9 +584,9 @@ enyo.kind({
 	//* Position the reorder node based on the dx and dy of the drag event
 	positionReorderNode: function(e) {
 		var reorderNodeStyle = this.$.reorderContainer.hasNode().style;
-		var left = parseInt(reorderNodeStyle.left) + e.ddx;
+		var left = parseInt(reorderNodeStyle.left, 10) + e.ddx;
 		var scrollTopDelta = this.getScrollTop() - this.prevScrollTop;
-		var top = parseInt(reorderNodeStyle.top) + parseInt(e.ddy) + scrollTopDelta;
+		var top = parseInt(reorderNodeStyle.top, 10) + parseInt(e.ddy, 10) + scrollTopDelta;
 		this.$.reorderContainer.addStyles("top: "+top+"px ; left: "+left+"px");
 		this.prevScrollTop = this.getScrollTop();
 	},
@@ -595,28 +595,29 @@ enyo.kind({
 		if so. Auto-scrolling happens when the user is dragging an item within the top/bottom
 		boundary percentage defined in _this.dragToScrollThreshold_
 	*/
-    checkForAutoScroll:function(inEvent) {
-        var position = this.getNodePosition(this.hasNode());
-        var bounds = this.getBounds();
-        if(inEvent.pageY - position.top < bounds.height * this.dragToScrollThreshold) {
-			var perc = 100*(1 - ((inEvent.pageY - position.top) / (bounds.height * this.dragToScrollThreshold)));
+	checkForAutoScroll:function(inEvent) {
+		var position = this.getNodePosition(this.hasNode());
+		var bounds = this.getBounds();
+		var perc;
+		if(inEvent.pageY - position.top < bounds.height * this.dragToScrollThreshold) {
+			perc = 100*(1 - ((inEvent.pageY - position.top) / (bounds.height * this.dragToScrollThreshold)));
 			this.scrollDistance = -1*perc;
-        } else if(inEvent.pageY - position.top > bounds.height * (1 - this.dragToScrollThreshold)) {
-			var perc = 100*((inEvent.pageY - position.top - bounds.height*(1 - this.dragToScrollThreshold)) / (bounds.height - (bounds.height * (1 - this.dragToScrollThreshold))));
+		} else if(inEvent.pageY - position.top > bounds.height * (1 - this.dragToScrollThreshold)) {
+			perc = 100*((inEvent.pageY - position.top - bounds.height*(1 - this.dragToScrollThreshold)) / (bounds.height - (bounds.height * (1 - this.dragToScrollThreshold))));
 			this.scrollDistance = 1*perc;
-        } else {
+		} else {
 			this.scrollDistance = 0;
 		}
 		// stop scrolling if distance is zero (i.e. user isn't scrolling to the edges of
 		// the list), otherwise start it if not already started
-        if(this.scrollDistance == 0) {
+		if (this.scrollDistance === 0) {
 			this.stopAutoScrolling();
 		} else {
 			if(!this.autoScrollTimeout) {
 				this.startAutoScrolling();
 			}
 		}
-    },
+	},
 	//* Stop auto-scrolling
 	stopAutoScrolling: function() {
 		if(this.autoScrollTimeout) {
@@ -629,8 +630,8 @@ enyo.kind({
 		this.autoScrollTimeout = setTimeout(enyo.bind(this,this.autoScroll), this.autoScrollTimeoutMS);
 	},
 	//* Scroll the list by the distance specified in _this.scrollDistance_
-    autoScroll:function() {
-		if(this.scrollDistance == 0) {
+	autoScroll:function() {
+		if(this.scrollDistance === 0) {
 			this.stopAutoScrolling();
 		} else {
 			if(!this.autoScrollTimeout) {
@@ -653,18 +654,18 @@ enyo.kind({
 			enyo.log("No node - "+index);
 			return;
 		}
-		
+
 		// figure next page and position for placeholder
 		var newPlaceholderIndex = (index > this.draggingRowIndex) ? index + 1 : index;
 		var nextPageNumber = Math.floor(newPlaceholderIndex/this.rowsPerPage);
 		var nextPage = nextPageNumber%2;
-		
+
 		// don't add pages beyond the original page count
 		if(nextPageNumber >= this.pageCount) {
 			nextPageNumber = this.currentPageNumber;
 			nextPage = this.currentPage;
 		}
-		
+
 		// if moving to same page, simply move the placeholder to new position
 		if(this.currentPage == nextPage) {
 			this.$["page"+this.currentPage].hasNode().insertBefore(this.placeholderNode, this.$.generator.fetchRowNode(newPlaceholderIndex));
@@ -674,12 +675,12 @@ enyo.kind({
 			this.updatePagePositions(nextPageNumber,nextPage);
 			this.$["page"+nextPage].hasNode().insertBefore(this.placeholderNode, this.$.generator.fetchRowNode(newPlaceholderIndex));
 		}
-		
+
 		// save updated state
 		this.placeholderRowIndex = index;
 		this.currentPageNumber = nextPageNumber;
 		this.currentPage = nextPage;
-		
+
 		// remember that we moved an item (to prevent pinning at the wrong time)
 		this.itemMoved = true;
 	},
@@ -691,18 +692,18 @@ enyo.kind({
 		if(this.draggingRowIndex < 0 || this.pinnedReorderMode) {
 			return;
 		}
-		
+
 		var _this = this;
-		
+
 		this.stopAutoScrolling();
 
 		// enable drag-scrolling on strategy
 		this.$.strategy.listReordering = false;
-		
+
 		// animate reorder container to proper position and then complete reording actions
 		this.moveReorderedContainerToDroppedPosition(inEvent);
 		setTimeout(function() { _this.completeFinishReordering(inEvent); }, 100);
-		
+
 		inEvent.preventDefault();
 		return true;
 	},
@@ -805,39 +806,39 @@ enyo.kind({
 			}
 			return;
 		}
-		
+
 		var from = Math.min(this.draggingRowIndex, this.placeholderRowIndex);
 		var to = Math.max(this.draggingRowIndex, this.placeholderRowIndex);
 		var delta = (this.draggingRowIndex - this.placeholderRowIndex > 0) ? 1 : -1;
-		var node;
-		
+		var node, i, newIndex, currentIndex;
+
 		if(delta === 1) {
 			node = this.$.generator.fetchRowNode(this.draggingRowIndex);
 			node.setAttribute("data-enyo-index", "reordered");
-			for(var i=(to-1),newIndex=to;i>=from;i--) {
-				var node = this.$.generator.fetchRowNode(i);
+			for(i=(to-1),newIndex=to;i>=from;i--) {
+				node = this.$.generator.fetchRowNode(i);
 				if(!node) {
 					enyo.log("No node - "+i);
 					continue;
 				}
-				var currentIndex = parseInt(node.getAttribute("data-enyo-index"));
+				currentIndex = parseInt(node.getAttribute("data-enyo-index"), 10);
 				newIndex = currentIndex + 1;
 				node.setAttribute("data-enyo-index", newIndex);
 			}
 			node = document.querySelectorAll('[data-enyo-index="reordered"]')[0];
 			node.setAttribute("data-enyo-index", this.placeholderRowIndex);
-			
+
 		} else {
 			node = this.$.generator.fetchRowNode(this.draggingRowIndex);
 			node.setAttribute("data-enyo-index", this.placeholderRowIndex);
-			for(var i=(from+1), newIndex=from;i<=to;i++) {
-				var node = this.$.generator.fetchRowNode(i);
+			for(i=(from+1), newIndex=from;i<=to;i++) {
+				node = this.$.generator.fetchRowNode(i);
 				if(!node) {
 					enyo.log("No node - "+i);
 					continue;
 				}
 				//var name = node.innerHTML.split('listContactsSample_item_name">')[1].split("<")[0];
-				var currentIndex = parseInt(node.getAttribute("data-enyo-index"));
+				currentIndex = parseInt(node.getAttribute("data-enyo-index"), 10);
 				newIndex = currentIndex - 1;
 				node.setAttribute("data-enyo-index", newIndex);
 			}
@@ -845,7 +846,7 @@ enyo.kind({
 	},
 	//* Determine if an item was reordered far enough that it warrants a refresh()
 	shouldDoRefresh: function() {
-		return (Math.abs(this.initialPageNumber - this.currentPageNumber) > 1)
+		return (Math.abs(this.initialPageNumber - this.currentPageNumber) > 1);
 	},
 	//* Get node height, width, top, left
 	getNodeStyle: function(index) {
@@ -856,20 +857,20 @@ enyo.kind({
 		}
 		var offset = this.getRelativeOffset(node, this.hasNode());
 		var dimensions = this.getDimensions(node);
-		return {h: parseInt(dimensions.height), w: parseInt(dimensions.width), left: parseInt(offset.left), top: parseInt(offset.top)};
+		return {h: parseInt(dimensions.height, 10), w: parseInt(dimensions.width, 10), left: parseInt(offset.left, 10), top: parseInt(offset.top, 10)};
 	},
 	//* Get offset relative to a positioned ancestor node
-    getRelativeOffset: function (n, p) {
-        var ro = {top: 0, left: 0};
-        if (n !== p && n.parentNode) {
-            do {
-                ro.top += n.offsetTop || 0;
-                ro.left += n.offsetLeft || 0;
-                n = n.offsetParent;
-            } while (n && n !== p);
-        }
-        return ro;
-    },
+	getRelativeOffset: function (n, p) {
+		var ro = {top: 0, left: 0};
+		if (n !== p && n.parentNode) {
+			do {
+				ro.top += n.offsetTop || 0;
+				ro.left += n.offsetLeft || 0;
+				n = n.offsetParent;
+			} while (n && n !== p);
+		}
+		return ro;
+	},
 	//* Get height and width dimensions of the given dom node
 	getDimensions: function(node) {
 		var style = getComputedStyle(node,null);
@@ -882,17 +883,17 @@ enyo.kind({
 			enyo.log("No node - "+index);
 			return;
 		}
-		
+
 		// figure next page and position for placeholder
 		var nextPageNumber = Math.floor(index/this.rowsPerPage);
 		var nextPage = nextPageNumber%2;
-		
+
 		// don't add pages beyond the original page count
 		if(nextPageNumber >= this.pageCount) {
 			nextPageNumber = this.currentPageNumber;
 			nextPage = this.currentPage;
 		}
-		
+
 		// if moving to same page, simply move the pinned row to new position
 		if(this.currentPage == nextPage) {
 			this.$["page"+this.currentPage].hasNode().insertBefore(this.$.pinnedPlaceholder.hasNode(), node);
@@ -902,7 +903,7 @@ enyo.kind({
 			this.updatePagePositions(nextPageNumber,nextPage);
 			this.$["page"+nextPage].hasNode().insertBefore(this.$.pinnedPlaceholder.hasNode(), node);
 		}
-		
+
 		// save updated state
 		this.placeholderRowIndex = index > this.draggingRowIndex ? index - 1 : index;
 		this.currentPageNumber = nextPageNumber;
@@ -958,14 +959,15 @@ enyo.kind({
 	},
 	correctPageHeights: function() {
 		var otherPage = (this.currentPage == 1) ? 0 : 1;
+		var mover, movee;
 		// if moved down, move current page's firstChild to the end of previous page
 		if(this.initialPageNumber < this.currentPageNumber) {
-			var mover = this.$["page"+this.currentPage].hasNode().firstChild;
+			mover = this.$["page"+this.currentPage].hasNode().firstChild;
 			this.$["page"+otherPage].hasNode().appendChild(mover);
 		// if moved up, move current page's lastChild before previous page's firstChild
 		} else {
-			var mover = this.$["page"+this.currentPage].hasNode().lastChild;
-			var movee = this.$["page"+otherPage].hasNode().firstChild;
+			mover = this.$["page"+this.currentPage].hasNode().lastChild;
+			movee = this.$["page"+otherPage].hasNode().firstChild;
 			this.$["page"+otherPage].hasNode().insertBefore(mover, movee);
 		}
 		this.pageHeights[this.initialPageNumber] = this.getPageHeight(this.initialPageNumber) + this.rowHeight;
@@ -992,41 +994,41 @@ enyo.kind({
 		this.resetReorderState();
 	},
 	//* Returns the row index that is under the given position on the page
-    getRowIndexFromCoordinate: function(y) {
-        var positionInList = (this.getScrollTop()) + y - this.getNodePosition(this.hasNode()).top;
-        return Math.floor(positionInList/this.rowHeight);
-    },
+	getRowIndexFromCoordinate: function(y) {
+		var positionInList = (this.getScrollTop()) + y - this.getNodePosition(this.hasNode()).top;
+		return Math.floor(positionInList/this.rowHeight);
+	},
 	//* Get the position of a node (identified via index) on the page
 	getIndexPosition: function(index) {
 		return this.getNodePosition(this.$.generator.fetchRowNode(index));
 	},
 	//* Gets the position of a node on the page, taking translations into account
-    getNodePosition:function(node) {
-        var originalNode=node;
-        var offsetTop=0;
-        var offsetLeft=0;
-        while(node && node.offsetParent){
-            offsetTop+=node.offsetTop;
-            offsetLeft+=node.offsetLeft;
-            node=node.offsetParent;
-        }
-        // second pass to get transforms 
-        node=originalNode;
-        var cssTransformProp=enyo.dom.getCssTransformProp();
-        while(node && node.getAttribute){
-            var matrix=enyo.dom.getComputedStyleValue(node,cssTransformProp);
-            if(matrix && matrix != "none"){
-                var last=matrix.lastIndexOf(",");
-                var secondToLast=matrix.lastIndexOf(",",last-1);
-                if(last>=0 && secondToLast>=0){
-                    offsetTop+=parseFloat(matrix.substr(last+1,matrix.length-last));
-                    offsetLeft+=parseFloat(matrix.substr(secondToLast+1,last-secondToLast));             
-                }
-            }
-            node=node.parentNode;
-        }
-        return {top:offsetTop,left:offsetLeft};
-    },
+	getNodePosition:function(node) {
+		var originalNode=node;
+		var offsetTop=0;
+		var offsetLeft=0;
+		while(node && node.offsetParent){
+			offsetTop+=node.offsetTop;
+			offsetLeft+=node.offsetLeft;
+			node=node.offsetParent;
+		}
+		// second pass to get transforms
+		node=originalNode;
+		var cssTransformProp=enyo.dom.getCssTransformProp();
+		while(node && node.getAttribute){
+			var matrix=enyo.dom.getComputedStyleValue(node,cssTransformProp);
+			if(matrix && matrix != "none"){
+				var last=matrix.lastIndexOf(",");
+				var secondToLast=matrix.lastIndexOf(",",last-1);
+				if(last>=0 && secondToLast>=0){
+					offsetTop+=parseFloat(matrix.substr(last+1,matrix.length-last));
+					offsetLeft+=parseFloat(matrix.substr(secondToLast+1,last-secondToLast));
+				}
+			}
+			node=node.parentNode;
+		}
+		return {top:offsetTop,left:offsetLeft};
+	},
 	cloneRowNode: function(index) {
 		return this.$.generator.fetchRowNode(index).cloneNode(true);
 	},
