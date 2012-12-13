@@ -86,7 +86,7 @@ enyo.kind({
 	},
 	parseTweet: function(inText) {
 		var t = inText;
-		t = t.replace(/[A-Za-z]+:\/\/[A-Za-z0-9_-]+\.[A-Za-z0-9_:%&~-\?\/.=]+/g, function(url) {
+		t = t.replace(/[A-Za-z]+:\/\/[A-Za-z0-9_-]+\.[A-Za-z0-9_:%&~\?\/.=-]+/g, function(url) {
 			return "<a href='" + url + "'target='_blank'>" + url + "</a>";
 		});
 		return t.replace(/[@]+[A-Za-z0-9_-]+/, function(u) {
