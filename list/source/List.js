@@ -64,7 +64,13 @@ enyo.kind({
 		//* If true, the list will assume all rows have the same height for optimization
 		fixedHeight: false,
 		//* If true, the list will allow the user to reorder list items
-		reorderable: false
+		reorderable: false,
+		//* Array containing any swipeable components that will be used
+		swipeableComponents: [],
+		//* Enable/disable swipe functionality
+		enableSwipe: true,
+		//* Tell list to persist the current swipeable item
+		persistSwipeableItem: false
 	},
 	events: {
 		/**
@@ -72,14 +78,25 @@ enyo.kind({
 			_inEvent.index_ contains the current row index.
 		*/
 		onSetupItem: "",
-		onReorder: ""
+		//* Reorder events
+		onSetupReorderComponents: "",
+		onSetupPinnedReorderComponents: "",
+		onReorder: "",
+		//* Swipe events
+		onSetupSwipeItem: "",
+		onSwipeDrag: "",
+		onSwipe: "",
+		onSwipeComplete: ""
 	},
 	handlers: {
 		onAnimateFinish: "animateFinish",
-		//onhold: "hold",
 		ondrag: "drag",
 		onup: "dragfinish",
-		onholdpulse: "holdpulse"
+		onholdpulse: "holdpulse",
+		onRenderRow: "rowRendered",
+		ondragstart: "dragstart",
+		onflick: "flick",
+		onwebkitTransitionEnd: "swipeTransitionComplete"
 	},
 	//* @protected
 	rowHeight: 0,
@@ -90,15 +107,13 @@ enyo.kind({
 			]},
 			{name: "page0", allowHtml: true, classes: "enyo-list-page"},
 			{name: "page1", allowHtml: true, classes: "enyo-list-page"},
-			{name: "reorderContainer", classes: "list-reorder-container"},
-			{name: "placeholder", classes: "listPlaceholder", style: "height:0px;"},
-			{name: "pinnedPlaceholder", classes: "pinned-list-placeholder", components: [
-				{name: "pinnedPlaceholderContents", allowHtml: true},
-				{name: "testButton", kind:"enyo.Button", content: "Drop", ontap: "dropPinnedRow"}
-			]}
+			{name: "placeholder", classes: "listPlaceholder"},
+			{name: "swipeableComponents", style: "position:absolute;display:block;top:-1000px;left:0px;"}
 		]}
 	],
-
+	
+	//* Reorder vars
+	
 	initHoldCounter: 3,
 	holdCounter: 3,
 	holding: false,
@@ -111,6 +126,31 @@ enyo.kind({
 	initialPinPosition: -1,
 	itemMoved: false,
 	currentPage: null,
+	
+	//* Swipeable vars
+	
+	// index of swiped item
+	swipeIndex: null,
+	// direction of swipe
+	swipeDirection: null,
+	// is a persistent item currently persisting
+	persistentItemVisisble: false,
+	// side from which the persisting item came from
+	persistentItemOrigin: null,
+	// specify if swipe was completed
+	swipeComplete: false,
+	// timeout used to wait before completing swipe action
+	completeSwipeTimeout: null,
+	// time in MS to wait before completing swipe action
+	completeSwipeDelayMS: 300,
+	// time in seconds for normal swipe animation
+	normalSwipeSpeed: 0.2,
+	// time in seconds for fast swipe animation
+	fastSwipeSpeed: 0.1,
+	// flag to specify whether a flick event happened
+	flicked: false,
+	// percentage of a swipe needed to force complete the swipe
+	percentageDraggedThreshold: 0.2,
 
 	create: function() {
 		this.pageHeights = [];
@@ -120,7 +160,14 @@ enyo.kind({
 		this.noSelectChanged();
 		this.multiSelectChanged();
 		this.toggleSelectedChanged();
-		this.reorderableChanged();
+	},
+	initComponents: function() {
+		this.createReorderTools();
+		this.inherited(arguments);
+		this.createSwipeableComponents();
+	},
+	createReorderTools: function() {
+		this.createComponent({name: "reorderContainer", classes: "list-reorder-container"});
 	},
 	createStrategy: function() {
 		this.controlParentName = "strategy";
@@ -129,22 +176,16 @@ enyo.kind({
 		this.controlParentName = "client";
 		this.discoverControlParent();
 	},
+	createSwipeableComponents: function() {
+		for(var i=0;i<this.swipeableComponents.length;i++) {
+			this.$.swipeableComponents.createComponent(this.swipeableComponents[i], {owner: this.owner});
+		}
+	},
 	rendered: function() {
 		this.inherited(arguments);
 		this.$.generator.node = this.$.port.hasNode();
 		this.$.generator.generated = true;
 		this.reset();
-	},
-	initComponents: function() {
-		this.inherited(arguments);
-		this.hideReorderableContainer();
-		this.hidePinnedPlaceholderContainer();
-	},
-	hideReorderableContainer: function() {
-		this.$.reorderContainer.setShowing(false);
-	},
-	hidePinnedPlaceholderContainer: function() {
-		this.$.pinnedPlaceholder.setShowing(false);
 	},
 	resizeHandler: function() {
 		this.inherited(arguments);
@@ -171,13 +212,6 @@ enyo.kind({
 	countChanged: function() {
 		if (this.hasNode()) {
 			this.updateMetrics();
-		}
-	},
-	reorderableChanged: function() {
-		// TODO - this is a bummer
-		if(this.reorderable && !this.fixedHeight) {
-			enyo.log("Lists without a fixed row height cannont be reorderable!");
-			this.reorderable = false;
 		}
 	},
 	updateMetrics: function() {
@@ -216,6 +250,10 @@ enyo.kind({
 			return false;
 		}
 	},
+	//* DragStart event handler
+	dragstart: function(inSender, inEvent) {
+		this.swipeDragStart(inSender, inEvent);
+	},
 	//* Drag event handler
 	drag: function(inSender, inEvent) {
 		inEvent.preventDefault();
@@ -223,8 +261,40 @@ enyo.kind({
 		// determine if we should handle the drag event
 		if(this.shouldDoReorderDrag(inEvent)) {
 			this.reorderDrag(inEvent);
-			return true;
 		}
+		if(this.shouldDoSwipeDrag()) {
+			this.swipeDrag(inSender, inEvent);
+		}
+		
+		return this.preventDragPropagation;
+	},
+	/*
+		When the user flicks, complete the swipe.
+	*/
+	flick: function(inSender, inEvent) {
+		// if swiping is disabled, return early
+		if(!this.getEnableSwipe()) {
+			return this.preventDragPropagation;
+		}
+		
+		// if the flick was vertical, return early
+		if(Math.abs(inEvent.xVelocity) < Math.abs(inEvent.yVelocity)) {
+			return this.preventDragPropagation;
+		}
+		
+		// prevent the dragFinish event from breaking the flick
+		this.setFlicked(true);
+		
+		// if a persistent swipeableItem is still showing, slide it away or bounce it
+		if(this.persistentItemVisisble) {
+			this.flickPersistentItem(inEvent);
+			return this.preventDragPropagation;
+		}
+		
+		// do swipe
+		this.swipe(inEvent,this.normalSwipeSpeed);
+		
+		return this.preventDragPropagation;
 	},
 	//* Dragfinish event handler
 	dragfinish: function(inSender, inEvent) {
@@ -232,6 +302,7 @@ enyo.kind({
 			this.resetHoldCounter();
 			this.finishReordering(inSender, inEvent);
 		}
+		this.swipeDragFinish(inSender, inEvent);
 	},
 	generatePage: function(inPageNo, inTarget) {
 		this.page = inPageNo;
@@ -273,6 +344,7 @@ enyo.kind({
 			this.positionPage(p, this.$.page0);
 			this.p0 = p;
 			updated = true;
+			this.p0RowBounds = this.getPageRowHeights(this.$.page0);
 		}
 		// which page number for page1 (odd number pages)?
 		p = (k % 2 === 0) ? Math.max(1, k-1) : k;
@@ -282,11 +354,57 @@ enyo.kind({
 			this.positionPage(p, this.$.page1);
 			this.p1 = p;
 			updated = true;
+			this.p1RowBounds = this.getPageRowHeights(this.$.page1);
 		}
 		if (updated && !this.fixedHeight) {
 			this.adjustBottomPage();
 			this.adjustPortSize();
 		}
+	},
+	getPageRowHeights: function(page) {
+		var rows = [];
+		var allDivs = document.getElementById(page.id).getElementsByTagName("div");
+		for(var i=0, index=null, style=null;i<allDivs.length;i++) {
+			index = allDivs[i].getAttribute("data-enyo-index");
+			if(index !== null) {
+				style = getComputedStyle(allDivs[i]);
+				rows.push({height: parseInt(style.height), width: parseInt(style.width), index: index});
+			}
+		}
+		return rows;
+	},
+	updateRowBounds: function(index) {
+		var updateIndex = this.getRowBoundsUpdateIndex(index,this.p0RowBounds);
+		if(updateIndex > -1) {
+			this.updateRowBoundsAtIndex(updateIndex,this.p0RowBounds,this.$.page0);
+			return;
+		}
+		updateIndex = this.getRowBoundsUpdateIndex(index,this.p1RowBounds);
+		if(updateIndex > -1) {
+			this.updateRowBoundsAtIndex(updateIndex,this.p1RowBounds,this.$.page1);
+			return;
+		}
+		enyo.log("Row at index "+index+" not found!")
+	},
+	getRowBoundsUpdateIndex: function(index, rows) {
+		for(var i=0, style=null;i<rows.length;i++) {
+			if(rows[i].index == index) {
+				return i;
+			}
+		}
+		return -1;
+	},
+	updateRowBoundsAtIndex: function(updateIndex,rows,page) {
+		var allDivs = document.getElementById(page.id).getElementsByTagName("div");
+		for(var i=0, index=null, style=null;i<allDivs.length;i++) {
+			index = allDivs[i].getAttribute("data-enyo-index");
+			if(index == rows[updateIndex].index) {
+				style = getComputedStyle(allDivs[i]);
+				break;
+			}
+		}
+		rows[updateIndex].height = parseInt(style.height);
+		rows[updateIndex].width = parseInt(style.width);
 	},
 	updateForPosition: function(inPos) {
 		this.update(this.calcPos(inPos));
@@ -456,11 +574,15 @@ enyo.kind({
 		return this.$.generator.isSelected(inIndex);
 	},
 	/**
-		Re-renders the specified row. Call after making modifications to a row,
-		to force it to render.
-	*/
-	renderRow: function(inIndex) {
-		this.$.generator.renderRow(inIndex);
+    	Re-renders the specified row. Call after making modifications to a row,
+        to force it to render.
+    */
+    renderRow: function(inIndex) {
+    	this.$.generator.renderRow(inIndex);
+    },
+	//* Update row bounds when rows are re-rendered
+	rowRendered: function(inSender, inEvent) {
+		this.updateRowBounds(inEvent.rowIndex);
 	},
 	//* Prepares the row to become interactive.
 	prepareRow: function(inIndex) {
@@ -491,8 +613,7 @@ enyo.kind({
 		var s = this.getStrategy();
 		enyo.call(s, "twiddle");
 	},
-
-
+	
 	/**
 		---- Reorder functionality ------------
 	*/
@@ -508,10 +629,11 @@ enyo.kind({
 	reorderHold: function(inEvent) {
 		// disable drag to scroll on strategy
 		this.$.strategy.listReordering = true;
-
-		// setup floating reorder container
-		this.setupReorderContainer(inEvent);
-
+		
+		this.buildReorderContainer();
+		this.doSetupReorderComponents(inEvent);
+	    this.styleReorderContainer(inEvent);
+		
 		this.draggingRowIndex = this.placeholderRowIndex = inEvent.rowIndex;
 		this.itemMoved = false;
 		this.initialPageNumber = this.currentPageNumber = Math.floor(inEvent.rowIndex/this.rowsPerPage);
@@ -521,11 +643,19 @@ enyo.kind({
 		// fill row being reordered with placeholder
 		this.replaceNodeWithPlacholder(inEvent.rowIndex);
 	},
+	//* Fill reorder container with draggable reorder components defined by app
+	buildReorderContainer: function() {
+		this.$.reorderContainer.destroyClientControls();
+		for(var i=0;i<this.reorderComponents.length;i++) {
+			this.$.reorderContainer.createComponent(this.reorderComponents[i], {owner:this.owner});
+		}
+		this.$.reorderContainer.render();
+	},
 	//* Prepare floating reorder container
-	setupReorderContainer: function(e) {
+	styleReorderContainer: function(e) {
 		this.setItemPosition(this.$.reorderContainer, e.rowIndex);
 		this.setItemBounds(this.$.reorderContainer, e.rowIndex);
-		this.appendNodeToReorderContainer(this.cloneRowNode(e.rowIndex));
+		//this.appendNodeToReorderContainer(this.cloneRowNode(e.rowIndex));
 		this.$.reorderContainer.setShowing(true);
 		this.centerReorderContainerOnPointer(e);
 	},
@@ -536,8 +666,12 @@ enyo.kind({
 	//* Center the floating reorder container on the user's pointer
 	centerReorderContainerOnPointer: function(e) {
 		var containerPosition = this.getNodePosition(this.hasNode());
-		var x = e.pageX - containerPosition.left - parseInt(this.$.reorderContainer.domStyles.width, 10)/2;
-		var y = e.pageY - containerPosition.top + this.getScrollTop() - parseInt(this.$.reorderContainer.domStyles.height, 10)/2;
+		var x = e.pageX - containerPosition.left - parseInt(this.$.reorderContainer.domStyles.width)/2;
+		var y = e.pageY - containerPosition.top + this.getScrollTop() - parseInt(this.$.reorderContainer.domStyles.height)/2;
+		if(this.getStrategyKind() != "ScrollStrategy") {
+			x -= this.getScrollLeft();
+			y -= this.getScrollTop();
+		}
 		this.positionReorderContainer(x,y);
 	},
 	//* Move the reorder container to the specified x,y coordinates. Animate and kickoff timeout to turn off animation.
@@ -584,9 +718,9 @@ enyo.kind({
 	//* Position the reorder node based on the dx and dy of the drag event
 	positionReorderNode: function(e) {
 		var reorderNodeStyle = this.$.reorderContainer.hasNode().style;
-		var left = parseInt(reorderNodeStyle.left, 10) + e.ddx;
-		var scrollTopDelta = this.getScrollTop() - this.prevScrollTop;
-		var top = parseInt(reorderNodeStyle.top, 10) + parseInt(e.ddy, 10) + scrollTopDelta;
+		var left = parseInt(reorderNodeStyle.left) + e.ddx;
+		var top = parseInt(reorderNodeStyle.top) + parseInt(e.ddy);
+		top = (this.getStrategyKind() == "ScrollStrategy") ? top + (this.getScrollTop() - this.prevScrollTop) : top;
 		this.$.reorderContainer.addStyles("top: "+top+"px ; left: "+left+"px");
 		this.prevScrollTop = this.getScrollTop();
 	},
@@ -710,14 +844,15 @@ enyo.kind({
 	//*
 	moveReorderedContainerToDroppedPosition: function() {
 		var offset = this.getRelativeOffset(this.placeholderNode, this.hasNode());
-		this.positionReorderContainer(offset.left,offset.top);
+		var top = (this.getStrategyKind() == "ScrollStrategy") ? offset.top : offset.top - this.getScrollTop();
+		var left = offset.left - this.getScrollLeft();
+		this.positionReorderContainer(left,top);
 	},
 	//* After reorder item has been animated to it's position, complete reordering logic.
 	completeFinishReordering: function(inEvent) {
-		this.removePlaceholderNode();
 		// if the user dropped the item in the same location where it was picked up, and they
 		// didn't move any other items in the process, pin the item and go into pinned reorder mode
-		if(this.draggingRowIndex == this.placeholderRowIndex) {
+		if(this.draggingRowIndex == this.placeholderRowIndex && !this.pinnedReorderMode) {
 			if(!this.itemMoved) {
 				this.beginPinnedReorder(inEvent);
 				return;
@@ -725,17 +860,15 @@ enyo.kind({
 			// release the row being reordered
 			this.dropReorderedRow(inEvent);
 		}
-		// release the row being reordered
+		this.removePlaceholderNode();
 		this.dropReorderedRow(inEvent);
-		// reorder rows
 		this.reorderRows(inEvent);
-		// reset related variables
 		this.resetReorderState();
 	},
 	//* Go into pinned reorder mode
 	beginPinnedReorder: function(e) {
-		this.emptyAndHideReorderContainer();
-		this.setupPinnedPlaceholder();
+		this.buildPinnedReorderContainer();
+		this.doSetupPinnedReorderComponents(enyo.mixin(e, {index: this.draggingRowIndex}));
 		this.pinnedReorderMode = true;
 		this.initialPinPosition = e.pageY;
 	},
@@ -744,17 +877,13 @@ enyo.kind({
 		this.$.reorderContainer.destroyComponents();
 		this.$.reorderContainer.setShowing(false);
 	},
-	/**
-		Show the pinned placeholder, match it's size to that of the item being reordered, and
-		fill it with a clone of the item being reordered
-	*/
-	setupPinnedPlaceholder: function() {
-		this.$.pinnedPlaceholderContents.setContent(this.cloneRowNode(this.draggingRowIndex).innerHTML);
-		this.showNode(this.hiddenNode);
-		this.setItemBounds(this.$.pinnedPlaceholder, this.draggingRowIndex);
-		this.hideNode(this.hiddenNode);
-		this.$["page"+this.currentPage].hasNode().insertBefore(this.$.pinnedPlaceholder.hasNode(), this.$.generator.fetchRowNode(this.draggingRowIndex));
-		this.$.pinnedPlaceholder.setShowing(true);
+	//* Fill reorder container with pinned controls
+	buildPinnedReorderContainer: function() {
+		this.$.reorderContainer.destroyClientControls();
+		for(var i=0;i<this.pinnedReorderComponents.length;i++) {
+			this.$.reorderContainer.createComponent(this.pinnedReorderComponents[i], {owner:this.owner});
+		}
+		this.$.reorderContainer.render();
 	},
 	//* Put away reorder container and bubble a reorder event
 	dropReorderedRow: function(e) {
@@ -792,18 +921,14 @@ enyo.kind({
 	//* Reset back to original values
 	resetReorderState: function() {
 		this.draggingRowIndex = this.placeholderRowIndex = -1;
-		// re-enable holding
 		this.holding = false;
+		this.pinnedReorderMode = false;
 	},
 	//* Update indices as needed in list to preserve reordering
 	updateListIndices: function() {
 		// don't do update if we've moved further than one page, refresh instead
 		if(this.shouldDoRefresh()) {
 			this.refresh();
-			// Account for the row movement
-			if(this.draggingRowIndex < this.placeholderRowIndex) {
-				this.setScrollPosition(this.getScrollPosition()-this.rowHeight);
-			}
 			return;
 		}
 
@@ -837,11 +962,15 @@ enyo.kind({
 					enyo.log("No node - "+i);
 					continue;
 				}
-				//var name = node.innerHTML.split('listContactsSample_item_name">')[1].split("<")[0];
-				currentIndex = parseInt(node.getAttribute("data-enyo-index"), 10);
+				var currentIndex = parseInt(node.getAttribute("data-enyo-index"));
 				newIndex = currentIndex - 1;
 				node.setAttribute("data-enyo-index", newIndex);
 			}
+		}
+		// Re-render rows that were rearranged to update heights array and update any data that is
+		// specific to the items' location in the list
+		for(var i=from;i<=to;i++) {
+			this.renderRow(i);
 		}
 	},
 	//* Determine if an item was reordered far enough that it warrants a refresh()
@@ -875,39 +1004,6 @@ enyo.kind({
 	getDimensions: function(node) {
 		var style = getComputedStyle(node,null);
 		return {height: style.getPropertyValue("height"), width: style.getPropertyValue("width")};
-	},
-	//* Move the pinned row to a new index (determined by the current scroll position)
-	movePinnedRow: function(index) {
-		var node = this.$.generator.fetchRowNode(index);
-		if(!node) {
-			enyo.log("No node - "+index);
-			return;
-		}
-
-		// figure next page and position for placeholder
-		var nextPageNumber = Math.floor(index/this.rowsPerPage);
-		var nextPage = nextPageNumber%2;
-
-		// don't add pages beyond the original page count
-		if(nextPageNumber >= this.pageCount) {
-			nextPageNumber = this.currentPageNumber;
-			nextPage = this.currentPage;
-		}
-
-		// if moving to same page, simply move the pinned row to new position
-		if(this.currentPage == nextPage) {
-			this.$["page"+this.currentPage].hasNode().insertBefore(this.$.pinnedPlaceholder.hasNode(), node);
-		// if moving to different page, recalculate page heights and reposition pages
-		} else {
-			this.updatePageHeights(nextPageNumber);
-			this.updatePagePositions(nextPageNumber,nextPage);
-			this.$["page"+nextPage].hasNode().insertBefore(this.$.pinnedPlaceholder.hasNode(), node);
-		}
-
-		// save updated state
-		this.placeholderRowIndex = index > this.draggingRowIndex ? index - 1 : index;
-		this.currentPageNumber = nextPageNumber;
-		this.currentPage = nextPage;
 	},
 	replaceNodeWithPlacholder: function(index) {
 		var node = this.$.generator.fetchRowNode(index);
@@ -983,20 +1079,27 @@ enyo.kind({
 		return node;
 	},
 	//* Called when the "Drop" button is pressed on the pinned placeholder row
-	dropPinnedRow: function(inSender, inEvent) {
-		this.dropReorderedRow(inEvent);
-		this.pinnedReorderMode = false;
-		this.$.pinnedPlaceholder.setShowing(false);
-		if(this.draggingRowIndex != this.placeholderRowIndex) {
-			// reorder rows
-			this.reorderRows(inEvent);
-		}
-		this.resetReorderState();
+	dropPinnedRow: function(inEvent) {
+		var _this = this;
+		// animate reorder container to proper position and then complete reording actions
+		this.moveReorderedContainerToDroppedPosition(inEvent);
+		setTimeout(function() { _this.completeFinishReordering(inEvent); }, 100);
+		return;
 	},
 	//* Returns the row index that is under the given position on the page
 	getRowIndexFromCoordinate: function(y) {
-		var positionInList = (this.getScrollTop()) + y - this.getNodePosition(this.hasNode()).top;
-		return Math.floor(positionInList/this.rowHeight);
+		var cursorPosition = this.getScrollTop() + y - this.getNodePosition(this.hasNode()).top;
+		var pageInfo = this.positionToPageInfo(cursorPosition);
+		var rows = (pageInfo.no == this.p0) ? this.p0RowBounds : this.p1RowBounds;
+		var posOnPage = pageInfo.pos;
+		for(var i=0, totalHeight=0;i<rows.length;i++) {
+			totalHeight += rows[i].height;
+			if(totalHeight >= posOnPage) {
+				return parseInt(rows[i].index);
+			}
+		}
+		
+		return -1;
 	},
 	//* Get the position of a node (identified via index) on the page
 	getIndexPosition: function(index) {
@@ -1035,7 +1138,8 @@ enyo.kind({
 	//* Set _$item_'s position to match that of the list row at _index_
 	setItemPosition: function($item,index) {
 		var clonedNodeStyle = this.getNodeStyle(index);
-		var styleStr = "top:"+clonedNodeStyle.top+"px; left:"+clonedNodeStyle.left+"px;";
+		var top = (this.getStrategyKind() == "ScrollStrategy") ? clonedNodeStyle.top : clonedNodeStyle.top - this.getScrollTop();
+		var styleStr = "top:"+top+"px; left:"+clonedNodeStyle.left+"px;";
 		$item.addStyles(styleStr);
 	},
 	//* Set _$item_'s width and height to match that of the list row at _index_
@@ -1056,9 +1160,13 @@ enyo.kind({
 		when user has scrolled far enough.
 	*/
 	reorderScroll: function(inSender, e) {
+		// if we are using the standard scroll strategy, we have to move the pinned row with the scrolling
+		if(this.getStrategyKind() == "ScrollStrategy") {
+			this.$.reorderContainer.addStyles("top:"+(this.initialPinPosition+this.getScrollTop()-this.rowHeight)+"px;");
+		}
 		var index = this.getRowIndexFromCoordinate(this.initialPinPosition);
 		if(index != this.placeholderRowIndex) {
-			this.movePinnedRow(index);
+			this.movePlaceholderToIndex(index);
 		}
 	},
 	hideReorderingRow: function() {
@@ -1067,5 +1175,269 @@ enyo.kind({
 		if(hiddenNode) {
 			this.hiddenNode = this.hideNode(hiddenNode);
 		}
+	},
+	
+	/**
+		---- Swipeable functionality ------------
+	*/
+	
+	/*
+		When a drag starts, get the direction of the drag as well as the index of the item
+		being dragged, and reset any pertinent values. Then kick off the swipe sequence.
+	*/
+	swipeDragStart: function(inSender, inEvent) {
+		// if no swipeable components are defined, or vertical drag, don't do swipe actions
+		if(!this.hasSwipeableComponents() || inEvent.vertical || this.draggingRowIndex > -1) {
+			return this.preventDragPropagation;
+		}
+		
+		// save direction we are swiping
+		this.setSwipeDirection(inEvent.xDirection);
+		
+		// if we are waiting to complete a swipe, complete it
+		if(this.completeSwipeTimeout) {
+			this.completeSwipe(inEvent);
+		}
+		
+		// reset flicked flag
+		this.setFlicked(false);
+		// reset swipe complete flag
+		this.setSwipeComplete(false);
+		
+		// if user is dragging a different item than was dragged previously, hide all swipeables first
+		if(this.swipeIndexChanged(inEvent.index)) {
+			this.clearSwipeables();
+			this.setSwipeIndex(inEvent.index);
+		}
+		
+		// start swipe sequence only if we are not currently showing a persistent item
+		if(!this.persistentItemVisisble) {
+			this.startSwipe(inEvent);
+		}
+		
+		return this.preventDragPropagation;
+	},
+	
+	shouldDoSwipeDrag: function() {
+		return (this.getEnableSwipe() && !(this.draggingRowIndex > -1));
+	},
+	/*
+		When a drag is in progress, update the position of the swipeable container based on
+		the ddx of the event.
+	*/
+	swipeDrag: function(inSender, inEvent) {
+		// if a persistent swipeableItem is still showing, handle it separately
+		if(this.persistentItemVisisble) {
+			this.dragPersistentItem(inEvent);
+			return this.preventDragPropagation;
+		}
+		// apply new position
+		this.dragSwipeableComponents(this.calcNewDragPosition(inEvent.ddx));
+		
+		return this.preventDragPropagation;
+	},
+	/*
+		When the current drag completes, decide whether to complete the swipe based on
+		how far the user pulled the swipeable container. If a flick occurred, don't
+		process dragFinish.
+	*/
+	swipeDragFinish: function(inSender, inEvent) {
+		// if swiping is disabled, return early
+		if(!this.getEnableSwipe()) {
+			return this.preventDragPropagation;
+		}
+		// if a flick happened, don't do dragFinish
+		if(this.wasFlicked()) {
+			return this.preventDragPropagation;
+		}
+		
+		// if a persistent swipeableItem is still showing, complete drag away or bounce
+		if(this.persistentItemVisisble) {
+			this.dragFinishPersistentItem(inEvent);
+		// otherwise if user dragged more than 20% of the width, complete the swipe. if not, back out.
+		} else {
+			if(this.calcPercentageDragged(inEvent.dx) > this.percentageDraggedThreshold) {
+				this.swipe(inEvent,this.fastSwipeSpeed);
+			} else {
+				this.backOutSwipe(inEvent);
+			}
+		}
+		
+		return this.preventDragPropagation;
+	},
+	hasSwipeableComponents: function() {
+		return this.$.swipeableComponents.controls.length != 0;
+	},
+	// Position the swipeable components block at the current row
+	positionSwipeableContainer: function(index,xDirection) {
+		var node = this.$.generator.fetchRowNode(index);
+		if(!node) {
+			return;
+		}
+		var offset = this.getRelativeOffset(node, this.hasNode());
+		var dimensions = this.getDimensions(node);
+		var x = (xDirection == 1) ? -1*parseInt(dimensions.width) : parseInt(dimensions.width);
+		this.$.swipeableComponents.addStyles("top: "+offset.top+"px; -webkit-transform: translate3d("+x+"px,0,0); height: "+dimensions.height+"; width: "+dimensions.width);
+	},
+	setSwipeDirection: function(xDirection) {
+		this.swipeDirection = xDirection;
+	},
+	setFlicked: function(flicked) {
+		this.flicked = flicked;
+	},
+	wasFlicked: function() {
+		return this.flicked;
+	},
+	setSwipeComplete: function(complete) {
+		this.swipeComplete = complete;
+	},
+	swipeIndexChanged: function(index) {
+		return (this.swipeIndex === null) ? true : (index === undefined) ? false : (index !== this.swipeIndex);
+	},
+	setSwipeIndex: function(index) {
+		this.swipeIndex = (index === undefined) ? this.swipeIndex : index;
+	},
+	/*
+		Calculate new position for the swipeable container based on the user's drag action. Don't
+		allow the container to drag further than either edge.
+	*/
+	calcNewDragPosition: function(dx) {
+		var parentStyle = getComputedStyle(this.$.swipeableComponents.node);
+		var xPos = parseInt(parentStyle.webkitTransform.split(",")[4]);
+		var dimensions = this.getDimensions(this.$.swipeableComponents.node);
+		var xlimit = (this.swipeDirection == 1) ? -1*parseInt(dimensions.width) : parseInt(dimensions.width);
+		var x = (this.swipeDirection == 1)
+			? (xPos + dx < xlimit)
+				? xlimit
+				: xPos + dx
+			: (xPos + dx > xlimit)
+				? xlimit
+				: xPos + dx;
+		return x;
+	},
+	dragSwipeableComponents: function(x) {
+		this.$.swipeableComponents.applyStyle("-webkit-transform","translate3d("+x+"px,0,0)");
+	},
+	// Begin swiping sequence by positioning the swipeable container and bubbling the setupSwipeItem event
+	startSwipe: function(e) {
+		this.positionSwipeableContainer(this.swipeIndex,e.xDirection);
+		this.$.swipeableComponents.setShowing(true);
+		this.setPersistentItemOrigin(e.xDirection);
+		this.doSetupSwipeItem(e);
+	},
+	// if a persistent swipeableItem is still showing, drag it away or bounce it
+	dragPersistentItem: function(e) {
+		var xPos = 0;
+		var x = (this.persistentItemOrigin == "right")
+			? Math.max(xPos, (xPos + e.dx))
+			: Math.min(xPos, (xPos + e.dx));
+		this.$.swipeableComponents.applyStyle("-webkit-transform","translate3d("+x+"px,0,0)");
+	},
+	// if a persistent swipeableItem is still showing, complete drag away or bounce
+	dragFinishPersistentItem: function(e) {
+		var completeSwipe = (this.calcPercentageDragged(e.dx) > 0.2);
+		var dir = (e.dx > 0) ? "right" : (e.dx < 0) ? "left" : null;
+		if(this.persistentItemOrigin == dir) {
+			if(completeSwipe) {
+				this.slideAwayItem();
+			} else {
+				this.bounceItem(e);
+			}
+		} else {
+			this.bounceItem(e);
+		}
+	},
+	// if a persistent swipeableItem is still showing, slide it away or bounce it
+	flickPersistentItem: function(e) {
+		if(e.xVelocity > 0) {
+			if(this.persistentItemOrigin == "left") {
+				this.bounceItem(e);
+			} else {
+				this.slideAwayItem();
+			}
+		} else if(e.xVelocity < 0) {
+			if(this.persistentItemOrigin == "right") {
+				this.bounceItem(e);
+			} else {
+				this.slideAwayItem();
+			}
+		}
+	},
+	setPersistentItemOrigin: function(xDirection) {
+		this.persistentItemOrigin = xDirection == 1 ? "left" : "right";
+	},
+	calcPercentageDragged: function(dx) {
+		return Math.abs(dx/parseInt(getComputedStyle(this.$.swipeableComponents.hasNode()).width));
+	},
+	swipe: function(e,speed) {
+		this.setSwipeComplete(true);
+		this.swipeItem(0,speed,e);
+	},
+	backOutSwipe: function(e) {
+		var dimensions = this.getDimensions(this.$.swipeableComponents.node);
+		var x = (this.swipeDirection == 1) ? -1*parseInt(dimensions.width) : parseInt(dimensions.width);
+		this.swipeItem(x,0.1,e);
+	},
+	swipeItem: function(x,secs,e) {
+		var $item = this.$.swipeableComponents;
+		$item.applyStyle("-webkit-transition", "-webkit-transform "+secs+"s linear 0s");
+		$item.applyStyle("-webkit-transform","translate3d("+x+"px,0,0)");
+	},
+	bounceItem: function(e) {
+		if(parseInt(getComputedStyle(this.$.swipeableComponents.node).webkitTransform.split(",")[4]) != 0) {
+			this.swipeItem(0,this.normalSwipeSpeedSecs,e);
+		}
+	},
+	slideAwayItem: function() {
+		var $item = this.$.swipeableComponents;
+		var parentStyle = getComputedStyle($item.node);
+		var xPos = (this.persistentItemOrigin == "right") ? parseInt(parentStyle.width) : -1*parseInt(parentStyle.width);
+		$item.applyStyle("-webkit-transition", "-webkit-transform "+this.normalSwipeSpeedSecs+"s linear 0s");
+		$item.applyStyle("-webkit-transform","translate3d("+xPos+"px,0,0)");
+		this.persistentItemVisisble = false;
+		this.setPersistSwipeableItem(false);
+	},
+	resetSwipeableTransitionTime: function($item) {
+		this.$.swipeableComponents.applyStyle("-webkit-transition", "-webkit-transform 0s linear 0s");
+	},
+	clearSwipeables: function() {
+		this.$.swipeableComponents.setShowing(false);
+		this.persistentItemVisisble = false;
+		this.setPersistSwipeableItem(false);
+	},
+	swipeTransitionComplete: function(inSender, inEvent) {
+		var _this = this;
+		this.completeSwipeTimeout = setTimeout(function() { _this.completeSwipe(inEvent); }, this.completeSwipeDelayMS);
+	},
+	// complete swipe and hide active swipeable item
+	completeSwipe: function(e) {
+		if(this.completeSwipeTimeout) {
+			clearTimeout(this.completeSwipeTimeout);
+			this.completeSwipeTimeout = null;
+		}
+		e.xDirection = this.swipeDirection;
+		if(e.index === undefined) {
+			e.index = this.swipeIndex;
+		}
+		this.setSwipeDirection(null);
+		this.resetSwipeableTransitionTime();
+		// if this wasn't a persistent item, hide it upon completion and send swipe complete event
+		if(!this.getPersistSwipeableItem()) {
+			this.$.swipeableComponents.setShowing(false);
+			// if the swipe was completed, update the current row and bubble swipeComplete event
+			if(this.swipeComplete) {
+				this.doSwipeComplete(e);
+			}
+		} else {
+			this.persistentItemVisisble = true;
+		}
+	},
+	updateCurrentRow: function() {
+		// prepare row
+		this.prepareRow(this.swipeIndex);
+		// update row
+		this.renderRow(this.swipeIndex);
+		// lock it up
+		this.lockRow(this.swipeIndex);
 	}
 });

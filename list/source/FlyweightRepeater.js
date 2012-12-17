@@ -55,7 +55,8 @@ enyo.kind({
 			_inEvent.selected_ is a boolean indicating whether the current row
 			is selected.
 		*/
-		onSetupItem: ""
+		onSetupItem: "",
+		onRenderRow: ""
 	},
 	//* design-time attribute, indicates if row indices run 
 	//* from [0.._count_-1] (false) or [_count_-1..0] (true)
@@ -149,6 +150,7 @@ enyo.kind({
 			this.setupItem(inIndex);
 			node.innerHTML = this.$.client.generateChildHtml();
 			this.$.client.teardownChildren();
+			this.doRenderRow({rowIndex: inIndex});
 		}
 	},
 	//* Fetches the DOM node for the given row index.
