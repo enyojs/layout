@@ -384,7 +384,7 @@ enyo.kind({
 			this.updateRowBoundsAtIndex(updateIndex,this.p1RowBounds,this.$.page1);
 			return;
 		}
-		enyo.log("Row at index "+index+" not found!")
+		// enyo.log("Row at index "+index+" not found!");
 	},
 	getRowBoundsUpdateIndex: function(index, rows) {
 		for(var i=0, style=null;i<rows.length;i++) {
@@ -472,11 +472,6 @@ enyo.kind({
 		}
 		return r;
 	},
-	//* @public
-	scrollToBottom: function() {
-		this.update(this.getScrollBounds().maxTop);
-		this.inherited(arguments);
-	},
 	setScrollTop: function(inScrollTop) {
 		this.update(inScrollTop);
 		this.inherited(arguments);
@@ -487,6 +482,12 @@ enyo.kind({
 	},
 	setScrollPosition: function(inPos) {
 		this.setScrollTop(this.calcPos(inPos));
+	},
+	//* @public
+	//* scroll the list so the last item is visible
+	scrollToBottom: function() {
+		this.update(this.getScrollBounds().maxTop);
+		this.inherited(arguments);
 	},
 	//* Scrolls to a specific row.
 	scrollToRow: function(inRow) {
@@ -574,11 +575,11 @@ enyo.kind({
 		return this.$.generator.isSelected(inIndex);
 	},
 	/**
-    	Re-renders the specified row. Call after making modifications to a row,
+		Re-renders the specified row. Call after making modifications to a row,
         to force it to render.
     */
     renderRow: function(inIndex) {
-    	this.$.generator.renderRow(inIndex);
+		this.$.generator.renderRow(inIndex);
     },
 	//* Update row bounds when rows are re-rendered
 	rowRendered: function(inSender, inEvent) {
@@ -632,7 +633,7 @@ enyo.kind({
 		
 		this.buildReorderContainer();
 		this.doSetupReorderComponents(inEvent);
-	    this.styleReorderContainer(inEvent);
+		this.styleReorderContainer(inEvent);
 		
 		this.draggingRowIndex = this.placeholderRowIndex = inEvent.rowIndex;
 		this.itemMoved = false;
@@ -946,7 +947,7 @@ enyo.kind({
 					enyo.log("No node - "+i);
 					continue;
 				}
-				currentIndex = parseInt(node.getAttribute("data-enyo-index"), 10);
+				currentIndex = parseInt(node.getAttribute("data-enyo-index"));
 				newIndex = currentIndex + 1;
 				node.setAttribute("data-enyo-index", newIndex);
 			}
@@ -962,14 +963,14 @@ enyo.kind({
 					enyo.log("No node - "+i);
 					continue;
 				}
-				var currentIndex = parseInt(node.getAttribute("data-enyo-index"));
+				currentIndex = parseInt(node.getAttribute("data-enyo-index"));
 				newIndex = currentIndex - 1;
 				node.setAttribute("data-enyo-index", newIndex);
 			}
 		}
 		// Re-render rows that were rearranged to update heights array and update any data that is
 		// specific to the items' location in the list
-		for(var i=from;i<=to;i++) {
+		for (i=from; i<=to; i++) {
 			this.renderRow(i);
 		}
 	},
@@ -986,7 +987,7 @@ enyo.kind({
 		}
 		var offset = this.getRelativeOffset(node, this.hasNode());
 		var dimensions = this.getDimensions(node);
-		return {h: parseInt(dimensions.height, 10), w: parseInt(dimensions.width, 10), left: parseInt(offset.left, 10), top: parseInt(offset.top, 10)};
+		return {h: parseInt(dimensions.height), w: parseInt(dimensions.width), left: parseInt(offset.left), top: parseInt(offset.top)};
 	},
 	//* Get offset relative to a positioned ancestor node
 	getRelativeOffset: function (n, p) {
@@ -1266,7 +1267,7 @@ enyo.kind({
 		return this.preventDragPropagation;
 	},
 	hasSwipeableComponents: function() {
-		return this.$.swipeableComponents.controls.length != 0;
+		return this.$.swipeableComponents.controls.length !== 0;
 	},
 	// Position the swipeable components block at the current row
 	positionSwipeableContainer: function(index,xDirection) {
