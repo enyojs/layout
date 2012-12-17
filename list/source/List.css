@@ -17,7 +17,11 @@
 .listPlaceholder { }
 .pinned-list-placeholder {
 	border:1px solid red;
-	position:relative;
+	position:absolute;
+	top:0px; left:0px;
+	z-index:1000;
+	background:transparent;
+	overflow:hidden;
 }
 .pinned-list-placeholder button {
 	width:100px; height:100%;
@@ -30,7 +34,6 @@
 	z-index:1000;
 	background:transparent;
 	overflow:hidden;
-	border:1px solid red;
 }
 
 .animatedTopAndLeft {
