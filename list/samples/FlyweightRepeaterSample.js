@@ -6,7 +6,7 @@ enyo.kind({
 		{kind: "onyx.Toolbar", components: [
 			{content: "FlyweightRepeater Result"}
 		]},
-		{name:"result", style:"padding:12px; font-size: 20px;", content: "Nothing slected yet."},
+		{name:"result", style:"padding:12px; font-size: 20px;", content: "Nothing selected yet."},
 		{name:"repeater", kind:"enyo.FlyweightRepeater", classes:"flyweight-repeater-sample-list", count: 26, onSetupItem: "setupItem", components: [
 			{name: "item", classes:"flyweight-repeater-sample-item"}
 		]}
