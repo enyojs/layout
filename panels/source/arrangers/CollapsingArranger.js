@@ -56,7 +56,7 @@ enyo.kind({
 				}
 				n++;
 			} else {
-				this.arrangeControl(c, {left: e + n});
+				this.arrangeControl(c, {left: e});
 				if (i >= inIndex) {
 					e += c.width + c.marginWidth;
 				}
