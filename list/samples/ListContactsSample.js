@@ -21,7 +21,6 @@ enyo.kind({
 			onSetupSwipeItem: "setupSwipeItem", onSwipeComplete: "swipeComplete", components: [
 				{name: "divider", classes: "list-sample-contacts-divider"},
 				{name: "item", kind: "ContactItem", classes: "list-sample-contacts-item enyo-border-box", onRemove: "removeTap"},
-				{name: "myIndex", style: "background:#333;"}
 			], reorderComponents: [
 				{name: "reorderContent", style:"background:rgba(0,0,0,0.7);margin:0px;padding:0px;", classes: "enyo-fit", components: [
 					{name: "reorderTitle", tag: "h2", style: "text-align:center;color:#fff;font-size:24px;"}
@@ -72,6 +71,9 @@ enyo.kind({
 		var i = inEvent.index;
 		var data = this.filter ? this.filtered : this.db;
 		var item = data[i];
+		if(!item) {
+			return;
+		}
 		this.$.reorderTitle.setContent("You are moving - "+item.name);
 	},
 	listReorder: function(inSender, inEvent) {
@@ -96,8 +98,6 @@ enyo.kind({
 		// importance
 		this.$.item.setImportance(item.importance);
 		this.$.item.renderImportance();
-		// index
-		this.$.myIndex.setContent(i);
 		// divider
 		if (!this.hideDivider) {
 			var d = item.name[0];
@@ -236,6 +236,12 @@ enyo.kind({
 		var i = inEvent.index;
 		var data = this.filter ? this.filtered : this.db;
 		var item = data[i];
+		
+		if(!item) {
+			return;
+		}
+		
+		item.importance = item.importance || 0;
 
 		// if swiped to the right
 		if(inEvent.xDirection == 1) {
@@ -273,6 +279,12 @@ enyo.kind({
 		var i = inEvent.index;
 		var data = this.filter ? this.filtered : this.db;
 		var item = data[i];
+		
+		if(!item) {
+			return;
+		}
+		
+		item.importance = item.importance || 0;
 		
 		// if swiped to the right
 		if(inEvent.xDirection == 1) {

@@ -96,7 +96,8 @@ enyo.kind({
 		onRenderRow: "rowRendered",
 		ondragstart: "dragstart",
 		onflick: "flick",
-		onwebkitTransitionEnd: "swipeTransitionComplete"
+		onwebkitTransitionEnd: "swipeTransitionComplete",
+		ontransitionend: "swipeTransitionComplete"
 	},
 	//* @protected
 	rowHeight: 0,
@@ -160,6 +161,8 @@ enyo.kind({
 		this.noSelectChanged();
 		this.multiSelectChanged();
 		this.toggleSelectedChanged();
+		this.accel = enyo.dom.canAccelerate();
+		this.translation = this.accel ? "translate3d" : "translate";
 	},
 	initComponents: function() {
 		this.createReorderTools();
@@ -257,13 +260,14 @@ enyo.kind({
 	//* Drag event handler
 	drag: function(inSender, inEvent) {
 		inEvent.preventDefault();
-
+		
 		// determine if we should handle the drag event
 		if(this.shouldDoReorderDrag(inEvent)) {
 			this.reorderDrag(inEvent);
 		}
 		if(this.shouldDoSwipeDrag()) {
 			this.swipeDrag(inSender, inEvent);
+			return true;
 		}
 		
 		return this.preventDragPropagation;
@@ -274,12 +278,12 @@ enyo.kind({
 	flick: function(inSender, inEvent) {
 		// if swiping is disabled, return early
 		if(!this.getEnableSwipe()) {
-			return this.preventDragPropagation;
+			return false;
 		}
 		
 		// if the flick was vertical, return early
 		if(Math.abs(inEvent.xVelocity) < Math.abs(inEvent.yVelocity)) {
-			return this.preventDragPropagation;
+			return false;
 		}
 		
 		// prevent the dragFinish event from breaking the flick
@@ -288,13 +292,13 @@ enyo.kind({
 		// if a persistent swipeableItem is still showing, slide it away or bounce it
 		if(this.persistentItemVisisble) {
 			this.flickPersistentItem(inEvent);
-			return this.preventDragPropagation;
+			return true;
 		}
 		
 		// do swipe
 		this.swipe(inEvent,this.normalSwipeSpeed);
-		
-		return this.preventDragPropagation;
+
+		return true;
 	},
 	//* Dragfinish event handler
 	dragfinish: function(inSender, inEvent) {
@@ -367,7 +371,7 @@ enyo.kind({
 		for(var i=0, index=null, style=null;i<allDivs.length;i++) {
 			index = allDivs[i].getAttribute("data-enyo-index");
 			if(index !== null) {
-				style = getComputedStyle(allDivs[i]);
+				style = window.getComputedStyle(allDivs[i]);
 				rows.push({height: parseInt(style.height), width: parseInt(style.width), index: index});
 			}
 		}
@@ -399,7 +403,7 @@ enyo.kind({
 		for(var i=0, index=null, style=null;i<allDivs.length;i++) {
 			index = allDivs[i].getAttribute("data-enyo-index");
 			if(index == rows[updateIndex].index) {
-				style = getComputedStyle(allDivs[i]);
+				style = window.getComputedStyle(allDivs[i]);
 				break;
 			}
 		}
@@ -806,9 +810,10 @@ enyo.kind({
 			this.$["page"+this.currentPage].hasNode().insertBefore(this.placeholderNode, this.$.generator.fetchRowNode(newPlaceholderIndex));
 		// if moving to different page, recalculate page heights and reposition pages
 		} else {
-			this.updatePageHeights(nextPageNumber);
-			this.updatePagePositions(nextPageNumber,nextPage);
 			this.$["page"+nextPage].hasNode().insertBefore(this.placeholderNode, this.$.generator.fetchRowNode(newPlaceholderIndex));
+			this.updatePageHeight(this.currentPageNumber, this.$["page"+this.currentPage]);
+			this.updatePageHeight(nextPageNumber, this.$["page"+nextPage]);
+			this.updatePagePositions(nextPageNumber,nextPage);
 		}
 
 		// save updated state
@@ -865,6 +870,7 @@ enyo.kind({
 		this.dropReorderedRow(inEvent);
 		this.reorderRows(inEvent);
 		this.resetReorderState();
+		this.refresh();
 	},
 	//* Go into pinned reorder mode
 	beginPinnedReorder: function(e) {
@@ -895,8 +901,10 @@ enyo.kind({
 	reorderRows: function(inEvent) {
 		// send reorder event
 		this.doReorder(this.makeReorderEvent(inEvent));
-		// update page heights and port size if necessary
-		this.fixPageHeightsAndPortSize();
+		// update page heights if necessary
+		if(this.shouldMoveItemtoDiffPage()) {
+			this.moveItemToDiffPage();
+		}
 		// fix indices for reordered rows
 		this.updateListIndices();
 	},
@@ -906,11 +914,25 @@ enyo.kind({
 		e.reorderTo = this.placeholderRowIndex;
 		return e;
 	},
-	fixPageHeightsAndPortSize: function() {
-		if(this.currentPageNumber != this.initialPageNumber) {
-			this.correctPageHeights();
-			this.adjustPortSize();
+	//* If user dragged an item to a diff page, return true
+	shouldMoveItemtoDiffPage: function() {
+		return (this.currentPageNumber != this.initialPageNumber);
+	},
+	//* Move the given item from one page to the next
+	moveItemToDiffPage: function() {
+		var mover, movee;
+		var otherPage = (this.currentPage == 1) ? 0 : 1;
+		// if moved down, move current page's firstChild to the end of previous page
+		if(this.initialPageNumber < this.currentPageNumber) {
+			mover = this.$["page"+this.currentPage].hasNode().firstChild;
+			this.$["page"+otherPage].hasNode().appendChild(mover);
+		// if moved up, move current page's lastChild before previous page's firstChild
+		} else {
+			mover = this.$["page"+this.currentPage].hasNode().lastChild;
+			movee = this.$["page"+otherPage].hasNode().firstChild;
+			this.$["page"+otherPage].hasNode().insertBefore(mover, movee);
 		}
+		this.updatePagePositions(this.initialPageNumber,otherPage);
 	},
 	//* Move the node being reordered to the new position and show it
 	positionReorderedNode: function() {
@@ -968,11 +990,6 @@ enyo.kind({
 				node.setAttribute("data-enyo-index", newIndex);
 			}
 		}
-		// Re-render rows that were rearranged to update heights array and update any data that is
-		// specific to the items' location in the list
-		for (i=from; i<=to; i++) {
-			this.renderRow(i);
-		}
 	},
 	//* Determine if an item was reordered far enough that it warrants a refresh()
 	shouldDoRefresh: function() {
@@ -1003,7 +1020,7 @@ enyo.kind({
 	},
 	//* Get height and width dimensions of the given dom node
 	getDimensions: function(node) {
-		var style = getComputedStyle(node,null);
+		var style = window.getComputedStyle(node,null);
 		return {height: style.getPropertyValue("height"), width: style.getPropertyValue("width")};
 	},
 	replaceNodeWithPlacholder: function(index) {
@@ -1045,31 +1062,22 @@ enyo.kind({
 		node.parentNode.removeChild(node);
 	},
 	//* Update _this.pageHeights_ to support the placeholder node jumping from one page to the next
-	updatePageHeights: function(nextPageNumber) {
-		this.pageHeights[this.currentPageNumber] = this.getPageHeight(this.currentPageNumber) - this.rowHeight;
-		this.pageHeights[nextPageNumber] = this.getPageHeight(nextPageNumber) + this.rowHeight;
+	updatePageHeight: function(pageNumber, pageDOMElement) {
+		var pageHeight = pageDOMElement.getBounds().height;
+		this.pageHeights[pageNumber] = pageHeight;
 	},
 	//* Reposition the two pages to support the placeholder node jumping from one page to the next
 	updatePagePositions: function(nextPageNumber,nextPage) {
 		this.positionPage(this.currentPageNumber, this.$["page"+this.currentPage]);
 		this.positionPage(nextPageNumber, this.$["page"+nextPage]);
 	},
+	//* Correct page heights array after reorder is complete
 	correctPageHeights: function() {
-		var otherPage = (this.currentPage == 1) ? 0 : 1;
-		var mover, movee;
-		// if moved down, move current page's firstChild to the end of previous page
-		if(this.initialPageNumber < this.currentPageNumber) {
-			mover = this.$["page"+this.currentPage].hasNode().firstChild;
-			this.$["page"+otherPage].hasNode().appendChild(mover);
-		// if moved up, move current page's lastChild before previous page's firstChild
-		} else {
-			mover = this.$["page"+this.currentPage].hasNode().lastChild;
-			movee = this.$["page"+otherPage].hasNode().firstChild;
-			this.$["page"+otherPage].hasNode().insertBefore(mover, movee);
+		var initPageNumber = this.initialPageNumber%2;
+		this.updatePageHeight(this.currentPageNumber, this.$["page"+this.currentPage]);
+		if(initPageNumber != this.currentPageNumber) {
+			this.updatePageHeight(this.initialPageNumber, this.$["page"+initPageNumber]);
 		}
-		this.pageHeights[this.initialPageNumber] = this.getPageHeight(this.initialPageNumber) + this.rowHeight;
-		this.pageHeights[this.currentPageNumber] = this.getPageHeight(this.currentPageNumber) - this.rowHeight;
-		this.updatePagePositions(this.initialPageNumber,otherPage);
 	},
 	hideNode: function(node) {
 		node.style.display = "none";
@@ -1093,13 +1101,13 @@ enyo.kind({
 		var pageInfo = this.positionToPageInfo(cursorPosition);
 		var rows = (pageInfo.no == this.p0) ? this.p0RowBounds : this.p1RowBounds;
 		var posOnPage = pageInfo.pos;
+		var placeholderHeight = parseInt(window.getComputedStyle(this.placeholderNode).height);
 		for(var i=0, totalHeight=0;i<rows.length;i++) {
-			totalHeight += rows[i].height;
+			totalHeight += (rows[i].height > 0) ? rows[i].height : placeholderHeight;
 			if(totalHeight >= posOnPage) {
 				return parseInt(rows[i].index);
 			}
 		}
-		
 		return -1;
 	},
 	//* Get the position of a node (identified via index) on the page
@@ -1278,7 +1286,7 @@ enyo.kind({
 		var offset = this.getRelativeOffset(node, this.hasNode());
 		var dimensions = this.getDimensions(node);
 		var x = (xDirection == 1) ? -1*parseInt(dimensions.width) : parseInt(dimensions.width);
-		this.$.swipeableComponents.addStyles("top: "+offset.top+"px; -webkit-transform: translate3d("+x+"px,0,0); height: "+dimensions.height+"; width: "+dimensions.width);
+		this.$.swipeableComponents.addStyles("top: "+offset.top+"px; left: "+x+"px; height: "+dimensions.height+"; width: "+dimensions.width);
 	},
 	setSwipeDirection: function(xDirection) {
 		this.swipeDirection = xDirection;
@@ -1303,21 +1311,24 @@ enyo.kind({
 		allow the container to drag further than either edge.
 	*/
 	calcNewDragPosition: function(dx) {
-		var parentStyle = getComputedStyle(this.$.swipeableComponents.node);
-		var xPos = parseInt(parentStyle.webkitTransform.split(",")[4]);
+		var parentStyle = window.getComputedStyle(this.$.swipeableComponents.hasNode());
+		if(!parentStyle) {
+			return false;
+		}
+		var xPos = parseInt(parentStyle["left"]);
 		var dimensions = this.getDimensions(this.$.swipeableComponents.node);
-		var xlimit = (this.swipeDirection == 1) ? -1*parseInt(dimensions.width) : parseInt(dimensions.width);
+		var xlimit = (this.swipeDirection == 1) ? 0 : -1*parseInt(dimensions.width);
 		var x = (this.swipeDirection == 1)
-			? (xPos + dx < xlimit)
+			? (xPos + dx > xlimit)
 				? xlimit
 				: xPos + dx
-			: (xPos + dx > xlimit)
+			: (xPos + dx < xlimit)
 				? xlimit
 				: xPos + dx;
 		return x;
 	},
 	dragSwipeableComponents: function(x) {
-		this.$.swipeableComponents.applyStyle("-webkit-transform","translate3d("+x+"px,0,0)");
+		this.$.swipeableComponents.applyStyle("left",x+"px");
 	},
 	// Begin swiping sequence by positioning the swipeable container and bubbling the setupSwipeItem event
 	startSwipe: function(e) {
@@ -1332,7 +1343,7 @@ enyo.kind({
 		var x = (this.persistentItemOrigin == "right")
 			? Math.max(xPos, (xPos + e.dx))
 			: Math.min(xPos, (xPos + e.dx));
-		this.$.swipeableComponents.applyStyle("-webkit-transform","translate3d("+x+"px,0,0)");
+		this.$.swipeableComponents.applyStyle("left",x+"px");
 	},
 	// if a persistent swipeableItem is still showing, complete drag away or bounce
 	dragFinishPersistentItem: function(e) {
@@ -1356,7 +1367,7 @@ enyo.kind({
 			} else {
 				this.slideAwayItem();
 			}
-		} else if(e.xVelocity < 0) {
+		} else if(e.xVelocity < 0) {	
 			if(this.persistentItemOrigin == "right") {
 				this.bounceItem(e);
 			} else {
@@ -1368,7 +1379,7 @@ enyo.kind({
 		this.persistentItemOrigin = xDirection == 1 ? "left" : "right";
 	},
 	calcPercentageDragged: function(dx) {
-		return Math.abs(dx/parseInt(getComputedStyle(this.$.swipeableComponents.hasNode()).width));
+		return Math.abs(dx/parseInt(window.getComputedStyle(this.$.swipeableComponents.hasNode()).width));
 	},
 	swipe: function(e,speed) {
 		this.setSwipeComplete(true);
@@ -1381,25 +1392,26 @@ enyo.kind({
 	},
 	swipeItem: function(x,secs,e) {
 		var $item = this.$.swipeableComponents;
-		$item.applyStyle("-webkit-transition", "-webkit-transform "+secs+"s linear 0s");
-		$item.applyStyle("-webkit-transform","translate3d("+x+"px,0,0)");
+		$item.applyStyle(enyo.dom.transition, "left " + secs + "s linear 0s");
+		$item.applyStyle("left",x+"px");
 	},
 	bounceItem: function(e) {
-		if(parseInt(getComputedStyle(this.$.swipeableComponents.node).webkitTransform.split(",")[4]) != 0) {
-			this.swipeItem(0,this.normalSwipeSpeedSecs,e);
+		var style = window.getComputedStyle(this.$.swipeableComponents.node);
+		if(parseInt(style.left) != parseInt(style.width)) {
+			this.swipeItem(0,this.normalSwipeSpeed,e);
 		}
 	},
 	slideAwayItem: function() {
 		var $item = this.$.swipeableComponents;
-		var parentStyle = getComputedStyle($item.node);
-		var xPos = (this.persistentItemOrigin == "right") ? parseInt(parentStyle.width) : -1*parseInt(parentStyle.width);
-		$item.applyStyle("-webkit-transition", "-webkit-transform "+this.normalSwipeSpeedSecs+"s linear 0s");
-		$item.applyStyle("-webkit-transform","translate3d("+xPos+"px,0,0)");
+		var parentStyle = window.getComputedStyle($item.node);
+		var xPos = (this.persistentItemOrigin == "left") ? -1*parseInt(parentStyle.width) : parseInt(parentStyle.width);
+		$item.applyStyle(enyo.dom.transition, "left " + this.normalSwipeSpeed + "s linear 0s");
+		$item.applyStyle("left", xPos+"px");
 		this.persistentItemVisisble = false;
 		this.setPersistSwipeableItem(false);
 	},
 	resetSwipeableTransitionTime: function($item) {
-		this.$.swipeableComponents.applyStyle("-webkit-transition", "-webkit-transform 0s linear 0s");
+		this.$.swipeableComponents.applyStyle(enyo.dom.transition, "left 0s linear 0s");
 	},
 	clearSwipeables: function() {
 		this.$.swipeableComponents.setShowing(false);
