@@ -12,11 +12,11 @@
 	calling methods that would normally cause rendering to occur (e.g.,
 	_setContent_) will not do so. However, you can force a row to render by
 	calling	_renderRow(inRow)_.
-	
+
 	In addition, you can force a row to be temporarily interactive by calling
 	_prepareRow(inRow)_. Call the _lockRow_ method when the	interaction is
 	complete.
-	
+
 	For more information, see the documentation on
 	[Lists](https://github.com/enyojs/enyo/wiki/Lists)
 	in the Enyo Developer Guide.
@@ -36,12 +36,12 @@ enyo.kind({
 		//* If true, the selected item will toggle
 		toggleSelected: false,
 		/**
-			Used to specify CSS classes for the repeater's wrapper component 
+			Used to specify CSS classes for the repeater's wrapper component
 			(client). Input is identical to enyo.Control.setClasses()
 		*/
 		clientClasses: '',
 		/**
-			Used to specify custom styling for the repeater's wrapper component 
+			Used to specify custom styling for the repeater's wrapper component
 			(client). Input is identical to enyo.Control.setStyle()
 		*/
 		clientStyle: ''
@@ -49,16 +49,17 @@ enyo.kind({
 	events: {
 		/**
 			Fires once per row at render time.
-			
+
 			_inEvent.index_ contains the current row index.
-			
+
 			_inEvent.selected_ is a boolean indicating whether the current row
 			is selected.
 		*/
 		onSetupItem: "",
+		//* Fires after an individual row has been rendered from a call to _renderRow()_.
 		onRenderRow: ""
 	},
-	//* design-time attribute, indicates if row indices run 
+	//* design-time attribute, indicates if row indices run
 	//* from [0.._count_-1] (false) or [_count_-1..0] (true)
 	bottomUp: false,
 	//* @protected
@@ -95,7 +96,7 @@ enyo.kind({
 	generateChildHtml: function() {
 		var h = "";
 		this.index = null;
-		// note: can supply a rowOffset 
+		// note: can supply a rowOffset
 		// and indicate if rows should be rendered top down or bottomUp
 		for (var i=0, r=0; i<this.count; i++) {
 			r = this.rowOffset + (this.bottomUp ? this.count - i-1 : i);
@@ -145,9 +146,10 @@ enyo.kind({
 	//* Renders the row specified by _inIndex_.
 	renderRow: function(inIndex) {
 		//this.index = null;
+		// always call the setupItem callback, as we may rely on the post-render state
+		this.setupItem(inIndex);
 		var node = this.fetchRowNode(inIndex);
 		if (node) {
-			this.setupItem(inIndex);
 			node.innerHTML = this.$.client.generateChildHtml();
 			this.$.client.teardownChildren();
 			this.doRenderRow({rowIndex: inIndex});
@@ -183,7 +185,7 @@ enyo.kind({
 	lockRow: function() {
 		this.$.client.teardownChildren();
 	},
-	//* Prepares the row specified by _inIndex_ such that changes made to the 
+	//* Prepares the row specified by _inIndex_ such that changes made to the
 	//* controls in the row will be rendered in the given row; then performs the
 	//* function _inFunc_, and, finally, locks the row.
 	performOnRow: function(inIndex, inFunc, inContext) {
