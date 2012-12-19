@@ -280,7 +280,7 @@ enyo.kind({
 		if(!this.getEnableSwipe()) {
 			return false;
 		}
-		
+
 		// if the flick was vertical, return early
 		if(Math.abs(inEvent.xVelocity) < Math.abs(inEvent.yVelocity)) {
 			return false;
@@ -1419,6 +1419,9 @@ enyo.kind({
 		this.setPersistSwipeableItem(false);
 	},
 	swipeTransitionComplete: function(inSender, inEvent) {
+		if(inEvent.dispatchTarget !== this.$.swipeableComponents) {
+			return;
+		}
 		var _this = this;
 		this.completeSwipeTimeout = setTimeout(function() { _this.completeSwipe(inEvent); }, this.completeSwipeDelayMS);
 	},
