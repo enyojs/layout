@@ -143,7 +143,7 @@ enyo.kind({
 	// timeout used to wait before completing swipe action
 	completeSwipeTimeout: null,
 	// time in MS to wait before completing swipe action
-	completeSwipeDelayMS: 300,
+	completeSwipeDelayMS: 500,
 	// time in seconds for normal swipe animation
 	normalSwipeSpeed: 0.2,
 	// time in seconds for fast swipe animation
@@ -255,7 +255,7 @@ enyo.kind({
 	},
 	//* DragStart event handler
 	dragstart: function(inSender, inEvent) {
-		this.swipeDragStart(inSender, inEvent);
+		return this.swipeDragStart(inSender, inEvent);
 	},
 	//* Drag event handler
 	drag: function(inSender, inEvent) {
@@ -1197,7 +1197,7 @@ enyo.kind({
 	swipeDragStart: function(inSender, inEvent) {
 		// if no swipeable components are defined, or vertical drag, don't do swipe actions
 		if(!this.hasSwipeableComponents() || inEvent.vertical || this.draggingRowIndex > -1) {
-			return this.preventDragPropagation;
+			return false;
 		}
 		
 		// save direction we are swiping
@@ -1224,7 +1224,7 @@ enyo.kind({
 			this.startSwipe(inEvent);
 		}
 		
-		return this.preventDragPropagation;
+		return true;
 	},
 	
 	shouldDoSwipeDrag: function() {
