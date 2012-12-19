@@ -161,8 +161,6 @@ enyo.kind({
 		this.noSelectChanged();
 		this.multiSelectChanged();
 		this.toggleSelectedChanged();
-		this.accel = enyo.dom.canAccelerate();
-		this.translation = this.accel ? "translate3d" : "translate";
 	},
 	initComponents: function() {
 		this.createReorderTools();
@@ -449,6 +447,7 @@ enyo.kind({
 			p -= h;
 		}
 		//page = Math.min(page, this.pageCount-1);
+		page = Math.max(page, 0);
 		return {no: page, height: h, pos: p+h};
 	},
 	isPageInRange: function(inPage) {
@@ -1224,6 +1223,9 @@ enyo.kind({
 			this.startSwipe(inEvent);
 		}
 		
+		// reset dragged distance (for dragfinish)
+		this.draggedDistance = 0;
+		
 		return true;
 	},
 	
@@ -1235,6 +1237,11 @@ enyo.kind({
 		the ddx of the event.
 	*/
 	swipeDrag: function(inSender, inEvent) {
+		// if dragged out of bounds, stop swipe
+		if(this.draggedOutOfBounds(inEvent)) {
+			this.swipeDragFinish(inEvent);
+			return this.preventDragPropagation;
+		}
 		// if a persistent swipeableItem is still showing, handle it separately
 		if(this.persistentItemVisisble) {
 			this.dragPersistentItem(inEvent);
@@ -1242,6 +1249,8 @@ enyo.kind({
 		}
 		// apply new position
 		this.dragSwipeableComponents(this.calcNewDragPosition(inEvent.ddx));
+		// save dragged distance (for dragfinish)
+		this.draggedDistance = inEvent.dx;
 		
 		return this.preventDragPropagation;
 	},
@@ -1265,7 +1274,7 @@ enyo.kind({
 			this.dragFinishPersistentItem(inEvent);
 		// otherwise if user dragged more than 20% of the width, complete the swipe. if not, back out.
 		} else {
-			if(this.calcPercentageDragged(inEvent.dx) > this.percentageDraggedThreshold) {
+			if(this.calcPercentageDragged(this.draggedDistance) > this.percentageDraggedThreshold) {
 				this.swipe(inEvent,this.fastSwipeSpeed);
 			} else {
 				this.backOutSwipe(inEvent);
@@ -1329,6 +1338,15 @@ enyo.kind({
 	},
 	dragSwipeableComponents: function(x) {
 		this.$.swipeableComponents.applyStyle("left",x+"px");
+	},
+	draggedOutOfBounds:function(inEvent) {
+		var position = this.getNodePosition(this.hasNode());
+		var bounds = this.getBounds();
+		var oobT = (inEvent.pageY - position.top < 0);
+		var oobB = (inEvent.pageY - position.top > bounds.height);
+		var oobL = (inEvent.pageX - position.left < 0);
+		var oobR = (inEvent.pageX - position.left > bounds.width);
+		return oobT || oobB || oobL || oobR;
 	},
 	// Begin swiping sequence by positioning the swipeable container and bubbling the setupSwipeItem event
 	startSwipe: function(e) {
