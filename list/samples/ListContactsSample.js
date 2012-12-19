@@ -16,12 +16,12 @@ enyo.kind({
 			]},
 			{kind: "onyx.Button", content: "remove selected", ontap: "removeSelected"}
 		]},
-		{kind: "List", classes: "list-sample-contacts-list enyo-unselectable", fit: true, multiSelect: true, reorderable: true, onSetupItem: "setupItem",
-			onSetupReorderComponents: "setupReorderComponents", onSetupPinnedReorderComponents: "setupPinnedReorderComponents", onReorder: "listReorder",
-			onSetupSwipeItem: "setupSwipeItem", onSwipeComplete: "swipeComplete", components: [
+		{kind: "List", classes: "list-sample-contacts-list enyo-unselectable", fit: true, multiSelect: true, //reorderable: true,
+			onSetupItem: "setupItem", /*onSetupReorderComponents: "setupReorderComponents", onSetupPinnedReorderComponents: "setupPinnedReorderComponents", onReorder: "listReorder",
+			onSetupSwipeItem: "setupSwipeItem", onSwipeComplete: "swipeComplete", */components: [
 				{name: "divider", classes: "list-sample-contacts-divider"},
 				{name: "item", kind: "ContactItem", classes: "list-sample-contacts-item enyo-border-box", onRemove: "removeTap"},
-			], reorderComponents: [
+			]/*, reorderComponents: [
 				{name: "reorderContent", style:"background:rgba(0,0,0,0.7);margin:0px;padding:0px;", classes: "enyo-fit", components: [
 					{name: "reorderTitle", tag: "h2", style: "text-align:center;color:#fff;font-size:24px;"}
 				]}
@@ -36,8 +36,8 @@ enyo.kind({
 				]},
 				{name: "deleteSwipeItem", style:"background:rgba(200,0,0,0.9);color:white;height:100px;", components: [
 					{name:"deleteButton", kind:"onyx.Button", content:"Delete", style:"height:60px;width:200px;display:block;margin:0px auto;position:relative;top:20px;line-height:60px;padding:0px;border:1px solid yellow;", ontap:"clearSwipeables"}
-				]},
-			]
+				]}
+			]*/
 		},
 		{name: "popup", kind: "onyx.Popup", modal: true, centered: true, classes: "list-sample-contacts-popup", components: [
 			{components: [
@@ -96,8 +96,8 @@ enyo.kind({
 		// selection
 		this.$.item.setSelected(inSender.isSelected(i));
 		// importance
-		this.$.item.setImportance(item.importance);
-		this.$.item.renderImportance();
+		//this.$.item.setImportance(item.importance);
+		//this.$.item.renderImportance();
 		// divider
 		if (!this.hideDivider) {
 			var d = item.name[0];
@@ -355,8 +355,8 @@ enyo.kind({
 		{components: [
 			{name: "name"},
 			{name: "title", classes: "list-sample-contacts-description"},
-			{content: "(415) 711-1234", classes: "list-sample-contacts-description"},
-			{name: "importance", content: "not important"}
+			{content: "(415) 711-1234", classes: "list-sample-contacts-description"}//,
+			//{name: "importance", content: "not important"}
 		]},
 		{name: "remove", kind: "onyx.IconButton", classes: "list-sample-contacts-remove-button", src: "assets/remove-icon.png", ontap: "removeTap"}
 	],
