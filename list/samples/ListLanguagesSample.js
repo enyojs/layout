@@ -86,7 +86,7 @@ enyo.kind({
 	getPrevLang: function(index) {
 		var currentLang = data[index].currentIndex;
 		var prevLang = currentLang - 1;
-		return (prevLang <= 0) ? data[index].langs.length - 1 : prevLang;
+		return (prevLang < 0) ? data[index].langs.length - 1 : prevLang;
 	},
 	populateList: function() {
 		this.createRandomData();
