@@ -122,7 +122,8 @@ enyo.kind({
 		this.inherited(arguments);
 	},
 	tap: function(inSender, inEvent) {
-		if (this.noSelect) {
+		// ignore taps if selecting is disabled or if they don't target a row
+		if (this.noSelect || inEvent.index === -1) {
 			return;
 		}
 		if (this.toggleSelected) {
