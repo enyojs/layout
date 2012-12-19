@@ -16,16 +16,16 @@ enyo.kind({
 			],
 			reorderComponents: [
 				{name: "reorderContent", style:"background:rgba(0,0,0,0.7);margin:0px;padding:0px;", classes: "enyo-fit", components: [
-					{name: "reorderTitle", tag: "h2", style: "text-align:center;color:#fff;font-size:24px;"}
+					{name: "reorderTitle", tag: "h2", style: "text-align:center;text-transform:capitalize;color:#fff;font-size:24px;"}
 				]}
 			], pinnedReorderComponents: [
 				{name: "pinnedReorderItem", style:"background-color:rgba(0,160,40,0.8);color:white;", classes: "enyo-fit", components: [
-					{name: "pinnedReorderTitle", tag: "h2", style: "text-align:center;color:#fff;font-size:24px;"},
-					{name: "dropButton", kind: "onyx.Button", ontap: "dropPinnedRow", content: "Drop", style: "width:100px;height:80px;position:absolute;top:10px;right:20px;"}
+					{name: "pinnedReorderTitle", tag: "h2", style: "padding-left:20px;line-height:80px;margin:0px;color:#fff;font-size:24px;text-transform:capitalize;"},
+					{name: "dropButton", kind: "onyx.Button", ontap: "dropPinnedRow", content: "Drop", style: "width:100px;height:60px;position:absolute;top:10px;right:20px;"}
 				]}
 			], swipeableComponents: [
 				{name: "swipeItem", style:"background-color:rgba(0,160,40,0.8);color:white;", classes: "enyo-fit", components: [
-					{name: "swipeTitle", style: "font-size:30px;font-weight:bold;color:#fff;text-align:center;line-height:80px;padding:0px;margin:0px;text-transform:capitalize;"}
+					{name: "swipeTitle", style: "font-size:30px;font-weight:bold;color:#fff;text-transform:capitalize;text-align:center;line-height:80px;padding:0px;margin:0px;text-transform:capitalize;"}
 				]}
 			]
 		}
@@ -51,14 +51,14 @@ enyo.kind({
 		var currentLanguage = data[i].langs[data[i].currentIndex];
 		var val = data[i].val;
 		var number = languages[currentLanguage][val];
-		this.$.reorderTitle.setContent("You are moving - "+number);
+		this.$.reorderTitle.setContent(number);
 	},
 	setupPinnedReorderComponents: function(inSender, inEvent) {
 		var i = inEvent.index;
 		var currentLanguage = data[i].langs[data[i].currentIndex];
 		var val = data[i].val;
 		var number = languages[currentLanguage][val];
-		this.$.pinnedReorderTitle.setContent("You are moving - "+number);
+		this.$.pinnedReorderTitle.setContent(number);
 	},
 	//* Called when the "Drop" button is pressed on the pinned placeholder row
 	dropPinnedRow: function(inSender, inEvent) {
