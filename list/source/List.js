@@ -128,27 +128,27 @@ enyo.kind({
 	
 	//* Swipeable vars
 	
-	// index of swiped item
+	// Index of swiped item
 	swipeIndex: null,
-	// direction of swipe
+	// Direction of swipe
 	swipeDirection: null,
-	// is a persistent item currently persisting
-	persistentItemVisisble: false,
-	// side from which the persisting item came from
+	// True if a persistent item is currently persisting
+	persistentItemVisible: false,
+	// Side from which the persisting item came
 	persistentItemOrigin: null,
-	// specify if swipe was completed
+	// True if swipe was completed
 	swipeComplete: false,
-	// timeout used to wait before completing swipe action
+	// Timeout used to wait before completing swipe action
 	completeSwipeTimeout: null,
-	// time in MS to wait before completing swipe action
+	// Time in MS to wait before completing swipe action
 	completeSwipeDelayMS: 500,
-	// time in MS for normal swipe animation
+	// Time in MS for normal swipe animation
 	normalSwipeSpeedMS: 200,
-	// time in seconds for fast swipe animation
+	// Time in seconds for fast swipe animation
 	fastSwipeSpeedMS: 100,
-	// flag to specify whether a flick event happened
+	// Specifies whether a flick event happened
 	flicked: true,
-	// percentage of a swipe needed to force complete the swipe
+	// Percentage of a swipe needed to force completion of the swipe
 	percentageDraggedThreshold: 0.2,
 
 	create: function() {
@@ -465,12 +465,12 @@ enyo.kind({
 		this.setScrollTop(this.calcPos(inPos));
 	},
 	//* @public
-	//* scroll the list so the last item is visible
+	//* Scrolls the list so the last item is visible.
 	scrollToBottom: function() {
 		this.update(this.getScrollBounds().maxTop);
 		this.inherited(arguments);
 	},
-	//* Scrolls to a specific row.
+	//* Scrolls to the specified row.
 	scrollToRow: function(inRow) {
 		var page = Math.floor(inRow / this.rowsPerPage);
 		var pageRow = inRow % this.rowsPerPage;
@@ -514,7 +514,7 @@ enyo.kind({
 	},
 	/**
 		Re-renders the list from the beginning.  This is used when changing the
-		data model for the list.  This will also clear the selection state.
+		data model for the list.  This also clears the selection state.
 	*/
 	reset: function() {
 		this.getSelection().clear();
@@ -544,7 +544,7 @@ enyo.kind({
 	/**
 		Clears the selection state for the given row index.
 
-		Modifying selection will not automatically rerender the row,
+		Modifying selection will not automatically re-render the row,
 		so use [renderRow](#enyo.List::renderRow) or [refresh](#enyo.List::refresh)
 		to update the view.
 	*/
@@ -556,13 +556,13 @@ enyo.kind({
 		return this.$.generator.isSelected(inIndex);
 	},
 	/**
-		Re-renders the specified row. Call after making modifications to a row,
-        to force it to render.
+		Re-renders the specified row. Call this method after making
+		modifications to a row, to force it to render.
     */
     renderRow: function(inIndex) {
 		this.$.generator.renderRow(inIndex);
     },
-	//* Update row bounds when rows are re-rendered
+	//* Updates row bounds when rows are re-rendered.
 	rowRendered: function(inSender, inEvent) {
 		this.updateRowBounds(inEvent.rowIndex);
 	},
@@ -600,7 +600,7 @@ enyo.kind({
 		---- Reorder functionality ------------
 	*/
 
-	//* Determine whether we should handle the hold event as a reorder hold
+	//* Determines whether we should handle the hold event as a reorder hold.
 	shouldDoReorderHold: function(inSender, inEvent) {
 		if(!this.getReorderable() || !(inEvent.rowIndex >= 0) || this.pinnedReorderMode ||
 			inSender !== this.$.strategy || !(inEvent.index >= 0)) {
@@ -608,7 +608,7 @@ enyo.kind({
 		}
 		return true;
 	},
-	//* Process hold event and prepare for reordering
+	//* Processes hold event and prepares for reordering.
 	reorderHold: function(inEvent) {
 		// disable drag to scroll on strategy
 		this.$.strategy.listReordering = true;
@@ -624,9 +624,12 @@ enyo.kind({
 		this.prevScrollTop = this.getScrollTop();
 
 		// fill row being reordered with placeholder
-		this.replaceNodeWithPlacholder(inEvent.rowIndex);
+		this.replaceNodeWithPlaceholder(inEvent.rowIndex);
 	},
-	//* Fill reorder container with draggable reorder components defined by app
+	/**
+		Fills reorder container with draggable reorder components defined by the
+		application.
+	*/
 	buildReorderContainer: function() {
 		this.$.reorderContainer.destroyClientControls();
 		for(var i=0;i<this.reorderComponents.length;i++) {
@@ -634,7 +637,7 @@ enyo.kind({
 		}
 		this.$.reorderContainer.render();
 	},
-	//* Prepare floating reorder container
+	//* Prepares floating reorder container.
 	styleReorderContainer: function(e) {
 		this.setItemPosition(this.$.reorderContainer, e.rowIndex);
 		this.setItemBounds(this.$.reorderContainer, e.rowIndex);
@@ -642,11 +645,12 @@ enyo.kind({
 		this.$.reorderContainer.setShowing(true);
 		this.centerReorderContainerOnPointer(e);
 	},
-	//* Copy the innerHTML of _node_ into a new component inside of _reorderContainer_
+	//* Copies the innerHTML of _node_ into a new component inside of
+	//* _reorderContainer_.
 	appendNodeToReorderContainer: function(node) {
 		this.$.reorderContainer.createComponent({allowHtml: true, content: node.innerHTML}).render();
 	},
-	//* Center the floating reorder container on the user's pointer
+	//* Centers the floating reorder container on the user's pointer.
 	centerReorderContainerOnPointer: function(e) {
 		var containerPosition = this.getNodePosition(this.hasNode());
 		var x = e.pageX - containerPosition.left - parseInt(this.$.reorderContainer.domStyles.width)/2;
@@ -657,7 +661,10 @@ enyo.kind({
 		}
 		this.positionReorderContainer(x,y);
 	},
-	//* Move the reorder container to the specified x,y coordinates. Animate and kickoff timeout to turn off animation.
+	/**
+		Moves the reorder container to the specified _x_ and _y_ coordinates.
+		Animates and kicks off timer to turn off animation.
+	*/
 	positionReorderContainer: function(x,y) {
 		this.$.reorderContainer.addClass("animatedTopAndLeft");
 		this.$.reorderContainer.addStyles("left:"+x+"px;top:"+y+"px;");
@@ -677,14 +684,14 @@ enyo.kind({
 			this.positionReorderContainerTimeout = null;
 		}
 	},
-	//* Determine whether we should handle the drag event
+	//* Determines whether we should handle the drag event.
 	shouldDoReorderDrag: function(inEvent) {
 		if(!this.getReorderable() || this.draggingRowIndex < 0 || this.pinnedReorderMode) {
 			return false;
 		}
 		return true;
 	},
-	//* Handle the drag event as a reorder drag
+	//* Handles the drag event as a reorder drag.
 	reorderDrag: function(inEvent) {
 		// position reorder node under mouse/pointer
 		this.positionReorderNode(inEvent);
@@ -698,7 +705,7 @@ enyo.kind({
 			this.movePlaceholderToIndex(index);
 		}
 	},
-	//* Position the reorder node based on the dx and dy of the drag event
+	//* Positions the reorder node based on the dx and dy of the drag event.
 	positionReorderNode: function(e) {
 		var reorderNodeStyle = this.$.reorderContainer.hasNode().style;
 		var left = parseInt(reorderNodeStyle.left) + e.ddx;
@@ -708,9 +715,10 @@ enyo.kind({
 		this.prevScrollTop = this.getScrollTop();
 	},
 	/**
-		Checks if the list should scroll when dragging and starts the scroll timeout
-		if so. Auto-scrolling happens when the user is dragging an item within the top/bottom
-		boundary percentage defined in _this.dragToScrollThreshold_
+		Checks if the list should scroll when dragging and, if so, starts the
+		scroll timeout timer. Auto-scrolling happens when the user drags an item
+		within the top/bottom boundary percentage defined in
+		_this.dragToScrollThreshold_.
 	*/
 	checkForAutoScroll:function(inEvent) {
 		var position = this.getNodePosition(this.hasNode());
@@ -725,8 +733,8 @@ enyo.kind({
 		} else {
 			this.scrollDistance = 0;
 		}
-		// stop scrolling if distance is zero (i.e. user isn't scrolling to the edges of
-		// the list), otherwise start it if not already started
+		// stop scrolling if distance is zero (i.e., user isn't scrolling to the edges of
+		// the list); otherwise, start it if not already started
 		if (this.scrollDistance === 0) {
 			this.stopAutoScrolling();
 		} else {
@@ -735,18 +743,18 @@ enyo.kind({
 			}
 		}
 	},
-	//* Stop auto-scrolling
+	//* Stops auto-scrolling.
 	stopAutoScrolling: function() {
 		if(this.autoScrollTimeout) {
 			clearTimeout(this.autoScrollTimeout);
 			this.autoScrollTimeout = null;
 		}
 	},
-	//* Start auto-scrolling
+	//* Starts auto-scrolling.
 	startAutoScrolling: function() {
 		this.autoScrollTimeout = setTimeout(enyo.bind(this,this.autoScroll), this.autoScrollTimeoutMS);
 	},
-	//* Scroll the list by the distance specified in _this.scrollDistance_
+	//* Scrolls the list by the distance specified in _this.scrollDistance_.
 	autoScroll:function() {
 		if(this.scrollDistance === 0) {
 			this.stopAutoScrolling();
@@ -760,9 +768,9 @@ enyo.kind({
 		this.startAutoScrolling();
 	},
 	/**
-		Move the placeholder (i.e. gap between rows) to the row currently under
-		the user's pointer. This provides a visual cue, showing the user where the item
-		they are dragging will go if they drop it.
+		Moves the placeholder (i.e., the gap between rows) to the row currently
+		under the user's pointer. This provides a visual cue, showing the user
+		where the item being dragged will go if it is dropped.
 	*/
 	movePlaceholderToIndex: function(index) {
 		var node = this.$.generator.fetchRowNode(index);
@@ -803,8 +811,8 @@ enyo.kind({
 		this.itemMoved = true;
 	},
 	/**
-		Turn off reordering. If the user didn't drag the item being reordered
-		outside of it's original position, go into pinned reorder mode.
+		Turns off reordering. If the user didn't drag the item being reordered
+		outside of its original position, goes into pinned reorder mode.
 	*/
 	finishReordering: function(inSender, inEvent) {
 		if(this.draggingRowIndex < 0 || this.pinnedReorderMode) {
@@ -818,7 +826,8 @@ enyo.kind({
 		// enable drag-scrolling on strategy
 		this.$.strategy.listReordering = false;
 
-		// animate reorder container to proper position and then complete reording actions
+		// animate reorder container to proper position and then complete
+		// reordering actions
 		this.moveReorderedContainerToDroppedPosition(inEvent);
 		setTimeout(function() { _this.completeFinishReordering(inEvent); }, 100);
 
@@ -832,7 +841,10 @@ enyo.kind({
 		var left = offset.left - this.getScrollLeft();
 		this.positionReorderContainer(left,top);
 	},
-	//* After reorder item has been animated to it's position, complete reordering logic.
+	/**
+		After the reordered item has been animated to its position, completes
+		the reordering logic.
+	*/
 	completeFinishReordering: function(inEvent) {
 		// if the user dropped the item in the same location where it was picked up, and they
 		// didn't move any other items in the process, pin the item and go into pinned reorder mode
@@ -857,12 +869,12 @@ enyo.kind({
 		this.pinnedReorderMode = true;
 		this.initialPinPosition = e.pageY;
 	},
-	//* clear contents of reorder container, then hide
+	//* Clears contents of reorder container, then hides.
 	emptyAndHideReorderContainer: function() {
 		this.$.reorderContainer.destroyComponents();
 		this.$.reorderContainer.setShowing(false);
 	},
-	//* Fill reorder container with pinned controls
+	//* Fills reorder container with pinned controls.
 	buildPinnedReorderContainer: function() {
 		this.$.reorderContainer.destroyClientControls();
 		for(var i=0;i<this.pinnedReorderComponents.length;i++) {
@@ -870,12 +882,12 @@ enyo.kind({
 		}
 		this.$.reorderContainer.render();
 	},
-	//* Put away reorder container and bubble a reorder event
+	//* Puts away reorder container and bubbles a reorder event.
 	dropReorderedRow: function(e) {
 		this.emptyAndHideReorderContainer();
 		this.positionReorderedNode();
 	},
-	//* Swap the rows that were reordered, and send up reorder event
+	//* Swaps the rows that were reordered, and sends up reorder event.
 	reorderRows: function(inEvent) {
 		// send reorder event
 		this.doReorder(this.makeReorderEvent(inEvent));
@@ -886,17 +898,17 @@ enyo.kind({
 		// fix indices for reordered rows
 		this.updateListIndices();
 	},
-	//* Add _reorderTo_ and _reorderFrom_ properties to the reorder event
+	//* Adds _reorderTo_ and _reorderFrom_ properties to the reorder event.
 	makeReorderEvent: function(e) {
 		e.reorderFrom = this.draggingRowIndex;
 		e.reorderTo = this.placeholderRowIndex;
 		return e;
 	},
-	//* If user dragged an item to a diff page, return true
+	//* Returns true if user dragged an item to a different page.
 	shouldMoveItemtoDiffPage: function() {
 		return (this.currentPageNumber != this.initialPageNumber);
 	},
-	//* Move the given item from one page to the next
+	//* Moves the given item from one page to the next.
 	moveItemToDiffPage: function() {
 		var mover, movee;
 		var otherPage = (this.currentPage == 1) ? 0 : 1;
@@ -912,20 +924,20 @@ enyo.kind({
 		}
 		this.updatePagePositions(this.initialPageNumber,otherPage);
 	},
-	//* Move the node being reordered to the new position and show it
+	//* Moves the node being reordered to its new position and shows it.
 	positionReorderedNode: function() {
 		var insertIndex = (this.placeholderRowIndex > this.draggingRowIndex) ? this.placeholderRowIndex+1 : this.placeholderRowIndex;
 		var insertNode = this.$.generator.fetchRowNode(insertIndex);
 		this.$["page"+this.currentPage].hasNode().insertBefore(this.hiddenNode, insertNode);
 		this.showNode(this.hiddenNode);
 	},
-	//* Reset back to original values
+	//* Resets to original values.
 	resetReorderState: function() {
 		this.draggingRowIndex = this.placeholderRowIndex = -1;
 		this.holding = false;
 		this.pinnedReorderMode = false;
 	},
-	//* Update indices as needed in list to preserve reordering
+	//* Updates indices of list items as needed to preserve reordering.
 	updateListIndices: function() {
 		// don't do update if we've moved further than one page, refresh instead
 		if(this.shouldDoRefresh()) {
@@ -969,11 +981,11 @@ enyo.kind({
 			}
 		}
 	},
-	//* Determine if an item was reordered far enough that it warrants a refresh()
+	//* Determines if an item was reordered far enough that it warrants a refresh.
 	shouldDoRefresh: function() {
 		return (Math.abs(this.initialPageNumber - this.currentPageNumber) > 1);
 	},
-	//* Get node height, width, top, left
+	//* Gets node height, width, top, and left values.
 	getNodeStyle: function(index) {
 		var node = this.$.generator.fetchRowNode(index);
 		if(!node) {
@@ -984,7 +996,7 @@ enyo.kind({
 		var dimensions = this.getDimensions(node);
 		return {h: parseInt(dimensions.height), w: parseInt(dimensions.width), left: parseInt(offset.left), top: parseInt(offset.top)};
 	},
-	//* Get offset relative to a positioned ancestor node
+	//* Gets offset relative to a positioned ancestor node.
 	getRelativeOffset: function (n, p) {
 		var ro = {top: 0, left: 0};
 		if (n !== p && n.parentNode) {
@@ -996,12 +1008,12 @@ enyo.kind({
 		}
 		return ro;
 	},
-	//* Get height and width dimensions of the given dom node
+	//* Gets height and width of the given DOM node.
 	getDimensions: function(node) {
 		var style = window.getComputedStyle(node,null);
 		return {height: style.getPropertyValue("height"), width: style.getPropertyValue("width")};
 	},
-	replaceNodeWithPlacholder: function(index) {
+	replaceNodeWithPlaceholder: function(index) {
 		var node = this.$.generator.fetchRowNode(index);
 		if(!node) {
 			enyo.log("No node - "+index);
@@ -1014,7 +1026,10 @@ enyo.kind({
 		// insert placeholder node where original node was
 		this.$["page"+this.currentPage].hasNode().insertBefore(this.placeholderNode,this.hiddenNode);
 	},
-	//* Create and return a placeholder node with dimensions that match the input node
+	/**
+		Creates and returns a placeholder node with dimensions matching those of
+		the passed-in node.
+	*/
 	createPlaceholderNode: function(node) {
 		var placeholderNode = this.$.placeholder.hasNode().cloneNode(true);
 		var nodeDimensions = this.getDimensions(node);
@@ -1022,34 +1037,40 @@ enyo.kind({
 		placeholderNode.style.width = nodeDimensions.width;
 		return placeholderNode;
 	},
-	//* Remove the placeholder node from the DOM
+	//* Removes the placeholder node from the DOM.
 	removePlaceholderNode: function() {
 		this.removeNode(this.placeholderNode);
 		this.placeholderNode = null;
 	},
-	//* Remove the hidden node from the DOM
+	//* Removes the hidden node from the DOM.
 	removeHiddenNode: function() {
 		this.removeNode(this.hiddenNode);
 		this.hiddenNode = null;
 	},
-	//* Remove the node from the DOM
+	//* Removes the passed-in node from the DOM.
 	removeNode: function(node) {
 		if(!node || !node.parentNode) {
 			return;
 		}
 		node.parentNode.removeChild(node);
 	},
-	//* Update _this.pageHeights_ to support the placeholder node jumping from one page to the next
+	/**
+		Updates _this.pageHeights_ to support the placeholder node's jumping
+		from one page to the next.
+	*/
 	updatePageHeight: function(pageNumber, pageDOMElement) {
 		var pageHeight = pageDOMElement.getBounds().height;
 		this.pageHeights[pageNumber] = pageHeight;
 	},
-	//* Reposition the two pages to support the placeholder node jumping from one page to the next
+	/**
+		Repositions the two passed-in pages to support the placeholder node's
+		jumping from one page to the next.
+	*/
 	updatePagePositions: function(nextPageNumber,nextPage) {
 		this.positionPage(this.currentPageNumber, this.$["page"+this.currentPage]);
 		this.positionPage(nextPageNumber, this.$["page"+nextPage]);
 	},
-	//* Correct page heights array after reorder is complete
+	//* Corrects page heights array after reorder is complete.
 	correctPageHeights: function() {
 		var initPageNumber = this.initialPageNumber%2;
 		this.updatePageHeight(this.currentPageNumber, this.$["page"+this.currentPage]);
@@ -1065,7 +1086,7 @@ enyo.kind({
 		node.style.display = "block";
 		return node;
 	},
-	//* Called when the "Drop" button is pressed on the pinned placeholder row
+	//* Called when the "Drop" button is pressed on the pinned placeholder row.
 	dropPinnedRow: function(inEvent) {
 		var _this = this;
 		// animate reorder container to proper position and then complete reording actions
@@ -1073,7 +1094,7 @@ enyo.kind({
 		setTimeout(function() { _this.completeFinishReordering(inEvent); }, 100);
 		return;
 	},
-	//* Returns the row index that is under the given position on the page
+	//* Returns the row index that is under the given position on the page.
 	getRowIndexFromCoordinate: function(y) {
 		var cursorPosition = this.getScrollTop() + y - this.getNodePosition(this.hasNode()).top;
 		var pageInfo = this.positionToPageInfo(cursorPosition);
@@ -1092,11 +1113,11 @@ enyo.kind({
 		}
 		return -1;
 	},
-	//* Get the position of a node (identified via index) on the page
+	//* Gets the position of a node (identified via index) on the page.
 	getIndexPosition: function(index) {
 		return this.getNodePosition(this.$.generator.fetchRowNode(index));
 	},
-	//* Gets the position of a node on the page, taking translations into account
+	//* Gets the position of a node on the page, taking translations into account.
 	getNodePosition:function(node) {
 		var originalNode=node;
 		var offsetTop=0;
@@ -1126,20 +1147,20 @@ enyo.kind({
 	cloneRowNode: function(index) {
 		return this.$.generator.fetchRowNode(index).cloneNode(true);
 	},
-	//* Set _$item_'s position to match that of the list row at _index_
+	//* Sets _$item_'s position to match that of the list row at _index_.
 	setItemPosition: function($item,index) {
 		var clonedNodeStyle = this.getNodeStyle(index);
 		var top = (this.getStrategyKind() == "ScrollStrategy") ? clonedNodeStyle.top : clonedNodeStyle.top - this.getScrollTop();
 		var styleStr = "top:"+top+"px; left:"+clonedNodeStyle.left+"px;";
 		$item.addStyles(styleStr);
 	},
-	//* Set _$item_'s width and height to match that of the list row at _index_
+	//* Sets _$item_'s width and height to match those of the list row at _index_.
 	setItemBounds: function($item,index) {
 		var clonedNodeStyle = this.getNodeStyle(index);
 		var styleStr = "width:"+clonedNodeStyle.w+"px; height:"+clonedNodeStyle.h+"px;";
 		$item.addStyles(styleStr);
 	},
-	//* Determine whether we should do a pinned reorder with this scroll event
+	//* Determines whether we should do a pinned reorder with this scroll event.
 	shouldDoPinnedReorderScroll: function() {
 		if(!this.getReorderable() || !this.pinnedReorderMode) {
 			return false;
@@ -1147,8 +1168,8 @@ enyo.kind({
 		return true;
 	},
 	/**
-		When we are in pinned reorder mode, reposition the pinned placeholder
-		when user has scrolled far enough.
+		When in pinned reorder mode, repositions the pinned placeholder when the
+		user has scrolled far enough.
 	*/
 	reorderScroll: function(inSender, e) {
 		// if we are using the standard scroll strategy, we have to move the pinned row with the scrolling
@@ -1205,7 +1226,7 @@ enyo.kind({
 		}
 		
 		// start swipe sequence only if we are not currently showing a persistent item
-		if(!this.persistentItemVisisble) {
+		if(!this.persistentItemVisible) {
 			this.startSwipe(inEvent);
 		}
 		
@@ -1229,7 +1250,7 @@ enyo.kind({
 			return this.preventDragPropagation;
 		}
 		// if a persistent swipeableItem is still showing, handle it separately
-		if(this.persistentItemVisisble) {
+		if(this.persistentItemVisible) {
 			this.dragPersistentItem(inEvent);
 			return this.preventDragPropagation;
 		}
@@ -1261,7 +1282,7 @@ enyo.kind({
 		this.setFlicked(true);
 		
 		// if a persistent swipeableItem is still showing, slide it away or bounce it
-		if(this.persistentItemVisisble) {
+		if(this.persistentItemVisible) {
 			this.flickPersistentItem(inEvent);
 			return true;
 		}
@@ -1287,7 +1308,7 @@ enyo.kind({
 		}
 		
 		// if a persistent swipeableItem is still showing, complete drag away or bounce
-		if(this.persistentItemVisisble) {
+		if(this.persistentItemVisible) {
 			this.dragFinishPersistentItem(inEvent);
 		// otherwise if user dragged more than 20% of the width, complete the swipe. if not, back out.
 		} else {
@@ -1440,12 +1461,12 @@ enyo.kind({
 		var parentStyle = window.getComputedStyle($item.node);
 		var xPos = (this.persistentItemOrigin == "left") ? -1*parseInt(parentStyle.width) : parseInt(parentStyle.width);
 		this.animateSwipe(xPos,this.normalSwipeSpeedMS);
-		this.persistentItemVisisble = false;
+		this.persistentItemVisible = false;
 		this.setPersistSwipeableItem(false);
 	},
 	clearSwipeables: function() {
 		this.$.swipeableComponents.setShowing(false);
-		this.persistentItemVisisble = false;
+		this.persistentItemVisible = false;
 		this.setPersistSwipeableItem(false);
 	},
 	// complete swipe and hide active swipeable item
@@ -1462,7 +1483,7 @@ enyo.kind({
 				this.doSwipeComplete({index:this.swipeIndex, xDirection:this.swipeDirection});
 			}
 		} else {
-			this.persistentItemVisisble = true;
+			this.persistentItemVisible = true;
 		}
 		this.setSwipeDirection(null);
 	},
