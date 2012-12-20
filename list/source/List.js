@@ -151,6 +151,14 @@ enyo.kind({
 	// Percentage of a swipe needed to force completion of the swipe
 	percentageDraggedThreshold: 0.2,
 
+	importProps: function(inProps) {
+		// force touch on desktop when we have reorderable items to work around
+		// problems with native scroller
+		if (inProps.reorderable) {
+			this.touch = true;
+		}
+		this.inherited(arguments);
+	},
 	create: function() {
 		this.pageHeights = [];
 		this.inherited(arguments);
