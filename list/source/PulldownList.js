@@ -77,7 +77,14 @@ enyo.kind({
 		this.createChrome(this.pulldownTools);
 		this.accel = enyo.dom.canAccelerate();
 		this.translation = this.accel ? "translate3d" : "translate";
+		this.strategyKind = this.resetStrategyKind();
 		this.inherited(arguments);
+	},
+	// Temporarily use TouchScrollStrategy on iOS devices (see ENYO-1714)
+	resetStrategyKind: function() {
+		return (enyo.platform.android >= 3)
+			? "TranslateScrollStrategy"
+			: "TouchScrollStrategy";
 	},
 	setPully: function(inSender, inEvent) {
 		this.pully = inEvent.originator;
