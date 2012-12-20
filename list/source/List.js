@@ -67,9 +67,9 @@ enyo.kind({
 		reorderable: false,
 		//* Array containing any swipeable components that will be used
 		swipeableComponents: [],
-		//* Enable/disable swipe functionality
+		//* If true, swipe functionality is enabled
 		enableSwipe: true,
-		//* Tell list to persist the current swipeable item
+		//* If true, tells list to persist the current swipeable item
 		persistSwipeableItem: false
 	},
 	events: {
@@ -1196,12 +1196,14 @@ enyo.kind({
 		---- Swipeable functionality ------------
 	*/
 	
-	/*
-		When a drag starts, get the direction of the drag as well as the index of the item
-		being dragged, and reset any pertinent values. Then kick off the swipe sequence.
+	/**
+		When a drag starts, gets the direction of the drag as well as the index
+		of the item being dragged, and resets any pertinent values. Then kicks
+		off the swipe sequence.
 	*/
 	swipeDragStart: function(inSender, inEvent) {
-		// if no swipeable components are defined, or vertical drag, don't do swipe actions
+		// if no swipeable components are defined, or this is a vertical drag,
+		// don't do swipe actions
 		if(!this.hasSwipeableComponents() || inEvent.vertical || this.draggingRowIndex > -1) {
 			return false;
 		}
@@ -1239,9 +1241,9 @@ enyo.kind({
 	shouldDoSwipeDrag: function() {
 		return (this.getEnableSwipe() && !this.isReordering());
 	},
-	/*
-		When a drag is in progress, update the position of the swipeable container based on
-		the ddx of the event.
+	/**
+		When a drag is in progress, updates the position of the swipeable
+		container based on the ddx of the event.
 	*/
 	swipeDrag: function(inSender, inEvent) {
 		// if dragged out of bounds, stop swipe
@@ -1262,11 +1264,11 @@ enyo.kind({
 		
 		return this.preventDragPropagation;
 	},
-	//* Don't do swipe flick if user is currently reordering
+	//* Don't do swipe flick if user is currently reordering.
 	shouldDoSwipeFlick: function() {
 		return (!this.isReordering());
 	},
-	//* When the user flicks, complete the swipe.
+	//* When the user flicks, completes the swipe.
 	swipeFlick: function(inSender, inEvent) {
 		// if swiping is disabled, return early
 		if(!this.getEnableSwipe()) {
@@ -1293,9 +1295,9 @@ enyo.kind({
 		return true;
 	},
 	/*
-		When the current drag completes, decide whether to complete the swipe based on
-		how far the user pulled the swipeable container. If a flick occurred, don't
-		process dragFinish.
+		When the current drag completes, decides whether to complete the swipe
+		based on how far the user pulled the swipeable container. If a flick
+		occurred, dragFinish is not processed.
 	*/
 	swipeDragFinish: function(inSender, inEvent) {
 		// if swiping is disabled, return early
@@ -1324,7 +1326,7 @@ enyo.kind({
 	hasSwipeableComponents: function() {
 		return this.$.swipeableComponents.controls.length !== 0;
 	},
-	// Position the swipeable components block at the current row
+	// Positions the swipeable components block at the current row.
 	positionSwipeableContainer: function(index,xDirection) {
 		var node = this.$.generator.fetchRowNode(index);
 		if(!node) {
@@ -1353,9 +1355,9 @@ enyo.kind({
 	setSwipeIndex: function(index) {
 		this.swipeIndex = (index === undefined) ? this.swipeIndex : index;
 	},
-	/*
-		Calculate new position for the swipeable container based on the user's drag action. Don't
-		allow the container to drag further than either edge.
+	/**
+		Calculates new position for the swipeable container based on the user's
+		drag action. Don't allow the container to drag beyond either edge.
 	*/
 	calcNewDragPosition: function(dx) {
 		var parentStyle = window.getComputedStyle(this.$.swipeableComponents.hasNode());
@@ -1386,7 +1388,10 @@ enyo.kind({
 		var oobR = (inEvent.pageX - position.left > bounds.width);
 		return oobT || oobB || oobL || oobR;
 	},
-	// Begin swiping sequence by positioning the swipeable container and bubbling the setupSwipeItem event
+	/**
+		Begins swiping sequence by positioning the swipeable container and
+		bubbling the setupSwipeItem event.
+	*/
 	startSwipe: function(e) {
 		// modify event index to always have this swipeItem value
 		e.index = this.swipeIndex;
@@ -1395,7 +1400,7 @@ enyo.kind({
 		this.setPersistentItemOrigin(e.xDirection);
 		this.doSetupSwipeItem(e);
 	},
-	// if a persistent swipeableItem is still showing, drag it away or bounce it
+	// If a persistent swipeableItem is still showing, drags it away or bounces it.
 	dragPersistentItem: function(e) {
 		var xPos = 0;
 		var x = (this.persistentItemOrigin == "right")
@@ -1403,7 +1408,7 @@ enyo.kind({
 			: Math.min(xPos, (xPos + e.dx));
 		this.$.swipeableComponents.applyStyle("left",x+"px");
 	},
-	// if a persistent swipeableItem is still showing, complete drag away or bounce
+	// If a persistent swipeableItem is still showing, completes drag away or bounce.
 	dragFinishPersistentItem: function(e) {
 		var completeSwipe = (this.calcPercentageDragged(e.dx) > 0.2);
 		var dir = (e.dx > 0) ? "right" : (e.dx < 0) ? "left" : null;
@@ -1417,7 +1422,7 @@ enyo.kind({
 			this.bounceItem(e);
 		}
 	},
-	// if a persistent swipeableItem is still showing, slide it away or bounce it
+	// If a persistent swipeableItem is still showing, slides it away or bounces it.
 	flickPersistentItem: function(e) {
 		if(e.xVelocity > 0) {
 			if(this.persistentItemOrigin == "left") {
@@ -1469,7 +1474,7 @@ enyo.kind({
 		this.persistentItemVisible = false;
 		this.setPersistSwipeableItem(false);
 	},
-	// complete swipe and hide active swipeable item
+	// Completes swipe and hides active swipeable item.
 	completeSwipe: function(e) {
 		if(this.completeSwipeTimeout) {
 			clearTimeout(this.completeSwipeTimeout);
