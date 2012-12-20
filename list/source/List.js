@@ -96,8 +96,6 @@ enyo.kind({
 		onRenderRow: "rowRendered",
 		ondragstart: "dragstart",
 		onflick: "flick",
-		onwebkitTransitionEnd: "swipeTransitionComplete",
-		ontransitionend: "swipeTransitionComplete"
 	},
 	//* @protected
 	rowHeight: 0,
@@ -144,12 +142,12 @@ enyo.kind({
 	completeSwipeTimeout: null,
 	// time in MS to wait before completing swipe action
 	completeSwipeDelayMS: 500,
-	// time in seconds for normal swipe animation
-	normalSwipeSpeed: 0.2,
+	// time in MS for normal swipe animation
+	normalSwipeSpeedMS: 200,
 	// time in seconds for fast swipe animation
-	fastSwipeSpeed: 0.1,
+	fastSwipeSpeedMS: 100,
 	// flag to specify whether a flick event happened
-	flicked: false,
+	flicked: true,
 	// percentage of a swipe needed to force complete the swipe
 	percentageDraggedThreshold: 0.2,
 
@@ -278,7 +276,7 @@ enyo.kind({
 		if(!this.getEnableSwipe()) {
 			return false;
 		}
-
+		
 		// if the flick was vertical, return early
 		if(Math.abs(inEvent.xVelocity) < Math.abs(inEvent.yVelocity)) {
 			return false;
@@ -294,7 +292,7 @@ enyo.kind({
 		}
 		
 		// do swipe
-		this.swipe(inEvent,this.normalSwipeSpeed);
+		this.swipe(inEvent,this.normalSwipeSpeedMS);
 
 		return true;
 	},
@@ -446,7 +444,6 @@ enyo.kind({
 			h = this.getPageHeight(page);
 			p -= h;
 		}
-		//page = Math.min(page, this.pageCount-1);
 		page = Math.max(page, 0);
 		return {no: page, height: h, pos: p+h};
 	},
@@ -1224,7 +1221,8 @@ enyo.kind({
 		}
 		
 		// reset dragged distance (for dragfinish)
-		this.draggedDistance = 0;
+		this.draggedXDistance = 0;
+		this.draggedYDistance = 0;
 		
 		return true;
 	},
@@ -1250,7 +1248,8 @@ enyo.kind({
 		// apply new position
 		this.dragSwipeableComponents(this.calcNewDragPosition(inEvent.ddx));
 		// save dragged distance (for dragfinish)
-		this.draggedDistance = inEvent.dx;
+		this.draggedXDistance = inEvent.dx;
+		this.draggedYDistance = inEvent.dy;
 		
 		return this.preventDragPropagation;
 	},
@@ -1264,7 +1263,7 @@ enyo.kind({
 		if(!this.getEnableSwipe()) {
 			return this.preventDragPropagation;
 		}
-		// if a flick happened, don't do dragFinish
+		// if a flick happened or the drag was more vertical than horizontal, don't do dragFinish
 		if(this.wasFlicked()) {
 			return this.preventDragPropagation;
 		}
@@ -1274,8 +1273,8 @@ enyo.kind({
 			this.dragFinishPersistentItem(inEvent);
 		// otherwise if user dragged more than 20% of the width, complete the swipe. if not, back out.
 		} else {
-			if(this.calcPercentageDragged(this.draggedDistance) > this.percentageDraggedThreshold) {
-				this.swipe(inEvent,this.fastSwipeSpeed);
+			if(this.calcPercentageDragged(this.draggedXDistance) > this.percentageDraggedThreshold) {
+				this.swipe(inEvent,this.fastSwipeSpeedMS);
 			} else {
 				this.backOutSwipe(inEvent);
 			}
@@ -1401,47 +1400,33 @@ enyo.kind({
 	},
 	swipe: function(e,speed) {
 		this.setSwipeComplete(true);
-		this.swipeItem(0,speed,e);
+		this.animateSwipe(0,speed);
 	},
 	backOutSwipe: function(e) {
 		var dimensions = this.getDimensions(this.$.swipeableComponents.node);
 		var x = (this.swipeDirection == 1) ? -1*parseInt(dimensions.width) : parseInt(dimensions.width);
-		this.swipeItem(x,0.1,e);
-	},
-	swipeItem: function(x,secs,e) {
-		var $item = this.$.swipeableComponents;
-		$item.applyStyle(enyo.dom.transition, "left " + secs + "s linear 0s");
-		$item.applyStyle("left",x+"px");
+		this.animateSwipe(x,this.fastSwipeSpeedMS);
+		this.setSwipeDirection(null);
+		this.setFlicked(true);
 	},
 	bounceItem: function(e) {
 		var style = window.getComputedStyle(this.$.swipeableComponents.node);
 		if(parseInt(style.left) != parseInt(style.width)) {
-			this.swipeItem(0,this.normalSwipeSpeed,e);
+			this.animateSwipe(0,this.normalSwipeSpeedMS);
 		}
 	},
 	slideAwayItem: function() {
 		var $item = this.$.swipeableComponents;
 		var parentStyle = window.getComputedStyle($item.node);
 		var xPos = (this.persistentItemOrigin == "left") ? -1*parseInt(parentStyle.width) : parseInt(parentStyle.width);
-		$item.applyStyle(enyo.dom.transition, "left " + this.normalSwipeSpeed + "s linear 0s");
-		$item.applyStyle("left", xPos+"px");
+		this.animateSwipe(xPos,this.normalSwipeSpeedMS);
 		this.persistentItemVisisble = false;
 		this.setPersistSwipeableItem(false);
-	},
-	resetSwipeableTransitionTime: function($item) {
-		this.$.swipeableComponents.applyStyle(enyo.dom.transition, "left 0s linear 0s");
 	},
 	clearSwipeables: function() {
 		this.$.swipeableComponents.setShowing(false);
 		this.persistentItemVisisble = false;
 		this.setPersistSwipeableItem(false);
-	},
-	swipeTransitionComplete: function(inSender, inEvent) {
-		if(inEvent.dispatchTarget !== this.$.swipeableComponents) {
-			return;
-		}
-		var _this = this;
-		this.completeSwipeTimeout = setTimeout(function() { _this.completeSwipe(inEvent); }, this.completeSwipeDelayMS);
 	},
 	// complete swipe and hide active swipeable item
 	completeSwipe: function(e) {
@@ -1449,29 +1434,53 @@ enyo.kind({
 			clearTimeout(this.completeSwipeTimeout);
 			this.completeSwipeTimeout = null;
 		}
-		e.xDirection = this.swipeDirection;
-		if(e.index === undefined) {
-			e.index = this.swipeIndex;
-		}
-		this.setSwipeDirection(null);
-		this.resetSwipeableTransitionTime();
 		// if this wasn't a persistent item, hide it upon completion and send swipe complete event
 		if(!this.getPersistSwipeableItem()) {
 			this.$.swipeableComponents.setShowing(false);
 			// if the swipe was completed, update the current row and bubble swipeComplete event
 			if(this.swipeComplete) {
-				this.doSwipeComplete(e);
+				this.doSwipeComplete({index:this.swipeIndex, xDirection:this.swipeDirection});
 			}
 		} else {
 			this.persistentItemVisisble = true;
 		}
+		this.setSwipeDirection(null);
 	},
-	updateCurrentRow: function() {
-		// prepare row
-		this.prepareRow(this.swipeIndex);
-		// update row
-		this.renderRow(this.swipeIndex);
-		// lock it up
-		this.lockRow(this.swipeIndex);
+	animateSwipe: function(targetX,totalTimeMS) {
+		var t0 = enyo.now(), t = 0;
+		var $item = this.$.swipeableComponents;
+		var origX = parseInt($item.domStyles.left,10);
+		var xDelta = targetX - origX;
+
+		this.stopAnimateSwipe();
+
+		var fn = enyo.bind(this, function() {
+			var t = enyo.now() - t0;
+			var percTimeElapsed = t/totalTimeMS;
+			var currentX = origX + (xDelta)*Math.min(percTimeElapsed,1);
+			
+			// set new left
+			$item.applyStyle("left",currentX+"px");
+			
+			// schedule next frame
+			this.job = enyo.requestAnimationFrame(fn);
+			
+			// potentially override animation TODO
+			
+			// go until we've hit our total time
+			if(t/totalTimeMS >= 1) {
+				this.stopAnimateSwipe();
+				this.completeSwipeTimeout = setTimeout(enyo.bind(this, function() {
+					this.completeSwipe();
+				}), this.completeSwipeDelayMS);
+			}
+		});
+		
+		this.job = enyo.requestAnimationFrame(fn);
+	},
+	stopAnimateSwipe: function() {
+		if(this.job) {
+			this.job = enyo.cancelRequestAnimationFrame(this.job);
+		}
 	}
 });

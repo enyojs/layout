@@ -11,21 +11,21 @@ enyo.kind({
 			onSetupSwipeItem: "setupSwipeItem", onSwipeComplete: "swipeComplete",
 			components: [
 				{name: "item", classes: "list-sample-language-item", components: [
-					{name: "text", style: "float:left;font-size:24px;text-transform:capitalize;line-height:80px;padding-left:20px;"}
+					{name: "text", classes: "itemLabel", allowHtml: true}
 				]}
 			],
 			reorderComponents: [
-				{name: "reorderContent", style:"background:rgba(0,0,0,0.7);margin:0px;padding:0px;", classes: "enyo-fit", components: [
-					{name: "reorderTitle", tag: "h2", style: "text-align:center;text-transform:capitalize;color:#fff;font-size:24px;"}
+				{name: "reorderContent", classes: "enyo-fit reorderDragger", components: [
+					{name: "reorderTitle", tag: "h2", style: "text-align:center;", allowHtml: true}
 				]}
 			], pinnedReorderComponents: [
-				{name: "pinnedReorderItem", style:"background-color:rgba(0,160,40,0.8);color:white;", classes: "enyo-fit", components: [
-					{name: "pinnedReorderTitle", tag: "h2", style: "padding-left:20px;line-height:80px;margin:0px;color:#fff;font-size:24px;text-transform:capitalize;"},
-					{name: "dropButton", kind: "onyx.Button", ontap: "dropPinnedRow", content: "Drop", style: "width:100px;height:60px;position:absolute;top:10px;right:20px;"}
+				{name: "pinnedReorderItem", classes: "enyo-fit swipeGreen", components: [
+					{name: "pinnedReorderTitle", tag: "h2", allowHtml: true},
+					{name: "dropButton", kind: "onyx.Button", ontap: "dropPinnedRow", content: "Drop", classes: "dropButton"}
 				]}
 			], swipeableComponents: [
-				{name: "swipeItem", style:"background-color:rgba(0,160,40,0.8);color:white;", classes: "enyo-fit", components: [
-					{name: "swipeTitle", style: "font-size:30px;font-weight:bold;color:#fff;text-transform:capitalize;text-align:center;line-height:80px;padding:0px;margin:0px;text-transform:capitalize;"}
+				{name: "swipeItem", classes: "enyo-fit swipeGreen", components: [
+					{name: "swipeTitle", classes: "swipeTitle"}
 				]}
 			]
 		}
@@ -41,6 +41,9 @@ enyo.kind({
 	},
 	setupItem: function(inSender, inEvent) {
 		var i = inEvent.index;
+		if(!data[i]) {
+			return;
+		}
 		var currentLanguage = data[i].langs[data[i].currentIndex];
 		var val = data[i].val;
 		var number = languages[currentLanguage][val];
@@ -48,6 +51,9 @@ enyo.kind({
 	},
 	setupReorderComponents: function(inSender, inEvent) {
 		var i = inEvent.index;
+		if(!data[i]) {
+			return;
+		}
 		var currentLanguage = data[i].langs[data[i].currentIndex];
 		var val = data[i].val;
 		var number = languages[currentLanguage][val];
@@ -55,6 +61,9 @@ enyo.kind({
 	},
 	setupPinnedReorderComponents: function(inSender, inEvent) {
 		var i = inEvent.index;
+		if(!data[i]) {
+			return;
+		}
 		var currentLanguage = data[i].langs[data[i].currentIndex];
 		var val = data[i].val;
 		var number = languages[currentLanguage][val];
@@ -66,6 +75,9 @@ enyo.kind({
 	},
 	setupSwipeItem: function(inSender, inEvent) {
 		var i = inEvent.index;
+		if(!data[i]) {
+			return;
+		}
 		var newLang = (inEvent.xDirection == 1)
 			? this.getNextLang(i)
 			: this.getPrevLang(i);
@@ -117,12 +129,12 @@ enyo.kind({
 	}
 });
 
-var data = [];
+data = [];
 
-var languages = {
-	english: ["one",  "two",  "three", "four",    "five","six","seven","eight","nine","ten"],
-	italian: ["uno",  "due",  "tre",   "quattro", "cinque","sei","sette","otto","nove","dieci"],
-	spanish: ["uno",  "dos",  "tres",  "cuatro",  "cinco","seis","siete","ocho","nueve","diez"],
-	german:  ["eins", "zwei", "drei",  "vier",    "fünf", "sechs", "sieben", "acht", "neun", "zehn"],
-	french:  ["un",   "deux", "trois", "quatre",  "cinq", "six", "sept", "huit", "neuf", "dix"]
+languages = {
+	English: ["One",  "Two",  "Three", "Four",    "Five",      "Six",   "Seven",  "Eight", "Nine",  "Ten"],
+	Italian: ["Uno",  "Due",  "Tre",   "Quattro", "Cinque",    "Sei",   "Sette",  "Otto",  "Nove",  "Dieci"],
+	Spanish: ["Uno",  "Dos",  "Tres",  "Cuatro",  "Cinco",     "Seis",  "Siete",  "Ocho",  "Nueve", "Diez"],
+	German:  ["Eins", "Zwei", "Drei",  "Vier",    "F&uuml;nf", "Sechs", "Sieben", "Acht",  "Neun",  "Zehn"],
+	French:  ["Un",   "Deux", "Trois", "Quatre",  "Cinq",      "Six",   "Sept",   "Huit",  "Neuf",  "Dix"]
 };
