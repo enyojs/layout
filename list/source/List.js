@@ -166,7 +166,7 @@ enyo.kind({
 		this.createSwipeableComponents();
 	},
 	createReorderTools: function() {
-		this.createComponent({name: "reorderContainer", classes: "list-reorder-container"});
+		this.createComponent({name: "reorderContainer", classes: "list-reorder-container", ondown: "sendToStrategy", ondrag: "sendToStrategy", ondragstart: "sendToStrategy", ondragfinish: "sendToStrategy", onflick: "sendToStrategy"});
 	},
 	createStrategy: function() {
 		this.controlParentName = "strategy";
@@ -213,6 +213,9 @@ enyo.kind({
 			this.updateMetrics();
 		}
 	},
+	sendToStrategy: function(s,e) {
+		this.$.strategy.dispatchEvent("on" + e.type, e, s);
+	},
 	updateMetrics: function() {
 		this.defaultPageHeight = this.rowsPerPage * (this.rowHeight || 100);
 		this.pageCount = Math.ceil(this.count / this.rowsPerPage);
@@ -256,45 +259,23 @@ enyo.kind({
 	//* Drag event handler
 	drag: function(inSender, inEvent) {
 		inEvent.preventDefault();
-		
+
 		// determine if we should handle the drag event
 		if(this.shouldDoReorderDrag(inEvent)) {
 			this.reorderDrag(inEvent);
-		}
-		if(this.shouldDoSwipeDrag()) {
+			return true;
+		} else if(this.shouldDoSwipeDrag()) {
 			this.swipeDrag(inSender, inEvent);
 			return true;
 		}
 		
 		return this.preventDragPropagation;
 	},
-	/*
-		When the user flicks, complete the swipe.
-	*/
+	//* Flick event handler
 	flick: function(inSender, inEvent) {
-		// if swiping is disabled, return early
-		if(!this.getEnableSwipe()) {
-			return false;
+		if(this.shouldDoSwipeFlick()) {
+			this.swipeFlick(inSender, inEvent);
 		}
-		
-		// if the flick was vertical, return early
-		if(Math.abs(inEvent.xVelocity) < Math.abs(inEvent.yVelocity)) {
-			return false;
-		}
-		
-		// prevent the dragFinish event from breaking the flick
-		this.setFlicked(true);
-		
-		// if a persistent swipeableItem is still showing, slide it away or bounce it
-		if(this.persistentItemVisisble) {
-			this.flickPersistentItem(inEvent);
-			return true;
-		}
-		
-		// do swipe
-		this.swipe(inEvent,this.normalSwipeSpeedMS);
-
-		return true;
 	},
 	//* Dragfinish event handler
 	dragfinish: function(inSender, inEvent) {
@@ -621,7 +602,7 @@ enyo.kind({
 
 	//* Determine whether we should handle the hold event as a reorder hold
 	shouldDoReorderHold: function(inSender, inEvent) {
-		if(!this.getReorderable() || inEvent.rowIndex < 0 || this.pinnedReorderMode || inSender !== this.$.strategy) {
+		if(!this.getReorderable() || inEvent.rowIndex < 0 || this.pinnedReorderMode || inSender !== this.$.strategy || !inEvent.index) {
 			return false;
 		}
 		return true;
@@ -1181,6 +1162,9 @@ enyo.kind({
 			this.hiddenNode = this.hideNode(hiddenNode);
 		}
 	},
+	isReordering: function() {
+		return (this.draggingRowIndex > -1);
+	},
 	
 	/**
 		---- Swipeable functionality ------------
@@ -1226,9 +1210,8 @@ enyo.kind({
 		
 		return true;
 	},
-	
 	shouldDoSwipeDrag: function() {
-		return (this.getEnableSwipe() && !(this.draggingRowIndex > -1));
+		return (this.getEnableSwipe() && !this.isReordering());
 	},
 	/*
 		When a drag is in progress, update the position of the swipeable container based on
@@ -1253,6 +1236,36 @@ enyo.kind({
 		
 		return this.preventDragPropagation;
 	},
+	//* Don't do swipe flick if user is currently reordering
+	shouldDoSwipeFlick: function() {
+		return (!this.isReordering());
+	},
+	//* When the user flicks, complete the swipe.
+	swipeFlick: function(inSender, inEvent) {
+		// if swiping is disabled, return early
+		if(!this.getEnableSwipe()) {
+			return false;
+		}
+		
+		// if the flick was vertical, return early
+		if(Math.abs(inEvent.xVelocity) < Math.abs(inEvent.yVelocity)) {
+			return false;
+		}
+		
+		// prevent the dragFinish event from breaking the flick
+		this.setFlicked(true);
+		
+		// if a persistent swipeableItem is still showing, slide it away or bounce it
+		if(this.persistentItemVisisble) {
+			this.flickPersistentItem(inEvent);
+			return true;
+		}
+
+		// do swipe
+		this.swipe(this.normalSwipeSpeedMS);
+
+		return true;
+	},
 	/*
 		When the current drag completes, decide whether to complete the swipe based on
 		how far the user pulled the swipeable container. If a flick occurred, don't
@@ -1274,7 +1287,7 @@ enyo.kind({
 		// otherwise if user dragged more than 20% of the width, complete the swipe. if not, back out.
 		} else {
 			if(this.calcPercentageDragged(this.draggedXDistance) > this.percentageDraggedThreshold) {
-				this.swipe(inEvent,this.fastSwipeSpeedMS);
+				this.swipe(this.fastSwipeSpeedMS);
 			} else {
 				this.backOutSwipe(inEvent);
 			}
@@ -1398,7 +1411,7 @@ enyo.kind({
 	calcPercentageDragged: function(dx) {
 		return Math.abs(dx/parseInt(window.getComputedStyle(this.$.swipeableComponents.hasNode()).width));
 	},
-	swipe: function(e,speed) {
+	swipe: function(speed) {
 		this.setSwipeComplete(true);
 		this.animateSwipe(0,speed);
 	},
@@ -1451,7 +1464,7 @@ enyo.kind({
 		var $item = this.$.swipeableComponents;
 		var origX = parseInt($item.domStyles.left,10);
 		var xDelta = targetX - origX;
-
+		
 		this.stopAnimateSwipe();
 
 		var fn = enyo.bind(this, function() {
