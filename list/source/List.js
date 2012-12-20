@@ -95,7 +95,7 @@ enyo.kind({
 		onholdpulse: "holdpulse",
 		onRenderRow: "rowRendered",
 		ondragstart: "dragstart",
-		onflick: "flick",
+		onflick: "flick"
 	},
 	//* @protected
 	rowHeight: 0,
@@ -602,7 +602,8 @@ enyo.kind({
 
 	//* Determine whether we should handle the hold event as a reorder hold
 	shouldDoReorderHold: function(inSender, inEvent) {
-		if(!this.getReorderable() || inEvent.rowIndex < 0 || this.pinnedReorderMode || inSender !== this.$.strategy || !inEvent.index) {
+		if(!this.getReorderable() || !(inEvent.rowIndex >= 0) || this.pinnedReorderMode ||
+			inSender !== this.$.strategy || !(inEvent.index >= 0)) {
 			return false;
 		}
 		return true;
@@ -693,7 +694,7 @@ enyo.kind({
 
 		// if the current index the user is dragging over has changed, move the placeholder
 		var index = this.getRowIndexFromCoordinate(inEvent.pageY);
-		if(index != this.placeholderRowIndex) {
+		if(index !== -1 && index != this.placeholderRowIndex) {
 			this.movePlaceholderToIndex(index);
 		}
 	},
@@ -701,7 +702,7 @@ enyo.kind({
 	positionReorderNode: function(e) {
 		var reorderNodeStyle = this.$.reorderContainer.hasNode().style;
 		var left = parseInt(reorderNodeStyle.left) + e.ddx;
-		var top = parseInt(reorderNodeStyle.top) + parseInt(e.ddy);
+		var top = parseInt(reorderNodeStyle.top) + e.ddy;
 		top = (this.getStrategyKind() == "ScrollStrategy") ? top + (this.getScrollTop() - this.prevScrollTop) : top;
 		this.$.reorderContainer.addStyles("top: "+top+"px ; left: "+left+"px");
 		this.prevScrollTop = this.getScrollTop();
@@ -1077,6 +1078,10 @@ enyo.kind({
 		var cursorPosition = this.getScrollTop() + y - this.getNodePosition(this.hasNode()).top;
 		var pageInfo = this.positionToPageInfo(cursorPosition);
 		var rows = (pageInfo.no == this.p0) ? this.p0RowBounds : this.p1RowBounds;
+		// might have only rendered one page, so catch that here
+		if (!rows) {
+			return -1;
+		}
 		var posOnPage = pageInfo.pos;
 		var placeholderHeight = parseInt(window.getComputedStyle(this.placeholderNode).height);
 		for(var i=0, totalHeight=0;i<rows.length;i++) {
