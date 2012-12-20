@@ -1367,6 +1367,8 @@ enyo.kind({
 	},
 	// Begin swiping sequence by positioning the swipeable container and bubbling the setupSwipeItem event
 	startSwipe: function(e) {
+		// modify event index to always have this swipeItem value
+		e.index = this.swipeIndex;
 		this.positionSwipeableContainer(this.swipeIndex,e.xDirection);
 		this.$.swipeableComponents.setShowing(true);
 		this.setPersistentItemOrigin(e.xDirection);
