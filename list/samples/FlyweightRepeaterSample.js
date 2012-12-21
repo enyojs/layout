@@ -7,8 +7,10 @@ enyo.kind({
 			{content: "FlyweightRepeater Result"}
 		]},
 		{name:"result", style:"padding:12px; font-size: 20px;", content: "Nothing selected yet."},
-		{name:"repeater", kind:"enyo.FlyweightRepeater", classes:"flyweight-repeater-sample-list", count: 26, onSetupItem: "setupItem", components: [
-			{name: "item", classes:"flyweight-repeater-sample-item"}
+		{kind: "enyo.Scroller", fit: true, components: [
+			{name:"repeater", kind:"enyo.FlyweightRepeater", classes:"flyweight-repeater-sample-list", count: 26, onSetupItem: "setupItem", components: [
+				{name: "item", classes:"flyweight-repeater-sample-item"}
+			]}
 		]}
 	],
 	handlers: {
