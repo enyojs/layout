@@ -67,6 +67,7 @@ enyo.kind({
 		{kind: "Selection", onSelect: "selectDeselect", onDeselect: "selectDeselect"},
 		{name: "client"}
 	],
+	//* offset to be applied to row number when generating, must be positive
 	rowOffset: 0,
 	create: function() {
 		this.inherited(arguments);
@@ -159,15 +160,16 @@ enyo.kind({
 	//* Fetches the DOM node for the given row index.
 	fetchRowNode: function(inIndex) {
 		if (this.hasNode()) {
-			var n$ = this.node.querySelectorAll('[data-enyo-index="' + inIndex + '"]');
-			return n$ && n$[0];
+			return this.node.querySelector('[data-enyo-index="' + inIndex + '"]');
 		}
 	},
 	//* Fetches the DOM node for the given event.
 	rowForEvent: function(inEvent) {
+		if (!this.hasNode()) {
+			return -1;
+		}
 		var n = inEvent.target;
-		var id = this.hasNode().id;
-		while (n && n.parentNode && n.id != id) {
+		while (n && n !== this.node) {
 			var i = n.getAttribute && n.getAttribute("data-enyo-index");
 			if (i !== null) {
 				return Number(i);
@@ -179,6 +181,8 @@ enyo.kind({
 	//* Prepares the row specified by _inIndex_ such that changes made to the
 	//* controls inside the repeater will be rendered for the given row.
 	prepareRow: function(inIndex) {
+		// update row internals to match model
+		this.setupItem(inIndex);
 		var n = this.fetchRowNode(inIndex);
 		enyo.FlyweightRepeater.claimNode(this.$.client, n);
 	},
@@ -200,8 +204,16 @@ enyo.kind({
 		//* Associates a flyweight rendered control (_inControl_) with a
 		//* rendering context specified by _inNode_.
 		claimNode: function(inControl, inNode) {
-			var n = inNode && inNode.querySelectorAll("#" + inControl.id);
-			n = n && n[0];
+			var n;
+			if (inNode) {
+				if (inNode.id !== inControl.id) {
+					n = inNode.querySelector("#" + inControl.id);
+				}
+				else {
+					// inNode is already the right node, so just use it
+					n = inNode;
+				}
+			}
 			// FIXME: consider controls generated if we found a node or tag: null, the later so can teardown render
 			inControl.generated = Boolean(n || !inControl.tag);
 			inControl.node = n;
@@ -210,6 +222,7 @@ enyo.kind({
 			} else {
 				//enyo.log("Failed to find node for",  inControl.id, inControl.generated);
 			}
+			// update control's class cache based on the node contents
 			for (var i=0, c$=inControl.children, c; (c=c$[i]); i++) {
 				this.claimNode(c, inNode);
 			}
