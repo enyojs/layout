@@ -14,14 +14,9 @@
 	Events fired from within list rows contain the _index_ property, which may
 	be used to identify the row	from which the event originated.
 
-	The controls inside a List are non-interactive. This means that calling
-	methods that would normally cause rendering to occur (e.g., _setContent_)
-	will not do so. However, you can force a row to render by calling
-	_renderRow(inRow)_.
-
-	In addition, you can force a row to be temporarily interactive by calling
-	_prepareRow(inRow)_. Call the _lockRow_ method when the interaction is
-	complete.
+	Beginning with Enyo 2.2, lists have built-in support for swipeable and
+	reorderable list items.  Individual list items are swipeable by default; to
+	enable reorderability, set the _reorderable_ property to true.
 
 	For more information, see the documentation on
 	[Lists](https://github.com/enyojs/enyo/wiki/Lists)
