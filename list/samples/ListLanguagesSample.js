@@ -19,8 +19,12 @@ enyo.kind({
 			]}
 		]},
 		{kind: "List", classes: "list-sample-language-list enyo-unselectable", fit: true, multiSelect: true, reorderable: true,
-			onSetupItem: "setupItem", onReorder: "listReorder", onSetupReorderComponents: "setupReorderComponents", onSetupPinnedReorderComponents: "setupPinnedReorderComponents",
-			onSetupSwipeItem: "setupSwipeItem", onSwipeComplete: "swipeComplete",
+			onSetupItem: "setupItem",
+			onReorder: "listReorder",
+			onSetupReorderComponents: "setupReorderComponents",
+			onSetupPinnedReorderComponents: "setupPinnedReorderComponents",
+			onSetupSwipeItem: "setupSwipeItem",
+			onSwipeComplete: "swipeComplete",
 			components: [
 				{name: "item", classes: "list-sample-language-item", components: [
 					{name: "text", classes: "itemLabel", allowHtml: true}
@@ -30,12 +34,14 @@ enyo.kind({
 				{name: "reorderContent", classes: "enyo-fit reorderDragger", components: [
 					{name: "reorderTitle", tag: "h2", style: "text-align:center;", allowHtml: true}
 				]}
-			], pinnedReorderComponents: [
+			],
+			pinnedReorderComponents: [
 				{name: "pinnedReorderItem", classes: "enyo-fit swipeGreen", components: [
 					{name: "pinnedReorderTitle", tag: "h2", allowHtml: true},
 					{name: "dropButton", kind: "onyx.Button", ontap: "dropPinnedRow", content: "Drop", classes: "dropButton"}
 				]}
-			], swipeableComponents: [
+			],
+			swipeableComponents: [
 				{name: "swipeItem", classes: "enyo-fit swipeGreen", components: [
 					{name: "swipeTitle", classes: "swipeTitle"}
 				]}
