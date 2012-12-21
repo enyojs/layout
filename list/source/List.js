@@ -101,8 +101,8 @@ enyo.kind({
 			]},
 			{name: "page0", allowHtml: true, classes: "enyo-list-page"},
 			{name: "page1", allowHtml: true, classes: "enyo-list-page"},
-			{name: "placeholder", classes: "listPlaceholder"},
-			{name: "swipeableComponents", style: "position:absolute;display:block;top:-1000px;left:0px;"}
+			{name: "placeholder", classes: "enyo-list-placeholder"},
+			{name: "swipeableComponents", style: "position:absolute; display:block; top:-1000px; left:0px;"}
 		]}
 	],
 	
@@ -169,7 +169,11 @@ enyo.kind({
 		this.createSwipeableComponents();
 	},
 	createReorderTools: function() {
-		this.createComponent({name: "reorderContainer", classes: "list-reorder-container", ondown: "sendToStrategy", ondrag: "sendToStrategy", ondragstart: "sendToStrategy", ondragfinish: "sendToStrategy", onflick: "sendToStrategy"});
+		this.createComponent({
+			name: "reorderContainer", classes: "enyo-list-reorder-container",
+			ondown: "sendToStrategy", ondrag: "sendToStrategy",
+			ondragstart: "sendToStrategy", ondragfinish: "sendToStrategy",
+			onflick: "sendToStrategy"});
 	},
 	createStrategy: function() {
 		this.controlParentName = "strategy";
@@ -347,48 +351,41 @@ enyo.kind({
 	},
 	getPageRowHeights: function(page) {
 		var rows = [];
-		var allDivs = document.getElementById(page.id).getElementsByTagName("div");
-		for(var i=0, index=null, style=null;i<allDivs.length;i++) {
+		var allDivs = document.querySelectorAll('#' + page.id + " div[data-enyo-index]");
+		for (var i=0, index, bounds; i < allDivs.length; i++) {
 			index = allDivs[i].getAttribute("data-enyo-index");
-			if(index !== null) {
-				style = window.getComputedStyle(allDivs[i]);
-				rows.push({height: parseInt(style.height), width: parseInt(style.width), index: index});
+			if (index !== null) {
+				bounds = enyo.dom.getBounds(allDivs[i]);
+				rows.push({height: bounds.height, width: bounds.width, index: index});
 			}
 		}
 		return rows;
 	},
 	updateRowBounds: function(index) {
-		var updateIndex = this.getRowBoundsUpdateIndex(index,this.p0RowBounds);
-		if(updateIndex > -1) {
-			this.updateRowBoundsAtIndex(updateIndex,this.p0RowBounds,this.$.page0);
+		var updateIndex = this.getRowBoundsUpdateIndex(index, this.p0RowBounds);
+		if (updateIndex > -1) {
+			this.updateRowBoundsAtIndex(updateIndex, this.p0RowBounds, this.$.page0);
 			return;
 		}
-		updateIndex = this.getRowBoundsUpdateIndex(index,this.p1RowBounds);
-		if(updateIndex > -1) {
-			this.updateRowBoundsAtIndex(updateIndex,this.p1RowBounds,this.$.page1);
+		updateIndex = this.getRowBoundsUpdateIndex(index, this.p1RowBounds);
+		if (updateIndex > -1) {
+			this.updateRowBoundsAtIndex(updateIndex, this.p1RowBounds, this.$.page1);
 			return;
 		}
-		// enyo.log("Row at index "+index+" not found!");
 	},
 	getRowBoundsUpdateIndex: function(index, rows) {
-		for(var i=0, style=null;i<rows.length;i++) {
-			if(rows[i].index == index) {
+		for (var i=0; i < rows.length; i++) {
+			if (rows[i].index == index) {
 				return i;
 			}
 		}
 		return -1;
 	},
-	updateRowBoundsAtIndex: function(updateIndex,rows,page) {
-		var allDivs = document.getElementById(page.id).getElementsByTagName("div");
-		for(var i=0, index=null, style=null;i<allDivs.length;i++) {
-			index = allDivs[i].getAttribute("data-enyo-index");
-			if(index == rows[updateIndex].index) {
-				style = window.getComputedStyle(allDivs[i]);
-				break;
-			}
-		}
-		rows[updateIndex].height = parseInt(style.height);
-		rows[updateIndex].width = parseInt(style.width);
+	updateRowBoundsAtIndex: function(updateIndex, rows, page) {
+		var rowDiv = document.querySelectorAll('#' + page.id + ' div[data-enyo-index="' + rows[updateIndex].index + '"]');
+		var bounds = enyo.dom.getBounds(rowDiv[0]);
+		rows[updateIndex].height = bounds.height;
+		rows[updateIndex].width = bounds.width;
 	},
 	updateForPosition: function(inPos) {
 		this.update(this.calcPos(inPos));
@@ -669,7 +666,7 @@ enyo.kind({
 		Animates and kicks off timer to turn off animation.
 	*/
 	positionReorderContainer: function(x,y) {
-		this.$.reorderContainer.addClass("animatedTopAndLeft");
+		this.$.reorderContainer.addClass("enyo-animatedTopAndLeft");
 		this.$.reorderContainer.addStyles("left:"+x+"px;top:"+y+"px;");
 		this.setPositionReorderContainerTimeout();
 	},
@@ -677,7 +674,7 @@ enyo.kind({
 		var _this = this;
 		this.clearPositionReorderContainerTimeout();
 		this.positionReorderContainerTimeout = setTimeout(function() {
-			_this.$.reorderContainer.removeClass("animatedTopAndLeft");
+			_this.$.reorderContainer.removeClass("enyo-animatedTopAndLeft");
 			_this.clearPositionReorderContainerTimeout();
 		}, 100);
 	},

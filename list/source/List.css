@@ -14,8 +14,8 @@
 	right: 0;
 }
 
-.listPlaceholder { }
-.pinned-list-placeholder {
+.enyo-list-placeholder { }
+.enyo-pinned-list-placeholder {
 	border:1px solid red;
 	position:absolute;
 	top:0px; left:0px;
@@ -23,12 +23,12 @@
 	background:transparent;
 	overflow:hidden;
 }
-.pinned-list-placeholder button {
+.enyo-pinned-list-placeholder button {
 	width:100px; height:100%;
 	position:absolute;
 	top:0px; right:0px;
 }
-.list-reorder-container {
+.enyo-list-reorder-container {
 	position:absolute;
 	top:0px; left:0px;
 	z-index:1000;
@@ -36,7 +36,7 @@
 	overflow:hidden;
 }
 
-.animatedTopAndLeft {
+.enyo-animatedTopAndLeft {
 	transition: top 0.1s linear, left 0.1s linear;
 	-webkit-transition: top 0.1s linear, left 0.1s linear;
 	-moz-transition: top 0.1s linear, left 0.1s linear;
