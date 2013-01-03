@@ -56,6 +56,9 @@ enyo.kind({
 			* "auto": Fits the image to the size of the ImageView
 			* "width": Fits the image the width of the ImageView
 			* "height": Fits the image to the height of the ImageView
+			* "fit": Fits the image to the height and width of the ImageView.
+				 Overflow of the larger dimension is cropped and the image is centered
+				 on this axis
 		*/
 		scale: "auto",
 		//* Disables the zoom functionality
@@ -157,6 +160,7 @@ enyo.kind({
 		enyo.dom.transformValue(this.getStrategy().$.client, "translate3d", "0px, 0px, 0");
 
 		this.positionClientControls(this.scale);
+		this.alignImage();
 	},
 	resizeHandler: function() {
 		this.inherited(arguments);
@@ -181,6 +185,9 @@ enyo.kind({
 				this.scale = widthScale;
 			} else if(this.scale == "height") {
 				this.scale = heightScale;
+			} else if(this.scale == "fit") {
+				this.fitAlignment = "center";
+				this.scale = Math.max(widthScale, heightScale);
 			} else {
 				this.maxScale = Math.max(this.maxScale, this.scale);
 				this.scale = this.limitScale(this.scale);
@@ -193,6 +200,13 @@ enyo.kind({
 		enyo.error("Error loading image: " + this.src);
 		//bubble up the error event
 		this.bubble("onerror", inEvent);
+	},
+	alignImage: function() {
+		if ( this.fitAlignment && this.fitAlignment === "center") {
+			var sb = this.getScrollBounds();
+			this.setScrollLeft( sb.maxLeft / 2);
+			this.setScrollTop( sb.maxTop / 2);
+		}
 	},
 	gestureTransform: function(inSender, inEvent) {
 		this.eventPt = this.calcEventLocation(inEvent);
