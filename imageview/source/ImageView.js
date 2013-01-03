@@ -57,8 +57,8 @@ enyo.kind({
 			* "width": Fits the image the width of the ImageView
 			* "height": Fits the image to the height of the ImageView
 			* "fit": Fits the image to the height and width of the ImageView.
-				 Overflow of the larger dimension is cropped and the image is centered
-				 on this axis
+				Overflow of the larger dimension is cropped and the image is centered
+				on this axis
 		*/
 		scale: "auto",
 		//* Disables the zoom functionality
@@ -202,7 +202,7 @@ enyo.kind({
 		this.bubble("onerror", inEvent);
 	},
 	alignImage: function() {
-		if ( this.fitAlignment && this.fitAlignment === "center") {
+		if (this.fitAlignment && this.fitAlignment === "center") {
 			var sb = this.getScrollBounds();
 			this.setScrollLeft( sb.maxLeft / 2);
 			this.setScrollTop( sb.maxTop / 2);

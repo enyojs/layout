@@ -87,7 +87,7 @@ enyo.kind({
 	},
 	loadNearby: function() {
 		var range = this.getBufferRange();
-		for ( var i in range ) {
+		for (var i in range) {
 			this.loadImageView(range[i]);
 		}
 	},
@@ -101,7 +101,7 @@ enyo.kind({
 			i=this.index-1;
 			x=0;
 			xEnd = bounds.width * prefetchRange;
-			while ( i>=0 && x<=xEnd) {
+			while (i>=0 && x<=xEnd) {
 				c = this.$["container" + i];
 				x+= c.width + c.marginWidth;
 				range.unshift(i);
@@ -111,7 +111,7 @@ enyo.kind({
 			i=this.index;
 			x=0;
 			xEnd = bounds.width * (prefetchRange + 1);
-			while ( i<this.images.length && x<=xEnd ) {
+			while (i<this.images.length && x<=xEnd) {
 				c = this.$["container" + i];
 				x+= c.width + c.marginWidth;
 				range.push(i);
