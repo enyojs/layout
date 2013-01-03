@@ -1,4 +1,4 @@
-/** 
+/**
 	Description to make Panels kind available in Ares.
 */
 Palette.model.push(
@@ -26,6 +26,6 @@ Palette.model.push(
 				{style: "background-color: lightgreen; border: 1px dotted green; width: 20px;"}
 			]},
 			config: {content: "$name", isContainer: true, kind: "Panels", arrangerKind: "CollapsibleArranger"}
-		},
+		}
 	]}
 );

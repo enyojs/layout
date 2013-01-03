@@ -15,7 +15,7 @@ enyo.kind({
 	name: "enyo.LeftRightArranger",
 	kind: "Arranger",
 	//* The margin width (i.e., how much of the previous and next controls
-	//* are visible) in pixels 
+	//* are visible) in pixels
 	margin: 40,
 	//* @protected
 	axisSize: "width",
@@ -47,27 +47,27 @@ enyo.kind({
 		for (var i=0, c; (c=c$[i]); i++) {
 			if (s > f){
 				if (i == (c$.length - o)){
-					c.applyStyle("z-index", 0);				
+					c.applyStyle("z-index", 0);
 				} else {
-					c.applyStyle("z-index", 1);						
+					c.applyStyle("z-index", 1);
 				}
 			} else {
 				if (i == (c$.length-1 - o)){
 					c.applyStyle("z-index", 0);
 				} else {
-					c.applyStyle("z-index", 1);					
+					c.applyStyle("z-index", 1);
 				}
 			}
 		}
 	},
 	arrange: function(inC, inIndex) {
 		var i,c,v,b;
-		if (this.container.getPanels().length==1){	
+		if (this.container.getPanels().length==1){
 			b = {};
 			b[this.axisPosition] = this.margin;
 			this.arrangeControl(this.container.getPanels()[0], b);
 			return;
-		}		
+		}
 		var o = Math.floor(this.container.getPanels().length/2);
 		var c$ = this.getOrderedControls(Math.floor(inIndex)-o);
 		var box = this.containerBounds[this.axisSize] - this.margin -this.margin;
@@ -80,10 +80,10 @@ enyo.kind({
 		}
 	},
 	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
-		if (this.container.getPanels().length==1){	
+		if (this.container.getPanels().length==1){
 			return 0;
 		}
-		
+
 		var i = Math.abs(inI0 % this.c$.length);
 		//enyo.log(inI0, inI1);
 		return inA0[i][this.axisPosition] - inA1[i][this.axisPosition];
@@ -298,7 +298,7 @@ enyo.kind({
 		for (i=0; (c=c$[i]); i++) {
 			c.width = ((i===0) && (this.container.basePanel)) ? nw : c.getBounds().width;
 		}
-		
+
 		for (i=0; (c=c$[i]); i++) {
 
 			if ((i===0) && (this.container.basePanel)) {
@@ -355,7 +355,7 @@ enyo.kind({
 		var i, c;
 		var c$ = this.container.getPanels();
 		var s = this.container.clamp(inName);
-		
+
 		for (i=0; (c=c$[i]); i++) {
 			var xPos = this.container.transitionPositions[i + "." + s];
 			this.arrangeControl(c, {left: xPos});
