@@ -1033,8 +1033,8 @@ enyo.kind({
 	createPlaceholderNode: function(node) {
 		var placeholderNode = this.$.placeholder.hasNode().cloneNode(true);
 		var nodeDimensions = this.getDimensions(node);
-		placeholderNode.style.height = nodeDimensions.height;
-		placeholderNode.style.width = nodeDimensions.width;
+		placeholderNode.style.height = nodeDimensions.height + "px";
+		placeholderNode.style.width = nodeDimensions.width + "px";
 		return placeholderNode;
 	},
 	//* Removes the placeholder node from the DOM.
