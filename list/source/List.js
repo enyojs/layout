@@ -1335,7 +1335,7 @@ enyo.kind({
 		var offset = this.getRelativeOffset(node, this.hasNode());
 		var dimensions = this.getDimensions(node);
 		var x = (xDirection == 1) ? -1*dimensions.width : dimensions.width;
-		this.$.swipeableComponents.addStyles("top: "+offset.top+"px; left: "+x+"px; height: "+dimensions.height+"; width: "+dimensions.width);
+		this.$.swipeableComponents.addStyles("top: "+offset.top+"px; left: "+x+"px; height: "+dimensions.height+"px; width: "+dimensions.width+"px;");
 	},
 	setSwipeDirection: function(xDirection) {
 		this.swipeDirection = xDirection;
