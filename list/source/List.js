@@ -60,6 +60,9 @@ enyo.kind({
 		fixedHeight: false,
 		//* If true, the list will allow the user to reorder list items
 		reorderable: false,
+		//* If true and _reorderable_ is true, reorderable item will be centered on finger
+		//* when created. When false, it will be created over old item and will then track finger.
+		centerReorderContainer: true,
 		//* Array containing any swipeable components that will be used
 		swipeableComponents: [],
 		//* If true, swipe functionality is enabled
@@ -643,7 +646,9 @@ enyo.kind({
 		this.setItemBounds(this.$.reorderContainer, e.rowIndex);
 		//this.appendNodeToReorderContainer(this.cloneRowNode(e.rowIndex));
 		this.$.reorderContainer.setShowing(true);
-		this.centerReorderContainerOnPointer(e);
+		if (this.centerReorderContainer) {
+			this.centerReorderContainerOnPointer(e);
+		}
 	},
 	//* Copies the innerHTML of _node_ into a new component inside of
 	//* _reorderContainer_.

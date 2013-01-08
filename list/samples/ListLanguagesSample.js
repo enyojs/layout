@@ -18,7 +18,8 @@ enyo.kind({
 				{kind: "onyx.Input", value: "10", name: "numRows" }
 			]}
 		]},
-		{kind: "List", classes: "list-sample-language-list enyo-unselectable", fit: true, multiSelect: true, reorderable: true,
+		{kind: "List", classes: "list-sample-language-list enyo-unselectable",
+			fit: true, multiSelect: true, reorderable: true, centerReorderContainer: false,
 			onSetupItem: "setupItem",
 			onReorder: "listReorder",
 			onSetupReorderComponents: "setupReorderComponents",
