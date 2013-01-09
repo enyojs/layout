@@ -19,7 +19,9 @@ enyo.kind({
 			]}
 		]},
 		{kind: "List", classes: "list-sample-language-list enyo-unselectable",
-			fit: true, multiSelect: true, reorderable: true, centerReorderContainer: false,
+			fit: true, multiSelect: true,
+			reorderable: true, centerReorderContainer: false,
+			enableSwipe: true,
 			onSetupItem: "setupItem",
 			onReorder: "listReorder",
 			onSetupReorderComponents: "setupReorderComponents",
@@ -66,7 +68,7 @@ enyo.kind({
 		var currentLanguage = this.data[i].langs[this.data[i].currentIndex];
 		var val = this.data[i].val;
 		var number = this.languages[currentLanguage][val];
-		this.$.text.setContent(number);
+		this.$.text.setContent("(" + i + ") " + number);
 	},
 	setupReorderComponents: function(inSender, inEvent) {
 		var i = inEvent.index;
