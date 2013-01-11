@@ -4,19 +4,19 @@ enyo.kind({
 	classes: "list-sample-language enyo-fit",
 	data: [],
 	languages: {
-		English: ["One",  "Two",  "Three", "Four",    "Five",      "Six",   "Seven",  "Eight", "Nine",  "Ten"],
-		Italian: ["Uno",  "Due",  "Tre",   "Quattro", "Cinque",    "Sei",   "Sette",  "Otto",  "Nove",  "Dieci"],
-		Spanish: ["Uno",  "Dos",  "Tres",  "Cuatro",  "Cinco",     "Seis",  "Siete",  "Ocho",  "Nueve", "Diez"],
-		German:  ["Eins", "Zwei", "Drei",  "Vier",    "F&uuml;nf", "Sechs", "Sieben", "Acht",  "Neun",  "Zehn"],
-		French:  ["Un",   "Deux", "Trois", "Quatre",  "Cinq",      "Six",   "Sept",   "Huit",  "Neuf",  "Dix"]
+		English: ["One",  "Two",  "Three", "Four",    "Five",    "Six",   "Seven",  "Eight", "Nine",  "Ten"],
+		Italian: ["Uno",  "Due",  "Tre",   "Quattro", "Cinque",  "Sei",   "Sette",  "Otto",  "Nove",  "Dieci"],
+		Spanish: ["Uno",  "Dos",  "Tres",  "Cuatro",  "Cinco",   "Seis",  "Siete",  "Ocho",  "Nueve", "Diez"],
+		German:  ["Eins", "Zwei", "Drei",  "Vier",    "F\xFCnf", "Sechs", "Sieben", "Acht",  "Neun",  "Zehn"],
+		French:  ["Un",   "Deux", "Trois", "Quatre",  "Cinq",    "Six",   "Sept",   "Huit",  "Neuf",  "Dix"]
 	},
 	components: [
 		{kind: "onyx.MoreToolbar", layoutKind: "FittableColumnsLayout", style: "height: 55px;", components: [
-			{kind: "onyx.Button", content: "Randomize", ontap: "populateList"},
 			{content: "Number of Rows:"},
 			{kind: "onyx.InputDecorator", components: [
 				{kind: "onyx.Input", value: "10", name: "numRows" }
-			]}
+			]},
+			{kind: "onyx.Button", content: "Repopulate List", ontap: "populateList"}
 		]},
 		{kind: "List", classes: "list-sample-language-list enyo-unselectable",
 			fit: true, multiSelect: true,
@@ -30,7 +30,8 @@ enyo.kind({
 			onSwipeComplete: "swipeComplete",
 			components: [
 				{name: "item", classes: "list-sample-language-item", components: [
-					{name: "text", classes: "itemLabel", allowHtml: true}
+					{name: "rowNumber", classes: "rowNumberLabel"},
+					{name: "text", classes: "itemLabel"}
 				]}
 			],
 			reorderComponents: [
@@ -68,7 +69,8 @@ enyo.kind({
 		var currentLanguage = this.data[i].langs[this.data[i].currentIndex];
 		var val = this.data[i].val;
 		var number = this.languages[currentLanguage][val];
-		this.$.text.setContent("(" + i + ") " + number);
+		this.$.rowNumber.setContent(i);
+		this.$.text.setContent(number);
 	},
 	setupReorderComponents: function(inSender, inEvent) {
 		var i = inEvent.index;
