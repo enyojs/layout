@@ -115,7 +115,8 @@ enyo.kind({
 	reorderHoldTimeMS: 600,
 	// index of the row that we're moving
 	draggingRowIndex: -1,
-	// index of the row where we'll show the placeholder item
+	// index of the row before which we'll show the placeholder item.  If the placeholder
+	// is at the end of the list, this will be one larger than the row count.
 	placeholderRowIndex: -1,
 	// determines scroll height at top/bottom of list where dragging will cause scroll
 	dragToScrollThreshold: 0.1,
@@ -332,6 +333,10 @@ enyo.kind({
 			}
 		}
 	},
+	//* map a row index number to the page number it would be in
+	pageForRow: function(inIndex) {
+		return Math.floor(inIndex / this.rowsPerPage);
+	},
 	update: function(inScrollTop) {
 		var updated = false;
 		// get page info for position
@@ -365,42 +370,30 @@ enyo.kind({
 		}
 	},
 	getPageRowHeights: function(page) {
-		var rows = [];
+		var rows = {};
 		var allDivs = page.hasNode().querySelectorAll("div[data-enyo-index]");
 		for (var i=0, index, bounds; i < allDivs.length; i++) {
 			index = allDivs[i].getAttribute("data-enyo-index");
 			if (index !== null) {
 				bounds = enyo.dom.getBounds(allDivs[i]);
-				rows.push({height: bounds.height, width: bounds.width, index: parseInt(index, 10)});
+				rows[parseInt(index, 10)] = {height: bounds.height, width: bounds.width};
 			}
 		}
 		return rows;
 	},
 	updateRowBounds: function(index) {
-		var updateIndex = this.getRowBoundsUpdateIndex(index, this.p0RowBounds);
-		if (updateIndex > -1) {
-			this.updateRowBoundsAtIndex(updateIndex, this.p0RowBounds, this.$.page0);
-			return;
+		if (this.p0RowBounds[index]) {
+			this.updateRowBoundsAtIndex(index, this.p0RowBounds, this.$.page0);
 		}
-		updateIndex = this.getRowBoundsUpdateIndex(index, this.p1RowBounds);
-		if (updateIndex > -1) {
+		else if (this.p1RowBounds[index]) {
 			this.updateRowBoundsAtIndex(updateIndex, this.p1RowBounds, this.$.page1);
-			return;
 		}
 	},
-	getRowBoundsUpdateIndex: function(index, rows) {
-		for (var i=0; i < rows.length; i++) {
-			if (rows[i].index == index) {
-				return i;
-			}
-		}
-		return -1;
-	},
-	updateRowBoundsAtIndex: function(updateIndex, rows, page) {
-		var rowDiv = page.hasNode().querySelector('div[data-enyo-index="' + rows[updateIndex].index + '"]');
+	updateRowBoundsAtIndex: function(index, rows, page) {
+		var rowDiv = page.hasNode().querySelector('div[data-enyo-index="' + index + '"]');
 		var bounds = enyo.dom.getBounds(rowDiv);
-		rows[updateIndex].height = bounds.height;
-		rows[updateIndex].width = bounds.width;
+		rows[index].height = bounds.height;
+		rows[index].width = bounds.width;
 	},
 	updateForPosition: function(inPos) {
 		this.update(this.calcPos(inPos));
@@ -441,7 +434,13 @@ enyo.kind({
 			p -= h;
 		}
 		page = Math.max(page, 0);
-		return {no: page, height: h, pos: p+h};
+		return {
+			no: page,
+			height: h,
+			pos: p + h,
+			startRow: (page * this.rowsPerPage),
+			endRow: Math.min((page + 1) * this.rowsPerPage - 1, this.count - 1)
+		};
 	},
 	isPageInRange: function(inPage) {
 		return inPage == Math.max(0, Math.min(this.pageCount-1, inPage));
@@ -487,7 +486,7 @@ enyo.kind({
 	},
 	//* Scrolls to the specified row.
 	scrollToRow: function(inRow) {
-		var page = Math.floor(inRow / this.rowsPerPage);
+		var page = this.pageForRow(inRow);
 		var pageRow = inRow % this.rowsPerPage;
 		var h = this.pageToPosition(page);
 		// update the page
@@ -610,6 +609,10 @@ enyo.kind({
 		var s = this.getStrategy();
 		enyo.call(s, "twiddle");
 	},
+	// return page0 or page1 control depending on pageNumber odd/even status
+	pageForPageNumber: function(pageNumber) {
+		return this.$["page" + pageNumber % 2];
+	},
 	/**
 		---- Reorder functionality ------------
 	*/
@@ -632,7 +635,7 @@ enyo.kind({
 
 		this.draggingRowIndex = this.placeholderRowIndex = inEvent.rowIndex;
 		this.itemMoved = false;
-		this.initialPageNumber = this.currentPageNumber = Math.floor(inEvent.rowIndex/this.rowsPerPage);
+		this.initialPageNumber = this.currentPageNumber = this.pageForRow(inEvent.rowIndex);
 		this.prevScrollTop = this.getScrollTop();
 
 		// fill row being reordered with placeholder
@@ -715,8 +718,14 @@ enyo.kind({
 
 		// if the current index the user is dragging over has changed, move the placeholder
 		var index = this.getRowIndexFromCoordinate(inEvent.pageY);
-		if(index !== -1 && index != this.placeholderRowIndex) {
-			this.movePlaceholderToIndex(index);
+		if (index !== -1) {
+			// cursor moved over a new row, so determine direction of movement
+			if (index >= this.placeholderRowIndex) {
+				this.movePlaceholderToIndex(Math.min(this.count, index + 1));
+			}
+			else {
+				this.movePlaceholderToIndex(index);
+			}
 		}
 	},
 	//* Positions the reorder node based on the dx and dy of the drag event.
@@ -786,30 +795,32 @@ enyo.kind({
 		where the item being dragged will go if it is dropped.
 	*/
 	movePlaceholderToIndex: function(index) {
-		var node = this.$.generator.fetchRowNode(index);
-		// safety first
-		if(!node) {
-			enyo.log("No node - "+index);
+		var node, nodeParent;
+		if (index < 0) {
 			return;
 		}
-
-		// figure next page and position for placeholder
-		var newPlaceholderIndex = (index > this.draggingRowIndex) ? index + 1 : index;
-		var nextPageNumber = Math.floor(newPlaceholderIndex/this.rowsPerPage);
-		var nextPage = this.$["page" + nextPageNumber % 2];
-		var currentPage = this.$["page" + this.currentPageNumber % 2];
+		else if (index >= this.count) {
+			node = null;
+			nodeParent = this.pageForPageNumber(this.pageForRow(this.count - 1)).hasNode();
+		}
+		else {
+			node = this.$.generator.fetchRowNode(index);
+			nodeParent = node.parentNode;
+		}
+		// figure next page for placeholder
+		var nextPageNumber = this.pageForRow(index);
 
 		// don't add pages beyond the original page count
 		if(nextPageNumber >= this.pageCount) {
 			nextPageNumber = this.currentPageNumber;
-			nextPage = currentPage;
 		}
 
-		// move the placeholder to the new position
-		nextPage.hasNode().insertBefore(
+		// move the placeholder to just after our "index" node
+		nodeParent.insertBefore(
 			this.placeholderNode,
-			this.$.generator.fetchRowNode(newPlaceholderIndex));
-		if(currentPage !== nextPage) {
+			node);
+
+		if(this.currentPageNumber !== nextPageNumber) {
 			// if moving to different page, recalculate page heights and reposition pages
 			this.updatePageHeight(this.currentPageNumber);
 			this.updatePageHeight(nextPageNumber);
@@ -856,18 +867,19 @@ enyo.kind({
 	*/
 	completeFinishReordering: function(inEvent) {
 		this.completeReorderTimeout = null;
+		// adjust placeholderRowIndex to now be the final resting place
+		if (this.placeholderRowIndex > this.draggingRowIndex) {
+			this.placeholderRowIndex = Math.max(0, this.placeholderRowIndex - 1);
+		}
 		// if the user dropped the item in the same location where it was picked up, and they
 		// didn't move any other items in the process, pin the item and go into pinned reorder mode
-		if(this.draggingRowIndex == this.placeholderRowIndex && !this.pinnedReorderMode) {
-			if(!this.itemMoved) {
-				this.beginPinnedReorder(inEvent);
-				return;
-			}
-			// release the row being reordered
-			this.dropReorderedRow(inEvent);
+		if(this.draggingRowIndex == this.placeholderRowIndex && !this.pinnedReorderMode && !this.itemMoved) {
+			this.beginPinnedReorder(inEvent);
+			return;
 		}
 		this.removePlaceholderNode();
-		this.dropReorderedRow(inEvent);
+		this.emptyAndHideReorderContainer();
+		this.positionReorderedNode();
 		this.reorderRows(inEvent);
 		this.resetReorderState();
 		this.refresh();
@@ -892,17 +904,12 @@ enyo.kind({
 		}
 		this.$.reorderContainer.render();
 	},
-	//* Puts away reorder container and bubbles a reorder event.
-	dropReorderedRow: function(e) {
-		this.emptyAndHideReorderContainer();
-		this.positionReorderedNode();
-	},
 	//* Swaps the rows that were reordered, and sends up reorder event.
 	reorderRows: function(inEvent) {
 		// send reorder event
 		this.doReorder(this.makeReorderEvent(inEvent));
 		// update page heights if necessary
-		if(this.shouldMoveItemtoDiffPage()) {
+		if(this.currentPageNumber != this.initialPageNumber) {
 			this.moveItemToDiffPage();
 		}
 		// fix indices for reordered rows
@@ -914,15 +921,11 @@ enyo.kind({
 		e.reorderTo = this.placeholderRowIndex;
 		return e;
 	},
-	//* Returns true if user dragged an item to a different page.
-	shouldMoveItemtoDiffPage: function() {
-		return (this.currentPageNumber != this.initialPageNumber);
-	},
 	//* Moves the given item from one page to the next.
 	moveItemToDiffPage: function() {
 		var mover, movee;
-		var currentPage = this.$["page" + this.currentPageNumber % 2];
-		var otherPage = this.$["page" + (this.currentPageNumber + 1) % 2];
+		var currentPage = this.pageForPageNumber(this.currentPageNumber);
+		var otherPage = this.pageForPageNumber(this.currentPageNumber + 1);
 		// if moved down, move current page's firstChild to the end of previous page
 		if(this.initialPageNumber < this.currentPageNumber) {
 			mover = currentPage.hasNode().firstChild;
@@ -938,11 +941,19 @@ enyo.kind({
 	},
 	//* Moves the node being reordered to its new position and shows it.
 	positionReorderedNode: function() {
-		var insertIndex = (this.placeholderRowIndex > this.draggingRowIndex) ? this.placeholderRowIndex+1 : this.placeholderRowIndex;
-		var insertNode = this.$.generator.fetchRowNode(insertIndex);
-		var currentPage = this.$["page" + this.currentPageNumber % 2];
-		currentPage.hasNode().insertBefore(this.hiddenNode, insertNode);
-		this.showNode(this.hiddenNode);
+		var hiddenNode = this.hiddenNode;
+		this.hiddenNode = null;
+		// don't move a hiddenNode that's been deleted
+		if (!hiddenNode.parentNode) {
+			return;
+		}
+		var insertNode = this.$.generator.fetchRowNode(this.placeholderRowIndex);
+		if (insertNode) {
+			insertNode.parentNode.insertBefore(hiddenNode, insertNode);
+		}
+		// FIXME: potential glitch here if list doesn't refresh if we move item
+		// to end of list where insertNode would be null
+		this.showNode(hiddenNode);
 	},
 	//* Resets to original values.
 	resetReorderState: function() {
@@ -1040,7 +1051,7 @@ enyo.kind({
 		// hide existing node
 		this.hiddenNode = this.hideNode(node);
 		// insert placeholder node where original node was
-		var currentPage = this.$["page" + this.currentPageNumber % 2];
+		var currentPage = this.pageForPageNumber(this.currentPageNumber);
 		currentPage.hasNode().insertBefore(this.placeholderNode,this.hiddenNode);
 	},
 	/**
@@ -1059,11 +1070,6 @@ enyo.kind({
 		this.removeNode(this.placeholderNode);
 		this.placeholderNode = null;
 	},
-	//* Removes the hidden node from the DOM.
-	removeHiddenNode: function() {
-		this.removeNode(this.hiddenNode);
-		this.hiddenNode = null;
-	},
 	//* Removes the passed-in node from the DOM.
 	removeNode: function(node) {
 		if(!node || !node.parentNode) {
@@ -1079,7 +1085,7 @@ enyo.kind({
 		if (pageNumber < 0) {
 			return;
 		}
-		var pageControl = this.$["page" + pageNumber % 2];
+		var pageControl = this.pageForPageNumber(pageNumber);
 		var pageHeight = pageControl.getBounds().height;
 		this.pageHeights[pageNumber] = pageHeight;
 	},
@@ -1088,8 +1094,8 @@ enyo.kind({
 		jumping from one page to the next.
 	*/
 	updatePagePositions: function(nextPageNumber) {
-		this.positionPage(this.currentPageNumber, this.$["page" + this.currentPageNumber %2]);
-		this.positionPage(nextPageNumber, this.$["page" + nextPageNumber % 2]);
+		this.positionPage(this.currentPageNumber, this.pageForPageNumber(this.currentPageNumber));
+		this.positionPage(nextPageNumber, this.pageForPageNumber(nextPageNumber));
 	},
 	//* Corrects page heights array after reorder is complete.
 	correctPageHeights: function() {
@@ -1114,7 +1120,9 @@ enyo.kind({
 			enyo.bind(this, this.completeFinishReordering, inEvent), 100);
 		return;
 	},
-	//* Returns the row index that is under the given position on the page.
+	//* Returns the row index that is under the given position on the page.  If the
+	//* position is off the end of the list, this will return this.count.  If the position
+	//* is before the start of the list, you'll get -1.
 	getRowIndexFromCoordinate: function(y) {
 		var cursorPosition = this.getScrollTop() + y - this.getNodePosition(this.hasNode()).top;
 		// happens if we try to drag past top of list
@@ -1125,17 +1133,29 @@ enyo.kind({
 		var rows = (pageInfo.no == this.p0) ? this.p0RowBounds : this.p1RowBounds;
 		// might have only rendered one page, so catch that here
 		if (!rows) {
-			return -1;
+			return this.count;
 		}
 		var posOnPage = pageInfo.pos;
 		var placeholderHeight = parseInt(window.getComputedStyle(this.placeholderNode).height, 10);
-		for(var i=0, totalHeight=0;i<rows.length;i++) {
-			totalHeight += (rows[i].height > 0) ? rows[i].height : placeholderHeight;
-			if(totalHeight >= posOnPage) {
-				return rows[i].index;
+		var totalHeight = 0;
+		for(var i=pageInfo.startRow; i <= pageInfo.endRow; ++i) {
+			// do extra check for row that has placeholder as we'll return -1 here for no match
+			if (i === this.placeholderRowIndex) {
+				// for placeholder
+				totalHeight += placeholderHeight;
+				if(totalHeight >= posOnPage) {
+					return -1;
+				}
+			}
+			// originally dragged row is hidden, so don't count it
+			if (i !== this.draggingRowIndex) {
+				totalHeight += rows[i].height;
+				if(totalHeight >= posOnPage) {
+					return i;
+				}
 			}
 		}
-		return -1;
+		return i;
 	},
 	//* Gets the position of a node (identified via index) on the page.
 	getIndexPosition: function(index) {
@@ -1201,7 +1221,7 @@ enyo.kind({
 			this.$.reorderContainer.addStyles("top:"+(this.initialPinPosition+this.getScrollTop()-this.rowHeight)+"px;");
 		}
 		var index = this.getRowIndexFromCoordinate(this.initialPinPosition);
-		if(index != this.placeholderRowIndex) {
+		if(index != -1) {
 			this.movePlaceholderToIndex(index);
 		}
 	},
