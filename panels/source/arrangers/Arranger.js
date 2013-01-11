@@ -149,7 +149,7 @@ enyo.kind({
 				for (var j=0, kid; (kid=grands[j]); j++) {
 					enyo.dom.accelerate(kid, this.accelerated);
 				}
-			} 
+			}
 		}
 	},
 	// called during "rendered" phase
@@ -203,7 +203,8 @@ enyo.kind({
 		positionControl: function(inControl, inBounds, inUnit) {
 			var unit = inUnit || "px";
 			if (!this.updating) {
-				if (enyo.dom.canTransform() && !enyo.platform.android) {
+				// IE10 uses setBounds because of control hit caching problems seem in some apps
+				if (enyo.dom.canTransform() && !enyo.platform.android && enyo.platform.ie !== 10) {
 					var l = inBounds.left, t = inBounds.top;
 					l = enyo.isString(l) ? l : l && (l + unit);
 					t = enyo.isString(t) ? t : t && (t + unit);
