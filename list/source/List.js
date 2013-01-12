@@ -1246,9 +1246,8 @@ enyo.kind({
 		off the swipe sequence.
 	*/
 	swipeDragStart: function(inSender, inEvent) {
-		// if no swipeable components are defined, or this is a vertical drag,
-		// don't do swipe actions
-		if(!this.isSwipeable() || inEvent.vertical || this.draggingRowIndex > -1) {
+		// if we're not on a row or the swipe is vertical or if we're in the middle of reordering, just say no
+		if(this.index == null || inEvent.vertical || this.draggingRowIndex > -1) {
 			return false;
 		}
 
@@ -1309,6 +1308,11 @@ enyo.kind({
 	},
 	//* When the user flicks, completes the swipe.
 	swipeFlick: function(inSender, inEvent) {
+		// not on a row means swipe didn't happen
+		if (inEvent.index == null) {
+			return;
+		}
+
 		// if swiping is disabled, return early
 		if(!this.isSwipeable()) {
 			return false;
