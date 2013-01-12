@@ -386,7 +386,7 @@ enyo.kind({
 			this.updateRowBoundsAtIndex(index, this.p0RowBounds, this.$.page0);
 		}
 		else if (this.p1RowBounds[index]) {
-			this.updateRowBoundsAtIndex(updateIndex, this.p1RowBounds, this.$.page1);
+			this.updateRowBoundsAtIndex(index, this.p1RowBounds, this.$.page1);
 		}
 	},
 	updateRowBoundsAtIndex: function(index, rows, page) {
