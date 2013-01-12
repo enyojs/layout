@@ -23,6 +23,12 @@
 	line-height:80px;
 	padding-left:30px;
 }
+.list-sample-language-list .serialLabel {
+	float:right;
+	font-size:12px;
+	line-height:80px;
+	padding-right:30px;
+}
 .list-sample-language-list .reorderDragger {
 	background:rgb(0,0,0);
 	background:rgba(0,0,0,0.7);

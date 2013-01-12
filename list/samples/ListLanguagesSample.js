@@ -31,7 +31,8 @@ enyo.kind({
 			components: [
 				{name: "item", classes: "list-sample-language-item", components: [
 					{name: "rowNumber", classes: "rowNumberLabel"},
-					{name: "text", classes: "itemLabel"}
+					{name: "text", classes: "itemLabel"},
+					{name: "serial", classes: "serialLabel"}
 				]}
 			],
 			reorderComponents: [
@@ -69,8 +70,10 @@ enyo.kind({
 		var currentLanguage = this.data[i].langs[this.data[i].currentIndex];
 		var val = this.data[i].val;
 		var number = this.languages[currentLanguage][val];
-		this.$.rowNumber.setContent(i);
+		var serial = this.data[i].serial;
+		this.$.rowNumber.setContent("ROW " + i);
 		this.$.text.setContent(number);
+		this.$.serial.setContent("#" + serial);
 	},
 	setupReorderComponents: function(inSender, inEvent) {
 		var i = inEvent.index;
@@ -138,7 +141,8 @@ enyo.kind({
 			this.data.push({
 				langs: langs,
 				val: i % 10,
-				currentIndex: 0
+				currentIndex: 0,
+				serial: i
 			});
 		}
 		this.data.sort(function() {return 0.5 - Math.random();});
