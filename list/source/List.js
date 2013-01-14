@@ -1247,7 +1247,7 @@ enyo.kind({
 	*/
 	swipeDragStart: function(inSender, inEvent) {
 		// if we're not on a row or the swipe is vertical or if we're in the middle of reordering, just say no
-		if(this.index == null || inEvent.vertical || this.draggingRowIndex > -1) {
+		if(inEvent.index == null || inEvent.vertical || this.draggingRowIndex > -1) {
 			return false;
 		}
 
