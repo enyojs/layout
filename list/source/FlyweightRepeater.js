@@ -147,6 +147,10 @@ enyo.kind({
 	},
 	//* Renders the row specified by _inIndex_.
 	renderRow: function(inIndex) {
+		// do nothing if index is out-of-range
+		if (inIndex < 0 || inIndex >= this.count) {
+			return;
+		}
 		//this.index = null;
 		// always call the setupItem callback, as we may rely on the post-render state
 		this.setupItem(inIndex);
@@ -163,7 +167,7 @@ enyo.kind({
 			return this.node.querySelector('[data-enyo-index="' + inIndex + '"]');
 		}
 	},
-	//* Fetches the DOM node for the given event.
+	//* Fetches the row number corresponding with the target of a given event.
 	rowForEvent: function(inEvent) {
 		if (!this.hasNode()) {
 			return -1;
@@ -181,6 +185,10 @@ enyo.kind({
 	//* Prepares the row specified by _inIndex_ such that changes made to the
 	//* controls inside the repeater will be rendered for the given row.
 	prepareRow: function(inIndex) {
+		// do nothing if index is out-of-range
+		if (inIndex < 0 || inIndex >= this.count) {
+			return;
+		}
 		// update row internals to match model
 		this.setupItem(inIndex);
 		var n = this.fetchRowNode(inIndex);
@@ -194,6 +202,10 @@ enyo.kind({
 	//* controls in the row will be rendered in the given row; then performs the
 	//* function _inFunc_, and, finally, locks the row.
 	performOnRow: function(inIndex, inFunc, inContext) {
+		// do nothing if index is out-of-range
+		if (inIndex < 0 || inIndex >= this.count) {
+			return;
+		}
 		if (inFunc) {
 			this.prepareRow(inIndex);
 			enyo.call(inContext || null, inFunc);
