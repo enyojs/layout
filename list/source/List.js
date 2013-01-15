@@ -327,10 +327,8 @@ enyo.kind({
 		// update known page heights
 		if (!this.fixedHeight) {
 			var h0 = this.getPageHeight(inPageNo);
-			if (h0 != pageHeight && pageHeight > 0) {
-				this.pageHeights[inPageNo] = pageHeight;
-				this.portSize += pageHeight - h0;
-			}
+			this.pageHeights[inPageNo] = pageHeight;
+			this.portSize += pageHeight - h0;
 		}
 	},
 	//* map a row index number to the page number it would be in
@@ -461,7 +459,12 @@ enyo.kind({
 	},
 	scroll: function(inSender, inEvent) {
 		var r = this.inherited(arguments);
-		this.update(this.getScrollTop());
+		var pos = this.getScrollTop();
+		if (this.lastPos === pos) {
+			return r;
+		}
+		this.lastPos = pos;
+		this.update(pos);
 		if(this.shouldDoPinnedReorderScroll()) {
 			this.reorderScroll(inSender, inEvent);
 		}
@@ -981,7 +984,7 @@ enyo.kind({
 			for(i=(to-1),newIndex=to;i>=from;i--) {
 				node = this.$.generator.fetchRowNode(i);
 				if(!node) {
-					enyo.log("No node - "+i);
+					this.log("No node - "+i);
 					continue;
 				}
 				currentIndex = parseInt(node.getAttribute("data-enyo-index"), 10);
@@ -999,7 +1002,7 @@ enyo.kind({
 			for(i=(from+1), newIndex=from;i<=to;i++) {
 				node = this.$.generator.fetchRowNode(i);
 				if(!node) {
-					enyo.log("No node - "+i);
+					this.log("No node - "+i);
 					continue;
 				}
 				currentIndex = parseInt(node.getAttribute("data-enyo-index"), 10);
@@ -1016,7 +1019,7 @@ enyo.kind({
 	getNodeStyle: function(index) {
 		var node = this.$.generator.fetchRowNode(index);
 		if(!node) {
-			enyo.log("No node - "+index);
+			this.log("No node - "+index);
 			return;
 		}
 		var offset = this.getRelativeOffset(node, this.hasNode());
