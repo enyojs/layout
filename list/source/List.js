@@ -444,7 +444,15 @@ enyo.kind({
 		return inPage == Math.max(0, Math.min(this.pageCount-1, inPage));
 	},
 	getPageHeight: function(inPageNo) {
-		return this.pageHeights[inPageNo] || this.defaultPageHeight;
+		var height = this.pageHeights[inPageNo];
+		// estimate the height based on how many rows are in this page
+		if (!height) {
+			var firstRow = this.rowsPerPage * inPageNo;
+			var numRows = Math.min(this.count - firstRow, this.rowsPerPage);
+			height = this.defaultPageHeight * (numRows / this.rowsPerPage);
+		}
+		// can never return height of 0, as that would lead to infinite loops
+		return Math.max(1, height);
 	},
 	invalidatePages: function() {
 		this.p0 = this.p1 = null;
@@ -613,8 +621,14 @@ enyo.kind({
 		enyo.call(s, "twiddle");
 	},
 	// return page0 or page1 control depending on pageNumber odd/even status
-	pageForPageNumber: function(pageNumber) {
-		return this.$["page" + pageNumber % 2];
+	pageForPageNumber: function(pageNumber, checkRange) {
+		if (pageNumber % 2 === 0) {
+			return (!checkRange || (pageNumber === this.p0)) ? this.$.page0 : null;
+		}
+		else {
+			return (!checkRange || (pageNumber === this.p1)) ? this.$.page1 : null;
+		}
+		return null;
 	},
 	/**
 		---- Reorder functionality ------------
@@ -973,10 +987,10 @@ enyo.kind({
 
 		var from = Math.min(this.draggingRowIndex, this.placeholderRowIndex);
 		var to = Math.max(this.draggingRowIndex, this.placeholderRowIndex);
-		var delta = (this.draggingRowIndex - this.placeholderRowIndex > 0) ? 1 : -1;
+		var direction = (this.draggingRowIndex - this.placeholderRowIndex > 0) ? 1 : -1;
 		var node, i, newIndex, currentIndex;
 
-		if(delta === 1) {
+		if(direction === 1) {
 			node = this.$.generator.fetchRowNode(this.draggingRowIndex);
 			if (node) {
 				node.setAttribute("data-enyo-index", "reordered");
@@ -984,7 +998,6 @@ enyo.kind({
 			for(i=(to-1),newIndex=to;i>=from;i--) {
 				node = this.$.generator.fetchRowNode(i);
 				if(!node) {
-					this.log("No node - "+i);
 					continue;
 				}
 				currentIndex = parseInt(node.getAttribute("data-enyo-index"), 10);
@@ -1002,7 +1015,6 @@ enyo.kind({
 			for(i=(from+1), newIndex=from;i<=to;i++) {
 				node = this.$.generator.fetchRowNode(i);
 				if(!node) {
-					this.log("No node - "+i);
 					continue;
 				}
 				currentIndex = parseInt(node.getAttribute("data-enyo-index"), 10);
@@ -1088,9 +1100,11 @@ enyo.kind({
 		if (pageNumber < 0) {
 			return;
 		}
-		var pageControl = this.pageForPageNumber(pageNumber);
-		var pageHeight = pageControl.getBounds().height;
-		this.pageHeights[pageNumber] = pageHeight;
+		var pageControl = this.pageForPageNumber(pageNumber, true);
+		if (pageControl) {
+			var pageHeight = pageControl.getBounds().height;
+			this.pageHeights[pageNumber] = pageHeight;
+		}
 	},
 	/**
 		Repositions the two passed-in pages to support the placeholder node's
