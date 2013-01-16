@@ -456,6 +456,8 @@ enyo.kind({
 	},
 	invalidatePages: function() {
 		this.p0 = this.p1 = null;
+		this.p0RowBounds = {};
+		this.p1RowBounds = {};
 		// clear the html in our render targets
 		this.$.page0.setContent("");
 		this.$.page1.setContent("");
