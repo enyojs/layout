@@ -310,8 +310,10 @@ enyo.kind({
 	},
 	generatePage: function(inPageNo, inTarget) {
 		this.page = inPageNo;
-		var r = this.$.generator.rowOffset = this.rowsPerPage * this.page;
-		var rpp = this.$.generator.count = Math.min(this.count - r, this.rowsPerPage);
+		var r = this.rowsPerPage * this.page;
+		this.$.generator.setRowOffset(r);
+		var rpp = Math.min(this.count - r, this.rowsPerPage);
+		this.$.generator.setCount(rpp);
 		var html = this.$.generator.generateChildHtml();
 		inTarget.setContent(html);
 		// prevent reordering row from being draw twice
@@ -587,6 +589,23 @@ enyo.kind({
 		modifications to a row, to force it to render.
     */
     renderRow: function(inIndex) {
+		// reset generator to map to all rendered rows
+		var firstRow, count;
+		if (this.p1 == null) {
+			if (this.p0 == null) {
+				// no pages rendered, nothing to do
+				return;
+			}
+			// if only page 0 is rendered, then we've only got one page of data
+			firstRow = 0;
+			count = this.count;
+		}
+		else {
+			firstRow = Math.min(this.p0, this.p1) * this.rowsPerPage;
+			count = Math.min(this.count - firstRow, this.rowsPerPage * 2);
+		}
+		this.$.generator.setRowOffset(firstRow);
+		this.$.generator.setCount(count);
 		this.$.generator.renderRow(inIndex);
     },
 	//* Updates row bounds when rows are re-rendered.

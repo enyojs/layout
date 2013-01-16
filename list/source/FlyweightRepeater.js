@@ -44,7 +44,14 @@ enyo.kind({
 			Used to specify custom styling for the repeater's wrapper component
 			(client). Input is identical to enyo.Control.setStyle()
 		*/
-		clientStyle: ''
+		clientStyle: '',
+		/**
+			Offset applied to row number during generation. Used to allow a
+			items to use a natural index instead of being forced to be
+			0-based.  Must be positive, as row -1 is used for undefined rows
+			in the event system.
+		*/
+		rowOffset: 0
 	},
 	events: {
 		/**
@@ -67,8 +74,6 @@ enyo.kind({
 		{kind: "Selection", onSelect: "selectDeselect", onDeselect: "selectDeselect"},
 		{name: "client"}
 	],
-	//* offset to be applied to row number when generating, must be positive
-	rowOffset: 0,
 	create: function() {
 		this.inherited(arguments);
 		this.noSelectChanged();
@@ -148,7 +153,7 @@ enyo.kind({
 	//* Renders the row specified by _inIndex_.
 	renderRow: function(inIndex) {
 		// do nothing if index is out-of-range
-		if (inIndex < 0 || inIndex >= this.count) {
+		if (inIndex < this.rowOffset || inIndex >= this.count + this.rowOffset) {
 			return;
 		}
 		//this.index = null;
