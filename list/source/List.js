@@ -1056,7 +1056,7 @@ enyo.kind({
 			return;
 		}
 		var offset = this.getRelativeOffset(node, this.hasNode());
-		var dimensions = this.getDimensions(node);
+		var dimensions = enyo.dom.getBounds(node);
 		return {h: dimensions.height, w: dimensions.width, left: offset.left, top: offset.top};
 	},
 	//* Gets offset relative to a positioned ancestor node.
@@ -1070,11 +1070,6 @@ enyo.kind({
 			} while (n && n !== p);
 		}
 		return ro;
-	},
-	//* Gets height and width of the given DOM node.
-	getDimensions: function(node) {
-		var style = window.getComputedStyle(node,null);
-		return {height: parseInt(style.getPropertyValue("height"), 10), width: parseInt(style.getPropertyValue("width"), 10)};
 	},
 	replaceNodeWithPlaceholder: function(index) {
 		var node = this.$.generator.fetchRowNode(index);
@@ -1096,7 +1091,7 @@ enyo.kind({
 	*/
 	createPlaceholderNode: function(node) {
 		var placeholderNode = this.$.placeholder.hasNode().cloneNode(true);
-		var nodeDimensions = this.getDimensions(node);
+		var nodeDimensions = enyo.dom.getBounds(node);
 		placeholderNode.style.height = nodeDimensions.height + "px";
 		placeholderNode.style.width = nodeDimensions.width + "px";
 		return placeholderNode;
@@ -1174,7 +1169,7 @@ enyo.kind({
 			return this.count;
 		}
 		var posOnPage = pageInfo.pos;
-		var placeholderHeight = parseInt(window.getComputedStyle(this.placeholderNode).height, 10);
+		var placeholderHeight = enyo.dom.getBounds(this.placeholderNode).height;
 		var totalHeight = 0;
 		for(var i=pageInfo.startRow; i <= pageInfo.endRow; ++i) {
 			// do extra check for row that has placeholder as we'll return -1 here for no match
@@ -1410,7 +1405,7 @@ enyo.kind({
 			return;
 		}
 		var offset = this.getRelativeOffset(node, this.hasNode());
-		var dimensions = this.getDimensions(node);
+		var dimensions = enyo.dom.getBounds(node);
 		var x = (xDirection == 1) ? -1*dimensions.width : dimensions.width;
 		this.$.swipeableComponents.addStyles("top: "+offset.top+"px; left: "+x+"px; height: "+dimensions.height+"px; width: "+dimensions.width+"px;");
 	},
@@ -1437,12 +1432,9 @@ enyo.kind({
 		drag action. Don't allow the container to drag beyond either edge.
 	*/
 	calcNewDragPosition: function(dx) {
-		var parentStyle = window.getComputedStyle(this.$.swipeableComponents.hasNode());
-		if(!parentStyle) {
-			return false;
-		}
-		var xPos = parseInt(parentStyle["left"], 10);
-		var dimensions = this.getDimensions(this.$.swipeableComponents.node);
+		var parentBounds = this.$.swipeableComponents.getBounds();
+		var xPos = parentBounds.left;
+		var dimensions = this.$.swipeableComponents.getBounds();
 		var xlimit = (this.swipeDirection == 1) ? 0 : -1*dimensions.width;
 		var x = (this.swipeDirection == 1)
 			? (xPos + dx > xlimit)
@@ -1510,28 +1502,28 @@ enyo.kind({
 		this.persistentItemOrigin = xDirection == 1 ? "left" : "right";
 	},
 	calcPercentageDragged: function(dx) {
-		return Math.abs(dx/parseInt(window.getComputedStyle(this.$.swipeableComponents.hasNode()).width, 10));
+		return Math.abs(dx/this.$.swipeableComponents.getBounds().width);
 	},
 	swipe: function(speed) {
 		this.setSwipeComplete(true);
 		this.animateSwipe(0,speed);
 	},
 	backOutSwipe: function(e) {
-		var dimensions = this.getDimensions(this.$.swipeableComponents.node);
+		var dimensions = this.$.swipeableComponents.getBounds();
 		var x = (this.swipeDirection == 1) ? -1*dimensions.width : dimensions.width;
 		this.animateSwipe(x,this.fastSwipeSpeedMS);
 		this.setSwipeDirection(null);
 		this.setFlicked(true);
 	},
 	bounceItem: function(e) {
-		var style = window.getComputedStyle(this.$.swipeableComponents.node);
-		if(parseInt(style.left, 10) != parseInt(style.width, 10)) {
+		var bounds = this.$.swipeableComponents.getBounds();
+		if(bounds.left != bounds.width) {
 			this.animateSwipe(0,this.normalSwipeSpeedMS);
 		}
 	},
 	slideAwayItem: function() {
 		var $item = this.$.swipeableComponents;
-		var parentWidth = parseInt(window.getComputedStyle($item.node).width, 10);
+		var parentWidth = $item.getBounds().width;
 		var xPos = (this.persistentItemOrigin == "left") ? -1*parentWidth : parentWidth;
 		this.animateSwipe(xPos,this.normalSwipeSpeedMS);
 		this.persistentItemVisible = false;
