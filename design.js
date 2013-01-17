@@ -3,7 +3,7 @@
 */
 Palette.model.push(
 	{name: "fittable", items: [
-		{name: "FittableRows", title: "Vertical stacked layout", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "Stack of vertical rows, one of which can be made to fit.",
+		{name: "FittableRows", description: "Vertical stacked layout",
 			inline: {kind: "FittableRows", style: "height: 80px; position: relative;", padding: 4, components: [
 				{style: "background-color: lightblue; border: 1px dotted blue; height: 15px;"},
 				{style: "background-color: lightblue; border: 1px dotted blue;", fit: true},
@@ -11,7 +11,7 @@ Palette.model.push(
 			]},
 			config: {content: "$name", isContainer: true, kind: "FittableRows"}
 		},
-		{name: "FittableColumns", title: "Horizontal stacked layout", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "Stack of horizontal columns, one of which can be made to fit.",
+		{name: "FittableColumns", description: "Horizontal stacked layout",
 			inline: {kind: "FittableColumns", style: "height: 60px; position: relative;", padding: 4, components: [
 				{style: "background-color: lightblue; border: 1px dotted blue; width: 20px;"},
 				{style: "background-color: lightblue; border: 1px dotted blue;", fit: true},
@@ -21,21 +21,21 @@ Palette.model.push(
 		}
 	]},
 	{name: "imageview", items: [
-		{name: "ImageCarousel", title: "A carousel of images", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "Stack of vertical rows, one of which can be made to fit.",
+		{name: "ImageCarousel", description: "A carousel of images",
 			inline: {},
 			config: {content: "$name", isContainer: true, kind: "ImageCarousel"}
 		},
-		{name: "ImageView", title: "A scalable Image View", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "Stack of horizontal columns, one of which can be made to fit.",
+		{name: "ImageView", description: "A scalable Image View",
 			inline: {},
 			config: {content: "$name", isContainer: true, kind: "ImageView"}
 		},
-		{name: "ImageViewPin", title: "An unscaled item inside an ImageView", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "Stack of horizontal columns, one of which can be made to fit.",
+		{name: "ImageViewPin", description: "An unscaled item inside an ImageView",
 			inline: {},
 			config: {content: "$name", isContainer: true, kind: "ImageViewPin"}
 		},
 	]},
 	{name: "List", items: [
-		{name: "AroundList", title: "List with elements above the list", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "A component for very long lists",
+		{name: "AroundList", description: "List with elements above the list",
 			inline: {kind: "FittableRows", style: "height: 80px; position: relative;", padding: 4, components: [
 				{style: "background-color: lightgreen; border: 1px dotted green; height: 10px;"},
 				{style: "background-color: lightgreen; border: 1px dotted green; height: 10px;"},
@@ -45,7 +45,7 @@ Palette.model.push(
 			]},
 			config: {content: "$name", isContainer: false, kind: "AroundList", onSetupItem: "", count: 0}
 		},
-		{name: "List", title: "Infinite scrolling list", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "A component for very long lists",
+		{name: "List", description: "Infinite scrolling list",
 			inline: {kind: "FittableRows", style: "height: 80px; position: relative;", padding: 4, components: [
 				{style: "background-color: lightgreen; border: 1px dotted green; height: 10px;"},
 				{style: "background-color: lightgreen; border: 1px dotted green; height: 10px;"},
@@ -55,7 +55,7 @@ Palette.model.push(
 			]},
 			config: {content: "$name", isContainer: false, kind: "List", onSetupItem: "", count: 0}
 		},
-		{name: "PulldownList", title: "List with pull-to-refresh", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "A component for very long lists",
+		{name: "PulldownList", description: "List with pull-to-refresh",
 			inline: {kind: "FittableRows", style: "height: 80px; position: relative;", padding: 4, components: [
 				{style: "background-color: lightgreen; border: 1px dotted green; height: 10px;"},
 				{style: "background-color: lightgreen; border: 1px dotted green; height: 10px;"},
@@ -67,7 +67,7 @@ Palette.model.push(
 		}
 	]},
 	{name: "Panels", items: [
-		{name: "CardArranger", title: "Selectable sub-view", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "A component for panels",
+		{name: "CardArranger", description: "Selectable sub-view",
 			inline: {kind: "FittableColumns", style: "height: 60px; position: relative;", padding: 4, components: [
 				{style: "background-color: lightgreen; border: 1px dotted green; width: 20px;"},
 				{style: "background-color: lightgreen; border: 1px dotted green;", fit: true},
@@ -75,7 +75,7 @@ Palette.model.push(
 			]},
 			config: {content: "$name", isContainer: true, kind: "Panels", arrangerKind: "CardArranger"}
 		},
-		{name: "CardSlideInArranger", title: "Selectable sub-view", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "A component for panels",
+		{name: "CardSlideInArranger", description: "Selectable sub-view",
 			inline: {kind: "FittableColumns", style: "height: 60px; position: relative;", padding: 4, components: [
 				{style: "background-color: lightgreen; border: 1px dotted green; width: 20px;"},
 				{style: "background-color: lightgreen; border: 1px dotted green;", fit: true},
@@ -83,7 +83,7 @@ Palette.model.push(
 			]},
 			config: {content: "$name", isContainer: true, kind: "Panels", arrangerKind: "CardSlideInArranger"}
 		},
-		{name: "CarouselArranger", title: "Selectable sub-view", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "A component for panels",
+		{name: "CarouselArranger", description: "Selectable sub-view",
 			inline: {kind: "FittableColumns", style: "height: 60px; position: relative;", padding: 4, components: [
 				{style: "background-color: lightgreen; border: 1px dotted green; width: 20px;"},
 				{style: "background-color: lightgreen; border: 1px dotted green;", fit: true},
@@ -91,15 +91,17 @@ Palette.model.push(
 			]},
 			config: {content: "$name", isContainer: true, kind: "Panels", arrangerKind: "CarouselArranger"}
 		},
-		{name: "CollapsingArranger", title: "Selectable sub-view", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "A component for panels",
+		{name: "CollapsingArranger", description: "Selectable sub-view",
 			inline: {kind: "FittableColumns", style: "height: 60px; position: relative;", padding: 4, components: [
 				{style: "background-color: lightgreen; border: 1px dotted green; width: 20px;"},
 				{style: "background-color: lightgreen; border: 1px dotted green;", fit: true},
 				{style: "background-color: lightgreen; border: 1px dotted green; width: 20px;"}
 			]},
-			config: {content: "$name", isContainer: true, kind: "Panels", arrangerKind: "CollapsingArranger"}
+			config: {content: "$name", isContainer: true, kind: "Panels", arrangerKind: "CollapsingArranger", components: [
+				{content: "Placeholder"}
+			]}
 		},
-		{name: "DockRightArranger", title: "Selectable sub-view", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "A component for panels",
+		{name: "DockRightArranger", description: "Selectable sub-view",
 			inline: {kind: "FittableColumns", style: "height: 60px; position: relative;", padding: 4, components: [
 				{style: "background-color: lightgreen; border: 1px dotted green; width: 20px;"},
 				{style: "background-color: lightgreen; border: 1px dotted green;", fit: true},
@@ -107,7 +109,7 @@ Palette.model.push(
 			]},
 			config: {content: "$name", isContainer: true, kind: "Panels", arrangerKind: "DockRightArranger"}
 		},
-		{name: "GridArranger", title: "Selectable sub-view", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "A component for panels",
+		{name: "GridArranger", description: "Selectable sub-view",
 			inline: {kind: "FittableColumns", style: "height: 60px; position: relative;", padding: 4, components: [
 				{style: "background-color: lightgreen; border: 1px dotted green; width: 20px;"},
 				{style: "background-color: lightgreen; border: 1px dotted green;", fit: true},
@@ -115,7 +117,7 @@ Palette.model.push(
 			]},
 			config: {content: "$name", isContainer: true, kind: "Panels", arrangerKind: "GridArranger"}
 		},
-		{name: "LeftRightArranger", title: "Selectable sub-view", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "A component for panels",
+		{name: "LeftRightArranger", description: "Selectable sub-view",
 			inline: {kind: "FittableColumns", style: "height: 60px; position: relative;", padding: 4, components: [
 				{style: "background-color: lightgreen; border: 1px dotted green; width: 20px;"},
 				{style: "background-color: lightgreen; border: 1px dotted green;", fit: true},
@@ -123,7 +125,7 @@ Palette.model.push(
 			]},
 			config: {content: "$name", isContainer: true, kind: "Panels", arrangerKind: "LeftRightArranger"}
 		},
-		{name: "UpDownArranger", title: "Selectable sub-view", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "A component for panels",
+		{name: "UpDownArranger", description: "Selectable sub-view",
 			inline: {kind: "FittableColumns", style: "height: 60px; position: relative;", padding: 4, components: [
 				{style: "background-color: lightgreen; border: 1px dotted green; width: 20px;"},
 				{style: "background-color: lightgreen; border: 1px dotted green;", fit: true},
@@ -133,7 +135,7 @@ Palette.model.push(
 		},
 	]},
 	{name: "Slideable", items: [
-		{name: "Slideable", title: "Slideable sub-view", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "A component for slideable",
+		{name: "Slideable", description: "Slideable sub-view",
 			inline: {kind: "FittableColumns", style: "height: 40px; position: relative;", padding: 4, components: [
 				{style: "background-color: lightgreen; border: 1px dotted green; width: 20px;"},
 				{style: "background-color: lightblue; border: 1px dotted blue;", fit: true}
@@ -142,7 +144,7 @@ Palette.model.push(
 		}
 	]},
 	{name: "Tree", items: [
-		{name: "Node", title: "A tree node", icon: "package_new.png", stars: 4.5, version: 2.0, blurb: "A component for Trees",
+		{name: "Node", description: "A tree node",
 			inline: {kind: "FittableColumns", style: "height: 40px; position: relative;", padding: 4, components: [
 				{style: "background-color: lightgreen; border: 1px dotted green; width: 20px;"},
 				{style: "background-color: lightblue; border: 1px dotted blue;", fit: true},
