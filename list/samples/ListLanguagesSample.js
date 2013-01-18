@@ -30,14 +30,14 @@ enyo.kind({
 			onSwipeComplete: "swipeComplete",
 			components: [
 				{name: "item", classes: "list-sample-language-item", components: [
-					{name: "rowNumber", classes: "rowNumberLabel"},
 					{name: "text", classes: "itemLabel"},
+					{name: "rowNumber", classes: "rowNumberLabel"},
 					{name: "serial", classes: "serialLabel"}
 				]}
 			],
 			reorderComponents: [
 				{name: "reorderContent", classes: "enyo-fit reorderDragger", components: [
-					{name: "reorderTitle", tag: "h2", style: "text-align:center;", allowHtml: true}
+					{name: "reorderTitle", tag: "h2", allowHtml: true}
 				]}
 			],
 			pinnedReorderComponents: [
