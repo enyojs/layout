@@ -57,7 +57,7 @@ enyo.kind(
             itemSpacing: 0,
             //Set this to true if you want the items in each GridList row to be normalized to the same height. 
             //This setting is ignored (meaning rows are not normalized for performance benefits since we already know that the items have the same height) for the cases when either of itemFluidWidth or itemFixedSize is set to true. 
-            normalizeRows: true
+            normalizeRows: false
         },
         events: {
             /**
@@ -108,6 +108,9 @@ enyo.kind(
             this.$.generator.itemWidth = this.itemWidth;
         },
         itemHeightChanged: function() {
+            if (this.itemHeight >=0 && !this.itemFixedSize) {
+                this.itemHeight = Math.max(this.itemHeight, this.itemMinHeight);
+            }
             this.$.generator.itemHeight = this.itemHeight;
         },
         itemMinWidthChanged: function() {
