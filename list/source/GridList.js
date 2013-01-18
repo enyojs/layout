@@ -57,19 +57,14 @@ enyo.kind(
             itemSpacing: 0,
             //Set this to true if you want the items in each GridList row to be normalized to the same height. 
             //This setting is ignored (meaning rows are not normalized for performance benefits since we already know that the items have the same height) for the cases when either of itemFluidWidth or itemFixedSize is set to true. 
-            normalizeRows: false
+            normalizeRows: true
         },
         events: {
             /**
             Fires once per item (GridList item) at pre-render (before rendering) time to give the developer an opportunity to set the dimensions of the item.
             _inEvent.index_ contains the current item index.
             */
-            onSizeupItem: "",
-            /**
-            Fires once per item (GridList item) at render time.
-            _inEvent.index_ contains the current item index.
-            */
-            onSetupItem: ""
+            onSizeupItem: ""
         },
         //Call this function after the GridList data is ready. This method renders (displays) the GridList. 
         //This is a convenience method that does a) setCount and b) reset on the List instead of the developer having to invoke these two calls separately. 
@@ -101,12 +96,10 @@ enyo.kind(
             }
             this.$.generator.itemFluidWidth = this.itemFluidWidth;
             this.fixedSize = this.$.generator.itemFixedSize || this.$.generator.itemFluidWidth;
-            this.setNormalizeRows(false);
         },
         itemFixedSizeChanged: function() {
             this.$.generator.itemFixedSize = this.itemFixedSize;
             this.fixedSize = this.$.generator.itemFixedSize || this.$.generator.itemFluidWidth;
-            this.setNormalizeRows(false);
         },
         itemWidthChanged: function() {
             if (this.itemWidth >=0 && !this.itemFixedSize) {
@@ -218,7 +211,7 @@ enyo.kind(
         //Override List's listTools array to a) use GridFlyweightRepeater instead of FlyweightRepeater and b) define an extra "_dummy_" component used to measure the dimensions of items at run-time. 
         listTools: [ 
             {
-                name: "port", classes: "enyo-list-port enyo-border-box", 
+                name: "port", classes: "enyo-list-port enyo-gridlist-port enyo-border-box", 
                 components: [
                     {
                         name: "generator", kind: "GridFlyWeightRepeater", showing: false, 
