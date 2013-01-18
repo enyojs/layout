@@ -12,5 +12,7 @@ enyo.depends(
 	"ListLanguagesSample.css",
 	"ListLanguagesSample.js",
 	"FlyweightRepeaterSample.css",
-	"FlyweightRepeaterSample.js"
+	"FlyweightRepeaterSample.js",
+	"ListHorizontalFlickrSample.css",
+	"ListHorizontalFlickrSample.js"
 );

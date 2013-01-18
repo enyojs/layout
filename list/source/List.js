@@ -42,6 +42,11 @@ enyo.kind({
 		*/
 		rowsPerPage: 50,
 		/**
+			Direction list will be rendered & scrollable--either "v" for vertical
+			or "h" for horizontal
+		*/
+		orient: "v",
+		/**
 			If true, renders the list such that row 0 is at the bottom of the
 			viewport and the beginning position of the list is scrolled to the
 			bottom
@@ -56,8 +61,8 @@ enyo.kind({
 		multiSelect: false,
 		//* If true, the selected item will toggle
 		toggleSelected: false,
-		//* If true, the list will assume all rows have the same height for optimization
-		fixedHeight: false,
+		//* If true, the list will assume all rows have the same size for optimization
+		fixedSize: false,
 		//* If true, the list will allow the user to reorder list items
 		reorderable: false,
 		//* If true and _reorderable_ is true, reorderable item will be centered on finger
@@ -96,7 +101,7 @@ enyo.kind({
 		onflick: "flick"
 	},
 	//* @protected
-	rowHeight: 0,
+	rowSize: 0,
 	listTools: [
 		{name: "port", classes: "enyo-list-port enyo-border-box", components: [
 			{name: "generator", kind: "FlyweightRepeater", canGenerate: false, components: [
@@ -158,9 +163,16 @@ enyo.kind({
 		this.inherited(arguments);
 	},
 	create: function() {
-		this.pageHeights = [];
+		this.pageSizes = [];
+		this.orientV = this.orient == "v";
+		this.vertical = this.orientV ? "default" : "hidden";
 		this.inherited(arguments);
+		this.$.generator.orient = this.orient;		
 		this.getStrategy().translateOptimized = true;
+		this.pageBound = this.orientV ? "top" : "left";
+		this.$.port.addRemoveClass("horizontal",!this.orientV);		
+		this.$.page0.addRemoveClass("vertical",this.orientV);
+		this.$.page1.addRemoveClass("vertical",this.orientV);		
 		this.bottomUpChanged();
 		this.noSelectChanged();
 		this.multiSelectChanged();
@@ -204,7 +216,13 @@ enyo.kind({
 		this.$.generator.bottomUp = this.bottomUp;
 		this.$.page0.applyStyle(this.pageBound, null);
 		this.$.page1.applyStyle(this.pageBound, null);
-		this.pageBound = this.bottomUp ? "bottom" : "top";
+		this.pageBound = this.orientV ? (this.bottomUp ? "bottom" : "top") : (this.bottomUp ? "right" : "left");
+		
+		if (!this.orientV && this.bottomUp){
+			this.$.page0.applyStyle("left", "auto");
+			this.$.page1.applyStyle("left", "auto");			
+		}
+		
 		if (this.hasNode()) {
 			this.reset();
 		}
@@ -227,11 +245,11 @@ enyo.kind({
 		this.$.strategy.dispatchEvent("on" + e.type, e, s);
 	},
 	updateMetrics: function() {
-		this.defaultPageHeight = this.rowsPerPage * (this.rowHeight || 100);
+		this.defaultPageSize = this.rowsPerPage * (this.rowSize || 100);
 		this.pageCount = Math.ceil(this.count / this.rowsPerPage);
 		this.portSize = 0;
 		for (var i=0; i < this.pageCount; i++) {
-			this.portSize += this.getPageHeight(i);
+			this.portSize += this.getPageSize(i);
 		}
 		this.adjustPortSize();
 	},
@@ -305,29 +323,29 @@ enyo.kind({
 		if(this.getReorderable() && this.draggingRowIndex > -1) {
 			this.hideReorderingRow();
 		}
-		var pageHeight = inTarget.getBounds().height;
-		// if rowHeight is not set, use the height from the first generated page
-		if (!this.rowHeight && pageHeight > 0) {
-			this.rowHeight = Math.floor(pageHeight / rpp);
+		var pageSize = this.orientV ? inTarget.getBounds().height : inTarget.getBounds().width;
+		// if rowSize is not set, use the height or width from the first generated page
+		if (!this.rowSize && pageSize > 0) {
+			this.rowSize = Math.floor(pageSize / rpp);
 			this.updateMetrics();
 		}
 		// update known page heights
-		if (!this.fixedHeight) {
-			var h0 = this.getPageHeight(inPageNo);
-			if (h0 != pageHeight && pageHeight > 0) {
-				this.pageHeights[inPageNo] = pageHeight;
-				this.portSize += pageHeight - h0;
+		if (!this.fixedSize) {
+			var s0 = this.getPageSize(inPageNo);
+			if (s0 != pageSize && pageSize > 0) {
+				this.pageSizes[inPageNo] = pageSize;
+				this.portSize += pageSize - s0;
 			}
 		}
 	},
-	update: function(inScrollTop) {
+	update: function(inScrollStart) {
 		var updated = false;
 		// get page info for position
-		var pi = this.positionToPageInfo(inScrollTop);
+		var pi = this.positionToPageInfo(inScrollStart);
 		// zone line position
-		var pos = pi.pos + this.scrollerHeight/2;
+		var pos = pi.pos + this.scrollerSize/2;
 		// leap-frog zone position
-		var k = Math.floor(pos/Math.max(pi.height, this.scrollerHeight) + 1/2) + pi.no;
+		var k = Math.floor(pos/Math.max((this.orientV ? pi.height : pi.width), this.scrollerSize) + 1/2) + pi.no;
 		// which page number for page0 (even number pages)?
 		var p = (k % 2 === 0) ? k : k-1;
 		if (this.p0 != p && this.isPageInRange(p)) {
@@ -335,7 +353,7 @@ enyo.kind({
 			this.positionPage(p, this.$.page0);
 			this.p0 = p;
 			updated = true;
-			this.p0RowBounds = this.getPageRowHeights(this.$.page0);
+			this.p0RowBounds = this.getPageRowSizes(this.$.page0);
 		}
 		// which page number for page1 (odd number pages)?
 		p = (k % 2 === 0) ? Math.max(1, k-1) : k;
@@ -345,14 +363,14 @@ enyo.kind({
 			this.positionPage(p, this.$.page1);
 			this.p1 = p;
 			updated = true;
-			this.p1RowBounds = this.getPageRowHeights(this.$.page1);
+			this.p1RowBounds = this.getPageRowSizes(this.$.page1);
 		}
-		if (updated && !this.fixedHeight) {
+		if (updated && !this.fixedSize) {
 			this.adjustBottomPage();
 			this.adjustPortSize();
 		}
 	},
-	getPageRowHeights: function(page) {
+	getPageRowSizes: function(page) {
 		var rows = [];
 		var allDivs = document.querySelectorAll('#' + page.id + " div[data-enyo-index]");
 		for (var i=0, index, bounds; i < allDivs.length; i++) {
@@ -394,48 +412,51 @@ enyo.kind({
 		this.update(this.calcPos(inPos));
 	},
 	calcPos: function(inPos) {
-		return (this.bottomUp ? (this.portSize - this.scrollerHeight - inPos) : inPos);
+		return (this.bottomUp ? (this.portSize - this.scrollerSize - inPos) : inPos);
 	},
 	adjustBottomPage: function() {
 		var bp = this.p0 >= this.p1 ? this.$.page0 : this.$.page1;
 		this.positionPage(bp.pageNo, bp);
 	},
 	adjustPortSize: function() {
-		this.scrollerHeight = this.getBounds().height;
-		var s = Math.max(this.scrollerHeight, this.portSize);
-		this.$.port.applyStyle("height", s + "px");
+		this.scrollerSize = this.orientV ? this.getBounds().height : this.getBounds().width;
+		var s = Math.max(this.scrollerSize, this.portSize);
+		this.$.port.applyStyle((this.orientV ? "height" : "width"), s + "px");
+		if (!this.orientV) {
+			this.$.port.applyStyle("height", this.getBounds().height + "px");			
+		}
 	},
 	positionPage: function(inPage, inTarget) {
 		inTarget.pageNo = inPage;
-		var y = this.pageToPosition(inPage);
-		inTarget.applyStyle(this.pageBound, y + "px");
+		var p = this.pageToPosition(inPage);
+		inTarget.applyStyle(this.pageBound, p + "px");
 	},
 	pageToPosition: function(inPage) {
-		var y = 0;
-		var p = inPage;
-		while (p > 0) {
-			p--;
-			y += this.getPageHeight(p);
+		var p = 0;
+		var page = inPage;
+		while (page > 0) {
+			page--;
+			p += this.getPageSize(page);
 		}
-		return y;
+		return p;
 	},
-	positionToPageInfo: function(inY) {
+	positionToPageInfo: function(inP) {
 		var page = -1;
-		var p = this.calcPos(inY);
-		var h = this.defaultPageHeight;
+		var p = this.calcPos(inP);
+		var s = this.defaultPageSize;
 		while (p >= 0) {
 			page++;
-			h = this.getPageHeight(page);
-			p -= h;
+			s = this.getPageSize(page);
+			p -= s;
 		}
 		page = Math.max(page, 0);
-		return {no: page, height: h, pos: p+h};
+		return {no: page, height: (this.orientV ? s : undefined), width: (this.orientV ? undefined : s), pos: p+s};
 	},
 	isPageInRange: function(inPage) {
 		return inPage == Math.max(0, Math.min(this.pageCount-1, inPage));
 	},
-	getPageHeight: function(inPageNo) {
-		return this.pageHeights[inPageNo] || this.defaultPageHeight;
+	getPageSize: function(inPageNo) {
+		return this.pageSizes[inPageNo] || this.defaultPageSize;
 	},
 	invalidatePages: function() {
 		this.p0 = this.p1 = null;
@@ -444,13 +465,13 @@ enyo.kind({
 		this.$.page1.setContent("");
 	},
 	invalidateMetrics: function() {
-		this.pageHeights = [];
-		this.rowHeight = 0;
+		this.pageSizes = [];
+		this.rowSize = 0;
 		this.updateMetrics();
 	},
 	scroll: function(inSender, inEvent) {
 		var r = this.inherited(arguments);
-		this.update(this.getScrollTop());
+		this.update(this.orientV ? this.getScrollTop() : this.getScrollLeft());
 		if(this.shouldDoPinnedReorderScroll()) {
 			this.reorderScroll(inSender, inEvent);
 		}
@@ -462,10 +483,10 @@ enyo.kind({
 		this.twiddle();
 	},
 	getScrollPosition: function() {
-		return this.calcPos(this.getScrollTop());
+		return this.calcPos(this[(this.orientV ? "getScrollTop" : "getScrollLeft")]());
 	},
 	setScrollPosition: function(inPos) {
-		this.setScrollTop(this.calcPos(inPos));
+		this[(this.orientV ? "getScrollTop" : "getScrollLeft")](this.calcPos(inPos));
 	},
 	//* @public
 	//* Scrolls the list so the last item is visible.
@@ -487,27 +508,27 @@ enyo.kind({
 			var rowNode = this.$.generator.fetchRowNode(inRow);
 			if (rowNode) {
 				// calc row offset
-				var offset = rowNode.offsetTop;
+				var offset = (this.orientV ? rowNode.offsetTop : rowNode.offsetLeft);
 				if (this.bottomUp) {
-					offset = this.getPageHeight(page) - rowNode.offsetHeight - offset;
+					offset = this.getPageSize(page) - (this.orientV ? rowNode.offsetHeight : rowNode.offsetWidth) - offset;
 				}
-				var y = this.getScrollPosition() + offset;
-				this.setScrollPosition(y);
+				var p = this.getScrollPosition() + offset;
+				this.setScrollPosition(p);
 			}
 		}
 	},
 	//* Scrolls to the beginning of the list.
 	scrollToStart: function() {
-		this[this.bottomUp ? "scrollToBottom" : "scrollToTop"]();
+		this[this.bottomUp ? (this.orientV ? "scrollToBottom" : "scrollToRight") : "scrollToTop"]();
 	},
 	//* Scrolls to the end of the list.
 	scrollToEnd: function() {
-		this[this.bottomUp ? "scrollToTop" : "scrollToBottom"]();
+		this[this.bottomUp ? (this.orientV ? "scrollToTop" : "scrollToLeft") : (this.orientV ? "scrollToBottom" : "scrollToRight")]();
 	},
 	//* Re-renders the list at the current position.
 	refresh: function() {
 		this.invalidatePages();
-		this.update(this.getScrollTop());
+		this.update(this[(this.orientV ? "getScrollTop" : "getScrollLeft")]());
 		this.stabilize();
 
 		//FIXME: Necessary evil for Android 4.0.4 refresh bug
@@ -1060,12 +1081,12 @@ enyo.kind({
 		node.parentNode.removeChild(node);
 	},
 	/**
-		Updates _this.pageHeights_ to support the placeholder node's jumping
+		Updates _this.pageSizes_ to support the placeholder node's jumping
 		from one page to the next.
 	*/
 	updatePageHeight: function(pageNumber, pageDOMElement) {
 		var pageHeight = pageDOMElement.getBounds().height;
-		this.pageHeights[pageNumber] = pageHeight;
+		this.pageSizes[pageNumber] = pageHeight;
 	},
 	/**
 		Repositions the two passed-in pages to support the placeholder node's
@@ -1076,7 +1097,7 @@ enyo.kind({
 		this.positionPage(nextPageNumber, this.$["page"+nextPage]);
 	},
 	//* Corrects page heights array after reorder is complete.
-	correctPageHeights: function() {
+	correctPageSizes: function() {
 		var initPageNumber = this.initialPageNumber%2;
 		this.updatePageHeight(this.currentPageNumber, this.$["page"+this.currentPage]);
 		if(initPageNumber != this.currentPageNumber) {
@@ -1179,7 +1200,7 @@ enyo.kind({
 	reorderScroll: function(inSender, e) {
 		// if we are using the standard scroll strategy, we have to move the pinned row with the scrolling
 		if(this.getStrategyKind() == "ScrollStrategy") {
-			this.$.reorderContainer.addStyles("top:"+(this.initialPinPosition+this.getScrollTop()-this.rowHeight)+"px;");
+			this.$.reorderContainer.addStyles("top:"+(this.initialPinPosition+this.getScrollTop()-this.rowSize)+"px;");
 		}
 		var index = this.getRowIndexFromCoordinate(this.initialPinPosition);
 		if(index != this.placeholderRowIndex) {

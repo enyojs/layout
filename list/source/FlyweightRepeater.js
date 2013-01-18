@@ -44,7 +44,12 @@ enyo.kind({
 			Used to specify custom styling for the repeater's wrapper component
 			(client). Input is identical to enyo.Control.setStyle()
 		*/
-		clientStyle: ''
+		clientStyle: '',
+		/**
+			Direction items will be laid out--either "v" for vertical
+			or "h" for horizontal
+		*/
+		orient: "v"
 	},
 	events: {
 		/**
@@ -103,6 +108,9 @@ enyo.kind({
 			r = this.rowOffset + (this.bottomUp ? this.count - i-1 : i);
 			this.setupItem(r);
 			this.$.client.setAttribute("data-enyo-index", r);
+			if (this.orient == "h") {
+				this.$.client.setStyle("display:inline-block;");	
+			}
 			h += this.inherited(arguments);
 			this.$.client.teardownRender();
 		}
