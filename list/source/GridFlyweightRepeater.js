@@ -11,31 +11,14 @@ enyo.kind({
 	kind: "enyo.FlyweightRepeater",
 	events: {
 		/**
-		Fires once per tile at pre-render time (to figure out dimensions of the tile). 
-		_inEvent.index_ contains the current tile index.
-		_inEvent.selected_ is a boolean indicating whether the current tile is selected.
+		Fires once per item at pre-render time (to figure out dimensions of the item). 
+		_inEvent.index_ contains the current item index.
+		_inEvent.selected_ is a boolean indicating whether the current item is selected.
 		*/
-		onSizeupItem: "",
-		/**
-		Fires once per tile at render time. 
-		_inEvent.index_ contains the current tile index.
-		_inEvent.selected_ is a boolean indicating whether the current tile is selected.
-		*/
-		onSetupItem: ""
+		onSizeupItem: ""
 	},
-	//See GridList.js for comments on these properties.  
-    itemFluidWidth: false,
-    itemFixedSize: false,
-    itemDefaultWidth: 160,
-    itemMinWidth: 160,
-    itemWidth: 160,
-    itemDefaultHeight: 120,
-    itemMinHeight: 120,
-    itemHeight: 120,
-    itemSpacing: 0,
-    normalizeRows: true,
-    itemsPerRow: 0,
-	_tilesFromPreviousPage: 0,
+	itemsPerRow: 0,
+	_itemsFromPreviousPage: 0,
 	generateChildHtml: function() {
 		if (this.itemFluidWidth || this.itemFixedSize) {
 			return this._generateChildHtmlEqualSizedItems();
@@ -78,43 +61,43 @@ enyo.kind({
 	},
 	_generateChildHtmlVariableSizedItems: function() {
 		this.index = null;
-		var tile = null;
+		var item = null;
 		var cl = this.$.client;
 		var cw = this.owner.hasNode().clientWidth;
-  		var w = 0, rw = 0, h = 0, rh = 0, raw = 0, rah = 0,  rowIndex = 0, tileW = 0, tileH = 0, w2h = this.itemDefaultWidth/this.itemDefaultHeight;
-  		var rows = [{index: 0, tiles: []}];
-  		var lastTile = false;
+  		var w = 0, rw = 0, h = 0, rh = 0, raw = 0, rah = 0,  rowIndex = 0, itemW = 0, itemH = 0, w2h = this.itemMinWidth/this.itemMinHeight;
+  		var rows = [{index: 0, items: []}];
+  		var lastitem = false;
   		var dummy = this.owner.$._dummy_.hasNode();
   		
   		if (this.owner.page == 0) {
-  			this._tilesFromPreviousPage = 0;
+  			this._itemsFromPreviousPage = 0;
   		}
-  		var count = this.count + this._tilesFromPreviousPage;
-  		for (var i=0, r = i + this.rowOffset - this._tilesFromPreviousPage; i < count; i++, r++) {
-  			tileW = 0;
-			tileH = 0;
+  		var count = this.count + this._itemsFromPreviousPage;
+  		for (var i=0, r = i + this.rowOffset - this._itemsFromPreviousPage; i < count; i++, r++) {
+  			itemW = 0;
+			itemH = 0;
 			this.doSizeupItem({index: r, selected: this.isSelected(r)});
-			tileW = this.itemWidth;
-			tileH = this.itemHeight;
-			if (!tileW || tileW==undefined || isNaN(tileW) || tileW <= 0) {
+			itemW = this.itemWidth;
+			itemH = this.itemHeight;
+			if (!itemW || itemW==undefined || isNaN(itemW) || itemW <= 0) {
 				//Try setupitem
 				this.doSetupItem({index: r, selected: this.isSelected(r)});
 				dummy.innerHTML = cl.generateChildHtml();
-				tileW = dummy.clientWidth;
-				tileH = dummy.clientHeight;
+				itemW = dummy.clientWidth;
+				itemH = dummy.clientHeight;
 			}
-			if (!tileW || tileW==undefined || isNaN(tileW) || tileW <= 0) {
+			if (!itemW || itemW==undefined || isNaN(itemW) || itemW <= 0) {
 				//Use default values
-				tileW = this.itemDefaultWidth;
-				tileH = this.itemDefaultHeight;
+				itemW = this.itemMinWidth;
+				itemH = this.itemMinHeight;
 			}
-			if (!tileH || tileH==undefined || isNaN(tileH) || tileH <= 0) {
-				tileH = this.itemDefaultHeight;
+			if (!itemH || itemH==undefined || isNaN(itemH) || itemH <= 0) {
+				itemH = this.itemMinHeight;
 			}
-			w2h = tileW/tileH;
-			w = Math.min(tileW, cw);
+			w2h = itemW/itemH;
+			w = Math.min(itemW, cw);
 			if (this.itemMinWidth && this.itemMinWidth > 0) {
-				w = Math.max(tileW, this.itemMinWidth);
+				w = Math.max(itemW, this.itemMinWidth);
 			}
 			lastRowInPage = (i == count - 1);
 			h = w/w2h;
@@ -122,54 +105,54 @@ enyo.kind({
 			rw += w;
 			rh += h;
 			
-			tile = {index: r, pageIndex: i, width: w, height: h};
-			rows[rowIndex].tiles.push(tile);
+			item = {index: r, pageIndex: i, width: w, height: h};
+			rows[rowIndex].items.push(item);
 			if (!this.normalizeRows) {
 				continue;
 			}
 			
-			raw = rw/(rows[rowIndex].tiles.length);
-			rah = rh/(rows[rowIndex].tiles.length);
+			raw = rw/(rows[rowIndex].items.length);
+			rah = rh/(rows[rowIndex].items.length);
 			
 			if (rw >= cw || lastRowInPage) {
 				rows[rowIndex].avgHeight = rah;
 				rows[rowIndex].index = rowIndex;
 				
-				//Spill over tiles collected so far on this page to next page if they don't scale well to fill up remaining gutter  
-				var tilesInRow = rows[rowIndex].tiles.length;
-				var gutterPerTile = (cw-rw)/tilesInRow;
+				//Spill over items collected so far on this page to next page if they don't scale well to fill up remaining gutter  
+				var itemsInRow = rows[rowIndex].items.length;
+				var gutterPeritem = (cw-rw)/itemsInRow;
 				var lastRowInList = (r == this.owner.count - 1);
 				
-				//If remaining tiles in the row need to be stretched more than 50% of the avg tile width in the row, ditch/spill them over into the next page
-				this._tilesFromPreviousPage = 0;
-				if ((lastRowInPage && gutterPerTile + raw > (1.5 * raw))) {
-					//Remove all these tiles from this row and push them to next page
-					this._tilesFromPreviousPage = tilesInRow;
-					rows[rowIndex] = {avgHeight: 0, index: rowIndex, tiles: []};
+				//If remaining items in the row need to be stretched more than 50% of the avg item width in the row, ditch/spill them over into the next page
+				this._itemsFromPreviousPage = 0;
+				if ((lastRowInPage && gutterPeritem + raw > (1.5 * raw))) {
+					//Remove all these items from this row and push them to next page
+					this._itemsFromPreviousPage = itemsInRow;
+					rows[rowIndex] = {avgHeight: 0, index: rowIndex, items: []};
 					break;
 				} 
 				this._normalizeRow(rows[rowIndex]);
 				if (!lastRowInPage) {
 					rowIndex++;
-					rows[rowIndex] = {avgHeight: 0, index: 0, tiles: []};
+					rows[rowIndex] = {avgHeight: 0, index: 0, items: []};
 				}
-				rw = 0, rh = 0, rah = 0, raw = 0, w = 0, h = 0, tileW = 0, tileH = 0;
+				rw = 0, rh = 0, rah = 0, raw = 0, w = 0, h = 0, itemW = 0, itemH = 0;
 			}
 		}
 		dummy.innerHTML = "";
   		
-  		// Now that we have completed normalization of tiles into rows and pages, we have the computed tile widths and heights. Render the tiles now. 
+  		// Now that we have completed normalization of items into rows and pages, we have the computed item widths and heights. Render the items now. 
   		var ht = "", clh = "";
   		var row;
   		for (var i=0; i < rows.length; i++) {
   			row = rows[i];
-  			if (!row.tiles || row.tiles.length==0)
+  			if (!row.items || row.items.length==0)
   				continue;
-  			for (var j=0; j < row.tiles.length; j++) {
-  				tile = row.tiles[j];
-  				this.doSetupItem({index: tile.index, selected: this.isSelected(tile.index)});
-  				cl.setAttribute("data-enyo-index", tile.index);
-  				cl.addStyles("width:" + tile.width + "px;height:" + tile.height + "px;");
+  			for (var j=0; j < row.items.length; j++) {
+  				item = row.items[j];
+  				this.doSetupItem({index: item.index, selected: this.isSelected(item.index)});
+  				cl.setAttribute("data-enyo-index", item.index);
+  				cl.addStyles("width:" + item.width + "px;height:" + item.height + "px;");
   				if (this.itemSpacing >= 0) {
   					cl.addStyles("margin-top:" + this.itemSpacing + "px;margin-left:" + this.itemSpacing + "px;");
   				}
@@ -185,31 +168,31 @@ enyo.kind({
 		if (!this.normalizeRows) {
 			return;
 		}
-		if (!inRowData.tiles || inRowData.tiles.length == 0) {
+		if (!inRowData.items || inRowData.items.length == 0) {
 			return;
 		}
 		var cw = this.owner.hasNode().clientWidth;
   		//Use avg height to scale heights of all items in row to the same height
-		var tile;
+		var item;
 		var runningWidth = 0, nw = 0;
 		var newWidths = "";
-		var tileW = 0, tileH = 0, scale = 0, gutter = 0;
-		for (var i=0; i < inRowData.tiles.length; i++) {
-			tile = inRowData.tiles[i];
-			tileW = tile.width;
-  			tileH = tile.height;
+		var itemW = 0, itemH = 0, scale = 0, gutter = 0;
+		for (var i=0; i < inRowData.items.length; i++) {
+			item = inRowData.items[i];
+			itemW = item.width;
+  			itemH = item.height;
   			
-  			nw = Math.floor((inRowData.avgHeight/tileH) * tileW);
+  			nw = Math.floor((inRowData.avgHeight/itemH) * itemW);
 			newWidths += " " + nw;
 			
-			tile.width = nw;
-    		tile.height = inRowData.avgHeight;
+			item.width = nw;
+    		item.height = inRowData.avgHeight;
 			runningWidth += nw;
 			if (this.itemSpacing >= 0) {
 				//Spacing can range from 0-10px only - so cap at 10 - otherwise looks ugly
 				runningWidth += this.itemSpacing;
-				if (i==inRowData.tiles.length-1) {
-					//Accomodate right margin on last tile 
+				if (i==inRowData.items.length-1) {
+					//Accomodate right margin on last item 
 					runningWidth += this.itemSpacing;
 				}
 			}
@@ -221,34 +204,34 @@ enyo.kind({
 		runningWidth = 0;
 		nw = 0;
 		newWidths = "";
-		for (var i=0; i < inRowData.tiles.length; i++) {
-			tile = inRowData.tiles[i];
-			tileW = tile.width;
-  			tileH = tile.height;
+		for (var i=0; i < inRowData.items.length; i++) {
+			item = inRowData.items[i];
+			itemW = item.width;
+  			itemH = item.height;
 				
-			nw = Math.floor(tileW * scale);
+			nw = Math.floor(itemW * scale);
 			newWidths += " " + nw;
-			var nh = Math.floor(tileH * scale);
-			tile.width = nw;
-    		tile.height = nh;
+			var nh = Math.floor(itemH * scale);
+			item.width = nw;
+    		item.height = nh;
 			
 			runningWidth += nw;
 			if (this.itemSpacing >= 0) {
 				//Spacing can range from 0-10px only - so cap at 10 - otherwise looks ugly
 				runningWidth += this.itemSpacing;
-				if (i==inRowData.tiles.length-1) {
-					//Accomodate right margin on last tile 
+				if (i==inRowData.items.length-1) {
+					//Accomodate right margin on last item 
 					runningWidth += this.itemSpacing;
 				}
 			}
 		}
 		gutter = cw - runningWidth;
 		
-		//Adjust the remaining spill over gutter to last tile  
-		tile = inRowData.tiles[inRowData.tiles.length-1];
-		tileW = tile.width;
-		tileH = tile.height;
-		tile.width = (tileW + gutter);
-  		tile.height = tileH;
+		//Adjust the remaining spill over gutter to last item  
+		item = inRowData.items[inRowData.items.length-1];
+		itemW = item.width;
+		itemH = item.height;
+		item.width = (itemW + gutter);
+  		item.height = itemH;
   	}
 });

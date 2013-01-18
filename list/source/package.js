@@ -7,5 +7,7 @@ enyo.depends(
 	"AroundList.js",
 	"GridList.css",
 	"GridFlyweightRepeater.js",
-	"GridList.js"
+	"GridList.js",
+	"GridListImageItem.css",
+	"GridListImageItem.js"
 );
