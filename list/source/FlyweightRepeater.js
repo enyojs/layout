@@ -161,7 +161,7 @@ enyo.kind({
 		this.setupItem(inIndex);
 		var node = this.fetchRowNode(inIndex);
 		if (node) {
-			node.innerHTML = this.$.client.generateChildHtml();
+			enyo.dom.setInnerHtml(node, this.$.client.generateChildHtml());
 			this.$.client.teardownChildren();
 			this.doRenderRow({rowIndex: inIndex});
 		}
