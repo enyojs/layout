@@ -1052,7 +1052,6 @@ enyo.kind({
 	getNodeStyle: function(index) {
 		var node = this.$.generator.fetchRowNode(index);
 		if(!node) {
-			this.log("No node - "+index);
 			return;
 		}
 		var offset = this.getRelativeOffset(node, this.hasNode());
@@ -1253,9 +1252,16 @@ enyo.kind({
 		if(this.getStrategyKind() == "ScrollStrategy") {
 			this.$.reorderContainer.addStyles("top:"+(this.initialPinPosition+this.getScrollTop()-this.rowHeight)+"px;");
 		}
+		// y coordinate on screen of the pinned item doesn't change as we scroll things
 		var index = this.getRowIndexFromCoordinate(this.initialPinPosition);
 		if(index != -1) {
-			this.movePlaceholderToIndex(index);
+			// cursor moved over a new row, so determine direction of movement
+			if (index >= this.placeholderRowIndex) {
+				this.movePlaceholderToIndex(Math.min(this.count, index + 1));
+			}
+			else {
+				this.movePlaceholderToIndex(index);
+			}
 		}
 	},
 	hideReorderingRow: function() {
@@ -1377,16 +1383,17 @@ enyo.kind({
 	*/
 	swipeDragFinish: function(inSender, inEvent) {
 		// if a flick happened or the drag was more vertical than horizontal, don't do dragFinish
-		if(this.wasFlicked()) {
+		if (this.wasFlicked()) {
 			return this.preventDragPropagation;
 		}
 
 		// if a persistent swipeableItem is still showing, complete drag away or bounce
-		if(this.persistentItemVisible) {
+		if (this.persistentItemVisible) {
 			this.dragFinishPersistentItem(inEvent);
 		// otherwise if user dragged more than 20% of the width, complete the swipe. if not, back out.
 		} else {
-			if(this.calcPercentageDragged(this.draggedXDistance) > this.percentageDraggedThreshold) {
+			var percentageDragged = this.calcPercentageDragged(this.draggedXDistance);
+			if (percentageDragged > this.percentageDraggedThreshold) {
 				this.swipe(this.fastSwipeSpeedMS);
 			} else {
 				this.backOutSwipe(inEvent);
