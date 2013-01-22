@@ -268,6 +268,10 @@ enyo.kind({
 	},
 	//* DragStart event handler
 	dragstart: function(inSender, inEvent) {
+		// stop dragstart from propogating if we're in reorder mode
+		if (this.isReordering()) {
+			return true;
+		}
 		if (this.isSwipeable()) {
 			return this.swipeDragStart(inSender, inEvent);
 		}
@@ -667,6 +671,9 @@ enyo.kind({
 		// disable drag to scroll on strategy
 		this.$.strategy.listReordering = true;
 
+		// go into modal mode to avoid end of drag triggering other controls if it ends outside
+		//enyo.dispatcher.capture(this, true);
+
 		this.buildReorderContainer();
 		this.doSetupReorderComponents(inEvent);
 		this.styleReorderContainer(inEvent);
@@ -904,6 +911,8 @@ enyo.kind({
 		the reordering logic.
 	*/
 	completeFinishReordering: function(inEvent) {
+		// exit the modal mode we started during the drag
+		//enyo.dispatcher.release();
 		this.completeReorderTimeout = null;
 		// adjust placeholderRowIndex to now be the final resting place
 		if (this.placeholderRowIndex > this.draggingRowIndex) {
