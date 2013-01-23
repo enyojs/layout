@@ -278,18 +278,17 @@ enyo.kind({
 	},
 	//* Drag event handler
 	drag: function(inSender, inEvent) {
-		inEvent.preventDefault();
 
 		// determine if we should handle the drag event
 		if(this.shouldDoReorderDrag(inEvent)) {
+			inEvent.preventDefault();
 			this.reorderDrag(inEvent);
 			return true;
 		} else if(this.shouldDoSwipeDrag()) {
+			inEvent.preventDefault();
 			this.swipeDrag(inSender, inEvent);
 			return true;
 		}
-
-		return this.preventDragPropagation;
 	},
 	//* Flick event handler
 	flick: function(inSender, inEvent) {
@@ -671,9 +670,6 @@ enyo.kind({
 		// disable drag to scroll on strategy
 		this.$.strategy.listReordering = true;
 
-		// go into modal mode to avoid end of drag triggering other controls if it ends outside
-		//enyo.dispatcher.capture(this, true);
-
 		this.buildReorderContainer();
 		this.doSetupReorderComponents(inEvent);
 		this.styleReorderContainer(inEvent);
@@ -911,8 +907,6 @@ enyo.kind({
 		the reordering logic.
 	*/
 	completeFinishReordering: function(inEvent) {
-		// exit the modal mode we started during the drag
-		//enyo.dispatcher.release();
 		this.completeReorderTimeout = null;
 		// adjust placeholderRowIndex to now be the final resting place
 		if (this.placeholderRowIndex > this.draggingRowIndex) {
