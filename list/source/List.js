@@ -1338,13 +1338,12 @@ enyo.kind({
 		based on how far the user pulled the swipeable container.
 	*/
 	swipeDragFinish: function(inSender, inEvent) {
-		// early exit if there's no matching dragStart to set item
-		if (!this.isSwiping()) {
-			return false;
-		}
 		// if a persistent swipeableItem is still showing, complete drag away or bounce
 		if (this.persistentItemVisible) {
 			this.dragFinishPersistentItem(inEvent);
+		// early exit if there's no matching dragStart to set item
+		} else if (!this.isSwiping()) {
+			return false;
 		// otherwise if user dragged more than 20% of the width, complete the swipe. if not, back out.
 		} else {
 			var percentageDragged = this.calcPercentageDragged(this.draggedXDistance);
