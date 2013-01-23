@@ -93,8 +93,7 @@ enyo.kind({
 		ondrag: "drag",
 		ondragfinish: "dragfinish",
 		onup: "up",
-		onholdpulse: "holdpulse",
-		onflick: "flick"
+		onholdpulse: "holdpulse"
 	},
 	//* @protected
 	rowHeight: 0,
@@ -139,7 +138,6 @@ enyo.kind({
 	completeReorderTimeout: null,
 
 	//* Swipeable vars
-
 	// Index of swiped item
 	swipeIndex: null,
 	// Direction of swipe
@@ -158,8 +156,6 @@ enyo.kind({
 	normalSwipeSpeedMS: 200,
 	// Time in seconds for fast swipe animation
 	fastSwipeSpeedMS: 100,
-	// Specifies whether a flick event happened
-	flicked: true,
 	// Percentage of a swipe needed to force completion of the swipe
 	percentageDraggedThreshold: 0.2,
 
@@ -278,22 +274,16 @@ enyo.kind({
 	},
 	//* Drag event handler
 	drag: function(inSender, inEvent) {
-
 		// determine if we should handle the drag event
 		if(this.shouldDoReorderDrag(inEvent)) {
 			inEvent.preventDefault();
 			this.reorderDrag(inEvent);
 			return true;
-		} else if(this.shouldDoSwipeDrag()) {
+		}
+		else if (this.isSwipeable()) {
 			inEvent.preventDefault();
 			this.swipeDrag(inSender, inEvent);
 			return true;
-		}
-	},
-	//* Flick event handler
-	flick: function(inSender, inEvent) {
-		if(this.shouldDoSwipeFlick()) {
-			this.swipeFlick(inSender, inEvent);
 		}
 	},
 	//* Dragfinish event handler
@@ -301,7 +291,7 @@ enyo.kind({
 		if(this.isReordering()) {
 			this.finishReordering(inSender, inEvent);
 		}
-		if (this.isSwipeable()) {
+		else if (this.isSwipeable()) {
 			this.swipeDragFinish(inSender, inEvent);
 		}
 	},
@@ -1282,6 +1272,10 @@ enyo.kind({
 		---- Swipeable functionality ------------
 	*/
 
+	isSwiping: function() {
+		// we're swiping when the index is set and we're not in the middle of completing or backing out a swipe
+		return (this.swipeIndex != null && !this.swipeComplete && this.swipeDirection != null);
+	},
 	/**
 		When a drag starts, gets the direction of the drag as well as the index
 		of the item being dragged, and resets any pertinent values. Then kicks
@@ -1289,28 +1283,23 @@ enyo.kind({
 	*/
 	swipeDragStart: function(inSender, inEvent) {
 		// if we're not on a row or the swipe is vertical or if we're in the middle of reordering, just say no
-		if(inEvent.index == null || inEvent.vertical || this.draggingRowIndex > -1) {
-			return false;
+		if(inEvent.index == null || inEvent.vertical) {
+			return true;
 		}
-
-		// save direction we are swiping
-		this.setSwipeDirection(inEvent.xDirection);
 
 		// if we are waiting to complete a swipe, complete it
 		if(this.completeSwipeTimeout) {
 			this.completeSwipe(inEvent);
 		}
 
-		// reset flicked flag
-		this.setFlicked(false);
 		// reset swipe complete flag
-		this.setSwipeComplete(false);
+		this.swipeComplete = false;
 
-		// if user is dragging a different item than was dragged previously, hide all swipeables first
-		if(this.swipeIndexChanged(inEvent.index)) {
+		if (this.swipeIndex != inEvent.index) {
 			this.clearSwipeables();
-			this.setSwipeIndex(inEvent.index);
+			this.swipeIndex = inEvent.index;
 		}
+		this.swipeDirection = inEvent.xDirection;
 
 		// start swipe sequence only if we are not currently showing a persistent item
 		if(!this.persistentItemVisible) {
@@ -1323,80 +1312,43 @@ enyo.kind({
 
 		return true;
 	},
-	shouldDoSwipeDrag: function() {
-		return (this.isSwipeable() && !this.isReordering());
-	},
 	/**
 		When a drag is in progress, updates the position of the swipeable
 		container based on the ddx of the event.
 	*/
 	swipeDrag: function(inSender, inEvent) {
 		// if a persistent swipeableItem is still showing, handle it separately
-		if(this.persistentItemVisible) {
+		if (this.persistentItemVisible) {
 			this.dragPersistentItem(inEvent);
 			return this.preventDragPropagation;
+		}
+		// early exit if there's no matching dragStart to set item
+		if (!this.isSwiping()) {
+			return false;
 		}
 		// apply new position
 		this.dragSwipeableComponents(this.calcNewDragPosition(inEvent.ddx));
 		// save dragged distance (for dragfinish)
 		this.draggedXDistance = inEvent.dx;
 		this.draggedYDistance = inEvent.dy;
-
-		return this.preventDragPropagation;
-	},
-	//* Don't do swipe flick if user is currently reordering.
-	shouldDoSwipeFlick: function() {
-		return (!this.isReordering());
-	},
-	//* When the user flicks, completes the swipe.
-	swipeFlick: function(inSender, inEvent) {
-		// not on a row means swipe didn't happen
-		if (inEvent.index == null) {
-			return;
-		}
-
-		// if swiping is disabled, return early
-		if(!this.isSwipeable()) {
-			return false;
-		}
-
-		// if the flick was vertical, return early
-		if(Math.abs(inEvent.xVelocity) < Math.abs(inEvent.yVelocity)) {
-			return false;
-		}
-
-		// prevent the dragFinish event from breaking the flick
-		this.setFlicked(true);
-
-		// if a persistent swipeableItem is still showing, slide it away or bounce it
-		if(this.persistentItemVisible) {
-			this.flickPersistentItem(inEvent);
-			return true;
-		}
-
-		// do swipe
-		this.swipe(this.normalSwipeSpeedMS);
-
 		return true;
 	},
 	/*
 		When the current drag completes, decides whether to complete the swipe
-		based on how far the user pulled the swipeable container. If a flick
-		occurred, dragFinish is not processed.
+		based on how far the user pulled the swipeable container.
 	*/
 	swipeDragFinish: function(inSender, inEvent) {
-		// if a flick happened or the drag was more vertical than horizontal, don't do dragFinish
-		if (this.wasFlicked()) {
-			return this.preventDragPropagation;
+		// early exit if there's no matching dragStart to set item
+		if (!this.isSwiping()) {
+			return false;
 		}
-
 		// if a persistent swipeableItem is still showing, complete drag away or bounce
 		if (this.persistentItemVisible) {
 			this.dragFinishPersistentItem(inEvent);
 		// otherwise if user dragged more than 20% of the width, complete the swipe. if not, back out.
 		} else {
 			var percentageDragged = this.calcPercentageDragged(this.draggedXDistance);
-			if (percentageDragged > this.percentageDraggedThreshold) {
+			if ((percentageDragged > this.percentageDraggedThreshold) && (inEvent.xDirection === this.swipeDirection)) {
 				this.swipe(this.fastSwipeSpeedMS);
 			} else {
 				this.backOutSwipe(inEvent);
@@ -1405,8 +1357,10 @@ enyo.kind({
 
 		return this.preventDragPropagation;
 	},
+	// reorder takes precedence over swipes, and not having it turned on or swipeable controls defined also disables this
 	isSwipeable: function() {
-		return this.enableSwipe && this.$.swipeableComponents.controls.length !== 0;
+		return this.enableSwipe && this.$.swipeableComponents.controls.length !== 0 &&
+			!this.isReordering() && !this.pinnedReorderMode;
 	},
 	// Positions the swipeable components block at the current row.
 	positionSwipeableContainer: function(index,xDirection) {
@@ -1418,24 +1372,6 @@ enyo.kind({
 		var dimensions = enyo.dom.getBounds(node);
 		var x = (xDirection == 1) ? -1*dimensions.width : dimensions.width;
 		this.$.swipeableComponents.addStyles("top: "+offset.top+"px; left: "+x+"px; height: "+dimensions.height+"px; width: "+dimensions.width+"px;");
-	},
-	setSwipeDirection: function(xDirection) {
-		this.swipeDirection = xDirection;
-	},
-	setFlicked: function(flicked) {
-		this.flicked = flicked;
-	},
-	wasFlicked: function() {
-		return this.flicked;
-	},
-	setSwipeComplete: function(complete) {
-		this.swipeComplete = complete;
-	},
-	swipeIndexChanged: function(index) {
-		return (this.swipeIndex === null) ? true : (index === undefined) ? false : (index !== this.swipeIndex);
-	},
-	setSwipeIndex: function(index) {
-		this.swipeIndex = (index === undefined) ? this.swipeIndex : index;
 	},
 	/**
 		Calculates new position for the swipeable container based on the user's
@@ -1492,22 +1428,6 @@ enyo.kind({
 			this.bounceItem(e);
 		}
 	},
-	// If a persistent swipeableItem is still showing, slides it away or bounces it.
-	flickPersistentItem: function(e) {
-		if(e.xVelocity > 0) {
-			if(this.persistentItemOrigin == "left") {
-				this.bounceItem(e);
-			} else {
-				this.slideAwayItem();
-			}
-		} else if(e.xVelocity < 0) {
-			if(this.persistentItemOrigin == "right") {
-				this.bounceItem(e);
-			} else {
-				this.slideAwayItem();
-			}
-		}
-	},
 	setPersistentItemOrigin: function(xDirection) {
 		this.persistentItemOrigin = xDirection == 1 ? "left" : "right";
 	},
@@ -1515,15 +1435,14 @@ enyo.kind({
 		return Math.abs(dx/this.$.swipeableComponents.getBounds().width);
 	},
 	swipe: function(speed) {
-		this.setSwipeComplete(true);
+		this.swipeComplete = true;
 		this.animateSwipe(0,speed);
 	},
 	backOutSwipe: function(e) {
 		var dimensions = this.$.swipeableComponents.getBounds();
 		var x = (this.swipeDirection == 1) ? -1*dimensions.width : dimensions.width;
 		this.animateSwipe(x,this.fastSwipeSpeedMS);
-		this.setSwipeDirection(null);
-		this.setFlicked(true);
+		this.swipeDirection = null;
 	},
 	bounceItem: function(e) {
 		var bounds = this.$.swipeableComponents.getBounds();
@@ -1555,12 +1474,13 @@ enyo.kind({
 			this.$.swipeableComponents.setShowing(false);
 			// if the swipe was completed, update the current row and bubble swipeComplete event
 			if(this.swipeComplete) {
-				this.doSwipeComplete({index:this.swipeIndex, xDirection:this.swipeDirection});
+				this.doSwipeComplete({index: this.swipeIndex, xDirection: this.swipeDirection});
 			}
 		} else {
 			this.persistentItemVisible = true;
 		}
-		this.setSwipeDirection(null);
+		this.swipeIndex = null;
+		this.swipeDirection = null;
 	},
 	animateSwipe: function(targetX,totalTimeMS) {
 		var t0 = enyo.now(), t = 0;
