@@ -41,7 +41,6 @@ enyo.kind({
         this.$.caption.setContent(this.caption);
     },
     selectedChanged: function() {
-        this.log(this.isSelected);
         this.addRemoveClass("selected", this.selected);
     }
 });

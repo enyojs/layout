@@ -22,6 +22,7 @@ enyo.kind({
 		]},
 		{
 			name: "list", kind: "enyo.GridList", fit:true, onSetupItem: "setupItem", onSizeupItem: "sizeupItem", style: "background:#000;", 
+			normalizeRows: true, 
 			itemMinWidth: 200, itemSpacing: 2, 
 			components: [
 				{
@@ -199,7 +200,7 @@ enyo.kind({
 	sizeupItem: function(inSender, inEvent) {
 		var i = inEvent.index;
 		var item = this.results[i];
-		this.log(item);
+		//this.log(item);
 		if (this.source == 'twitter') {
 			this.$.list.setItemWidth(300);
 			this.$.list.setItemHeight(200);
