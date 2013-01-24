@@ -687,7 +687,6 @@ enyo.kind({
 	styleReorderContainer: function(e) {
 		this.setItemPosition(this.$.reorderContainer, e.rowIndex);
 		this.setItemBounds(this.$.reorderContainer, e.rowIndex);
-		//this.appendNodeToReorderContainer(this.cloneRowNode(e.rowIndex));
 		this.$.reorderContainer.setShowing(true);
 		if (this.centerReorderContainer) {
 			this.centerReorderContainerOnPointer(e);
@@ -700,7 +699,7 @@ enyo.kind({
 	},
 	//* Centers the floating reorder container on the user's pointer.
 	centerReorderContainerOnPointer: function(e) {
-		var containerPosition = this.getNodePosition(this.hasNode());
+		var containerPosition = enyo.dom.calcNodePosition(this.hasNode());
 		var x = e.pageX - containerPosition.left - parseInt(this.$.reorderContainer.domStyles.width, 10)/2;
 		var y = e.pageY - containerPosition.top + this.getScrollTop() - parseInt(this.$.reorderContainer.domStyles.height, 10)/2;
 		if(this.getStrategyKind() != "ScrollStrategy") {
@@ -775,7 +774,7 @@ enyo.kind({
 		_this.dragToScrollThreshold_.
 	*/
 	checkForAutoScroll: function(inEvent) {
-		var position = this.getNodePosition(this.hasNode());
+		var position = enyo.dom.calcNodePosition(this.hasNode());
 		var bounds = this.getBounds();
 		var perc;
 		if(inEvent.pageY - position.top < bounds.height * this.dragToScrollThreshold) {
@@ -1151,7 +1150,7 @@ enyo.kind({
 	//* position is off the end of the list, this will return this.count.  If the position
 	//* is before the start of the list, you'll get -1.
 	getRowIndexFromCoordinate: function(y) {
-		var cursorPosition = this.getScrollTop() + y - this.getNodePosition(this.hasNode()).top;
+		var cursorPosition = this.getScrollTop() + y - enyo.dom.calcNodePosition(this.hasNode()).top;
 		// happens if we try to drag past top of list
 		if (cursorPosition < 0) {
 			return -1;
@@ -1186,37 +1185,7 @@ enyo.kind({
 	},
 	//* Gets the position of a node (identified via index) on the page.
 	getIndexPosition: function(index) {
-		return this.getNodePosition(this.$.generator.fetchRowNode(index));
-	},
-	//* Gets the position of a node on the page, taking translations into account.
-	getNodePosition: function(node) {
-		var originalNode=node;
-		var offsetTop=0;
-		var offsetLeft=0;
-		while(node && node.offsetParent){
-			offsetTop+=node.offsetTop;
-			offsetLeft+=node.offsetLeft;
-			node=node.offsetParent;
-		}
-		// second pass to get transforms
-		node=originalNode;
-		var cssTransformProp=enyo.dom.getCssTransformProp();
-		while(node && node.getAttribute){
-			var matrix=enyo.dom.getComputedStyleValue(node,cssTransformProp);
-			if(matrix && matrix != "none"){
-				var last=matrix.lastIndexOf(",");
-				var secondToLast=matrix.lastIndexOf(",",last-1);
-				if(last>=0 && secondToLast>=0){
-					offsetTop+=parseFloat(matrix.substr(last+1,matrix.length-last));
-					offsetLeft+=parseFloat(matrix.substr(secondToLast+1,last-secondToLast));
-				}
-			}
-			node=node.parentNode;
-		}
-		return {top:offsetTop,left:offsetLeft};
-	},
-	cloneRowNode: function(index) {
-		return this.$.generator.fetchRowNode(index).cloneNode(true);
+		return enyo.dom.calcNodePosition(this.$.generator.fetchRowNode(index));
 	},
 	//* Sets _$item_'s position to match that of the list row at _index_.
 	setItemPosition: function($item,index) {
