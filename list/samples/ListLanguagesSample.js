@@ -43,7 +43,8 @@ enyo.kind({
 			pinnedReorderComponents: [
 				{name: "pinnedReorderItem", classes: "enyo-fit swipeGreen", components: [
 					{name: "pinnedReorderTitle", tag: "h2", allowHtml: true},
-					{name: "dropButton", kind: "onyx.Button", ontap: "dropPinnedRow", content: "Drop", classes: "dropButton"}
+					{name: "dropButton", kind: "onyx.Button", ontap: "dropPinnedRow", content: "Drop", classes: "dropButton"},
+					{name: "cancelButton", kind: "onyx.Button", ontap: "cancelPinnedMode", content: "Cancel", classes: "cancelButton"}
 				]}
 			],
 			swipeableComponents: [
@@ -98,6 +99,10 @@ enyo.kind({
 	//* Called when the "Drop" button is pressed on the pinned placeholder row
 	dropPinnedRow: function(inSender, inEvent) {
 		this.$.list.dropPinnedRow(inEvent);
+	},
+	//* Called when the "Cancel" button is pressed on the pinned placeholder row
+	cancelPinnedMode: function(inSender, inEvent) {
+		this.$.list.cancelPinnedMode(inEvent);
 	},
 	setupSwipeItem: function(inSender, inEvent) {
 		var i = inEvent.index;

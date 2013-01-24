@@ -1144,7 +1144,9 @@ enyo.kind({
 		node.style.display = "block";
 		return node;
 	},
-	//* Called when the "Drop" button is pressed on the pinned placeholder row.
+	//* @public
+	//* Called by client code to finalize a pinned mode reordering, such as when the "Drop" button is pressed
+	//* on the pinned placeholder row.
 	dropPinnedRow: function(inEvent) {
 		// animate reorder container to proper position and then complete reording actions
 		this.moveReorderedContainerToDroppedPosition(inEvent);
@@ -1152,6 +1154,12 @@ enyo.kind({
 			enyo.bind(this, this.completeFinishReordering, inEvent), 100);
 		return;
 	},
+	cancelPinnedMode: function(inEvent) {
+		// make it look like we're dropping in original location
+		this.placeholderRowIndex = this.draggingRowIndex;
+		this.dropPinnedRow(inEvent);
+	},
+	//* @protected
 	//* Returns the row index that is under the given position on the page.  If the
 	//* position is off the end of the list, this will return this.count.  If the position
 	//* is before the start of the list, you'll get -1.
