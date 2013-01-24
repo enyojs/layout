@@ -1110,8 +1110,10 @@ enyo.kind({
 		}
 		var pageControl = this.pageForPageNumber(pageNumber, true);
 		if (pageControl) {
+			var h0 = this.pageHeights[pageNumber];
 			var pageHeight = pageControl.getBounds().height;
 			this.pageHeights[pageNumber] = pageHeight;
+			this.portSize += pageHeight - h0;
 		}
 	},
 	/**
