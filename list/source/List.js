@@ -124,6 +124,8 @@ enyo.kind({
 	autoScrollTimeoutMS: 20,
 	// holds timeout ID for autoscroll
 	autoScrollTimeout: null,
+	// keep last event Y coordinate to update placeholder position during autoscroll
+	autoscrollPageY: 0,
 	// set to true to indicate that we're in pinned reordering mode
 	pinnedReorderMode: false,
 	// y-coordinate of the original location of the pinned row
@@ -470,7 +472,7 @@ enyo.kind({
 		}
 		this.lastPos = pos;
 		this.update(pos);
-		if(this.shouldDoPinnedReorderScroll()) {
+		if (this.pinnedReorderMode) {
 			this.reorderScroll(inSender, inEvent);
 		}
 		return r;
@@ -747,7 +749,10 @@ enyo.kind({
 		this.checkForAutoScroll(inEvent);
 
 		// if the current index the user is dragging over has changed, move the placeholder
-		var index = this.getRowIndexFromCoordinate(inEvent.pageY);
+		this.updatePlaceholderPosition(inEvent.pageY);
+	},
+	updatePlaceholderPosition: function(pageY) {
+		var index = this.getRowIndexFromCoordinate(pageY);
 		if (index !== -1) {
 			// cursor moved over a new row, so determine direction of movement
 			if (index >= this.placeholderRowIndex) {
@@ -760,9 +765,9 @@ enyo.kind({
 	},
 	//* Positions the reorder node based on the dx and dy of the drag event.
 	positionReorderNode: function(e) {
-		var reorderNodeStyle = this.$.reorderContainer.hasNode().style;
-		var left = parseInt(reorderNodeStyle.left, 10) + e.ddx;
-		var top = parseInt(reorderNodeStyle.top, 10) + e.ddy;
+		var reorderNodeBounds = this.$.reorderContainer.getBounds();
+		var left = reorderNodeBounds.left + e.ddx;
+		var top = reorderNodeBounds.top + e.ddy;
 		top = (this.getStrategyKind() == "ScrollStrategy") ? top + (this.getScrollTop() - this.prevScrollTop) : top;
 		this.$.reorderContainer.addStyles("top: "+top+"px ; left: "+left+"px");
 		this.prevScrollTop = this.getScrollTop();
@@ -777,6 +782,7 @@ enyo.kind({
 		var position = enyo.dom.calcNodePosition(this.hasNode());
 		var bounds = this.getBounds();
 		var perc;
+		this.autoscrollPageY = inEvent.pageY;
 		if(inEvent.pageY - position.top < bounds.height * this.dragToScrollThreshold) {
 			perc = 100*(1 - ((inEvent.pageY - position.top) / (bounds.height * this.dragToScrollThreshold)));
 			this.scrollDistance = -1*perc;
@@ -818,6 +824,9 @@ enyo.kind({
 		}
 		this.setScrollPosition(this.getScrollPosition() + this.scrollDistance);
 		this.positionReorderNode({ddx: 0, ddy: 0});
+
+		// if the current index the user is dragging over has changed, move the placeholder
+		this.updatePlaceholderPosition(this.autoscrollPageY);
 	},
 	/**
 		Moves the placeholder (i.e., the gap between rows) to the row currently
@@ -910,8 +919,10 @@ enyo.kind({
 		this.removePlaceholderNode();
 		this.emptyAndHideReorderContainer();
 		this.positionReorderedNode();
+		// clear this early to prevent scroller code from using disappeared placeholder
+		this.pinnedReorderMode = false;
 		this.reorderRows(inEvent);
-		this.resetReorderState();
+		this.draggingRowIndex = this.placeholderRowIndex = -1;
 		this.refresh();
 	},
 	//* Go into pinned reorder mode
@@ -984,11 +995,6 @@ enyo.kind({
 		// FIXME: potential glitch here if list doesn't refresh if we move item
 		// to end of list where insertNode would be null
 		this.showNode(hiddenNode);
-	},
-	//* Resets to original values.
-	resetReorderState: function() {
-		this.draggingRowIndex = this.placeholderRowIndex = -1;
-		this.pinnedReorderMode = false;
 	},
 	//* Updates indices of list items as needed to preserve reordering.
 	updateListIndices: function() {
@@ -1162,7 +1168,7 @@ enyo.kind({
 			return this.count;
 		}
 		var posOnPage = pageInfo.pos;
-		var placeholderHeight = enyo.dom.getBounds(this.placeholderNode).height;
+		var placeholderHeight = this.placeholderNode ? enyo.dom.getBounds(this.placeholderNode).height : 0;
 		var totalHeight = 0;
 		for(var i=pageInfo.startRow; i <= pageInfo.endRow; ++i) {
 			// do extra check for row that has placeholder as we'll return -1 here for no match
@@ -1200,13 +1206,6 @@ enyo.kind({
 		var styleStr = "width:"+clonedNodeStyle.w+"px; height:"+clonedNodeStyle.h+"px;";
 		$item.addStyles(styleStr);
 	},
-	//* Determines whether we should do a pinned reorder with this scroll event.
-	shouldDoPinnedReorderScroll: function() {
-		if(!this.getReorderable() || !this.pinnedReorderMode) {
-			return false;
-		}
-		return true;
-	},
 	/**
 		When in pinned reorder mode, repositions the pinned placeholder when the
 		user has scrolled far enough.
@@ -1217,16 +1216,7 @@ enyo.kind({
 			this.$.reorderContainer.addStyles("top:"+(this.initialPinPosition+this.getScrollTop()-this.rowHeight)+"px;");
 		}
 		// y coordinate on screen of the pinned item doesn't change as we scroll things
-		var index = this.getRowIndexFromCoordinate(this.initialPinPosition);
-		if(index != -1) {
-			// cursor moved over a new row, so determine direction of movement
-			if (index >= this.placeholderRowIndex) {
-				this.movePlaceholderToIndex(Math.min(this.count, index + 1));
-			}
-			else {
-				this.movePlaceholderToIndex(index);
-			}
-		}
+		this.updatePlaceholderPosition(this.initialPinPosition);
 	},
 	hideReorderingRow: function() {
 		var hiddenNode = this.hasNode().querySelector('[data-enyo-index="'+this.draggingRowIndex+'"]');
