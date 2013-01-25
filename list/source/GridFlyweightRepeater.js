@@ -53,6 +53,10 @@ enyo.kind({
 				} else {
 					cl.addStyles("margin-right: 0px;");
 				}
+				//Add bottom margin for items in last row
+				if (i >= this.count-this.itemsPerRow) {
+					cl.addStyles("margin-bottom:" + this.itemSpacing + "px;");
+				}
 			}
 			ht += cl.generateHtml();
 			cl.teardownRender();
