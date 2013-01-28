@@ -63,6 +63,11 @@ enyo.kind({
 		//* If true and _reorderable_ is true, reorderable item will be centered on finger
 		//* when created. When false, it will be created over old item and will then track finger.
 		centerReorderContainer: true,
+		//* Array containing components shown as the placeholder when reordering list items.
+		reorderComponents: [],
+		//* Array containing components for the pinned version of a row. If not provided, reordering
+		//* will not support pinned mode.
+		pinnedReorderComponents: [],
 		//* Array containing any swipeable components that will be used
 		swipeableComponents: [],
 		//* If true, swipe functionality is enabled
@@ -912,7 +917,8 @@ enyo.kind({
 		}
 		// if the user dropped the item in the same location where it was picked up, and they
 		// didn't move any other items in the process, pin the item and go into pinned reorder mode
-		if(this.draggingRowIndex == this.placeholderRowIndex && !this.pinnedReorderMode && !this.itemMoved) {
+		if(this.draggingRowIndex == this.placeholderRowIndex &&
+			this.pinnedReorderComponents.length && !this.pinnedReorderMode && !this.itemMoved) {
 			this.beginPinnedReorder(inEvent);
 			return;
 		}
