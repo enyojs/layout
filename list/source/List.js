@@ -169,7 +169,7 @@ enyo.kind({
 	importProps: function(inProps) {
 		// force touch on desktop when we have reorderable items to work around
 		// problems with native scroller
-		if (inProps.reorderable) {
+		if (inProps && inProps.reorderable) {
 			this.touch = true;
 		}
 		this.inherited(arguments);
