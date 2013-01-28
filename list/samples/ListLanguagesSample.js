@@ -25,27 +25,30 @@ enyo.kind({
 			onSetupItem: "setupItem",
 			onReorder: "listReorder",
 			onSetupReorderComponents: "setupReorderComponents",
-			onSetupPinnedReorderComponents: "setupPinnedReorderComponents",
+			// onSetupPinnedReorderComponents: "setupPinnedReorderComponents",
 			onSetupSwipeItem: "setupSwipeItem",
 			onSwipeComplete: "swipeComplete",
 			components: [
 				{name: "item", classes: "list-sample-language-item", components: [
-					{name: "rowNumber", classes: "rowNumberLabel"},
 					{name: "text", classes: "itemLabel"},
+					{name: "rowNumber", classes: "rowNumberLabel"},
 					{name: "serial", classes: "serialLabel"}
 				]}
 			],
 			reorderComponents: [
 				{name: "reorderContent", classes: "enyo-fit reorderDragger", components: [
-					{name: "reorderTitle", tag: "h2", style: "text-align:center;", allowHtml: true}
+					{name: "reorderTitle", tag: "h2", allowHtml: true}
 				]}
 			],
-			pinnedReorderComponents: [
+			// For Enyo 2.2, we comment out these components to disable pinned mode which is still
+			// considered a work in progress.
+			/* pinnedReorderComponents: [
 				{name: "pinnedReorderItem", classes: "enyo-fit swipeGreen", components: [
 					{name: "pinnedReorderTitle", tag: "h2", allowHtml: true},
-					{name: "dropButton", kind: "onyx.Button", ontap: "dropPinnedRow", content: "Drop", classes: "dropButton"}
+					{name: "dropButton", kind: "onyx.Button", ontap: "dropPinnedRow", content: "Drop", classes: "dropButton"},
+					{name: "cancelButton", kind: "onyx.Button", ontap: "cancelPinnedMode", content: "Cancel", classes: "cancelButton"}
 				]}
-			],
+			], */
 			swipeableComponents: [
 				{name: "swipeItem", classes: "enyo-fit swipeGreen", components: [
 					{name: "swipeTitle", classes: "swipeTitle"}
@@ -85,7 +88,7 @@ enyo.kind({
 		var number = this.languages[currentLanguage][val];
 		this.$.reorderTitle.setContent(number);
 	},
-	setupPinnedReorderComponents: function(inSender, inEvent) {
+	/* setupPinnedReorderComponents: function(inSender, inEvent) {
 		var i = inEvent.index;
 		if(!this.data[i]) {
 			return;
@@ -94,11 +97,15 @@ enyo.kind({
 		var val = this.data[i].val;
 		var number = this.languages[currentLanguage][val];
 		this.$.pinnedReorderTitle.setContent(number);
-	},
+	}, */
 	//* Called when the "Drop" button is pressed on the pinned placeholder row
-	dropPinnedRow: function(inSender, inEvent) {
+	/* dropPinnedRow: function(inSender, inEvent) {
 		this.$.list.dropPinnedRow(inEvent);
-	},
+	}, */
+	//* Called when the "Cancel" button is pressed on the pinned placeholder row
+	/* cancelPinnedMode: function(inSender, inEvent) {
+		this.$.list.cancelPinnedMode(inEvent);
+	}, */
 	setupSwipeItem: function(inSender, inEvent) {
 		var i = inEvent.index;
 		if(!this.data[i]) {

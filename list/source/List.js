@@ -63,6 +63,11 @@ enyo.kind({
 		//* If true and _reorderable_ is true, reorderable item will be centered on finger
 		//* when created. When false, it will be created over old item and will then track finger.
 		centerReorderContainer: true,
+		//* Array containing components shown as the placeholder when reordering list items.
+		reorderComponents: [],
+		//* Array containing components for the pinned version of a row. If not provided, reordering
+		//* will not support pinned mode.
+		pinnedReorderComponents: [],
 		//* Array containing any swipeable components that will be used
 		swipeableComponents: [],
 		//* If true, swipe functionality is enabled
@@ -93,8 +98,7 @@ enyo.kind({
 		ondrag: "drag",
 		ondragfinish: "dragfinish",
 		onup: "up",
-		onholdpulse: "holdpulse",
-		onflick: "flick"
+		onholdpulse: "holdpulse"
 	},
 	//* @protected
 	rowHeight: 0,
@@ -125,6 +129,8 @@ enyo.kind({
 	autoScrollTimeoutMS: 20,
 	// holds timeout ID for autoscroll
 	autoScrollTimeout: null,
+	// keep last event Y coordinate to update placeholder position during autoscroll
+	autoscrollPageY: 0,
 	// set to true to indicate that we're in pinned reordering mode
 	pinnedReorderMode: false,
 	// y-coordinate of the original location of the pinned row
@@ -139,7 +145,6 @@ enyo.kind({
 	completeReorderTimeout: null,
 
 	//* Swipeable vars
-
 	// Index of swiped item
 	swipeIndex: null,
 	// Direction of swipe
@@ -158,8 +163,6 @@ enyo.kind({
 	normalSwipeSpeedMS: 200,
 	// Time in seconds for fast swipe animation
 	fastSwipeSpeedMS: 100,
-	// Specifies whether a flick event happened
-	flicked: true,
 	// Percentage of a swipe needed to force completion of the swipe
 	percentageDraggedThreshold: 0.2,
 
@@ -268,29 +271,26 @@ enyo.kind({
 	},
 	//* DragStart event handler
 	dragstart: function(inSender, inEvent) {
+		// stop dragstart from propogating if we're in reorder mode
+		if (this.isReordering()) {
+			return true;
+		}
 		if (this.isSwipeable()) {
 			return this.swipeDragStart(inSender, inEvent);
 		}
 	},
 	//* Drag event handler
 	drag: function(inSender, inEvent) {
-		inEvent.preventDefault();
-
 		// determine if we should handle the drag event
 		if(this.shouldDoReorderDrag(inEvent)) {
+			inEvent.preventDefault();
 			this.reorderDrag(inEvent);
 			return true;
-		} else if(this.shouldDoSwipeDrag()) {
+		}
+		else if (this.isSwipeable()) {
+			inEvent.preventDefault();
 			this.swipeDrag(inSender, inEvent);
 			return true;
-		}
-
-		return this.preventDragPropagation;
-	},
-	//* Flick event handler
-	flick: function(inSender, inEvent) {
-		if(this.shouldDoSwipeFlick()) {
-			this.swipeFlick(inSender, inEvent);
 		}
 	},
 	//* Dragfinish event handler
@@ -298,7 +298,7 @@ enyo.kind({
 		if(this.isReordering()) {
 			this.finishReordering(inSender, inEvent);
 		}
-		if (this.isSwipeable()) {
+		else if (this.isSwipeable()) {
 			this.swipeDragFinish(inSender, inEvent);
 		}
 	},
@@ -310,8 +310,10 @@ enyo.kind({
 	},
 	generatePage: function(inPageNo, inTarget) {
 		this.page = inPageNo;
-		var r = this.$.generator.rowOffset = this.rowsPerPage * this.page;
-		var rpp = this.$.generator.count = Math.min(this.count - r, this.rowsPerPage);
+		var r = this.rowsPerPage * this.page;
+		this.$.generator.setRowOffset(r);
+		var rpp = Math.min(this.count - r, this.rowsPerPage);
+		this.$.generator.setCount(rpp);
 		var html = this.$.generator.generateChildHtml();
 		inTarget.setContent(html);
 		// prevent reordering row from being draw twice
@@ -456,6 +458,8 @@ enyo.kind({
 	},
 	invalidatePages: function() {
 		this.p0 = this.p1 = null;
+		this.p0RowBounds = {};
+		this.p1RowBounds = {};
 		// clear the html in our render targets
 		this.$.page0.setContent("");
 		this.$.page1.setContent("");
@@ -473,7 +477,7 @@ enyo.kind({
 		}
 		this.lastPos = pos;
 		this.update(pos);
-		if(this.shouldDoPinnedReorderScroll()) {
+		if (this.pinnedReorderMode) {
 			this.reorderScroll(inSender, inEvent);
 		}
 		return r;
@@ -585,6 +589,23 @@ enyo.kind({
 		modifications to a row, to force it to render.
     */
     renderRow: function(inIndex) {
+		// reset generator to map to all rendered rows
+		var firstRow, count;
+		if (this.p1 == null) {
+			if (this.p0 == null) {
+				// no pages rendered, nothing to do
+				return;
+			}
+			// if only page 0 is rendered, then we've only got one page of data
+			firstRow = 0;
+			count = this.count;
+		}
+		else {
+			firstRow = Math.min(this.p0, this.p1) * this.rowsPerPage;
+			count = Math.min(this.count - firstRow, this.rowsPerPage * 2);
+		}
+		this.$.generator.setRowOffset(firstRow);
+		this.$.generator.setCount(count);
 		this.$.generator.renderRow(inIndex);
     },
 	//* Updates row bounds when rows are re-rendered.
@@ -673,7 +694,6 @@ enyo.kind({
 	styleReorderContainer: function(e) {
 		this.setItemPosition(this.$.reorderContainer, e.rowIndex);
 		this.setItemBounds(this.$.reorderContainer, e.rowIndex);
-		//this.appendNodeToReorderContainer(this.cloneRowNode(e.rowIndex));
 		this.$.reorderContainer.setShowing(true);
 		if (this.centerReorderContainer) {
 			this.centerReorderContainerOnPointer(e);
@@ -686,7 +706,7 @@ enyo.kind({
 	},
 	//* Centers the floating reorder container on the user's pointer.
 	centerReorderContainerOnPointer: function(e) {
-		var containerPosition = this.getNodePosition(this.hasNode());
+		var containerPosition = enyo.dom.calcNodePosition(this.hasNode());
 		var x = e.pageX - containerPosition.left - parseInt(this.$.reorderContainer.domStyles.width, 10)/2;
 		var y = e.pageY - containerPosition.top + this.getScrollTop() - parseInt(this.$.reorderContainer.domStyles.height, 10)/2;
 		if(this.getStrategyKind() != "ScrollStrategy") {
@@ -734,7 +754,10 @@ enyo.kind({
 		this.checkForAutoScroll(inEvent);
 
 		// if the current index the user is dragging over has changed, move the placeholder
-		var index = this.getRowIndexFromCoordinate(inEvent.pageY);
+		this.updatePlaceholderPosition(inEvent.pageY);
+	},
+	updatePlaceholderPosition: function(pageY) {
+		var index = this.getRowIndexFromCoordinate(pageY);
 		if (index !== -1) {
 			// cursor moved over a new row, so determine direction of movement
 			if (index >= this.placeholderRowIndex) {
@@ -747,9 +770,9 @@ enyo.kind({
 	},
 	//* Positions the reorder node based on the dx and dy of the drag event.
 	positionReorderNode: function(e) {
-		var reorderNodeStyle = this.$.reorderContainer.hasNode().style;
-		var left = parseInt(reorderNodeStyle.left, 10) + e.ddx;
-		var top = parseInt(reorderNodeStyle.top, 10) + e.ddy;
+		var reorderNodeBounds = this.$.reorderContainer.getBounds();
+		var left = reorderNodeBounds.left + e.ddx;
+		var top = reorderNodeBounds.top + e.ddy;
 		top = (this.getStrategyKind() == "ScrollStrategy") ? top + (this.getScrollTop() - this.prevScrollTop) : top;
 		this.$.reorderContainer.addStyles("top: "+top+"px ; left: "+left+"px");
 		this.prevScrollTop = this.getScrollTop();
@@ -761,9 +784,10 @@ enyo.kind({
 		_this.dragToScrollThreshold_.
 	*/
 	checkForAutoScroll: function(inEvent) {
-		var position = this.getNodePosition(this.hasNode());
+		var position = enyo.dom.calcNodePosition(this.hasNode());
 		var bounds = this.getBounds();
 		var perc;
+		this.autoscrollPageY = inEvent.pageY;
 		if(inEvent.pageY - position.top < bounds.height * this.dragToScrollThreshold) {
 			perc = 100*(1 - ((inEvent.pageY - position.top) / (bounds.height * this.dragToScrollThreshold)));
 			this.scrollDistance = -1*perc;
@@ -805,6 +829,9 @@ enyo.kind({
 		}
 		this.setScrollPosition(this.getScrollPosition() + this.scrollDistance);
 		this.positionReorderNode({ddx: 0, ddy: 0});
+
+		// if the current index the user is dragging over has changed, move the placeholder
+		this.updatePlaceholderPosition(this.autoscrollPageY);
 	},
 	/**
 		Moves the placeholder (i.e., the gap between rows) to the row currently
@@ -890,15 +917,18 @@ enyo.kind({
 		}
 		// if the user dropped the item in the same location where it was picked up, and they
 		// didn't move any other items in the process, pin the item and go into pinned reorder mode
-		if(this.draggingRowIndex == this.placeholderRowIndex && !this.pinnedReorderMode && !this.itemMoved) {
+		if(this.draggingRowIndex == this.placeholderRowIndex &&
+			this.pinnedReorderComponents.length && !this.pinnedReorderMode && !this.itemMoved) {
 			this.beginPinnedReorder(inEvent);
 			return;
 		}
 		this.removePlaceholderNode();
 		this.emptyAndHideReorderContainer();
 		this.positionReorderedNode();
+		// clear this early to prevent scroller code from using disappeared placeholder
+		this.pinnedReorderMode = false;
 		this.reorderRows(inEvent);
-		this.resetReorderState();
+		this.draggingRowIndex = this.placeholderRowIndex = -1;
 		this.refresh();
 	},
 	//* Go into pinned reorder mode
@@ -972,11 +1002,6 @@ enyo.kind({
 		// to end of list where insertNode would be null
 		this.showNode(hiddenNode);
 	},
-	//* Resets to original values.
-	resetReorderState: function() {
-		this.draggingRowIndex = this.placeholderRowIndex = -1;
-		this.pinnedReorderMode = false;
-	},
 	//* Updates indices of list items as needed to preserve reordering.
 	updateListIndices: function() {
 		// don't do update if we've moved further than one page, refresh instead
@@ -1031,11 +1056,10 @@ enyo.kind({
 	getNodeStyle: function(index) {
 		var node = this.$.generator.fetchRowNode(index);
 		if(!node) {
-			this.log("No node - "+index);
 			return;
 		}
 		var offset = this.getRelativeOffset(node, this.hasNode());
-		var dimensions = this.getDimensions(node);
+		var dimensions = enyo.dom.getBounds(node);
 		return {h: dimensions.height, w: dimensions.width, left: offset.left, top: offset.top};
 	},
 	//* Gets offset relative to a positioned ancestor node.
@@ -1049,11 +1073,6 @@ enyo.kind({
 			} while (n && n !== p);
 		}
 		return ro;
-	},
-	//* Gets height and width of the given DOM node.
-	getDimensions: function(node) {
-		var style = window.getComputedStyle(node,null);
-		return {height: parseInt(style.getPropertyValue("height"), 10), width: parseInt(style.getPropertyValue("width"), 10)};
 	},
 	replaceNodeWithPlaceholder: function(index) {
 		var node = this.$.generator.fetchRowNode(index);
@@ -1075,7 +1094,7 @@ enyo.kind({
 	*/
 	createPlaceholderNode: function(node) {
 		var placeholderNode = this.$.placeholder.hasNode().cloneNode(true);
-		var nodeDimensions = this.getDimensions(node);
+		var nodeDimensions = enyo.dom.getBounds(node);
 		placeholderNode.style.height = nodeDimensions.height + "px";
 		placeholderNode.style.width = nodeDimensions.width + "px";
 		return placeholderNode;
@@ -1102,8 +1121,10 @@ enyo.kind({
 		}
 		var pageControl = this.pageForPageNumber(pageNumber, true);
 		if (pageControl) {
+			var h0 = this.pageHeights[pageNumber];
 			var pageHeight = pageControl.getBounds().height;
 			this.pageHeights[pageNumber] = pageHeight;
+			this.portSize += pageHeight - h0;
 		}
 	},
 	/**
@@ -1129,7 +1150,9 @@ enyo.kind({
 		node.style.display = "block";
 		return node;
 	},
-	//* Called when the "Drop" button is pressed on the pinned placeholder row.
+	//* @public
+	//* Called by client code to finalize a pinned mode reordering, such as when the "Drop" button is pressed
+	//* on the pinned placeholder row.
 	dropPinnedRow: function(inEvent) {
 		// animate reorder container to proper position and then complete reording actions
 		this.moveReorderedContainerToDroppedPosition(inEvent);
@@ -1137,11 +1160,17 @@ enyo.kind({
 			enyo.bind(this, this.completeFinishReordering, inEvent), 100);
 		return;
 	},
+	cancelPinnedMode: function(inEvent) {
+		// make it look like we're dropping in original location
+		this.placeholderRowIndex = this.draggingRowIndex;
+		this.dropPinnedRow(inEvent);
+	},
+	//* @protected
 	//* Returns the row index that is under the given position on the page.  If the
 	//* position is off the end of the list, this will return this.count.  If the position
 	//* is before the start of the list, you'll get -1.
 	getRowIndexFromCoordinate: function(y) {
-		var cursorPosition = this.getScrollTop() + y - this.getNodePosition(this.hasNode()).top;
+		var cursorPosition = this.getScrollTop() + y - enyo.dom.calcNodePosition(this.hasNode()).top;
 		// happens if we try to drag past top of list
 		if (cursorPosition < 0) {
 			return -1;
@@ -1153,7 +1182,7 @@ enyo.kind({
 			return this.count;
 		}
 		var posOnPage = pageInfo.pos;
-		var placeholderHeight = parseInt(window.getComputedStyle(this.placeholderNode).height, 10);
+		var placeholderHeight = this.placeholderNode ? enyo.dom.getBounds(this.placeholderNode).height : 0;
 		var totalHeight = 0;
 		for(var i=pageInfo.startRow; i <= pageInfo.endRow; ++i) {
 			// do extra check for row that has placeholder as we'll return -1 here for no match
@@ -1176,37 +1205,7 @@ enyo.kind({
 	},
 	//* Gets the position of a node (identified via index) on the page.
 	getIndexPosition: function(index) {
-		return this.getNodePosition(this.$.generator.fetchRowNode(index));
-	},
-	//* Gets the position of a node on the page, taking translations into account.
-	getNodePosition: function(node) {
-		var originalNode=node;
-		var offsetTop=0;
-		var offsetLeft=0;
-		while(node && node.offsetParent){
-			offsetTop+=node.offsetTop;
-			offsetLeft+=node.offsetLeft;
-			node=node.offsetParent;
-		}
-		// second pass to get transforms
-		node=originalNode;
-		var cssTransformProp=enyo.dom.getCssTransformProp();
-		while(node && node.getAttribute){
-			var matrix=enyo.dom.getComputedStyleValue(node,cssTransformProp);
-			if(matrix && matrix != "none"){
-				var last=matrix.lastIndexOf(",");
-				var secondToLast=matrix.lastIndexOf(",",last-1);
-				if(last>=0 && secondToLast>=0){
-					offsetTop+=parseFloat(matrix.substr(last+1,matrix.length-last));
-					offsetLeft+=parseFloat(matrix.substr(secondToLast+1,last-secondToLast));
-				}
-			}
-			node=node.parentNode;
-		}
-		return {top:offsetTop,left:offsetLeft};
-	},
-	cloneRowNode: function(index) {
-		return this.$.generator.fetchRowNode(index).cloneNode(true);
+		return enyo.dom.calcNodePosition(this.$.generator.fetchRowNode(index));
 	},
 	//* Sets _$item_'s position to match that of the list row at _index_.
 	setItemPosition: function($item,index) {
@@ -1221,13 +1220,6 @@ enyo.kind({
 		var styleStr = "width:"+clonedNodeStyle.w+"px; height:"+clonedNodeStyle.h+"px;";
 		$item.addStyles(styleStr);
 	},
-	//* Determines whether we should do a pinned reorder with this scroll event.
-	shouldDoPinnedReorderScroll: function() {
-		if(!this.getReorderable() || !this.pinnedReorderMode) {
-			return false;
-		}
-		return true;
-	},
 	/**
 		When in pinned reorder mode, repositions the pinned placeholder when the
 		user has scrolled far enough.
@@ -1237,10 +1229,8 @@ enyo.kind({
 		if(this.getStrategyKind() == "ScrollStrategy") {
 			this.$.reorderContainer.addStyles("top:"+(this.initialPinPosition+this.getScrollTop()-this.rowHeight)+"px;");
 		}
-		var index = this.getRowIndexFromCoordinate(this.initialPinPosition);
-		if(index != -1) {
-			this.movePlaceholderToIndex(index);
-		}
+		// y coordinate on screen of the pinned item doesn't change as we scroll things
+		this.updatePlaceholderPosition(this.initialPinPosition);
 	},
 	hideReorderingRow: function() {
 		var hiddenNode = this.hasNode().querySelector('[data-enyo-index="'+this.draggingRowIndex+'"]');
@@ -1257,6 +1247,10 @@ enyo.kind({
 		---- Swipeable functionality ------------
 	*/
 
+	isSwiping: function() {
+		// we're swiping when the index is set and we're not in the middle of completing or backing out a swipe
+		return (this.swipeIndex != null && !this.swipeComplete && this.swipeDirection != null);
+	},
 	/**
 		When a drag starts, gets the direction of the drag as well as the index
 		of the item being dragged, and resets any pertinent values. Then kicks
@@ -1264,28 +1258,23 @@ enyo.kind({
 	*/
 	swipeDragStart: function(inSender, inEvent) {
 		// if we're not on a row or the swipe is vertical or if we're in the middle of reordering, just say no
-		if(inEvent.index == null || inEvent.vertical || this.draggingRowIndex > -1) {
-			return false;
+		if(inEvent.index == null || inEvent.vertical) {
+			return true;
 		}
-
-		// save direction we are swiping
-		this.setSwipeDirection(inEvent.xDirection);
 
 		// if we are waiting to complete a swipe, complete it
 		if(this.completeSwipeTimeout) {
 			this.completeSwipe(inEvent);
 		}
 
-		// reset flicked flag
-		this.setFlicked(false);
 		// reset swipe complete flag
-		this.setSwipeComplete(false);
+		this.swipeComplete = false;
 
-		// if user is dragging a different item than was dragged previously, hide all swipeables first
-		if(this.swipeIndexChanged(inEvent.index)) {
+		if (this.swipeIndex != inEvent.index) {
 			this.clearSwipeables();
-			this.setSwipeIndex(inEvent.index);
+			this.swipeIndex = inEvent.index;
 		}
+		this.swipeDirection = inEvent.xDirection;
 
 		// start swipe sequence only if we are not currently showing a persistent item
 		if(!this.persistentItemVisible) {
@@ -1298,79 +1287,42 @@ enyo.kind({
 
 		return true;
 	},
-	shouldDoSwipeDrag: function() {
-		return (this.isSwipeable() && !this.isReordering());
-	},
 	/**
 		When a drag is in progress, updates the position of the swipeable
 		container based on the ddx of the event.
 	*/
 	swipeDrag: function(inSender, inEvent) {
 		// if a persistent swipeableItem is still showing, handle it separately
-		if(this.persistentItemVisible) {
+		if (this.persistentItemVisible) {
 			this.dragPersistentItem(inEvent);
 			return this.preventDragPropagation;
+		}
+		// early exit if there's no matching dragStart to set item
+		if (!this.isSwiping()) {
+			return false;
 		}
 		// apply new position
 		this.dragSwipeableComponents(this.calcNewDragPosition(inEvent.ddx));
 		// save dragged distance (for dragfinish)
 		this.draggedXDistance = inEvent.dx;
 		this.draggedYDistance = inEvent.dy;
-
-		return this.preventDragPropagation;
-	},
-	//* Don't do swipe flick if user is currently reordering.
-	shouldDoSwipeFlick: function() {
-		return (!this.isReordering());
-	},
-	//* When the user flicks, completes the swipe.
-	swipeFlick: function(inSender, inEvent) {
-		// not on a row means swipe didn't happen
-		if (inEvent.index == null) {
-			return;
-		}
-
-		// if swiping is disabled, return early
-		if(!this.isSwipeable()) {
-			return false;
-		}
-
-		// if the flick was vertical, return early
-		if(Math.abs(inEvent.xVelocity) < Math.abs(inEvent.yVelocity)) {
-			return false;
-		}
-
-		// prevent the dragFinish event from breaking the flick
-		this.setFlicked(true);
-
-		// if a persistent swipeableItem is still showing, slide it away or bounce it
-		if(this.persistentItemVisible) {
-			this.flickPersistentItem(inEvent);
-			return true;
-		}
-
-		// do swipe
-		this.swipe(this.normalSwipeSpeedMS);
-
 		return true;
 	},
 	/*
 		When the current drag completes, decides whether to complete the swipe
-		based on how far the user pulled the swipeable container. If a flick
-		occurred, dragFinish is not processed.
+		based on how far the user pulled the swipeable container.
 	*/
 	swipeDragFinish: function(inSender, inEvent) {
-		// if a flick happened or the drag was more vertical than horizontal, don't do dragFinish
-		if(this.wasFlicked()) {
-			return this.preventDragPropagation;
-		}
-
 		// if a persistent swipeableItem is still showing, complete drag away or bounce
-		if(this.persistentItemVisible) {
+		if (this.persistentItemVisible) {
 			this.dragFinishPersistentItem(inEvent);
+		// early exit if there's no matching dragStart to set item
+		} else if (!this.isSwiping()) {
+			return false;
 		// otherwise if user dragged more than 20% of the width, complete the swipe. if not, back out.
 		} else {
-			if(this.calcPercentageDragged(this.draggedXDistance) > this.percentageDraggedThreshold) {
+			var percentageDragged = this.calcPercentageDragged(this.draggedXDistance);
+			if ((percentageDragged > this.percentageDraggedThreshold) && (inEvent.xDirection === this.swipeDirection)) {
 				this.swipe(this.fastSwipeSpeedMS);
 			} else {
 				this.backOutSwipe(inEvent);
@@ -1379,8 +1331,10 @@ enyo.kind({
 
 		return this.preventDragPropagation;
 	},
+	// reorder takes precedence over swipes, and not having it turned on or swipeable controls defined also disables this
 	isSwipeable: function() {
-		return this.enableSwipe && this.$.swipeableComponents.controls.length !== 0;
+		return this.enableSwipe && this.$.swipeableComponents.controls.length !== 0 &&
+			!this.isReordering() && !this.pinnedReorderMode;
 	},
 	// Positions the swipeable components block at the current row.
 	positionSwipeableContainer: function(index,xDirection) {
@@ -1389,39 +1343,18 @@ enyo.kind({
 			return;
 		}
 		var offset = this.getRelativeOffset(node, this.hasNode());
-		var dimensions = this.getDimensions(node);
+		var dimensions = enyo.dom.getBounds(node);
 		var x = (xDirection == 1) ? -1*dimensions.width : dimensions.width;
 		this.$.swipeableComponents.addStyles("top: "+offset.top+"px; left: "+x+"px; height: "+dimensions.height+"px; width: "+dimensions.width+"px;");
-	},
-	setSwipeDirection: function(xDirection) {
-		this.swipeDirection = xDirection;
-	},
-	setFlicked: function(flicked) {
-		this.flicked = flicked;
-	},
-	wasFlicked: function() {
-		return this.flicked;
-	},
-	setSwipeComplete: function(complete) {
-		this.swipeComplete = complete;
-	},
-	swipeIndexChanged: function(index) {
-		return (this.swipeIndex === null) ? true : (index === undefined) ? false : (index !== this.swipeIndex);
-	},
-	setSwipeIndex: function(index) {
-		this.swipeIndex = (index === undefined) ? this.swipeIndex : index;
 	},
 	/**
 		Calculates new position for the swipeable container based on the user's
 		drag action. Don't allow the container to drag beyond either edge.
 	*/
 	calcNewDragPosition: function(dx) {
-		var parentStyle = window.getComputedStyle(this.$.swipeableComponents.hasNode());
-		if(!parentStyle) {
-			return false;
-		}
-		var xPos = parseInt(parentStyle["left"], 10);
-		var dimensions = this.getDimensions(this.$.swipeableComponents.node);
+		var parentBounds = this.$.swipeableComponents.getBounds();
+		var xPos = parentBounds.left;
+		var dimensions = this.$.swipeableComponents.getBounds();
 		var xlimit = (this.swipeDirection == 1) ? 0 : -1*dimensions.width;
 		var x = (this.swipeDirection == 1)
 			? (xPos + dx > xlimit)
@@ -1469,48 +1402,31 @@ enyo.kind({
 			this.bounceItem(e);
 		}
 	},
-	// If a persistent swipeableItem is still showing, slides it away or bounces it.
-	flickPersistentItem: function(e) {
-		if(e.xVelocity > 0) {
-			if(this.persistentItemOrigin == "left") {
-				this.bounceItem(e);
-			} else {
-				this.slideAwayItem();
-			}
-		} else if(e.xVelocity < 0) {
-			if(this.persistentItemOrigin == "right") {
-				this.bounceItem(e);
-			} else {
-				this.slideAwayItem();
-			}
-		}
-	},
 	setPersistentItemOrigin: function(xDirection) {
 		this.persistentItemOrigin = xDirection == 1 ? "left" : "right";
 	},
 	calcPercentageDragged: function(dx) {
-		return Math.abs(dx/parseInt(window.getComputedStyle(this.$.swipeableComponents.hasNode()).width, 10));
+		return Math.abs(dx/this.$.swipeableComponents.getBounds().width);
 	},
 	swipe: function(speed) {
-		this.setSwipeComplete(true);
+		this.swipeComplete = true;
 		this.animateSwipe(0,speed);
 	},
 	backOutSwipe: function(e) {
-		var dimensions = this.getDimensions(this.$.swipeableComponents.node);
+		var dimensions = this.$.swipeableComponents.getBounds();
 		var x = (this.swipeDirection == 1) ? -1*dimensions.width : dimensions.width;
 		this.animateSwipe(x,this.fastSwipeSpeedMS);
-		this.setSwipeDirection(null);
-		this.setFlicked(true);
+		this.swipeDirection = null;
 	},
 	bounceItem: function(e) {
-		var style = window.getComputedStyle(this.$.swipeableComponents.node);
-		if(parseInt(style.left, 10) != parseInt(style.width, 10)) {
+		var bounds = this.$.swipeableComponents.getBounds();
+		if(bounds.left != bounds.width) {
 			this.animateSwipe(0,this.normalSwipeSpeedMS);
 		}
 	},
 	slideAwayItem: function() {
 		var $item = this.$.swipeableComponents;
-		var parentWidth = parseInt(window.getComputedStyle($item.node).width, 10);
+		var parentWidth = $item.getBounds().width;
 		var xPos = (this.persistentItemOrigin == "left") ? -1*parentWidth : parentWidth;
 		this.animateSwipe(xPos,this.normalSwipeSpeedMS);
 		this.persistentItemVisible = false;
@@ -1532,12 +1448,13 @@ enyo.kind({
 			this.$.swipeableComponents.setShowing(false);
 			// if the swipe was completed, update the current row and bubble swipeComplete event
 			if(this.swipeComplete) {
-				this.doSwipeComplete({index:this.swipeIndex, xDirection:this.swipeDirection});
+				this.doSwipeComplete({index: this.swipeIndex, xDirection: this.swipeDirection});
 			}
 		} else {
 			this.persistentItemVisible = true;
 		}
-		this.setSwipeDirection(null);
+		this.swipeIndex = null;
+		this.swipeDirection = null;
 	},
 	animateSwipe: function(targetX,totalTimeMS) {
 		var t0 = enyo.now(), t = 0;

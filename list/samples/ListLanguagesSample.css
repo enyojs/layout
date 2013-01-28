@@ -8,34 +8,31 @@
 	height: 80px;
 	border-top: 1px solid #000;
 	padding: 12px 16px;
-	background-color:rgb(0,0,0);
-	background-color:rgba(0,0,0,0.5);
+	background-color: #333333;
+	position:relative;
 }
 .list-sample-language-list .rowNumberLabel {
-	float:left;
+	position:absolute;
+	right:15px;
+	bottom: 10px;
 	font-size:12px;
-	line-height:80px;
-	padding-left:20px;
 }
 .list-sample-language-list .itemLabel {
-	float:left;
 	font-size:24px;
 	line-height:80px;
 	padding-left:30px;
 }
 .list-sample-language-list .serialLabel {
-	float:right;
+	position:absolute;
+	right:80px;
+	bottom: 10px;
 	font-size:12px;
-	line-height:80px;
-	padding-right:30px;
 }
 .list-sample-language-list .reorderDragger {
 	background:rgb(0,0,0);
-	background:rgba(0,0,0,0.7);
 }
 .list-sample-language-list .swipeGreen {
 	background-color:rgb(0,160,40);
-	background-color:rgba(0,160,40,0.8);
 }
 .list-sample-language-list h2 {
 	margin:0;
@@ -44,11 +41,18 @@
 	line-height:100px;
 }
 .list-sample-language-list .dropButton {
-	width:100px;
-	height:80px;
+	width:90px;
+	height:60px;
 	position:absolute;
-	top:10px;
-	right:20px;
+	top:20px;
+	right:110px;
+}
+.list-sample-language-list .cancelButton {
+	width:90px;
+	height:60px;
+	position:absolute;
+	top:20px;
+	right:10px;
 }
 .list-sample-language-list .swipeTitle {
 	font-size:30px;
