@@ -107,10 +107,11 @@ enyo.kind({
 			{name: "generator", kind: "FlyweightRepeater", canGenerate: false, components: [
 				{tag: null, name: "client"}
 			]},
+			{name: "holdingarea", allowHtml: true, classes: "enyo-list-holdingarea"},
 			{name: "page0", allowHtml: true, classes: "enyo-list-page"},
 			{name: "page1", allowHtml: true, classes: "enyo-list-page"},
-			{name: "placeholder", classes: "enyo-list-placeholder"},
-			{name: "swipeableComponents", style: "position:absolute; display:block; top:-1000px; left:0px;"}
+			{name: "placeholder"},
+			{name: "swipeableComponents", style: "position:absolute; display:block; top:-1000px; left:0;"}
 		]}
 	],
 
@@ -119,11 +120,14 @@ enyo.kind({
 	reorderHoldTimeMS: 600,
 	// index of the row that we're moving
 	draggingRowIndex: -1,
+	// node of the dragged row, used to keep touch events alive
+	draggingRowNode: null,
 	// index of the row before which we'll show the placeholder item.  If the placeholder
 	// is at the end of the list, this will be one larger than the row count.
 	placeholderRowIndex: -1,
 	// determines scroll height at top/bottom of list where dragging will cause scroll
 	dragToScrollThreshold: 0.1,
+	// used to determine direction of scrolling during reordering
 	prevScrollTop: 0,
 	// how many MS between scroll events when autoscrolling
 	autoScrollTimeoutMS: 20,
@@ -337,6 +341,13 @@ enyo.kind({
 	pageForRow: function(inIndex) {
 		return Math.floor(inIndex / this.rowsPerPage);
 	},
+	// preserve original DOM node because it may be needed to route touch events
+	preserveDraggingRowNode: function(pageNo) {
+		if (this.draggingRowNode && this.pageForRow(this.draggingRowIndex) === pageNo) {
+			this.$.holdingarea.hasNode().appendChild(this.draggingRowNode);
+			this.draggingRowNode = null;
+		}
+	},
 	update: function(inScrollTop) {
 		var updated = false;
 		// get page info for position
@@ -348,6 +359,7 @@ enyo.kind({
 		// which page number for page0 (even number pages)?
 		var p = (k % 2 === 0) ? k : k-1;
 		if (this.p0 != p && this.isPageInRange(p)) {
+			this.preserveDraggingRowNode(this.p0);
 			this.generatePage(p, this.$.page0);
 			this.positionPage(p, this.$.page0);
 			this.p0 = p;
@@ -358,6 +370,7 @@ enyo.kind({
 		p = (k % 2 === 0) ? Math.max(1, k-1) : k;
 		// position data page 1
 		if (this.p1 != p && this.isPageInRange(p)) {
+			this.preserveDraggingRowNode(this.p1);
 			this.generatePage(p, this.$.page1);
 			this.positionPage(p, this.$.page1);
 			this.p1 = p;
@@ -672,6 +685,7 @@ enyo.kind({
 		this.styleReorderContainer(inEvent);
 
 		this.draggingRowIndex = this.placeholderRowIndex = inEvent.rowIndex;
+		this.draggingRowNode = inEvent.target;
 		this.itemMoved = false;
 		this.initialPageNumber = this.currentPageNumber = this.pageForRow(inEvent.rowIndex);
 		this.prevScrollTop = this.getScrollTop();
@@ -922,6 +936,7 @@ enyo.kind({
 			this.beginPinnedReorder(inEvent);
 			return;
 		}
+		this.removeDraggingRowNode();
 		this.removePlaceholderNode();
 		this.emptyAndHideReorderContainer();
 		this.positionReorderedNode();
@@ -1103,6 +1118,12 @@ enyo.kind({
 	removePlaceholderNode: function() {
 		this.removeNode(this.placeholderNode);
 		this.placeholderNode = null;
+	},
+	removeDraggingRowNode: function() {
+		this.draggingRowNode = null;
+		var holdingArea = this.$.holdingarea.hasNode();
+		// should only ever have one child
+		holdingArea.removeChild(holdingArea.firstChild);
 	},
 	//* Removes the passed-in node from the DOM.
 	removeNode: function(node) {

@@ -21,10 +21,11 @@ enyo.kind({
 			{name: "generator", kind: "FlyweightRepeater", canGenerate: false, components: [
 				{tag: null, name: "client"}
 			]},
+			{name: "holdingarea", allowHtml: true, classes: "enyo-list-holdingarea"},
 			{name: "page0", allowHtml: true, classes: "enyo-list-page"},
 			{name: "page1", allowHtml: true, classes: "enyo-list-page"},
 			{name: "belowClient"},
-			{name: "placeholder", classes: "enyo-list-placeholder"},
+			{name: "placeholder"},
 			{name: "swipeableComponents", style: "position:absolute; display:block; top:-1000px; left:0px;"}
 		]}
 	],
