@@ -1122,8 +1122,7 @@ enyo.kind({
 	removeDraggingRowNode: function() {
 		this.draggingRowNode = null;
 		var holdingArea = this.$.holdingarea.hasNode();
-		// should only ever have one child
-		holdingArea.removeChild(holdingArea.firstChild);
+		holdingArea.innerHTML = "";
 	},
 	//* Removes the passed-in node from the DOM.
 	removeNode: function(node) {
