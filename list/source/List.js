@@ -186,6 +186,9 @@ enyo.kind({
 		this.noSelectChanged();
 		this.multiSelectChanged();
 		this.toggleSelectedChanged();
+		// setup generator to default to "full-list" values
+		this.$.generator.setRowOffset(0);
+		this.$.generator.setCount(this.count);
 	},
 	initComponents: function() {
 		this.createReorderTools();
@@ -376,6 +379,11 @@ enyo.kind({
 			this.p1 = p;
 			updated = true;
 			this.p1RowBounds = this.getPageRowHeights(this.$.page1);
+		}
+		if (updated) {
+			// reset generator back to "full-list" values
+			this.$.generator.setRowOffset(0);
+			this.$.generator.setCount(this.count);
 		}
 		if (updated && !this.fixedHeight) {
 			this.adjustBottomPage();
@@ -602,23 +610,6 @@ enyo.kind({
 		modifications to a row, to force it to render.
     */
     renderRow: function(inIndex) {
-		// reset generator to map to all rendered rows
-		var firstRow, count;
-		if (this.p1 == null) {
-			if (this.p0 == null) {
-				// no pages rendered, nothing to do
-				return;
-			}
-			// if only page 0 is rendered, then we've only got one page of data
-			firstRow = 0;
-			count = this.count;
-		}
-		else {
-			firstRow = Math.min(this.p0, this.p1) * this.rowsPerPage;
-			count = Math.min(this.count - firstRow, this.rowsPerPage * 2);
-		}
-		this.$.generator.setRowOffset(firstRow);
-		this.$.generator.setCount(count);
 		this.$.generator.renderRow(inIndex);
     },
 	//* Updates row bounds when rows are re-rendered.
