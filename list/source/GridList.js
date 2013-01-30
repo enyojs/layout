@@ -1,36 +1,37 @@
-/*
- * enyo.GridList extends enyo.List
- * 
- * @author: Surya Vakkalanka
- * @date: September 2012 
- * 
- * Extends List to allow displaying multiple items per row based on available container width
- * Supports 3 modes of rendering items: fixedSize, fluidWidth and variableSize (with or without normalization of rows)
- *      fixedSize: all items are of the same size which can be configured up front at creation time by setting itemWidth and itemHeight properties.
- *      fluidWidth: all items are of the same size but can stretch or shrink to fit in the available container width, honoring the itemMinWidth property. 
- *      normalizeRows: itemWidth and itemHeight are not known at create time. The sizeupItem event can be used to set up the dimensions of each item at runtime. 
- * 
- * Usage:
- * enyo.kind( { 
- *      name: "App",
- *      components: [
- *          { name: "gridList", kind: "enyo.GridList", onSizeupItem: "sizeupItem", onSetupItem: "setupItem", itemMinWidth: 160, itemSpacing: 2, components: [ {name: "img", kind: "enyo.Image"} ] },
- *      ],
- *      ... 
- *      //array of all item data 
- *      _data: [],      //example: [{width: 100, height: 100, source: "http://www.flickr.com/myimage.jpg"},....]
- *      sizeupItem: function(inSender, inEvent) {
- *          var item = this._data[inEvent.index];
- *          inSender.setItemWidth(item.width);
- *          inSender.setItemHeight(item.height);
- *      },
- *      setupItem: function(inSender, inEvent) {
- *          var item = this._data[inEvent.index];
- *          this.$.img.setSrc(item.source);
- *          this.$.img.addStyles("width:100%; height: auto;");
- *      }
- *      ...
- * });
+/**
+    _enyo.GridList_ extends _enyo.List_
+ 
+    @author: Surya Vakkalanka
+    @date: September 2012 
+ 
+    Extends _enyo.List_ to allow displaying multiple items per row based on available container width
+    Supports 3 modes of rendering items: fixedSize, fluidWidth and variableSize (with or without normalization of rows)
+    
+    fixedSize: all items are of the same size which can be configured up front at creation time by setting itemWidth and itemHeight properties.
+    fluidWidth: all items are of the same size but can stretch or shrink to fit in the available container width, honoring the itemMinWidth property. 
+    normalizeRows: itemWidth and itemHeight are not known at create time. The sizeupItem event can be used to set up the dimensions of each item at runtime. 
+ 
+    Usage:
+    enyo.kind( { 
+        name: "App",
+        components: [
+            { name: "gridList", kind: "enyo.GridList", onSizeupItem: "sizeupItem", onSetupItem: "setupItem", itemMinWidth: 160, itemSpacing: 2, components: [ {name: "img", kind: "enyo.Image"} ] },
+        ],
+        ... 
+        //array of all item data 
+        _data: [],      //example: [{width: 100, height: 100, source: "http://www.flickr.com/myimage.jpg"},....]
+        sizeupItem: function(inSender, inEvent) {
+            var item = this._data[inEvent.index];
+            inSender.setItemWidth(item.width);
+            inSender.setItemHeight(item.height);
+        },
+        setupItem: function(inSender, inEvent) {
+            var item = this._data[inEvent.index];
+            this.$.img.setSrc(item.source);
+            this.$.img.addStyles("width:100%; height: auto;");
+        }
+        ...
+    });
 */
 
 enyo.kind(
@@ -39,36 +40,44 @@ enyo.kind(
         kind: "enyo.List", 
         classes: "enyo-gridlist", 
         published: {
-            //Set to true if you want all items to be of same size with fluid width (%-based width depending on how many items can fit in the available container width while honoring itemMinWidth). 
-            //sizeupItem event is not fired in this case.  
+            /**
+                Set to true if you want all items to be of same size with fluid width (%-based width depending on how many items can fit in the available container width while honoring itemMinWidth). 
+                sizeupItem event is not fired in this case.  
+            */
             itemFluidWidth: false,
-            //Set to true if you want all items to be of same size with fixed dimensions (configured by setting itemWidth and itemHeight upfront). 
-            //sizeupItem event is not fired in this case. 
+            /**
+                Set to true if you want all items to be of same size with fixed dimensions (configured by setting itemWidth and itemHeight upfront). 
+                sizeupItem event is not fired in this case. 
+            */
             itemFixedSize: false,
-            //Minimum width (in pixels) of items. This is used to calculate the optimal rowsPerPage (items per page) setting based on available width of container. 
+            //* Minimum width (in pixels) of items. This is used to calculate the optimal rowsPerPage (items per page) setting based on available width of container. 
             itemMinWidth: 160,
-            //Minimum height (in pixels) of items. This is used to calculate the optimal rowsPerPage (items per page) setting based on available width of container. 
+            //* Minimum height (in pixels) of items. This is used to calculate the optimal rowsPerPage (items per page) setting based on available width of container. 
             itemMinHeight: 160,
-            //Width (in pixels) of each item. sizeupItem event can be used to set the width of each item at run-time. 
+            //* Width (in pixels) of each item. sizeupItem event can be used to set the width of each item at run-time. 
             itemWidth: 160,
-            //Height (in pixels) of each item. sizeupItem event can be used to set the height of each item at run-time. 
+            //* Height (in pixels) of each item. sizeupItem event can be used to set the height of each item at run-time. 
             itemHeight: 160,
-            //Spacing (in units. 1 unit = 8px) between GridList items. 
+            //* Spacing (in units. 1 unit = 8px) between GridList items. 
             itemSpacing: 0,
-            //Set this to true if you want the items in each GridList row to be normalized to the same height. 
-            //This setting is ignored (meaning rows are not normalized for performance benefits since we already know that the items have the same height) for the cases when either of itemFluidWidth or itemFixedSize is set to true. 
+            /**
+                Set this to true if you want the items in each GridList row to be normalized to the same height. 
+                This setting is ignored (meaning rows are not normalized for performance benefits since we already know that the items have the same height) for the cases when either of itemFluidWidth or itemFixedSize is set to true. 
+            */
             normalizeRows: false
         },
         horizontal: "hidden",
         events: {
             /**
-            Fires once per item only in the cases when items are NOT fluid width OR fixed size at pre-render (before rendering) time to give the developer an opportunity to set the dimensions of the item.
-            _inEvent.index_ contains the current item index.
+                Fires once per item only in the cases when items are NOT fluid width OR fixed size at pre-render (before rendering) time to give the developer an opportunity to set the dimensions of the item.
+                _inEvent.index_ contains the current item index.
             */
             onSizeupItem: ""
         },
-        //Call this function after the GridList data is ready. This method sets the count on the list and renders (displays) it. 
-        //This is a convenience method that does a) setCount and b) reset on the List instead of the developer having to invoke these two calls separately. 
+        /**
+            Call this function after the GridList data is ready. This method sets the count on the list and renders (displays) it. 
+            This is a convenience method that does a) setCount and b) reset on the List instead of the developer having to invoke these two calls separately. 
+        */
         show: function(count) {
             this._calculateItemsPerRow();
             this.setCount(count);
@@ -132,11 +141,13 @@ enyo.kind(
         normalizeRowsChanged: function() {
             this.$.generator.normalizeRows = this.normalizeRows;
         },
+        //* @protected
         bottomUpChanged: function() {
             //Don't let users change this (bottomUp is a published property of List but is not supported by GridList)
             this.bottomUp = false;
             this.pageBound = 'top';
         },
+        //* @protected
         _calculateItemsPerRow: function() {
             var n = this.hasNode();
             if (n) {
@@ -154,11 +165,12 @@ enyo.kind(
                 this.$.generator.itemsPerRow = this.itemsPerRow;
             }
         },
+        //* @protected
         _setComponents: function() {
             var c = this.listTools[0].components, comp;
-            //create a dummy component to dynamically compute the dimensions of items at run-time (once for each item during sizeupItem) based on the actual content inside the item (only for variable sized items where sizeupItem is called). 
+            // Create a dummy component to dynamically compute the dimensions of items at run-time (once for each item during sizeupItem) based on the actual content inside the item (only for variable sized items where sizeupItem is called). 
             this.createComponent(new enyo.Component({name: "_dummy_", allowHtml: true, classes: "enyo-gridlist-dummy", showing: false}, {owner: this}));
-            //Override List's listTools array to use GridFlyweightRepeater instead of FlyweightRepeater
+            // Override List's listTools array to use GridFlyweightRepeater instead of FlyweightRepeater
             for (var i=0; i<c.length; i++) {
                 comp = c[i];
                 if (comp.name == 'generator') {

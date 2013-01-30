@@ -1,9 +1,8 @@
-/*
- * enyo.GridFlyweightRepeater extends enyo.FlyweightRepeater to layout items in a Grid fashion 
- * 
- * @author: Surya Vakkalanka
- * @date: September 2012 
- * 
+/**
+ 	_enyo.GridFlyweightRepeater_ extends _enyo.FlyweightRepeater_ to layout items in a Grid fashion 
+ 
+ 	@author: Surya Vakkalanka
+ 	@date: September 2012 
  */
 
 enyo.kind({
@@ -11,13 +10,14 @@ enyo.kind({
 	kind: "enyo.FlyweightRepeater",
 	events: {
 		/**
-		Fires once per item at pre-render time (to figure out dimensions of the item). 
-		_inEvent.index_ contains the current item index.
-		_inEvent.selected_ is a boolean indicating whether the current item is selected.
+			Fires once per item at pre-render time (to figure out dimensions of the item). 
+			_inEvent.index_ contains the current item index.
+			_inEvent.selected_ is a boolean indicating whether the current item is selected.
 		*/
 		onSizeupItem: ""
 	},
 	itemsPerRow: 0,
+	//* @protected
 	_itemsFromPreviousPage: 0,
 	generateChildHtml: function() {
 		if (this.itemFluidWidth || this.itemFixedSize) {
@@ -25,6 +25,7 @@ enyo.kind({
 		} 
 		return this._generateChildHtmlVariableSizedItems();
 	},
+	//* @protected
 	_generateChildHtmlEqualSizedItems: function() {
   		var cw = this.owner.hasNode().clientWidth;
 		var cl = this.$.client, ht = "";
@@ -38,7 +39,7 @@ enyo.kind({
 			}
 		}
 		for (var i=this.rowOffset; i < this.rowOffset + this.count; i++) {
-			//Setup each item
+			// Setup each item
 			cl.setAttribute("data-enyo-index", i);
 			this.doSetupItem({index: i, selected: this.isSelected(i)});
 			if (this.itemFluidWidth) {
@@ -53,7 +54,7 @@ enyo.kind({
 				} else {
 					cl.addStyles("margin-right: 0px;");
 				}
-				//Add bottom margin for items in last row
+				// Add bottom margin for items in last row
 				if (i >= this.count-this.itemsPerRow) {
 					cl.addStyles("margin-bottom:" + this.itemSpacing + "px;");
 				}
@@ -63,6 +64,7 @@ enyo.kind({
 		}
 		return ht;
 	},
+	//* @protected
 	_generateChildHtmlVariableSizedItems: function() {
 		this.index = null;
 		var item = null;
@@ -122,15 +124,15 @@ enyo.kind({
 				rows[rowIndex].avgHeight = rah;
 				rows[rowIndex].index = rowIndex;
 				
-				//Spill over items collected so far on this page to next page if they don't scale well to fill up remaining gutter  
+				// Spill over items collected so far on this page to next page if they don't scale well to fill up remaining gutter  
 				var itemsInRow = rows[rowIndex].items.length;
 				var gutterPeritem = (cw-rw)/itemsInRow;
 				var lastRowInList = (r == this.owner.count - 1);
 				
-				//If remaining items in the row need to be stretched more than 50% of the avg item width in the row, ditch/spill them over into the next page
+				// If remaining items in the row need to be stretched more than 50% of the avg item width in the row, ditch/spill them over into the next page
 				this._itemsFromPreviousPage = 0;
 				if ((lastRowInPage && gutterPeritem + raw > (1.5 * raw))) {
-					//Remove all these items from this row and push them to next page
+					// Remove all these items from this row and push them to next page
 					this._itemsFromPreviousPage = itemsInRow;
 					rows[rowIndex] = {avgHeight: 0, index: rowIndex, items: []};
 					break;
@@ -167,7 +169,8 @@ enyo.kind({
   		}
   		return ht;
 	},
-	//Normalizes items in each GridList row so that they maintain the correct (original) aspect ratio while ensuring the height of each item is the same. 
+	//* @protected
+	// Normalizes items in each GridList row so that they maintain the correct (original) aspect ratio while ensuring the height of each item is the same. 
 	_normalizeRow: function(inRowData) {
 		if (!this.normalizeRows) {
 			return;
@@ -176,7 +179,7 @@ enyo.kind({
 			return;
 		}
 		var cw = this.owner.hasNode().clientWidth;
-  		//Use avg height to scale heights of all items in row to the same height
+  		// Use avg height to scale heights of all items in row to the same height
 		var item;
 		var runningWidth = 0, nw = 0;
 		var newWidths = "";
@@ -193,17 +196,17 @@ enyo.kind({
     		item.height = inRowData.avgHeight;
 			runningWidth += nw;
 			if (this.itemSpacing >= 0) {
-				//Spacing can range from 0-10px only - so cap at 10 - otherwise looks ugly
+				// Spacing can range from 0-10px only - so cap at 10 - otherwise looks ugly
 				runningWidth += this.itemSpacing;
 				if (i==inRowData.items.length-1) {
-					//Accomodate right margin on last item 
+					// Accomodate right margin on last item 
 					runningWidth += this.itemSpacing;
 				}
 			}
 		}
 		gutter = cw - runningWidth;
 		
-		//Now scale the whole row uniformly up or down depending on positive or negative width gutter
+		// Now scale the whole row uniformly up or down depending on positive or negative width gutter
 		var scale = cw/(cw-gutter);//Math.abs(1 + gutter/clientWidth);
 		runningWidth = 0;
 		nw = 0;
@@ -221,17 +224,17 @@ enyo.kind({
 			
 			runningWidth += nw;
 			if (this.itemSpacing >= 0) {
-				//Spacing can range from 0-10px only - so cap at 10 - otherwise looks ugly
+				// Spacing can range from 0-10px only - so cap at 10 - otherwise looks ugly
 				runningWidth += this.itemSpacing;
 				if (i==inRowData.items.length-1) {
-					//Accomodate right margin on last item 
+					// Accomodate right margin on last item 
 					runningWidth += this.itemSpacing;
 				}
 			}
 		}
 		gutter = cw - runningWidth;
 		
-		//Adjust the remaining spill over gutter to last item  
+		// Adjust the remaining spill over gutter to last item  
 		item = inRowData.items[inRowData.items.length-1];
 		itemW = item.width;
 		itemH = item.height;
