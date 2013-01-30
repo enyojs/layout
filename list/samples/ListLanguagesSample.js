@@ -12,11 +12,11 @@ enyo.kind({
 	},
 	components: [
 		{kind: "onyx.MoreToolbar", layoutKind: "FittableColumnsLayout", style: "height: 55px;", components: [
-			{content: "Number of Rows:"},
+			{content: "Rows:"},
 			{kind: "onyx.InputDecorator", components: [
 				{kind: "onyx.Input", value: "10", name: "numRows" }
 			]},
-			{kind: "onyx.Button", content: "Repopulate List", ontap: "populateList"}
+			{kind: "onyx.Button", content: "Repopulate", ontap: "populateList"}
 		]},
 		{kind: "List", classes: "list-sample-language-list enyo-unselectable",
 			fit: true, multiSelect: true,
