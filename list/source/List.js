@@ -349,6 +349,7 @@ enyo.kind({
 		if (this.draggingRowNode && this.pageForRow(this.draggingRowIndex) === pageNo) {
 			this.$.holdingarea.hasNode().appendChild(this.draggingRowNode);
 			this.draggingRowNode = null;
+			this.removedInitialPage = true;
 		}
 	},
 	update: function(inScrollTop) {
@@ -384,10 +385,10 @@ enyo.kind({
 			// reset generator back to "full-list" values
 			this.$.generator.setRowOffset(0);
 			this.$.generator.setCount(this.count);
-		}
-		if (updated && !this.fixedHeight) {
-			this.adjustBottomPage();
-			this.adjustPortSize();
+			if (!this.fixedHeight) {
+				this.adjustBottomPage();
+				this.adjustPortSize();
+			}
 		}
 	},
 	getPageRowHeights: function(page) {
@@ -677,6 +678,7 @@ enyo.kind({
 
 		this.draggingRowIndex = this.placeholderRowIndex = inEvent.rowIndex;
 		this.draggingRowNode = inEvent.target;
+		this.removedInitialPage = false;
 		this.itemMoved = false;
 		this.initialPageNumber = this.currentPageNumber = this.pageForRow(inEvent.rowIndex);
 		this.prevScrollTop = this.getScrollTop();
@@ -930,7 +932,6 @@ enyo.kind({
 		this.removeDraggingRowNode();
 		this.removePlaceholderNode();
 		this.emptyAndHideReorderContainer();
-		this.positionReorderedNode();
 		// clear this early to prevent scroller code from using disappeared placeholder
 		this.pinnedReorderMode = false;
 		this.reorderRows(inEvent);
@@ -961,10 +962,8 @@ enyo.kind({
 	reorderRows: function(inEvent) {
 		// send reorder event
 		this.doReorder(this.makeReorderEvent(inEvent));
-		// update page heights if necessary
-		if(this.currentPageNumber != this.initialPageNumber) {
-			this.moveItemToDiffPage();
-		}
+		// update display
+		this.positionReorderedNode();
 		// fix indices for reordered rows
 		this.updateListIndices();
 	},
@@ -974,45 +973,41 @@ enyo.kind({
 		e.reorderTo = this.placeholderRowIndex;
 		return e;
 	},
-	//* Moves the given item from one page to the next.
-	moveItemToDiffPage: function() {
-		var mover, movee;
-		var currentPage = this.pageForPageNumber(this.currentPageNumber);
-		var otherPage = this.pageForPageNumber(this.currentPageNumber + 1);
-		// if moved down, move current page's firstChild to the end of previous page
-		if(this.initialPageNumber < this.currentPageNumber) {
-			mover = currentPage.hasNode().firstChild;
-			otherPage.hasNode().appendChild(mover);
-		// if moved up, move current page's lastChild before previous page's firstChild
-		} else {
-			mover = currentPage.hasNode().lastChild;
-			movee = otherPage.hasNode().firstChild;
-			otherPage.hasNode().insertBefore(mover, movee);
-		}
-		this.correctPageHeights();
-		this.updatePagePositions(this.initialPageNumber);
-	},
 	//* Moves the node being reordered to its new position and shows it.
 	positionReorderedNode: function() {
-		var hiddenNode = this.hiddenNode;
-		this.hiddenNode = null;
-		// don't move a hiddenNode that's been deleted
-		if (!hiddenNode.parentNode) {
-			return;
+		// only do this if the page with the initial item is still rendered
+		if (!this.removedInitialPage) {
+			var insertNode = this.$.generator.fetchRowNode(this.placeholderRowIndex);
+			if (insertNode) {
+				insertNode.parentNode.insertBefore(this.hiddenNode, insertNode);
+				this.showNode(this.hiddenNode);
+			}
+			this.hiddenNode = null;
+			if (this.currentPageNumber != this.initialPageNumber) {
+				var mover, movee;
+				var currentPage = this.pageForPageNumber(this.currentPageNumber);
+				var otherPage = this.pageForPageNumber(this.currentPageNumber + 1);
+				// if moved down, move current page's firstChild to the end of previous page
+				if (this.initialPageNumber < this.currentPageNumber) {
+					mover = currentPage.hasNode().firstChild;
+					otherPage.hasNode().appendChild(mover);
+				// if moved up, move current page's lastChild before previous page's firstChild
+				} else {
+					mover = currentPage.hasNode().lastChild;
+					movee = otherPage.hasNode().firstChild;
+					otherPage.hasNode().insertBefore(mover, movee);
+				}
+				this.correctPageHeights();
+				this.updatePagePositions(this.initialPageNumber);
+			}
 		}
-		var insertNode = this.$.generator.fetchRowNode(this.placeholderRowIndex);
-		if (insertNode) {
-			insertNode.parentNode.insertBefore(hiddenNode, insertNode);
-		}
-		// FIXME: potential glitch here if list doesn't refresh if we move item
-		// to end of list where insertNode would be null
-		this.showNode(hiddenNode);
 	},
 	//* Updates indices of list items as needed to preserve reordering.
 	updateListIndices: function() {
 		// don't do update if we've moved further than one page, refresh instead
 		if(this.shouldDoRefresh()) {
 			this.refresh();
+			this.correctPageHeights();
 			return;
 		}
 
@@ -1133,7 +1128,7 @@ enyo.kind({
 		var pageControl = this.pageForPageNumber(pageNumber, true);
 		if (pageControl) {
 			var h0 = this.pageHeights[pageNumber];
-			var pageHeight = pageControl.getBounds().height;
+			var pageHeight = Math.max(1, pageControl.getBounds().height);
 			this.pageHeights[pageNumber] = pageHeight;
 			this.portSize += pageHeight - h0;
 		}
