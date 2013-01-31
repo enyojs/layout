@@ -54,11 +54,11 @@ enyo.kind(
             itemMinWidth: 160,
             //* Minimum height (in pixels) of items. This is used to calculate the optimal rowsPerPage (items per page) setting based on available width of container. 
             itemMinHeight: 160,
-            //* Width (in pixels) of each item. sizeupItem event can be used to set the width of each item at run-time. 
+            //* Width (in pixels) of each item. sizeupItem event can be used to set the width of each item at run-time. This value can be set upfront for all items in the case of fixedSize items. Setting this upfront is ignored in the case of variable sized items.
             itemWidth: 160,
-            //* Height (in pixels) of each item. sizeupItem event can be used to set the height of each item at run-time. 
+            //* Height (in pixels) of each item. sizeupItem event can be used to set the height of each item at run-time. This value can be set upfront for all items in the case of fixedSize items. Setting this upfront is ignored in the case of variable sized items.
             itemHeight: 160,
-            //* Spacing (in units. 1 unit = 8px) between GridList items. 
+            //* Spacing (in pixels) between GridList items. 
             itemSpacing: 0,
             /**
                 Set this to true if you want the items in each GridList row to be normalized to the same height. 
@@ -135,7 +135,7 @@ enyo.kind(
             if (this.itemSpacing < 0) {
                 this.itemSpacing = 0;
             }
-            this.itemSpacing = 8 * this.itemSpacing;
+            this.itemSpacing = this.itemSpacing;
             this.$.generator.itemSpacing = this.itemSpacing;
         },
         normalizeRowsChanged: function() {
@@ -146,6 +146,11 @@ enyo.kind(
             //Don't let users change this (bottomUp is a published property of List but is not supported by GridList)
             this.bottomUp = false;
             this.pageBound = 'top';
+        },
+        //* @protected
+        reflow: function() {
+            this._calculateItemsPerRow();
+            this.inherited(arguments);
         },
         //* @protected
         _calculateItemsPerRow: function() {
