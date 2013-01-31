@@ -13,13 +13,9 @@
 	width: 100%;
 	height: auto;
 }
-.enyo-gridlist-imageitem.loading {
-	background: #000000 url(../images/spinner-dark.gif) center center no-repeat;
-}
 .enyo-gridlist-imageitem.caption {
 	margin-top: 15px;
-	font-family: "PreludeWGL Light";
-	font-size: 10pt;
+	font-size: 8pt;
 	z-index: 10;
 	opacity: 0.7;
 	padding: 5px;

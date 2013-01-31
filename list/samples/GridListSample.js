@@ -20,7 +20,9 @@ enyo.kind({
 			name: "list", kind: "enyo.GridList", fit:true, 
 			onSetupItem: "setupItem", onSizeupItem: "sizeupItem", style: "background:#000;", 
 			normalizeRows: true, 
-			itemMinWidth: 200, itemSpacing: 2, 
+			itemMinWidth: 160, 
+			itemMinHeight: 160, 
+			itemSpacing: 2, 
 			components: [
 				{name: "tile", kind: "enyo.GridList.ImageItem"}
 	    	]
@@ -34,21 +36,17 @@ enyo.kind({
 		this.$.list.setItemFixedSize(true);
 		this.$.list.setItemFluidWidth(false);
 		this.$.list.setItemWidth(160);
-		this.$.list.setItemMinWidth(160);
 		this.$.list.setItemHeight(160);
-		this.$.list.setItemMinHeight(160);
 		this.$.list.show(this.results.length);
 	},
 	setSizeVariable: function() {
 		this.$.list.setItemFixedSize(false);
 		this.$.list.setItemFluidWidth(false);
-		this.$.list.setItemMinWidth(160);
 		this.$.list.show(this.results.length);
 	},
 	setSizeFluid: function() {
 		this.$.list.setItemFluidWidth(true);
 		this.$.list.setItemFixedSize(false);
-		this.$.list.setItemMinWidth(320);
 		this.$.list.show(this.results.length);
 	},
 	search: function() {
@@ -66,7 +64,7 @@ enyo.kind({
 			method: "flickr.photos.search",
 			format: "json",
 			api_key: '2a21b46e58d207e4888e1ece0cb149a5',
-			per_page: 200,
+			per_page: 100,
 			page: 0,
 			text: inSearchText,
 			sort: 'date-posted-desc',
