@@ -13,13 +13,17 @@
 	width: 100%;
 	height: auto;
 }
-.enyo-gridlist-imageitem.caption {
-	margin-top: 15px;
-	font-size: 8pt;
-	z-index: 10;
+.enyo-gridlist-imageitem .caption {
 	opacity: 0.7;
-	padding: 5px;
-	background: #000;
-	color: #fff;
+	font-weight: bold;
+	text-align: center;
+	font-size: 10pt;
+	text-transform: uppercase;
+	z-index: 10;
+	padding-top: 10px;
 	width: 100%;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	color: #fff;
 }

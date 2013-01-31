@@ -22,7 +22,7 @@ enyo.kind({
 			normalizeRows: true, 
 			itemMinWidth: 160, 
 			itemMinHeight: 160, 
-			itemSpacing: 2, 
+			itemSpacing: 8, 
 			components: [
 				{name: "tile", kind: "enyo.GridList.ImageItem"}
 	    	]
@@ -97,7 +97,7 @@ enyo.kind({
 		this.$.list.setItemHeight(item.height_m);
 	},
 	tileSpacingChanged: function() {
-		var spacing = Math.round(5 * this.$.tileSpacingSlider.value/100);
+		var spacing = Math.round(48 * this.$.tileSpacingSlider.value/100);
 		this.$.list.setItemSpacing(spacing);
 		this.$.list.show(this.results.length);
 	},

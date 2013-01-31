@@ -29,21 +29,23 @@ enyo.kind({
 	_generateChildHtmlEqualSizedItems: function() {
   		var cw = this.owner.hasNode().clientWidth;
 		var cl = this.$.client, ht = "";
-		var itemWidthPercent = 0;
+		var itemWidthPercent = 0, itemScaledWidth = this.itemWidth, itemScaledHeight = this.itemHeight;
 		if (this.itemFluidWidth) {
 			itemWidthPercent = 100/this.itemsPerRow;
-	  		var totalMargin = 0;
+			var totalMargin = 0;
 			if (this.itemSpacing >= 0) {
 				totalMargin = (this.itemsPerRow + 1) * this.itemSpacing;
 				itemWidthPercent = 100/this.itemsPerRow - ((100 * totalMargin)/(this.itemsPerRow * cw));
 			}
+			itemScaledWidth = (itemWidthPercent/100)*cw;
+			itemScaledHeight = itemScaledWidth * (this.itemHeight/this.itemWidth);
 		}
 		for (var i=this.rowOffset; i < this.rowOffset + this.count; i++) {
 			// Setup each item
 			cl.setAttribute("data-enyo-index", i);
 			this.doSetupItem({index: i, selected: this.isSelected(i)});
 			if (this.itemFluidWidth) {
-				cl.addStyles("width:" + itemWidthPercent + "%;height:" + this.itemHeight + "px;");
+				cl.addStyles("width:" + itemWidthPercent + "%;height:" + itemScaledHeight + "px;");
 			} else {
 				cl.addStyles("width:" + this.itemWidth + "px;height:" + this.itemHeight + "px;");
 			}
