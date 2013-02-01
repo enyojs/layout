@@ -166,6 +166,8 @@ enyo.kind(
                     this.itemsPerRow = (gutter > 0) ? high : low;
                     visibleRows = Math.round((n.clientHeight - this.itemSpacing)/(this.itemHeight + this.itemSpacing));
                 }
+                // Make sure there's at least 1 item per row 
+                this.itemsPerRow = Math.max(1, this.itemsPerRow);
                 this.rowsPerPage = 3 * this.itemsPerRow * visibleRows;
                 this.$.generator.itemsPerRow = this.itemsPerRow;
             }
