@@ -134,10 +134,24 @@ enyo.kind({
 			page: i,
 			text: this.searchText
 		};
-		return new enyo.JsonpRequest({url: this.url, callbackName: "jsoncallback"})
-			.response(this, "processResponse")
-			.go(params)
-			;
+		if (window.location.protocol === "ms-appx:") {
+			params.nojsoncallback = 1;
+			// Use ajax for platforms with no jsonp support (Windows 8)
+			var req = new enyo.Ajax({url: this.url, handleAs: "text"})
+				.response(this, "processAjaxResponse")
+				.go(params)
+				;
+		} else {
+			var req = new enyo.JsonpRequest({url: this.url, callbackName: "jsoncallback"})
+				.response(this, "processResponse")
+				.go(params)
+				;
+		}
+		return req;
+	},
+	processAjaxResponse: function(inSender, inResponse) {
+		inResponse = JSON.parse(inResponse);
+		this.processResponse(inSender, inResponse);
 	},
 	processResponse: function(inSender, inResponse) {
 		var photos = inResponse.photos ? inResponse.photos.photo || [] : [];
