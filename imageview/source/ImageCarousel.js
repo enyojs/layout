@@ -156,7 +156,7 @@ enyo.kind({
 	setImages: function(inImages) {
 		// always invoke imagesChanged because this is an array property
 		// which might otherwise seem to be the same object
-		this.setPropertyValue("images", inImages, "imagesChanged");
+        this.set("images", inImages);
 	},
 	imagesChanged: function() {
 		this.initContainers();
