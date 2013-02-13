@@ -4,5 +4,10 @@ enyo.depends(
 	"List.js",
 	"PulldownList.css",
 	"PulldownList.js",
-	"AroundList.js"
+	"AroundList.js",
+	"GridFlyweightRepeater.js",
+	"GridList.css",
+	"GridList.js",
+	"GridListImageItem.css",
+	"GridListImageItem.js"
 );

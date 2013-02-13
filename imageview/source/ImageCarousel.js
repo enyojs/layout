@@ -25,8 +25,8 @@
 	the	current index may be manipulated at runtime via the inherited
 	_getIndex()_ and _setIndex()_ functions.
 
-    Note that it's best to specify a size for the ImageCarousel in order to
-    avoid complications.
+	Note that it's best to specify a size for the ImageCarousel in order to
+	avoid complications.
 */
 
 enyo.kind({
@@ -34,8 +34,8 @@ enyo.kind({
 	kind: enyo.Panels,
 	arrangerKind: "enyo.CarouselArranger",
 	/**
-	    The default scale value to be applied to each ImageView. Can be "auto",
-	    "width", "height", or any positive numeric value.
+		The default scale value to be applied to each ImageView. Can be "auto",
+		"width", "height", or any positive numeric value.
 	*/
 	defaultScale: "auto",
 	//* If true, ImageView instances are created with zooming disabled.
@@ -87,7 +87,7 @@ enyo.kind({
 	},
 	loadNearby: function() {
 		var range = this.getBufferRange();
-		for ( var i in range ) {
+		for (var i in range) {
 			this.loadImageView(range[i]);
 		}
 	},
@@ -101,7 +101,7 @@ enyo.kind({
 			i=this.index-1;
 			x=0;
 			xEnd = bounds.width * prefetchRange;
-			while ( i>=0 && x<=xEnd) {
+			while (i>=0 && x<=xEnd) {
 				c = this.$["container" + i];
 				x+= c.width + c.marginWidth;
 				range.unshift(i);
@@ -111,7 +111,7 @@ enyo.kind({
 			i=this.index;
 			x=0;
 			xEnd = bounds.width * (prefetchRange + 1);
-			while ( i<this.images.length && x<=xEnd ) {
+			while (i<this.images.length && x<=xEnd) {
 				c = this.$["container" + i];
 				x+= c.width + c.marginWidth;
 				range.push(i);
@@ -189,11 +189,11 @@ enyo.kind({
 		return this.$["image" + index] || this.loadImageView(index);
 	},
 	/**
-	    Destroys any ImageView objects that are not in the immediate viewing
-	    area (i.e., the currently active image and the first image on either
-	    side of	it) to free up memory. If you set the Image Carousel's
-	    _lowMemory_ property to true, this function will be called automatically
-	    as needed.
+		Destroys any ImageView objects that are not in the immediate viewing
+		area (i.e., the currently active image and the first image on either
+		side of	it) to free up memory. If you set the Image Carousel's
+		_lowMemory_ property to true, this function will be called automatically
+		as needed.
 	*/
 	cleanupMemory: function() {
 		var buffer = getBufferRange();

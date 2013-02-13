@@ -22,7 +22,7 @@ enyo.kind({
 	kind: "CarouselArranger",
 	/**
 		The "peekWidth" property specifies the amount each panel should be
-		offset from the left when it is selected. This allows controls on the 
+		offset from the left when it is selected. This allows controls on the
 		underlying panel to the left of the selected one to be partially
 		revealed.
 	*/
@@ -54,11 +54,16 @@ enyo.kind({
 				if (i >= inIndex) {
 					e += c.width + c.marginWidth - this.peekWidth;
 				}
-				// FIXME: overdragging-ish
-				if (i == c$.length - 1 && inIndex < 0) {
-					this.arrangeControl(c, {left: e - inIndex});
-				}
 				n++;
+			} else {
+				this.arrangeControl(c, {left: e});
+				if (i >= inIndex) {
+					e += c.width + c.marginWidth;
+				}
+			}
+			// FIXME: overdragging-ish
+			if (i == c$.length - 1 && inIndex < 0) {
+				this.arrangeControl(c, {left: e - inIndex});
 			}
 		}
 	},
@@ -76,7 +81,7 @@ enyo.kind({
 				this.fitControl(inControl, inA.left);
 			}
 		}
-		
+
 	},
 	finish: function() {
 		this.inherited(arguments);

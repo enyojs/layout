@@ -1,4 +1,4 @@
-/** 
+/**
 	Description to make fittable kinds available in Ares.
 */
 Palette.model.push(
