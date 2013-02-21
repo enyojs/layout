@@ -129,6 +129,11 @@ enyo.kind({
 		this.inherited(arguments);
 		this.refresh();
 	},
+	notifyPanels: function() {
+		// allows components to listen for _onPanelActivate_ and react accordingly.
+		var activePanel = this.getPanels()[this.getIndex()];
+		this.waterfallDown("onPanelActivate", {activePanel: activePanel});
+	},
 	//* @public
 	/**
 		Returns an array of contained panels.
@@ -177,6 +182,24 @@ enyo.kind({
 		this.setIndex(inIndex);
 		this.completed();
 	},
+	/**
+		Selects the named component owned by the Panels and returns its index.
+	*/
+	selectPanelByName: function(inName) {
+		var p, panel, panels;
+		var index = undefined;
+		if (!inName) return index;
+		panels = this.getPanels();
+		for (p in panels) {
+			panel = panels[p];
+			if (panel.name === inName) {
+				index = p;
+				this.setIndex(index);
+			}
+		}
+		// in case we need it for something
+		return index;
+	},
 	//* Transitions to the previous panel--i.e., the panel whose index value is
 	//* one less than that of the current active panel.
 	previous: function() {
@@ -217,6 +240,7 @@ enyo.kind({
 				}
 			}
 		}
+		this.notifyPanels();
 	},
 	step: function(inSender) {
 		this.fraction = inSender.value;
@@ -229,6 +253,7 @@ enyo.kind({
 		this.fraction = 1;
 		this.stepTransition();
 		this.finishTransition();
+        return true;
 	},
 	dragstart: function(inSender, inEvent) {
 		if (this.draggable && this.layout && this.layout.canDragEvent(inEvent)) {
