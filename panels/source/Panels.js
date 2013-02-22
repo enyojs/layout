@@ -129,11 +129,6 @@ enyo.kind({
 		this.inherited(arguments);
 		this.refresh();
 	},
-	notifyPanels: function() {
-		// allows components to listen for _onPanelActivate_ and react accordingly.
-		var activePanel = this.getPanels()[this.getIndex()];
-		this.waterfallDown("onPanelActivate", {activePanel: activePanel});
-	},
 	//* @public
 	/**
 		Returns an array of contained panels.
@@ -186,11 +181,11 @@ enyo.kind({
 		Selects the named component owned by the Panels and returns its index.
 	*/
 	selectPanelByName: function(inName) {
-		var p, panel, panels;
+		var panel, panels;
 		var index = undefined;
 		if (!inName) return index;
 		panels = this.getPanels();
-		for (p in panels) {
+		for (var p = 0, l = panels.length; p < l; p += 1) {
 			panel = panels[p];
 			if (panel.name === inName) {
 				index = p;
@@ -240,7 +235,6 @@ enyo.kind({
 				}
 			}
 		}
-		this.notifyPanels();
 	},
 	step: function(inSender) {
 		this.fraction = inSender.value;
