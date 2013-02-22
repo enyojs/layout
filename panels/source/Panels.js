@@ -180,20 +180,17 @@ enyo.kind({
 	/**
 		Selects the named component owned by the Panels and returns its index.
 	*/
-	selectPanelByName: function(inName) {
-		var panel, panels;
-		var index = undefined;
-		if (!inName) return index;
-		panels = this.getPanels();
-		for (var p = 0, l = panels.length; p < l; p += 1) {
-			panel = panels[p];
-			if (panel.name === inName) {
-				index = p;
-				this.setIndex(index);
+	selectPanelByName: function(name) {
+		if (!name) return;
+		var idx = 0;
+		var panels = this.getPanels();
+		var len = panels.length;
+		for (; idx < len; ++idx) {
+			if (name === panels[idx].name) {
+			this.setIndex(idx);
+			return idx;
 			}
 		}
-		// in case we need it for something
-		return index;
 	},
 	//* Transitions to the previous panel--i.e., the panel whose index value is
 	//* one less than that of the current active panel.
