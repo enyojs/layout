@@ -8,7 +8,6 @@
 	Enyo Developer Guide.
 */
 
-// TODO - much of this should be brought down into Enyo core, to be shared between Onyx, Moonraker, and any other libraries.
 enyo.kind({
 	name: "enyo.Drawer",
 	published: {
