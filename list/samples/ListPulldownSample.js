@@ -39,18 +39,31 @@ enyo.kind({
 	search: function() {
 		// Capture searchText and strip any whitespace
 		var searchText = this.$.searchInput.getValue().replace(/^\s+|\s+$/g, '');
-
+		var url = "http://search.twitter.com/search.json";
 		if (searchText !== "") {
-			var req = new enyo.JsonpRequest({
-				url: "http://search.twitter.com/search.json",
-				callbackName: "callback"
-			});
-			req.response(enyo.bind(this, "processSearchResults"));
+			if (window.location.protocol === "ms-appx:") {
+				// Use ajax for platforms with no jsonp support (Windows 8)
+				var req = new enyo.Ajax({
+					url: url, 
+					handleAs: "text"
+				});
+				req.response(enyo.bind(this, "processAjaxSearchResults"));
+			} else {
+				var req = new enyo.JsonpRequest({
+					url: url,
+					callbackName: "callback"
+				});
+				req.response(enyo.bind(this, "processSearchResults"));
+			}
 			req.go({q: searchText, rpp: 20});
 		} else {
 			// For whitespace searches, set new content value in order to display placeholder
 			this.$.searchInput.setValue(searchText);
 		}
+	},
+	processAjaxSearchResults: function(inRequest, inResponse) {
+		inResponse = JSON.parse(inResponse);
+		this.processSearchResults(inRequest, inResponse);
 	},
 	processSearchResults: function(inRequest, inResponse) {
 		this.results = inResponse.results;
