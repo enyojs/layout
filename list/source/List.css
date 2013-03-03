@@ -8,9 +8,22 @@
 	height: 1000000px;
 }
 
-.enyo-list-page, .enyo-list-holdingarea {
+.enyo-list-holdingarea {
 	position: absolute;
 	left: 0;
+	right: 0;
+}
+
+.enyo-list-port.horizontal {
+	white-space: nowrap;		
+}
+
+.enyo-list-page {
+	position: absolute;
+	left: 0;
+}
+
+.enyo-list-page.vertical {
 	right: 0;
 }
 

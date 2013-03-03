@@ -51,7 +51,12 @@ enyo.kind({
 			0-based.  Must be positive, as row -1 is used for undefined rows
 			in the event system.
 		*/
-		rowOffset: 0
+		rowOffset: 0,
+		/**
+			Direction items will be laid out--either "v" for vertical
+			or "h" for horizontal
+		*/
+		orient: "v"
 	},
 	events: {
 		/**
@@ -108,6 +113,9 @@ enyo.kind({
 			r = this.rowOffset + (this.bottomUp ? this.count - i-1 : i);
 			this.setupItem(r);
 			this.$.client.setAttribute("data-enyo-index", r);
+			if (this.orient == "h") {
+				this.$.client.setStyle("display:inline-block;");	
+			}
 			h += this.inherited(arguments);
 			this.$.client.teardownRender();
 		}
@@ -191,7 +199,7 @@ enyo.kind({
 	//* controls inside the repeater will be rendered for the given row.
 	prepareRow: function(inIndex) {
 		// do nothing if index is out-of-range
-		if (inIndex < 0 || inIndex >= this.count) {
+		if (inIndex < this.rowOffset || inIndex >= this.count + this.rowOffset) {
 			return;
 		}
 		// update row internals to match model
@@ -208,7 +216,7 @@ enyo.kind({
 	//* function _inFunc_, and, finally, locks the row.
 	performOnRow: function(inIndex, inFunc, inContext) {
 		// do nothing if index is out-of-range
-		if (inIndex < 0 || inIndex >= this.count) {
+		if (inIndex < this.rowOffset || inIndex >= this.count + this.rowOffset) {
 			return;
 		}
 		if (inFunc) {

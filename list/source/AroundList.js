@@ -43,13 +43,13 @@ enyo.kind({
 		}
 	},
 	updateMetrics: function() {
-		this.defaultPageHeight = this.rowsPerPage * (this.rowHeight || 100);
+		this.defaultPageSize = this.rowsPerPage * (this.rowSize || 100);
 		this.pageCount = Math.ceil(this.count / this.rowsPerPage);
 		this.aboveHeight = this.$.aboveClient.getBounds().height;
 		this.belowHeight = this.$.belowClient.getBounds().height;
 		this.portSize = this.aboveHeight + this.belowHeight;
 		for (var i=0; i < this.pageCount; i++) {
-			this.portSize += this.getPageHeight(i);
+			this.portSize += this.getPageSize(i);
 		}
 		this.adjustPortSize();
 	},
