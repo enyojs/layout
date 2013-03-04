@@ -6,5 +6,6 @@ enyo.depends(
 	"slideable",
 	"panels",
 	"tree",
-	"imageview"
+	"imageview",
+	"layout.design"
 );
