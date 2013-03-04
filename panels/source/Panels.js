@@ -177,6 +177,21 @@ enyo.kind({
 		this.setIndex(inIndex);
 		this.completed();
 	},
+	/**
+		Selects the named component owned by the Panels and returns its index.
+	*/
+	selectPanelByName: function(name) {
+		if (!name) return;
+		var idx = 0;
+		var panels = this.getPanels();
+		var len = panels.length;
+		for (; idx < len; ++idx) {
+			if (name === panels[idx].name) {
+			this.setIndex(idx);
+			return idx;
+			}
+		}
+	},
 	//* Transitions to the previous panel--i.e., the panel whose index value is
 	//* one less than that of the current active panel.
 	previous: function() {
