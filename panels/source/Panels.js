@@ -166,7 +166,9 @@ enyo.kind({
 	setIndex: function(inIndex) {
 		// override setIndex so that indexChanged is called
 		// whether this.index has actually changed or not
-		this.setPropertyValue("index", inIndex, "indexChanged");
+		var prev = this.get("index");
+		this.index = inIndex;
+		this.notifyObservers("index", prev, inIndex);
 	},
 	/**
 		Sets the active panel to the panel specified by the given index.
@@ -244,7 +246,7 @@ enyo.kind({
 		this.fraction = 1;
 		this.stepTransition();
 		this.finishTransition();
-        return true;
+		return true;
 	},
 	dragstart: function(inSender, inEvent) {
 		if (this.draggable && this.layout && this.layout.canDragEvent(inEvent)) {

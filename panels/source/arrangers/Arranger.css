@@ -21,5 +21,7 @@
 	width: 100% !important;
 	height: 100% !important;
 	min-width: 0 !important;
+	max-width: none !important;
 	min-height: 0 !important;
+	max-height: none !important;
 }
