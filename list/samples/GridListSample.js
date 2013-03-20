@@ -9,24 +9,24 @@ enyo.kind({
 				{kind: "Image", src: "assets/search-input-search.png", style: "width: 20px;"}
 			]},
 			{name: "sizeToggle", kind: "onyx.RadioGroup", components: [
-                {content: "Fixed Size", ontap: "setSizeFixed"},
-               	{content: "Variable Size", active: true, ontap: "setSizeVariable"},
-	            {content: "Fluid Size", ontap: "setSizeFluid"}
-            ]},
-            {content: "Spacing", style: "margin-left: 100px;"},
-            {name:"tileSpacingSlider", kind:"onyx.Slider", onChange: "tileSpacingChanged", style:"width:400px;", value: 40}
+				{content: "Fixed Size", ontap: "setSizeFixed"},
+				{content: "Variable Size", active: true, ontap: "setSizeVariable"},
+				{content: "Fluid Size", ontap: "setSizeFluid"}
+			]},
+			{content: "Spacing", style: "margin-left: 100px;"},
+			{name:"tileSpacingSlider", kind:"onyx.Slider", onChange: "tileSpacingChanged", style:"width:400px;", value: 40}
 		]},
 		{
-			name: "list", kind: "enyo.GridList", fit:true, 
-			onSetupItem: "setupItem", onSizeupItem: "sizeupItem", style: "background:#000;", 
-			normalizeRows: true, 
-			itemMinWidth: 160, 
-			itemMinHeight: 160, 
-			itemSpacing: 8, 
+			name: "list", kind: "enyo.GridList", fit:true,
+			onSetupItem: "setupItem", onSizeupItem: "sizeupItem", style: "background:#000;",
+			normalizeRows: true,
+			itemMinWidth: 160,
+			itemMinHeight: 160,
+			itemSpacing: 8,
 			components: [
 				{name: "tile", kind: "enyo.GridList.ImageItem"}
-	    	]
-	    }
+			]
+		}
 	],
 	rendered: function() {
 		this.inherited(arguments);
@@ -83,7 +83,7 @@ enyo.kind({
 		var i = inEvent.index;
 		var item = this.results[i];
 		//console.log(item);
-		if (!item.url_m || item.url_m == '')
+		if (!item.url_m)
 			return;
 		this.$.tile.setSource(item.url_m);
 		this.$.tile.setCaption(item.title);
@@ -115,7 +115,7 @@ enyo.kind({
 		}
 		return s.split(" ")[0] > 1 ? s + "s ago" : s + " ago";
 	},
-	generateRandomColor: function () { 
+	generateRandomColor: function () {
 		var bg = "#" + Math.random().toString(16).slice(2, 8);
 		var fg = '#' + (Number('0x'+bg.substr(1)).toString(10) > 0xffffff/2 ? '000000' :  'ffffff');
 		return {bg: bg, fg: fg};

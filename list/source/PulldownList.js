@@ -56,7 +56,7 @@ enyo.kind({
 		onScrollStop: "scrollStopHandler",
 		ondragfinish: "dragfinish"
 	},
-	//* Message displayed when list is not being pulled 
+	//* Message displayed when list is not being pulled
 	pullingMessage: "Pull down to refresh...",
 	//* Message displayed while a pull action is in progress
 	pulledMessage: "Release to refresh...",

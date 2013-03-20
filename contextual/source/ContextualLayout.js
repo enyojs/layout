@@ -1,10 +1,10 @@
 ﻿/**
 	_enyo.ContextualLayout_ provides the base positioning logic for
 	a contextual layout strategy. This layout strategy is intended
-	for a popup in a decorator/activator scenario where it will be positioned 
-	relative to the activator element. For example 
+	for a popup in a decorator/activator scenario where it will be positioned
+	relative to the activator element. For example
 	<a href="#onyx.ContextualPopup">onyx.ContextualPopup</a> would be used like so:
-	
+
 	{kind: "onyx.ContextualPopupDecorator", components: [
 		{content: "Show Popup"},
 		{kind: "onyx.ContextualPopup",
@@ -18,34 +18,34 @@
 			]
 		}
 	]}
-	
+
 	where the decorator contains the popup & activator, with the activator being the
 	first child component (ie "Show Popup" button). The definition of
-	<a href="#onyx.ContextualPopup">onyx.ContextualPopup</a> sets it's layoutKind 
+	<a href="#onyx.ContextualPopup">onyx.ContextualPopup</a> sets it's layoutKind
 	property to	<a href="#enyo.ContextualLayout">enyo.ContextualLayout</a>.
-	
+
 	Note that ContextualLayout expects the popup that uses it as it's layoutKind to
 	declare some specific properties including:
-	
-		vertFlushMargin: the vertical flush layout margin, ie how close a popup's edge 
+
+		vertFlushMargin: the vertical flush layout margin, ie how close a popup's edge
 						 can come to the vertical screen edge before being laid out "flush" style
-						
-		horizFlushMargin: the horizontal flush layout margin, ie how close a popup's edge 
+
+		horizFlushMargin: the horizontal flush layout margin, ie how close a popup's edge
 						  can come to the horizontal screen edge before being laid out "flush" style
-						
+
 		widePopup: a popup wider than this value is considered wide (for layout calculation purposes)
-		
+
 		longPopup: a popup longer than this value is considered long (for layout calculation purposes)
-		
+
 		horizBuffer: do not allow horizontal flush popups past this space on left/right screen edge
-		
+
 		activatorOffset: this is the offset on the page of the popup activator. It should be calculated
 						 whenever the popup is to be shown.
-	
+
 */
 enyo.kind({
 	name: "enyo.ContextualLayout",
-	kind: "Layout",	
+	kind: "Layout",
 	//* Adjusts the popup position + nub location & direction
 	adjustPosition: function() {
 		if (this.container.showing && this.container.hasNode()) {
@@ -328,7 +328,7 @@ enyo.kind({
 
 		var clientRect = this.getBoundingRect(this.container.node);
 		var innerHeight = this.getViewHeight();
-		
+
 		//adjust vertical positioning (high or low nub & popup position)
 		if (this.container.floating){
 			if (this.offset.top < (innerHeight/2)){
@@ -407,6 +407,6 @@ enyo.kind({
 	},
 	reflow: function() {
 		this.offset = this.container.activatorOffset;
-		this.adjustPosition();	
+		this.adjustPosition();
 	}
 });

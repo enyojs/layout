@@ -177,8 +177,8 @@ enyo.kind({
 	name: "sample.ContextualPopup",
 	kind: "enyo.Popup",
 	layoutKind: "ContextualLayout",
-	classes: "sample-contextual-popup",	
-   	handlers: {
+	classes: "sample-contextual-popup",
+	handlers: {
 		onRequestShowMenu: "requestShow",
 	},
 	floating:true,
@@ -192,7 +192,7 @@ enyo.kind({
 		var n = inEvent.activator.hasNode();
 		if (n) {
 			this.activatorOffset = this.getPageOffset(n);
-		}						
+		}
 		this.show();
 		return true;
 	},
