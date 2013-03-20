@@ -18,11 +18,11 @@
 
 	All of the events (_onload_, _onerror_, and _onZoom_) from the contained
 	ImageView objects are bubbled up to the ImageCarousel, which also inherits
-	the	_onTransitionStart_ and	_onTransitionFinish_ events from _enyo.Panels_.
+	the _onTransitionStart_ and _onTransitionFinish_ events from _enyo.Panels_.
 
 	The _images_ property is an array containing the file paths of the images in
-	the	gallery.  The _images_ array may be altered and updated at any time, and
-	the	current index may be manipulated at runtime via the inherited
+	the gallery.  The _images_ array may be altered and updated at any time, and
+	the current index may be manipulated at runtime via the inherited
 	_getIndex()_ and _setIndex()_ functions.
 
 	Note that it's best to specify a size for the ImageCarousel in order to
@@ -156,7 +156,7 @@ enyo.kind({
 	setImages: function(inImages) {
 		// always invoke imagesChanged because this is an array property
 		// which might otherwise seem to be the same object
-        this.set("images", inImages);
+		this.set("images", inImages);
 	},
 	imagesChanged: function() {
 		this.initContainers();
@@ -191,7 +191,7 @@ enyo.kind({
 	/**
 		Destroys any ImageView objects that are not in the immediate viewing
 		area (i.e., the currently active image and the first image on either
-		side of	it) to free up memory. If you set the Image Carousel's
+		side of it) to free up memory. If you set the Image Carousel's
 		_lowMemory_ property to true, this function will be called automatically
 		as needed.
 	*/
