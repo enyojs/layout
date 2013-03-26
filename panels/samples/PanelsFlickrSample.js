@@ -32,7 +32,7 @@ enyo.kind({
 				{name: "imageSpinner", kind: "Image", src: "assets/spinner-large.gif", classes: "enyo-fit panels-sample-flickr-center", showing: false}
 			]}
 		]},
-		{kind: "FlickrSearch", onResults: "searchResults"}
+		{name: "flickrSearch", kind: "enyo.sample.PanelsFlickrSearch", onResults: "searchResults"}
 	],
 	rendered: function() {
 		this.inherited(arguments);
@@ -112,7 +112,7 @@ enyo.kind({
 
 // A simple component to do a Flickr search.
 enyo.kind({
-	name: "FlickrSearch",
+	name: "enyo.sample.PanelsFlickrSearch",
 	kind: "Component",
 	published: {
 		searchText: ""
