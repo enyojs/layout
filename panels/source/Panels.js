@@ -109,7 +109,7 @@ enyo.kind({
 	},
 	removeControl: function(inControl) {
 		this.inherited(arguments);
-		if (this.destroying && this.controls.length > 0 && this.isPanel(inControl)) {
+		if (!this.destroying && this.controls.length > 0 && this.isPanel(inControl)) {
 			this.setIndex(Math.max(this.index - 1, 0));
 			this.flow();
 			this.reflow();
