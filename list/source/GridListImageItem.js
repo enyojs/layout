@@ -1,10 +1,10 @@
 /**
     _enyo.GridList.ImageItem_ is a convenience component that can be used inside a _enyo.GridList_ to display an ImageGrid.
- 
+
     @author: Surya Vakkalanka
-    @date: November 2012 
- 
-    An ImageGrid that's based on _enyo.GridList_, which in turn extends _enyo.List_ to render items in the List in a Grid layout. 
+    @date: November 2012
+
+    An ImageGrid that's based on _enyo.GridList_, which in turn extends _enyo.List_ to render items in the List in a Grid layout.
 */
 
 enyo.kind({
@@ -13,7 +13,7 @@ enyo.kind({
     components:[
         {name: 'image', kind: 'enyo.Image'},
         {name: "caption", classes: "caption"},
-        {name: "subCaption", classes: "sub-caption"},
+        {name: "subCaption", classes: "sub-caption"}
     ],
     create: function() {
         this.inherited(arguments);
@@ -31,14 +31,14 @@ enyo.kind({
     },
     //* @protected
     sourceChanged: function() {
-        if (!this.source || this.source == '') {
+        if (!this.source) {
             return;
         }
         this.$.image.setAttribute('src', this.source);
     },
     //* @protected
     captionChanged: function() {
-        if (!this.caption || this.caption == '') {
+        if (!this.caption) {
             this.$.caption.setContent(this.caption);
             this.$.caption.setShowing(false);
             return;
@@ -48,7 +48,7 @@ enyo.kind({
     },
     //* @protected
     subCaptionChanged: function() {
-        if (!this.subCaption || this.subCaption == '') {
+        if (!this.subCaption) {
             this.$.subCaption.setContent(this.subCaption);
             this.$.subCaption.setShowing(false);
             return;

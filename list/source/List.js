@@ -192,12 +192,12 @@ enyo.kind({
 		this.orientV = this.orient == "v";
 		this.vertical = this.orientV ? "default" : "hidden";
 		this.inherited(arguments);
-		this.$.generator.orient = this.orient;		
+		this.$.generator.orient = this.orient;
 		this.getStrategy().translateOptimized = true;
 		this.pageBound = this.orientV ? "top" : "left";
-		this.$.port.addRemoveClass("horizontal",!this.orientV);		
+		this.$.port.addRemoveClass("horizontal",!this.orientV);
 		this.$.page0.addRemoveClass("vertical",this.orientV);
-		this.$.page1.addRemoveClass("vertical",this.orientV);		
+		this.$.page1.addRemoveClass("vertical",this.orientV);
 		this.bottomUpChanged();
 		this.noSelectChanged();
 		this.multiSelectChanged();
@@ -245,12 +245,12 @@ enyo.kind({
 		this.$.page0.applyStyle(this.pageBound, null);
 		this.$.page1.applyStyle(this.pageBound, null);
 		this.pageBound = this.orientV ? (this.bottomUp ? "bottom" : "top") : (this.bottomUp ? "right" : "left");
-		
+
 		if (!this.orientV && this.bottomUp){
 			this.$.page0.applyStyle("left", "auto");
-			this.$.page1.applyStyle("left", "auto");			
+			this.$.page1.applyStyle("left", "auto");
 		}
-		
+
 		if (this.hasNode()) {
 			this.reset();
 		}
@@ -457,7 +457,7 @@ enyo.kind({
 		var s = Math.max(this.scrollerSize, this.portSize);
 		this.$.port.applyStyle((this.orientV ? "height" : "width"), s + "px");
 		if (!this.orientV) {
-			this.$.port.applyStyle("height", this.getBounds().height + "px");			
+			this.$.port.applyStyle("height", this.getBounds().height + "px");
 		}
 	},
 	positionPage: function(inPage, inTarget) {

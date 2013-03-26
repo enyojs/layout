@@ -114,7 +114,7 @@ enyo.kind({
 			this.setupItem(r);
 			this.$.client.setAttribute("data-enyo-index", r);
 			if (this.orient == "h") {
-				this.$.client.setStyle("display:inline-block;");	
+				this.$.client.setStyle("display:inline-block;");
 			}
 			h += this.inherited(arguments);
 			this.$.client.teardownRender();
