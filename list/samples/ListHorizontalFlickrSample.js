@@ -20,7 +20,7 @@ enyo.kind({
 				]}
 			]}
 		]},
-		{kind: "FlickrSearch", onResults: "searchResults"}
+		{kind: "enyo.sample.ListHorizontalFlickrSearch", onResults: "searchResults"}
 	],
 	rendered: function() {
 		this.inherited(arguments);
@@ -63,7 +63,7 @@ enyo.kind({
 
 // A simple component to do a Flickr search.
 enyo.kind({
-	name: "FlickrSearch",
+	name: "enyo.sample.ListHorizontalFlickrSearch",
 	kind: "Component",
 	published: {
 		searchText: ""

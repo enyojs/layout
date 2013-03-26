@@ -15,7 +15,6 @@ enyo.depends(
 	"FlyweightRepeaterSample.js",
 	"PersistentSwipeableItemSample.css",
 	"PersistentSwipeableItemSample.js",
-	"FlyweightRepeaterSample.js",
 	"ListHorizontalFlickrSample.css",
 	"ListHorizontalFlickrSample.js",
 	"GridListSample.css",
