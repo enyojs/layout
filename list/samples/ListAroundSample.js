@@ -129,7 +129,7 @@ enyo.kind({
 		this.$.popup.show();
 	},
 	searchInputChange: function(inSender) {
-		enyo.job(this.id + ":search", enyo.bind(this, "filterList", inSender.getValue()), 200);
+		enyo.job(this.id + ":search", this.bindSafely("filterList", inSender.getValue()), 200);
 	},
 	filterList: function(inFilter) {
 		if (inFilter != this.filter) {

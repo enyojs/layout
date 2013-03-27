@@ -165,9 +165,10 @@ enyo.kind({
 	*/
 	setIndex: function(inIndex) {
 		// override setIndex so that indexChanged is called
-		// whether this.index has actually changed or not
+		// whether this.index has actually changed or not. Also, do
+		// index clamping here.
 		var prev = this.get("index");
-		this.index = inIndex;
+		this.index = this.clamp(inIndex);
 		this.notifyObservers("index", prev, inIndex);
 	},
 	/**
@@ -197,12 +198,20 @@ enyo.kind({
 	//* Transitions to the previous panel--i.e., the panel whose index value is
 	//* one less than that of the current active panel.
 	previous: function() {
-		this.setIndex(this.index-1);
+		var prevIndex = this.index - 1;
+		if (this.wrap && prevIndex < 0) {
+			prevIndex = this.getPanels().length - 1;
+		}
+		this.setIndex(prevIndex);
 	},
 	//* Transitions to the next panel--i.e., the panel whose index value is one
 	//* greater than that of the current active panel.
 	next: function() {
-		this.setIndex(this.index+1);
+		var nextIndex = this.index+1;
+		if (this.wrap && nextIndex >= this.getPanels().length) {
+			nextIndex = 0;
+		}
+		this.setIndex(nextIndex);
 	},
 	//* @protected
 	clamp: function(inValue) {
@@ -217,7 +226,6 @@ enyo.kind({
 	},
 	indexChanged: function(inOld) {
 		this.lastIndex = inOld;
-		this.index = this.clamp(this.index);
 		if (!this.dragging && this.$.animator) {
 			if (this.$.animator.isAnimating()) {
 				this.completed();

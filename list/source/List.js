@@ -761,7 +761,7 @@ enyo.kind({
 	},
 	setPositionReorderContainerTimeout: function() {
 		this.clearPositionReorderContainerTimeout();
-		this.positionReorderContainerTimeout = setTimeout(enyo.bind(this,
+		this.positionReorderContainerTimeout = setTimeout(this.bindSafely(
 			function() {
 				this.$.reorderContainer.removeClass("enyo-animatedTopAndLeft");
 				this.clearPositionReorderContainerTimeout();
@@ -851,7 +851,7 @@ enyo.kind({
 	},
 	//* Starts auto-scrolling.
 	startAutoScrolling: function() {
-		this.autoScrollTimeout = setInterval(enyo.bind(this, this.autoScroll), this.autoScrollTimeoutMS);
+		this.autoScrollTimeout = setInterval(this.bindSafely(this.autoScroll), this.autoScrollTimeoutMS);
 	},
 	//* Scrolls the list by the distance specified in _this.scrollDistance_.
 	autoScroll: function() {
@@ -928,7 +928,7 @@ enyo.kind({
 		// reordering actions
 		this.moveReorderedContainerToDroppedPosition(inEvent);
 		this.completeReorderTimeout = setTimeout(
-			enyo.bind(this, this.completeFinishReordering, inEvent), 100);
+			this.bindSafely(this.completeFinishReordering, inEvent), 100);
 
 		inEvent.preventDefault();
 		return true;
@@ -1193,7 +1193,7 @@ enyo.kind({
 		// animate reorder container to proper position and then complete reording actions
 		this.moveReorderedContainerToDroppedPosition(inEvent);
 		this.completeReorderTimeout = setTimeout(
-			enyo.bind(this, this.completeFinishReordering, inEvent), 100);
+			this.bindSafely(this.completeFinishReordering, inEvent), 100);
 		return;
 	},
 	cancelPinnedMode: function(inEvent) {
@@ -1501,7 +1501,7 @@ enyo.kind({
 
 		this.stopAnimateSwipe();
 
-		var fn = enyo.bind(this, function() {
+		var fn = this.bindSafely(function() {
 			var t = enyo.now() - t0;
 			var percTimeElapsed = t/totalTimeMS;
 			var currentX = origX + (xDelta)*Math.min(percTimeElapsed,1);
@@ -1517,7 +1517,7 @@ enyo.kind({
 			// go until we've hit our total time
 			if(t/totalTimeMS >= 1) {
 				this.stopAnimateSwipe();
-				this.completeSwipeTimeout = setTimeout(enyo.bind(this, function() {
+				this.completeSwipeTimeout = setTimeout(this.bindSafely(function() {
 					this.completeSwipe();
 				}), this.completeSwipeDelayMS);
 			}

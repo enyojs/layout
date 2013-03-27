@@ -101,8 +101,8 @@ enyo.kind({
 		//offscreen buffer image to get initial image dimensions
 		//before displaying a scaled down image that can fit in the container
 		this.bufferImage = new Image();
-		this.bufferImage.onload = enyo.bind(this, "imageLoaded");
-		this.bufferImage.onerror = enyo.bind(this, "imageError");
+		this.bufferImage.onload = this.bindSafely("imageLoaded");
+		this.bufferImage.onerror = this.bindSafely("imageError");
 		this.srcChanged();
 		//	For image view, disable drags during gesture (to fix flicker: ENYO-1208)
 		this.getStrategy().setDragDuringGesture(false);
@@ -331,7 +331,7 @@ enyo.kind({
 		}
 	},
 	singleTap: function(inSender, inEvent) {
-		setTimeout(enyo.bind(this, function() {
+		setTimeout(this.bindSafely(function() {
 			this.tapped = false;
 		}), 300);
 		if(this.tapped) { //dbltap
