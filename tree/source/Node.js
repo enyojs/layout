@@ -163,7 +163,7 @@ enyo.kind({
 		var h = this.$.client.getBounds().height;
 		this.$.box.setBounds({height: h});
 		this.$.client.setBounds({top: 0});
-		setTimeout(enyo.bind(this, function() {
+		setTimeout(this.bindSafely(function() {
 			// things may have happened in the interim, make sure
 			// we only fix height if we are still expanded
 			if (this.expanded) {
@@ -180,7 +180,7 @@ enyo.kind({
 		var h = this.$.client.getBounds().height;
 		this.$.box.setBounds({height: h});
 		// yield the thead so DOM can make those changes (without transitions)
-		setTimeout(enyo.bind(this, function() {
+		setTimeout(this.bindSafely(function() {
 			// enable transitions
 			this.addClass("enyo-animate");
 			// shrink our box to 0

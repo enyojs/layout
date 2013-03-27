@@ -28,7 +28,7 @@ enyo.kind({
 	pullRelease: function() {
 		this.pulled = true;
 		// add 1 second delay so we can see the loading message
-		setTimeout(enyo.bind(this, function() {
+		setTimeout(this.bindSafely(function() {
 			this.search();
 		}), 1000);
 	},
@@ -40,20 +40,21 @@ enyo.kind({
 		// Capture searchText and strip any whitespace
 		var searchText = this.$.searchInput.getValue().replace(/^\s+|\s+$/g, '');
 		var url = "http://search.twitter.com/search.json";
+		var req;
 		if (searchText !== "") {
 			if (window.location.protocol === "ms-appx:") {
 				// Use ajax for platforms with no jsonp support (Windows 8)
-				var req = new enyo.Ajax({
-					url: url, 
+				req = new enyo.Ajax({
+					url: url,
 					handleAs: "text"
 				});
-				req.response(enyo.bind(this, "processAjaxSearchResults"));
+				req.response(this.bindSafely("processAjaxSearchResults"));
 			} else {
-				var req = new enyo.JsonpRequest({
+				req = new enyo.JsonpRequest({
 					url: url,
 					callbackName: "callback"
 				});
-				req.response(enyo.bind(this, "processSearchResults"));
+				req.response(this.bindSafely("processSearchResults"));
 			}
 			req.go({q: searchText, rpp: 20});
 		} else {
