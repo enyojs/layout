@@ -117,10 +117,10 @@ enyo.kind({
 		var newIndex = -1;
 		var controlIndex = enyo.indexOf(inControl, this.controls);
 		if (controlIndex === this.index) {
-			newIndex = Math.max(i - 1, 0);
+			newIndex = Math.max(controlIndex - 1, 0);
 		}
 		this.inherited(arguments);
-		if (newIndex !== -1 && this.panels.length > 0) {
+		if (newIndex !== -1 && this.controls.length > 0) {
 			this.setIndex(newIndex);
 			this.flow();
 			this.reflow();
