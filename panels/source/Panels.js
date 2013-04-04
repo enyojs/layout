@@ -108,9 +108,20 @@ enyo.kind({
 		this.inherited(arguments);
 	},
 	removeControl: function(inControl) {
+		// Skip extra work during panel destruction.
+		if (this.destroying) {
+			return this.inherited(arguments);
+		}
+		// adjust index if the current panel is being removed
+		// so it's either the previous panel or the first one.
+		var newIndex = -1;
+		var controlIndex = enyo.indexOf(inControl, this.controls);
+		if (controlIndex === this.index) {
+			newIndex = Math.max(controlIndex - 1, 0);
+		}
 		this.inherited(arguments);
-		if (!this.destroying && this.controls.length > 0 && this.isPanel(inControl)) {
-			this.setIndex(Math.max(this.index - 1, 0));
+		if (newIndex !== -1 && this.controls.length > 0) {
+			this.setIndex(newIndex);
 			this.flow();
 			this.reflow();
 		}
