@@ -18,9 +18,13 @@ enyo.kind({
 			]},
 			{kind: "onyx.Button", content: "Repopulate", ontap: "populateList"}
 		]},
-		{kind: "List", classes: "list-sample-language-list enyo-unselectable",
-			fit: true, multiSelect: true,
-			reorderable: true, centerReorderContainer: false,
+		{
+			kind: "List",
+			classes: "list-sample-language-list enyo-unselectable",
+			fit: true,
+			multiSelect: true,
+			reorderable: true,
+			centerReorderContainer: false,
 			enableSwipe: true,
 			onSetupItem: "setupItem",
 			onReorder: "listReorder",

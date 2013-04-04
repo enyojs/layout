@@ -4,8 +4,14 @@ enyo.kind({
 	classes: "list-sample-persistent-swipeable-item enyo-fit",
 	data: ["Cat","Dog","Hippopotamus"],
 	components: [
-		{kind: "List", classes: "list-sample-persistent-swipeable-item-list enyo-unselectable",
-			fit: true, multiSelect: true, reorderable: false, enableSwipe: true, centerReorderContainer: false,
+		{
+			kind: "List",
+			classes: "list-sample-persistent-swipeable-item-list enyo-unselectable",
+			fit: true,
+			multiSelect: true,
+			reorderable: false,
+			enableSwipe: true,
+			centerReorderContainer: false,
 			onSetupItem: "setupItem",
 			onSetupSwipeItem: "setupSwipeItem",
 			onSwipeComplete: "swipeComplete",
@@ -33,14 +39,14 @@ enyo.kind({
 		if(!this.data[inEvent.index]) {
 			return;
 		}
-		
+
 		this.$.text.setContent(this.data[inEvent.index]);
 	},
 	setupSwipeItem: function(inSender, inEvent) {
 		if(!this.data[inEvent.index]) {
 			return;
 		}
-		
+
 		if(inEvent.xDirection === -1) {
 			// Persist swipeable item if swiped from right to left
 			this.$.list.setPersistSwipeableItem(true);

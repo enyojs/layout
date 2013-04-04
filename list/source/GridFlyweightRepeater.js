@@ -74,7 +74,6 @@ enyo.kind({
 		var cw = this.owner.hasNode().clientWidth;
 		var w = 0, rw = 0, h = 0, rh = 0, raw = 0, rah = 0,  rowIndex = 0, itemW = 0, itemH = 0, w2h = this.itemMinWidth/this.itemMinHeight;
 		var rows = [{index: 0, items: []}];
-		var lastitem = false;
 		var dummy = this.owner.$._dummy_.hasNode();
 		var i, r;
 
@@ -108,7 +107,7 @@ enyo.kind({
 			if (this.itemMinWidth && this.itemMinWidth > 0) {
 				w = Math.max(itemW, this.itemMinWidth);
 			}
-			lastRowInPage = (i == count - 1);
+			var lastRowInPage = (i == count - 1);
 			h = w/w2h;
 
 			rw += w;
@@ -130,7 +129,6 @@ enyo.kind({
 				// Spill over items collected so far on this page to next page if they don't scale well to fill up remaining gutter
 				var itemsInRow = rows[rowIndex].items.length;
 				var gutterPeritem = (cw-rw)/itemsInRow;
-				var lastRowInList = (r == this.owner.count - 1);
 
 				// If remaining items in the row need to be stretched more than 50% of the avg item width in the row, ditch/spill them over into the next page
 				this._itemsFromPreviousPage = 0;
@@ -143,9 +141,9 @@ enyo.kind({
 				this._normalizeRow(rows[rowIndex]);
 				if (!lastRowInPage) {
 					rowIndex++;
-					rows[rowIndex] = {avgHeight: 0, index: 0, items: []};
+					rows[rowIndex] = { avgHeight: 0, index: 0, items: [] };
 				}
-				rw = 0, rh = 0, rah = 0, raw = 0, w = 0, h = 0, itemW = 0, itemH = 0;
+				rw = rh = rah = raw = w = h = itemW = itemH = 0;
 			}
 		}
 		dummy.innerHTML = "";
@@ -155,8 +153,9 @@ enyo.kind({
 		var row;
 		for (i=0; i < rows.length; i++) {
 			row = rows[i];
-			if (!row.items || row.items.length===0)
+			if (!row.items || row.items.length===0) {
 				continue;
+			}
 			for (var j=0; j < row.items.length; j++) {
 				item = row.items[j];
 				this.doSetupItem({index: item.index, selected: this.isSelected(item.index)});

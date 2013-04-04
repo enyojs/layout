@@ -23,6 +23,7 @@ enyo.kind({
     }],
     names: [],
     setupItem: function (inSender, inEvent) {
+        /* global makeName */
         // this is the row we're setting up
         var i = inEvent.index;
         // make some mock data if we have none for this row

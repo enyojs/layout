@@ -60,15 +60,15 @@ enyo.kind({
 	// Absolutely position to client controls
 	styleClientControls: function() {
 		var controls = this.getClientControls();
-		for(var i=0;i<controls.length;i++) {
+		for (var i=0;i<controls.length;i++) {
 			controls[i].applyStyle("position","absolute");
 		}
 	},
 	// Apply specified positioning to client controls
 	positionClientControls: function() {
 		var controls = this.getClientControls();
-		for(var i=0;i<controls.length;i++) {
-			for(var p in this.position) {
+		for (var i=0;i<controls.length;i++) {
+			for (var p in this.position) {
 				controls[i].applyStyle(p, this.position[p]+"px");
 			}
 		}
@@ -80,9 +80,9 @@ enyo.kind({
 	// Create coords{} object for each anchor containing value and units
 	anchorChanged: function() {
 		var coords = null, a = null;
-		for(a in this.anchor) {
+		for (a in this.anchor) {
 			coords = this.anchor[a].toString().match(/^(\d+(?:\.\d+)?)(.*)$/);
-			if(!coords) {
+			if (!coords) {
 				continue;
 			}
 			this.anchor[a+"Coords"] = {

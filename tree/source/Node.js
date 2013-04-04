@@ -118,14 +118,14 @@ enyo.kind({
 	//
 	addNodes: function(inNodes) {
 		this.destroyClientControls();
-		for (var i=0, n; n=inNodes[i]; i++) {
+		for (var i=0, n; (n=inNodes[i]); i++) {
 			this.createComponent(n);
 		}
 		this.$.client.render();
 	},
 	addTextNodes: function(inNodes) {
 		this.destroyClientControls();
-		for (var i=0, n; n=inNodes[i]; i++) {
+		for (var i=0, n; (n=inNodes[i]); i++) {
 			this.createComponent({content: n});
 		}
 		this.$.client.render();

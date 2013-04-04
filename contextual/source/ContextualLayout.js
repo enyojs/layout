@@ -28,10 +28,10 @@
 	declare some specific properties including:
 
 		vertFlushMargin: the vertical flush layout margin, ie how close a popup's edge
-						 can come to the vertical screen edge before being laid out "flush" style
+			can come to the vertical screen edge before being laid out "flush" style
 
 		horizFlushMargin: the horizontal flush layout margin, ie how close a popup's edge
-						  can come to the horizontal screen edge before being laid out "flush" style
+			can come to the horizontal screen edge before being laid out "flush" style
 
 		widePopup: a popup wider than this value is considered wide (for layout calculation purposes)
 
@@ -40,7 +40,7 @@
 		horizBuffer: do not allow horizontal flush popups past this space on left/right screen edge
 
 		activatorOffset: this is the offset on the page of the popup activator. It should be calculated
-						 whenever the popup is to be shown.
+			whenever the popup is to be shown.
 
 */
 enyo.kind({
@@ -385,8 +385,8 @@ enyo.kind({
 		return (window.innerWidth === undefined) ? document.documentElement.clientWidth : window.innerWidth;
 	},
 	applyPosition: function(inRect) {
-		var s = ""
-		for (n in inRect) {
+		var s = "";
+		for (var n in inRect) {
 			s += (n + ":" + inRect[n] + (isNaN(inRect[n]) ? "; " : "px; "));
 		}
 		this.container.addStyles(s);

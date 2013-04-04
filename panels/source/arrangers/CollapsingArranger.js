@@ -48,7 +48,7 @@ enyo.kind({
 	},
 	arrange: function(inC, inIndex) {
 		var c$ = this.container.getPanels();
-		for (var i=0, e=this.containerPadding.left, m, c, n=0; (c=c$[i]); i++) {
+		for (var i=0, e=this.containerPadding.left, c, n=0; (c=c$[i]); i++) {
 			if(c.getShowing()){
 				this.arrangeControl(c, {left: e + n * this.peekWidth});
 				if (i >= inIndex) {

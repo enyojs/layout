@@ -62,14 +62,14 @@ enyo.kind({
 	create: function() {
 		this.inherited(arguments);
 		this.imageCount = this.images.length;
-		if(this.images.length>0) {
+		if (this.images.length>0) {
 			this.initContainers();
 			this.loadNearby();
 		}
 	},
 	initContainers: function() {
-		for(var i=0; i<this.images.length; i++) {
-			if(!this.$["container" + i]) {
+		for (var i=0; i<this.images.length; i++) {
+			if (!this.$["container" + i]) {
 				this.createComponent({
 					name: "container" + i,
 					style: "height:100%; width:100%;"
@@ -77,8 +77,8 @@ enyo.kind({
 				this.$["container" + i].render();
 			}
 		}
-		for(i=this.images.length; i<this.imageCount; i++) {
-			if(this.$["image" + i]) {
+		for (i=this.images.length; i<this.imageCount; i++) {
+			if (this.$["image" + i]) {
 				this.$["image" + i].destroy();
 			}
 			this.$["container" + i].destroy();
@@ -96,7 +96,7 @@ enyo.kind({
 		if (this.layout.containerBounds) {
 			var prefetchRange = 1;
 			var bounds = this.layout.containerBounds;
-			var m, img, c, i, x, xEnd;
+			var c, i, x, xEnd;
 			// get the lower range
 			i=this.index-1;
 			x=0;
@@ -126,13 +126,13 @@ enyo.kind({
 	},
 	loadImageView: function(index) {
 		// NOTE: wrap bugged in enyo.CarouselArranger, but once fixed, wrap should work in this
-		if(this.wrap) {
+		if (this.wrap) {
 			// Used this modulo technique to get around javascript issue with negative values
 			// ref: http://javascript.about.com/od/problemsolving/a/modulobug.htm
 			index = ((index % this.images.length)+this.images.length)%this.images.length;
 		}
-		if(index>=0 && index<=this.images.length-1) {
-			if(!this.$["image" + index]) {
+		if (index>=0 && index<=this.images.length-1) {
+			if (!this.$["image" + index]) {
 				this.$["container" + index].createComponent({
 					name: "image" + index,
 					kind: "ImageView",
@@ -144,7 +144,7 @@ enyo.kind({
 				}, {owner: this});
 				this.$["image" + index].render();
 			} else {
-				if(this.$["image" + index].src != this.images[index]) {
+				if (this.$["image" + index].src != this.images[index]) {
 					this.$["image" + index].setSrc(this.images[index]);
 					this.$["image" + index].setScale(this.defaultScale);
 					this.$["image" + index].setDisableZoom(this.disableZoom);
@@ -164,18 +164,19 @@ enyo.kind({
 	},
 	indexChanged: function() {
 		this.loadNearby();
-		if(this.lowMemory) {
+		if (this.lowMemory) {
 			this.cleanupMemory();
 		}
 		this.inherited(arguments);
 	},
 	transitionStart: function(inSender, inEvent) {
-		if(inEvent.fromIndex==inEvent.toIndex)
+		if (inEvent.fromIndex==inEvent.toIndex) {
 			return true; //prevent from bubbling if there's no change
+		}
 	},
 	transitionFinish: function(inSender, inEvent) {
 		this.loadNearby();
-		if(this.lowMemory) {
+		if (this.lowMemory) {
 			this.cleanupMemory();
 		}
 	},
@@ -196,10 +197,10 @@ enyo.kind({
 		as needed.
 	*/
 	cleanupMemory: function() {
-		var buffer = getBufferRange();
-		for(var i=0; i<this.images.length; i++) {
-			if(enyo.indexOf(i, buffer) ===-1) {
-				if(this.$["image" + i]) {
+		var buffer = this.getBufferRange();
+		for (var i=0; i<this.images.length; i++) {
+			if (enyo.indexOf(i, buffer) ===-1) {
+				if (this.$["image" + i]) {
 					this.$["image" + i].destroy();
 				}
 			}

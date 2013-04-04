@@ -81,11 +81,22 @@ enyo.kind({
 	handlers: {
 		ondragstart: "dragPropagation"
 	},
-	components:[
-		{name: "animator", kind: "Animator", onStep: "zoomAnimationStep", onEnd: "zoomAnimationEnd"},
-		{name:"viewport", style: "overflow:hidden;min-height:100%;min-width:100%;", classes: "enyo-fit",
-			ongesturechange: "gestureTransform", ongestureend: "saveState", ontap: "singleTap",
-			ondblclick: "doubleClick", onmousewheel: "mousewheel",
+	components: [
+		{
+			name: "animator",
+			kind: "Animator",
+			onStep: "zoomAnimationStep",
+			onEnd: "zoomAnimationEnd"
+		},
+		{
+			name:"viewport",
+			style: "overflow:hidden;min-height:100%;min-width:100%;",
+			classes: "enyo-fit",
+			ongesturechange: "gestureTransform",
+			ongestureend: "saveState",
+			ontap: "singleTap",
+			ondblclick: "doubleClick",
+			onmousewheel: "mousewheel",
 			components: [
 				{kind:"Image", ondown: "down"}
 			]
@@ -94,7 +105,7 @@ enyo.kind({
 	create: function() {
 		this.inherited(arguments);
 		this.canTransform = enyo.dom.canTransform();
-		if(!this.canTransform) {
+		if (!this.canTransform) {
 			this.$.image.applyStyle("position", "relative");
 		}
 		this.canAccelerate = enyo.dom.canAccelerate();
@@ -107,7 +118,7 @@ enyo.kind({
 		//	For image view, disable drags during gesture (to fix flicker: ENYO-1208)
 		this.getStrategy().setDragDuringGesture(false);
 		//	Needed to kickoff pin redrawing (otherwise they wont' redraw on intitial scroll)
-		if(this.getStrategy().$.scrollMath) {
+		if (this.getStrategy().$.scrollMath) {
 			this.getStrategy().$.scrollMath.start();
 		}
 	},
@@ -136,14 +147,14 @@ enyo.kind({
 		inEvent.pageY |= (inEvent.clientY + inEvent.target.scrollTop);
 		var zoomInc = (this.maxScale - this.minScale)/10;
 		var oldScale = this.scale;
-		if((inEvent.wheelDelta > 0) || (inEvent.detail < 0)) { //zoom in
+		if ((inEvent.wheelDelta > 0) || (inEvent.detail < 0)) { //zoom in
 			this.scale = this.limitScale(this.scale + zoomInc);
-		} else if((inEvent.wheelDelta < 0) || (inEvent.detail > 0)) { //zoom out
+		} else if ((inEvent.wheelDelta < 0) || (inEvent.detail > 0)) { //zoom out
 			this.scale = this.limitScale(this.scale - zoomInc);
 		}
 		this.eventPt = this.calcEventLocation(inEvent);
 		this.transformImage(this.scale);
-		if(oldScale != this.scale) {
+		if (oldScale != this.scale) {
 			this.doZoom({scale:this.scale});
 		}
 		this.ratioX = this.ratioY = null;
@@ -152,7 +163,7 @@ enyo.kind({
 		return true;
 	},
 	srcChanged: function() {
-		if(this.src && this.src.length>0 && this.bufferImage && this.src!=this.bufferImage.src) {
+		if (this.src && this.src.length>0 && this.bufferImage && this.src!=this.bufferImage.src) {
 			this.bufferImage.src = this.src;
 		}
 	},
@@ -179,7 +190,7 @@ enyo.kind({
 	},
 	scaleChanged: function() {
 		var containerNode = this.hasNode();
-		if(containerNode) {
+		if (containerNode) {
 			this.containerWidth = containerNode.clientWidth;
 			this.containerHeight = containerNode.clientHeight;
 			var widthScale = this.containerWidth / this.originalWidth;
@@ -187,13 +198,13 @@ enyo.kind({
 			this.minScale = Math.min(widthScale, heightScale);
 			this.maxScale = (this.minScale*3 < 1) ? 1 : this.minScale*3;
 			//resolve any keyword scale values to solid numeric values
-			if(this.scale == "auto") {
+			if (this.scale == "auto") {
 				this.scale = this.minScale;
-			} else if(this.scale == "width") {
+			} else if (this.scale == "width") {
 				this.scale = widthScale;
-			} else if(this.scale == "height") {
+			} else if (this.scale == "height") {
 				this.scale = heightScale;
-			} else if(this.scale == "fit") {
+			} else if (this.scale == "fit") {
 				this.fitAlignment = "center";
 				this.scale = Math.max(widthScale, heightScale);
 			} else {
@@ -223,7 +234,7 @@ enyo.kind({
 	calcEventLocation: function(inEvent) {
 		//determine the target coordinates on the imageview from an event
 		var eventPt = {x: 0, y:0};
-		if(inEvent && this.hasNode()) {
+		if (inEvent && this.hasNode()) {
 			var rect = this.node.getBoundingClientRect();
 			eventPt.x = Math.round((inEvent.pageX - rect.left) - this.imageBounds.x);
 			eventPt.x = Math.max(0, Math.min(this.imageBounds.width, eventPt.x));
@@ -239,7 +250,7 @@ enyo.kind({
 		this.imageBounds = this.innerImageBounds(scale);
 
 		//style cursor if needed to indicate the image is movable
-		if(this.scale>this.minScale) {
+		if (this.scale>this.minScale) {
 			this.$.viewport.applyStyle("cursor", "move");
 		} else {
 			this.$.viewport.applyStyle("cursor", null);
@@ -250,7 +261,7 @@ enyo.kind({
 		this.ratioX = this.ratioX || (this.eventPt.x + this.getScrollLeft()) / prevBounds.width;
 		this.ratioY = this.ratioY || (this.eventPt.y + this.getScrollTop()) / prevBounds.height;
 		var scrollLeft, scrollTop;
-		if(this.$.animator.ratioLock) { //locked for smartzoom
+		if (this.$.animator.ratioLock) { //locked for smartzoom
 			scrollLeft = (this.$.animator.ratioLock.x * this.imageBounds.width) - (this.containerWidth / 2);
 			scrollTop = (this.$.animator.ratioLock.y * this.imageBounds.height) - (this.containerHeight / 2);
 		} else {
@@ -260,10 +271,10 @@ enyo.kind({
 		scrollLeft = Math.max(0, Math.min((this.imageBounds.width - this.containerWidth), scrollLeft));
 		scrollTop = Math.max(0, Math.min((this.imageBounds.height - this.containerHeight), scrollTop));
 
-		if(this.canTransform) {
+		if (this.canTransform) {
 			var params = {scale: scale};
 			// translate needs to be first, or scale and rotation will not be in the correct spot
-			if(this.canAccelerate) {
+			if (this.canAccelerate) {
 				//translate3d rounded values to avoid distortion; ref: http://martinkool.com/post/27618832225/beware-of-half-pixels-in-css
 				params = enyo.mixin({translate3d: Math.round(this.imageBounds.left) + "px, " + Math.round(this.imageBounds.top) + "px, 0px"}, params);
 			} else {
@@ -285,11 +296,11 @@ enyo.kind({
 		//this.stabilize();
 	},
 	limitScale: function(scale) {
-		if(this.disableZoom) {
+		if (this.disableZoom) {
 			scale = this.scale;
-		} else if(scale > this.maxScale) {
+		} else if (scale > this.maxScale) {
 			scale = this.maxScale;
-		} else if(scale < this.minScale) {
+		} else if (scale < this.minScale) {
 			scale = this.minScale;
 		}
 		return scale;
@@ -298,13 +309,13 @@ enyo.kind({
 		var width = this.originalWidth * scale;
 		var height = this.originalHeight * scale;
 		var offset = {x:0, y:0, transX:0, transY:0};
-		if(width<this.containerWidth) {
+		if (width<this.containerWidth) {
 			offset.x += (this.containerWidth - width)/2;
 		}
-		if(height<this.containerHeight) {
+		if (height<this.containerHeight) {
 			offset.y += (this.containerHeight - height)/2;
 		}
-		if(this.canTransform) { //adjust for the css translate, which doesn't alter image offsetWidth and offsetHeight
+		if (this.canTransform) { //adjust for the css translate, which doesn't alter image offsetWidth and offsetHeight
 			offset.transX -= (this.originalWidth - width)/2;
 			offset.transY -= (this.originalHeight - height)/2;
 		}
@@ -314,14 +325,14 @@ enyo.kind({
 		var oldScale = this.scale;
 		this.scale *= inEvent.scale;
 		this.scale = this.limitScale(this.scale);
-		if(oldScale != this.scale) {
+		if (oldScale != this.scale) {
 			this.doZoom({scale:this.scale});
 		}
 		this.ratioX = this.ratioY = null;
 	},
 	doubleClick: function(inSender, inEvent) {
 		//IE 8 fix; dblclick fires rather than multiple successive click events
-		if(enyo.platform.ie==8) {
+		if (enyo.platform.ie==8) {
 			this.tapped = true;
 			//normalize event
 			inEvent.pageX = inEvent.clientX + inEvent.target.scrollLeft;
@@ -334,7 +345,7 @@ enyo.kind({
 		setTimeout(this.bindSafely(function() {
 			this.tapped = false;
 		}), 300);
-		if(this.tapped) { //dbltap
+		if (this.tapped) { //dbltap
 			this.tapped = false;
 			this.smartZoom(inSender, inEvent);
 		} else {
@@ -344,15 +355,15 @@ enyo.kind({
 	smartZoom: function(inSender, inEvent) {
 		var containerNode = this.hasNode();
 		var imgNode = this.$.image.hasNode();
-		if(containerNode && imgNode && this.hasNode() && !this.disableZoom) {
+		if (containerNode && imgNode && this.hasNode() && !this.disableZoom) {
 			var prevScale = this.scale;
-			if(this.scale!=this.minScale) { //zoom out
+			if (this.scale!=this.minScale) { //zoom out
 				this.scale = this.minScale;
 			} else { //zoom in
 				this.scale = this.maxScale;
 			}
 			this.eventPt = this.calcEventLocation(inEvent);
-			if(this.animate) {
+			if (this.animate) {
 				//lock ratio position of event, and animate the scale change
 				var ratioLock = {
 					x: ((this.eventPt.x + this.getScrollLeft()) / this.imageBounds.width),

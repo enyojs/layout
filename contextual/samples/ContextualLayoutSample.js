@@ -13,10 +13,10 @@ enyo.kind({
 							{content:"testing 2"}
 						]
 					}
-				]},
-				{kind: "onyx.MenuDecorator", fit:true, style:"position:absolute;right:0;", components: [
-					{kind:onyx.IconButton, src: "assets/menu-icon-bookmark.png"},
-					{kind: "sample.ContextualPopup",
+					]},
+					{kind: "onyx.MenuDecorator", fit:true, style:"position:absolute;right:0;", components: [
+						{kind:onyx.IconButton, src: "assets/menu-icon-bookmark.png"},
+						{kind: "sample.ContextualPopup",
 						components: [
 							{content:"testing 1"},
 							{content:"testing 2"},
@@ -26,16 +26,16 @@ enyo.kind({
 							{content:"testing 6"}
 						]
 					}
+					]}
 				]}
-			]}
-		]},
-		{kind: "Scroller", fit: true, thumb:false, components:[
-			{name:"buttonContainer", kind:"FittableRows", classes:"onyx-contextualpopup-button-container enyo-fit", components:[
-				//Top row of buttons
-				{components:[
-					{kind: "onyx.MenuDecorator", style:"display:inline-block", components: [
-						{content: "Average"},
-						{kind: "sample.ContextualPopup",
+			]},
+			{kind: "Scroller", fit: true, thumb:false, components:[
+				{name:"buttonContainer", kind:"FittableRows", classes:"onyx-contextualpopup-button-container enyo-fit", components:[
+					//Top row of buttons
+					{components:[
+						{kind: "onyx.MenuDecorator", style:"display:inline-block", components: [
+							{content: "Average"},
+							{kind: "sample.ContextualPopup",
 							components: [
 								{content:"Item 1"},
 								{content:"Item 2"},
@@ -44,18 +44,18 @@ enyo.kind({
 								{content:"Item 5"}
 							]
 						}
-					]},
+						]},
 
-					{kind: "onyx.MenuDecorator", style:"display:inline-block;float:right", components: [
-						{content:"Small"},
-						{kind: "sample.ContextualPopup"}
-					]}
-				]},
+						{kind: "onyx.MenuDecorator", style:"display:inline-block;float:right", components: [
+							{content:"Small"},
+							{kind: "sample.ContextualPopup"}
+						]}
+					]},
 				//Center row of buttons
-				{fit:true, style:"padding-top:15%;padding-bottom:15%;", components:[
-					{kind: "onyx.MenuDecorator", style:"display:inline-block;", components: [
-						{content: "Wide"},
-						{kind: "sample.ContextualPopup",
+					{fit:true, style:"padding-top:15%;padding-bottom:15%;", components:[
+						{kind: "onyx.MenuDecorator", style:"display:inline-block;", components: [
+							{content: "Wide"},
+							{kind: "sample.ContextualPopup",
 							style:"width:300px",
 							components: [
 								{kind: "Scroller", style:"min-width:150px;", horizontal:"auto",  touch:true, thumb:false,  components:[
@@ -64,10 +64,10 @@ enyo.kind({
 								]}
 							]
 						}
-					]},
-					{kind: "onyx.MenuDecorator", style:"display:inline-block;float:right", components: [
-						{content:"Long"},
-						{kind: "sample.ContextualPopup",
+						]},
+						{kind: "onyx.MenuDecorator", style:"display:inline-block;float:right", components: [
+							{content:"Long"},
+							{kind: "sample.ContextualPopup",
 							components: [
 								{content:"testing 1"},
 								{content:"testing 2"},
@@ -100,13 +100,13 @@ enyo.kind({
 								{content:"testing 30"}
 							]
 						}
-					]}
-				]},
-				//Bottom row of buttons
-				{components:[
-					{kind: "onyx.MenuDecorator", style:"display:inline-block;", components: [
-						{content: "Press Me"},
-						{kind: "sample.ContextualPopup",
+						]}
+					]},
+					//Bottom row of buttons
+					{components:[
+						{kind: "onyx.MenuDecorator", style:"display:inline-block;", components: [
+							{content: "Press Me"},
+							{kind: "sample.ContextualPopup",
 							style:"width:200px",
 							components: [
 								{content:"testing 1"},
@@ -120,10 +120,10 @@ enyo.kind({
 								{content:"testing 10"}
 							]
 						}
-					]},
-					{kind: "onyx.MenuDecorator", style:"display:inline-block;float:right", components: [
-						{content:"Try Me"},
-						{kind: "sample.ContextualPopup",
+						]},
+						{kind: "onyx.MenuDecorator", style:"display:inline-block;float:right", components: [
+							{content:"Try Me"},
+							{kind: "sample.ContextualPopup",
 							style:"width:250px",
 							components: [
 								{content:"Item 1"},
@@ -133,42 +133,42 @@ enyo.kind({
 								{content:"Item 5"}
 							]
 						}
+						]}
+					]}
+				]}
+			]},
+			{kind: "onyx.Toolbar", name:"bottomToolbar", classes: "onyx-menu-toolbar", style:"background-color:lightgray", components: [
+				{kind:"FittableColumns", style:"width:100%;", components:[
+					{kind: "onyx.MenuDecorator", components: [
+						{kind:onyx.IconButton, src: "assets/menu-icon-bookmark.png"},
+						{kind: "sample.ContextualPopup",
+						components: [
+							{content:"testing 1"},
+							{content:"testing 2"},
+							{content:"testing 3"},
+							{content:"testing 4"},
+							{content:"testing 5"},
+							{content:"testing 6"}
+						]
+					}
+					]},
+					{kind: "onyx.MenuDecorator", fit:true, style:"position:absolute;right:0;", components: [
+						{kind:onyx.IconButton, src: "assets/menu-icon-bookmark.png"},
+						{kind: "sample.ContextualPopup", name:"facebook",
+						components: [
+							{content:"testing 1"},
+							{content:"testing 2"},
+							{content:"testing 3"},
+							{content:"testing 4"},
+							{content:"testing 5"},
+							{content:"testing 6"}
+						]
+					}
 					]}
 				]}
 			]}
-		]},
-		{kind: "onyx.Toolbar", name:"bottomToolbar", classes: "onyx-menu-toolbar", style:"background-color:lightgray", components: [
-			{kind:"FittableColumns", style:"width:100%;", components:[
-				{kind: "onyx.MenuDecorator", components: [
-					{kind:onyx.IconButton, src: "assets/menu-icon-bookmark.png"},
-					{kind: "sample.ContextualPopup",
-						components: [
-							{content:"testing 1"},
-							{content:"testing 2"},
-							{content:"testing 3"},
-							{content:"testing 4"},
-							{content:"testing 5"},
-							{content:"testing 6"}
-						]
-					}
-				]},
-				{kind: "onyx.MenuDecorator", fit:true, style:"position:absolute;right:0;", components: [
-					{kind:onyx.IconButton, src: "assets/menu-icon-bookmark.png"},
-					{kind: "sample.ContextualPopup", name:"facebook",
-						components: [
-							{content:"testing 1"},
-							{content:"testing 2"},
-							{content:"testing 3"},
-							{content:"testing 4"},
-							{content:"testing 5"},
-							{content:"testing 6"}
-						]
-					}
-				]}
-			]}
-		]}
-	]
-});
+		]
+	});
 
 /**
 	sample.ContextualPopup_ is an example of a popup that uses the ContextualLayout layout strategy.
@@ -179,7 +179,7 @@ enyo.kind({
 	layoutKind: "ContextualLayout",
 	classes: "sample-contextual-popup",
 	handlers: {
-		onRequestShowMenu: "requestShow",
+		onRequestShowMenu: "requestShow"
 	},
 	floating:true,
 	//layout parameters

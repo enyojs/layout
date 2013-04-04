@@ -17,8 +17,12 @@ enyo.kind({
 			{name:"tileSpacingSlider", kind:"onyx.Slider", onChange: "tileSpacingChanged", style:"width:400px;", value: 40}
 		]},
 		{
-			name: "list", kind: "enyo.GridList", fit:true,
-			onSetupItem: "setupItem", onSizeupItem: "sizeupItem", style: "background:#000;",
+			name: "list",
+			kind: "enyo.GridList",
+			fit:true,
+			onSetupItem: "setupItem",
+			onSizeupItem: "sizeupItem",
+			style: "background:#000;",
 			normalizeRows: true,
 			itemMinWidth: 160,
 			itemMinHeight: 160,
@@ -83,8 +87,9 @@ enyo.kind({
 		var i = inEvent.index;
 		var item = this.results[i];
 		//console.log(item);
-		if (!item.url_m)
+		if (!item.url_m) {
 			return;
+		}
 		this.$.tile.setSource(item.url_m);
 		this.$.tile.setCaption(item.title);
 		this.$.tile.setSelected(this.$.list.isSelected(i));

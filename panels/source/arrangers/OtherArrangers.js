@@ -61,7 +61,7 @@ enyo.kind({
 		}
 	},
 	arrange: function(inC, inIndex) {
-		var i,c,v,b;
+		var i,c,b;
 		if (this.container.getPanels().length==1){
 			b = {};
 			b[this.axisPosition] = this.margin;

@@ -105,6 +105,7 @@ enyo.kind({
 		this.$.list.scrollToContentStart();
 	},
 	createDb: function(inCount) {
+		/* global makeName */
 		this.db = [];
 		for (var i=0; i<inCount; i++) {
 			this.db.push(this.generateItem(makeName(4, 6) + " " + makeName(5, 10)));
@@ -120,9 +121,15 @@ enyo.kind({
 	},
 	sortDb: function() {
 		this.db.sort(function(a, b) {
-			if (a.name < b.name) return -1;
-			else if (a.name > b.name) return 1;
-			else return 0;
+			if (a.name < b.name) {
+				return -1;
+			}
+			else if (a.name > b.name) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
 		});
 	},
 	showSetupPopup: function() {

@@ -15,12 +15,12 @@ enyo.kind({
 					{name: "thumbnail", kind: "Image", classes: "list-sample-flickr-thumbnail"}
 				]},
 				{name: "more", style: "padding: 10px;position:absolute", classes: "list-sample-flickr-more enyo-border-box", components: [
-				    {kind: "onyx.Button", content: "more",  ontap: "more"},
+					{kind: "onyx.Button", content: "more",  ontap: "more"},
 					{name: "moreSpinner", kind: "Image", src: "assets/spinner.gif", classes: "list-sample-flickr-more-spinner"}
 				]}
 			]}
 		]},
-		{kind: "enyo.sample.ListHorizontalFlickrSearch", onResults: "searchResults"}
+		{kind: "enyo.sample.ListHorizontalFlickrSearch", name: "flickrSearch", onResults: "searchResults"}
 	],
 	rendered: function() {
 		this.inherited(arguments);

@@ -41,13 +41,14 @@ enyo.kind({
 		pb.width -= padding.left + padding.right;
 		var nw = pb.width;
 		var len = c$.length;
+		var offset;
 		// panel arrangement positions
 		this.container.transitionPositions = {};
 
 		for (i=0; (c=c$[i]); i++) {
 			c.width = ((i===0) && (this.container.basePanel)) ? nw : c.getBounds().width;
 		}
-		
+
 		for (i=0; (c=c$[i]); i++) {
 
 			if ((i===0) && (this.container.basePanel)) {
@@ -55,7 +56,7 @@ enyo.kind({
 			}
 			c.setBounds({top: padding.top, bottom: padding.bottom});
 
-			for (j=0; (c=c$[j]); j++) {
+			for (var j=0; (c=c$[j]); j++) {
 				var xPos;
 				// index 0 always should always be left-aligned at 0px
 				if ((i===0) && (this.container.basePanel)) {
@@ -65,7 +66,7 @@ enyo.kind({
 					xPos = nw;
 				// else active panel should be right-aligned
 				} else if (i === j) {
-					var offset = nw > this.layoutWidth ? this.overlap : 0;
+					offset = nw > this.layoutWidth ? this.overlap : 0;
 					xPos = (nw - c$[i].width) + offset;
 				} else {
 					break;
@@ -75,8 +76,8 @@ enyo.kind({
 
 			if (j < len) {
 				var leftAlign = false;
-				for (k=i+1; k<len; k++) {
-					var offset = 0;
+				for (var k=i+1; k<len; k++) {
+					offset = 0;
 					// position panel to left: 0px
 					if (leftAlign) {
 						offset = 0;
@@ -108,7 +109,7 @@ enyo.kind({
 		var i, c;
 		var c$ = this.container.getPanels();
 		var s = this.container.clamp(inName);
-		
+
 		for (i=0; (c=c$[i]); i++) {
 			var xPos = this.container.transitionPositions[i + "." + s];
 			this.arrangeControl(c, {left: xPos});

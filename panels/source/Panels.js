@@ -184,14 +184,16 @@ enyo.kind({
 		Selects the named component owned by the Panels and returns its index.
 	*/
 	selectPanelByName: function(name) {
-		if (!name) return;
+		if (!name) {
+			return;
+		}
 		var idx = 0;
 		var panels = this.getPanels();
 		var len = panels.length;
 		for (; idx < len; ++idx) {
 			if (name === panels[idx].name) {
-			this.setIndex(idx);
-			return idx;
+				this.setIndex(idx);
+				return idx;
 			}
 		}
 	},
