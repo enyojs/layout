@@ -397,11 +397,10 @@ enyo.kind({
 		var t = this.finishTransitionInfo;
 		if (this.hasNode() && (!t || (t.fromIndex != this.lastIndex || t.toIndex != this.index))) {
 			if (t && t.animating) {
-				this.finishTransitionInfo = {fromIndex: t.toIndex, toIndex: this.lastIndex, animating:t.animating};
+				this.finishTransitionInfo = {fromIndex: t.toIndex, toIndex: this.lastIndex};
 			} else {
 				this.finishTransitionInfo = {fromIndex: this.lastIndex, toIndex: this.index};
 			}
-			delete this.finishTransitionInfo.animating;
 			this.doTransitionFinish(enyo.clone(this.finishTransitionInfo));
 		}
 	},
