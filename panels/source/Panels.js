@@ -241,6 +241,9 @@ enyo.kind({
 		this.lastIndex = inOld;
 		if (!this.dragging && this.$.animator) {
 			if (this.$.animator.isAnimating()) {
+				if (this.finishTransitionInfo) {
+					this.finishTransitionInfo.animating = true;
+				}
 				this.completed();
 			}
 			this.$.animator.stop();
@@ -393,10 +396,13 @@ enyo.kind({
 	fireTransitionFinish: function() {
 		var t = this.finishTransitionInfo;
 		if (this.hasNode() && (!t || (t.fromIndex != this.lastIndex || t.toIndex != this.index))) {
-			this.finishTransitionInfo = {fromIndex: this.lastIndex, toIndex: this.index};
+			if (t && t.animating) {
+				this.finishTransitionInfo = {fromIndex: t.toIndex, toIndex: this.lastIndex};
+			} else {
+				this.finishTransitionInfo = {fromIndex: this.lastIndex, toIndex: this.index};
+			}
 			this.doTransitionFinish(enyo.clone(this.finishTransitionInfo));
 		}
-		this.lastIndex=this.index;
 	},
 	// gambit: we interpolate between arrangements as needed.
 	stepTransition: function() {
