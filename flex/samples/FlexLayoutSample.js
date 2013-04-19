@@ -22,11 +22,10 @@ enyo.kind({
 	],
 
 	appendContent: function() {
-		// this.$.row2.addContent('asdf');
-		this.$.row2.addComponent(this.createComponent({
-			// kind: 'Image', src: 'duck.jpg'
-			content: 'Hello'
-		}));
+		console.log('appendComponent');
+		this.$.row2.createComponent({
+			kind: 'Image', src: 'assets/duck.jpg', attributes: {width: 200}
+		}).render();
 	},
 
 	rendered: function() {
