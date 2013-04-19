@@ -110,6 +110,8 @@ enyo.kind({
 			oStyles  = {};
 			nFlex	 = this._getFlex(oControl);
 			
+			this._setStyles(oControl, {display: 'block'});
+			
 			if (nFlex == 0) { continue; }
 			
 			// Set box-flex to flex value

@@ -26,6 +26,11 @@ enyo.kind({
 		this.$.row2.createComponent({
 			kind: 'Image', src: 'assets/duck.jpg', attributes: {width: 200}
 		}).render();
+		// for (s in this.$) {
+		// 	if (this.$[s].layoutKind == 'VFlexLayout' || this.$[s].layoutKind == 'HFlexLayout') {
+		// 		this.$[s].layout.reflow();
+		// 	}
+		// }
 	},
 
 	rendered: function() {
