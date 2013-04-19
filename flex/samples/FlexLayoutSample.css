@@ -1,0 +1,33 @@
+html, body {
+	font-size: 11px;
+}
+
+.enyo-vflex-layout {
+	background: blue !important;
+}
+	.enyo-vflex-layout>* {
+		border: 5px solid gray;
+		background-color: #A6A6A9;
+		padding: 20px;
+		text-align: justify;
+	}
+	
+	
+.enyo-hflex-layout {
+	background: #EEE !important;
+}
+	.enyo-hflex-layout>* {
+		border: 5px solid gray;
+		background-color: #FFFFFF;
+		padding: 20px;
+		text-align: justify;
+	}
+	
+.column {
+	width: 130px;
+}
+
+.row {
+	height: 50px;
+	overflow: auto;
+}
