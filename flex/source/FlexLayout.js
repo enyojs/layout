@@ -234,14 +234,14 @@ enyo.kind({
 	
 	_reflowIE: function() {
 		var oStyles = {};
-		if (this.orient == 'horizontal') {
-			oStyles.width = '100%';
-		} else {
-			oStyles.height = '100%';
-		}
+		
+		if (this.orient == 'horizontal') { oStyles.width  = '100%'; } 
+		else 							 { oStyles.height = '100%'; }
+		
 		this._setStyles(this.container, oStyles);
 		this._reflowChildrenIE();
 		
+		// For JS size to be calculated correctly, layout must reflow twice when loaded
 		var oThis = this;
 		if (!this._reflowIE.bRepeated) {
 			setTimeout(function() {
