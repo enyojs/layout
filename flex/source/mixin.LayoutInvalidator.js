@@ -1,3 +1,9 @@
+/**
+ * Layout Invalidator Mixin for IE
+ * Triggers FlexLayout reflow whenever content or class is changed
+ * @author Lex Podgorny <lex.podgorny@lge.com>
+ */
+
 if (enyo.platform.ie) {
 	enyo.createMixin({
 		name: 'LayoutInvalidator',
