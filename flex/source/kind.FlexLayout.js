@@ -1,5 +1,7 @@
 /**
- * FlexBox Layout
+ * Flex Layout
+ * Allows for multiple flexible columns and rows.
+ * Supports Webkit, Mozilla, Partially supports IE8+
  * @author Lex Podgorny <lex.podgorny@lge.com>
  */
 
@@ -86,6 +88,13 @@ enyo.kind({
 	_setStyles: function(oControl, oStyles) {
 		enyo.mixin(oControl.domStyles, oStyles);
 		oControl.domStylesChanged();
+	},
+	
+	_hasFlexLayout: function(oControl) {
+		return (
+			oControl.layout && 
+			oControl.layout instanceof enyo.FlexLayout
+		);
 	},
 	
 	_getFlex: function(oControl) {
@@ -249,6 +258,8 @@ enyo.kind({
 				oThis._reflowIE();
 			}, 50);
 		}
+		
+		enyo.FlexLayout.registerFlexLayout(this);
 	},
 	
 	/******************** PUBLIC *********************/
@@ -269,9 +280,47 @@ enyo.kind({
 		if (enyo.platform.firefox) 	{ this._reflowMozilla(); } 
 		else if (enyo.platform.ie) 	{ this._reflowIE(); 	 }
 		else 						{ this._reflowWebkit();	 }
+	},
+	
+	/******************** STATIC *********************/
+	
+	// Needed for IE only
+	statics: {
+		_aFlexLayouts: [],
+		
+		registerFlexLayout: function(oLayout) {
+			var bFound = false,
+				n	   = 0;
+					
+			for (;n<this._aFlexLayouts.length; n++) {
+				if (this._aFlexLayouts[n] === oLayout) {
+					bFound = true;
+				}
+			}
+			if (!bFound) {
+				this._aFlexLayouts.push(oLayout);
+			}
+		},
+		
+		unregisterFlexLayout: function(oLayout) {
+			var n = 0;
+			for (;n<this._aFlexLayouts.length; n++) {
+				if (this._aFlexLayouts[n] === oLayout) {
+					delete this._aFlexLayouts[n];
+					return;
+				}
+			}
+		},
+		
+		reflowFlexLayouts: function() {
+			var n = 0;
+			for (;n<this._aFlexLayouts.length; n++) {
+				this._aFlexLayouts[n].reflow();
+			}
+		}
 	}
+	
 });
-
 
 enyo.kind({
 	name		: 'enyo.VFlexLayout', 

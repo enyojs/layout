@@ -26,8 +26,10 @@
 			}
 		}
 	}
-
-	new FlexLayoutSample().renderInto(document.body);
+	
+	enyo.ready(function () {
+		new FlexLayoutSample().renderInto(document.body);
+	});
 </script>
 </body>
 </html>

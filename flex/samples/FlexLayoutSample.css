@@ -3,7 +3,7 @@ html, body {
 }
 
 .enyo-vflex-layout {
-	background: blue !important;
+/*	background: blue !important;*/
 }
 	.enyo-vflex-layout>* {
 		border: 5px solid gray;

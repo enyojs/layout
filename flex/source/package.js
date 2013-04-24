@@ -1,3 +1,4 @@
 enyo.depends(
-	'FlexLayout.js'
+	'kind.FlexLayout.js',
+	'mixin.LayoutInvalidator.js'
 );
