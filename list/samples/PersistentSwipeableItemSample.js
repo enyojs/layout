@@ -41,10 +41,11 @@ enyo.kind({
 		}
 
 		this.$.text.setContent(this.data[inEvent.index]);
+		return true;
 	},
 	setupSwipeItem: function(inSender, inEvent) {
 		if(!this.data[inEvent.index]) {
-			return;
+			return true;
 		}
 
 		if(inEvent.xDirection === -1) {
@@ -60,6 +61,7 @@ enyo.kind({
 			this.$.swipeItem.removeClass("swipeRed");
 			this.$.swipeItem.addClass("swipeGreen");
 		}
+		return true;
 	},
 	swipeComplete: function(inSender, inEvent) {
 	}

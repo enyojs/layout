@@ -83,6 +83,7 @@ enyo.kind({
 		this.$.handle.setContent(" @" + item.from_user);
 		this.$.date.setContent(this.getRelativeDateString(item.created_at));
 		this.$.text.setContent(this.parseTweet(item.text));
+		return true;
 	},
 	getRelativeDateString: function(inDateString) {
 		var d = new Date(inDateString);

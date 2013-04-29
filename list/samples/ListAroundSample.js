@@ -57,6 +57,7 @@ enyo.kind({
 			this.$.divider.canGenerate = showd;
 			this.$.item.applyStyle("border-top", showd ? "none" : null);
 		}
+		return true;
 	},
 	refreshList: function() {
 		if (this.filter) {
@@ -137,6 +138,7 @@ enyo.kind({
 	},
 	searchInputChange: function(inSender) {
 		enyo.job(this.id + ":search", this.bindSafely("filterList", inSender.getValue()), 200);
+		return true;
 	},
 	filterList: function(inFilter) {
 		if (inFilter != this.filter) {

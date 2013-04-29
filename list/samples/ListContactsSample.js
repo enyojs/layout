@@ -90,6 +90,7 @@ enyo.kind({
 			this.$.divider.canGenerate = showd;
 			this.$.item.applyStyle("border-top", showd ? "none" : null);
 		}
+		return true;
 	},
 	refreshList: function() {
 		if (this.filter) {

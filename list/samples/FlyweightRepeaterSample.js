@@ -48,6 +48,8 @@ enyo.kind({
 		var index = inEvent.index;
 		this.$.item.setContent((index+1) + ". " + this.people[index].name);
 		this.$.item.applyStyle("background", (inEvent.selected? "dodgerblue":"lightgray"));
+		/* stop propogation */
+		return true;
 	},
 	itemSelected: function(inSender, inEvent) {
 		var index = inEvent.index;
@@ -55,5 +57,6 @@ enyo.kind({
 		if(index>=0 && index<count){
 			this.$.result.setContent(" [" + (index+1) + ". " + this.people[index].name + "] is selected");
 		}
+		return true;
 	}
 });

@@ -27,9 +27,11 @@ enyo.kind({
 	],
 	setupItem: function(inSender, inEvent) {
 		this.$[inSender.item].setContent("This is row number: " + inEvent.index);
+		return true;
 	},
 	checkboxChange: function(inSender) {
 		this.log();
 		this.$.panels.realtimeFit = inSender.getValue();
+		return true;
 	}
 });

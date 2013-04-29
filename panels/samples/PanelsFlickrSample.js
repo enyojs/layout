@@ -71,6 +71,7 @@ enyo.kind({
 		this.$.thumbnail.setSrc(item.thumbnail);
 		this.$.title.setContent(item.title || "Untitled");
 		this.$.more.canGenerate = !this.results[i+1];
+		return true;
 	},
 	more: function() {
 		this.page++;
