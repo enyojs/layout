@@ -17,12 +17,12 @@ if (enyo.platform.ie) {
 		classesChanged: function() {
 			this.inherited(arguments);
 			this.invalidateLayout();
-		},
+		}
 		// Causes stack overflow
 		// domStylesChanged: function() {
-		// 			this.inherited(arguments);
-		// 			this.invalidateLayout();
-		// 		}
+		//    this.inherited(arguments);
+		//    this.invalidateLayout();
+		// }
 	});
 
 	enyo.Control.extend({
