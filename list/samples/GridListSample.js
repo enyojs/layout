@@ -81,18 +81,19 @@ enyo.kind({
 		this.$.list.show(this.results.length);
 	},
 	setupItem: function(inSender, inEvent) {
-		this.setupFlickrItem(inSender, inEvent);
+		return this.setupFlickrItem(inSender, inEvent);
 	},
 	setupFlickrItem: function(inSender, inEvent) {
 		var i = inEvent.index;
 		var item = this.results[i];
 		//console.log(item);
 		if (!item.url_m) {
-			return;
+			return true;
 		}
 		this.$.tile.setSource(item.url_m);
 		this.$.tile.setCaption(item.title);
 		this.$.tile.setSelected(this.$.list.isSelected(i));
+		return true;
 	},
 	sizeupItem: function(inSender, inEvent) {
 		var i = inEvent.index;
@@ -100,11 +101,13 @@ enyo.kind({
 		//this.log(item);
 		this.$.list.setItemWidth(item.width_m);
 		this.$.list.setItemHeight(item.height_m);
+		return true;
 	},
 	tileSpacingChanged: function() {
 		var spacing = Math.round(48 * this.$.tileSpacingSlider.value/100);
 		this.$.list.setItemSpacing(spacing);
 		this.$.list.show(this.results.length);
+		return true;
 	},
 	getRelativeDateString: function(inDateString) {
 		var d = new Date(inDateString);

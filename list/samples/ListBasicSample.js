@@ -24,5 +24,6 @@ enyo.kind({
 		this.$.item.addRemoveClass("list-sample-selected", inSender.isSelected(i));
 		this.$.name.setContent(n);
 		this.$.index.setContent(ni);
+		return true;
 	}
 });

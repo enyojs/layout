@@ -29,6 +29,7 @@
             var item = this._data[inEvent.index];
             this.$.img.setSrc(item.source);
             this.$.img.addStyles("width:100%; height: auto;");
+            return true;
         }
         ...
     });
