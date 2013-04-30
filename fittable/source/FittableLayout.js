@@ -89,10 +89,12 @@ enyo.kind({
 				b = mb;
 			}
 		}
-
+		this.applyFitSize(measure, s, a, b);
+	},
+	applyFitSize: function(measure, total, before, after) {
 		// calculate appropriate size for fit control
-		var fs = s - (a + b);
-		//enyo.log(f.id, fs);
+		var fs = total - (before + after);
+		var f = this.getFitControl();
 		// note: must be border-box;
 		f.applyStyle(measure, fs + "px");
 	},
