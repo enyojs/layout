@@ -69,3 +69,9 @@ Tree is a control showing a vertical list of labels with nesting and collapsing
 of hierarchy levels.  There's a simple example in the
 [Enyo Sampler](http://enyojs.com/sampler/) showing the control in use as a
 directory and file tree.
+
+## Easing
+
+Easing extends `enyo.easing`, by including thirty additional interpolation methods.  There's a simple example in the
+[Easing sample](https://github.com/enyojs/lib/layout/easing/samples) folder, showing how to implement these methods. View the 
+[Easing source](https://github.com/enyojs/lib/layout/easing/source/Easing.js) to see a list of supported easing methods.
