@@ -220,7 +220,7 @@ enyo.kind({
 			'-webkit-box-pack'      : this.pack,
 			'-webkit-box-align'     : this.align,
 			'-webkit-box-orient'    : this.orient,
-			'box-sizing'			: 'border-box'
+			'box-sizing'            : 'border-box'
 		});
 		this._reflowChildrenWebkit();
 	},
