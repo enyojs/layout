@@ -1,7 +1,7 @@
 
 enyo.kind({
 	name : 'enyo.sample.FlexLayoutSample',
-	classes: "flex-layout-sample enyo-fit",
+	classes: 'flex-layout-sample enyo-fit',
 	layoutKind: 'HFlexLayout',
 	textFields: ['col1', 'col2', 'col4', 'row1', 'row2', 'row3', 'row4', 'row5', 'col2_1', 'col2_2', 'col2_3'],
 	components: [

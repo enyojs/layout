@@ -225,12 +225,12 @@ enyo.kind({
 	},
 
 	_reflowMozilla: function() {
-		this.container.removeClass('enyo-fit');
 		var oStyles = {
 			'display'           : '-moz-box',
 			'-moz-box-pack'     : this.pack,
 			'-moz-box-align'    : this.align,
-			'-moz-box-orient'   : this.orient
+			'-moz-box-orient'   : this.orient,
+			'position'          : 'relative'
 		};
 		if (this.orient == 'horizontal') {
 			oStyles.height = '100%';
