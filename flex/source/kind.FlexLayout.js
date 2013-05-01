@@ -219,18 +219,20 @@ enyo.kind({
 			'display'               : '-webkit-box',
 			'-webkit-box-pack'      : this.pack,
 			'-webkit-box-align'     : this.align,
-			'-webkit-box-orient'    : this.orient
+			'-webkit-box-orient'    : this.orient,
+			'box-sizing'            : 'border-box'
 		});
 		this._reflowChildrenWebkit();
 	},
 
 	_reflowMozilla: function() {
-		this.container.removeClass('enyo-fit');
 		var oStyles = {
 			'display'           : '-moz-box',
 			'-moz-box-pack'     : this.pack,
 			'-moz-box-align'    : this.align,
-			'-moz-box-orient'   : this.orient
+			'-moz-box-orient'   : this.orient,
+			'-moz-box-sizing'   : 'border-box',
+			'position'          : 'relative'
 		};
 		if (this.orient == 'horizontal') {
 			oStyles.height = '100%';
@@ -240,7 +242,9 @@ enyo.kind({
 	},
 
 	_reflowIE: function() {
-		var oStyles = {};
+		var oStyles = {
+			'box-sizing' : 'border-box'
+		};
 
 		if (this.orient == 'horizontal') { oStyles.width  = '100%'; }
 		else                             { oStyles.height = '100%'; }
