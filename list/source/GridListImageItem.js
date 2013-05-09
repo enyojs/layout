@@ -1,10 +1,6 @@
 /**
-    _enyo.GridList.ImageItem_ is a convenience component that can be used inside a _enyo.GridList_ to display an ImageGrid.
-
-    @author: Surya Vakkalanka
-    @date: November 2012
-
-    An ImageGrid that's based on _enyo.GridList_, which in turn extends _enyo.List_ to render items in the List in a Grid layout.
+	_enyo.GridList.ImageItem_ is a convenience component that may be used inside
+	an <a href="#enyo.GridList">enyo.GridList</a> to display an image grid.
 */
 
 enyo.kind({
@@ -20,13 +16,16 @@ enyo.kind({
         this.sourceChanged();
     },
     published: {
-        //* Sets the absolute URL path to the image
+        //* The absolute URL path to the image
         source: '',
-        //* Sets the primary caption to be displayed along with the image
+        //* The primary caption to be displayed with the image
         caption: '',
-        //* Sets the second caption line to be displayed along with the image
+        //* The second caption line to be displayed with the image
         subCaption: '',
-        //* set to true to add 'selected' class to the image tile, false to remove the 'selected' class
+        /**
+            Set to true to add the _selected_ class to the image tile; set to
+            false to remove the _selected_ class
+        */
         selected: false
     },
     //* @protected
