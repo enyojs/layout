@@ -1,17 +1,17 @@
 /**
-	_enyo.GridFlyweightRepeater_ extends _enyo.FlyweightRepeater_ to layout items in a Grid fashion
-
-	@author: Surya Vakkalanka
-	@date: September 2012
- */
-
+	_enyo.GridFlyweightRepeater_ extends
+	<a href="#enyo.FlyweightRepeater">enyo.FlyweightRepeater</a>
+	to lay out items in a grid pattern.
+*/
 enyo.kind({
 	name: "enyo.GridFlyWeightRepeater",
 	kind: "enyo.FlyweightRepeater",
 	events: {
 		/**
-			Fires once per item at pre-render time (to figure out dimensions of the item).
+			Fires once per item at pre-render time, to determine the item's dimensions.
+
 			_inEvent.index_ contains the current item index.
+
 			_inEvent.selected_ is a boolean indicating whether the current item is selected.
 		*/
 		onSizeupItem: ""
