@@ -47,6 +47,10 @@
 	white-space: normal;
 }
 
+.enyo-fittable-columns-layout > table {
+	display: inline-table;
+}
+
 .enyo-fittable-columns-layout.enyo-tool-decorator > * {
 	vertical-align: middle;
 }
