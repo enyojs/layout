@@ -66,37 +66,25 @@ enyo.kind({
 		}
 		return oControl.getComputedStyleValue(sStyleName);
 	},
-	
-	_getSumStyleValue: function(oControl, aStyles) {
-		var n    = 0,
-			nSum = 0;
-			
-		for (;n<aStyles.length; n++) {
-			nSum += parseInt(this._getComputedStyle(oControl, aStyles[n]), 10);
-		}
-		
-		return nSum;
+
+	_getVOffset: function(oControl) {
+		return (
+			parseInt(this._getComputedStyle(oControl, 'padding-top'), 10) +
+			parseInt(this._getComputedStyle(oControl, 'padding-bottom'), 10) +
+			parseInt(this._getComputedStyle(oControl, 'border-top-width'), 10) +
+			parseInt(this._getComputedStyle(oControl, 'border-bottom-width'), 10)
+		);
 	},
-	
-	_getSumStyles: function(oControl) {
-		var oSumStyles = {
-			v : { // Vertical margin, border, padding
-				margin  : this._getSumStyleValue(oControl, ['margin-top',        'margin-bottom']),
-				border  : this._getSumStyleValue(oControl, ['border-top-width',  'border-bottom-width']),
-				padding : this._getSumStyleValue(oControl, ['padding-top',       'padding-bottom'])
-			},
-			h : { // Horizontal margin, border, padding
-				margin  : this._getSumStyleValue(oControl, ['margin-left',        'margin-right']),
-				border  : this._getSumStyleValue(oControl, ['border-left-width',  'border-right-width']),
-				padding : this._getSumStyleValue(oControl, ['padding-left',       'padding-right'])
-			}
-		};
-		oSumStyles.h.offset = oSumStyles.h.margin + oSumStyles.h.border + oSumStyles.h.padding;
-		oSumStyles.v.offset = oSumStyles.v.margin + oSumStyles.v.border + oSumStyles.v.padding;
-		
-		return oSumStyles;
+
+	_getHOffset: function(oControl) {
+		return (
+			parseInt(this._getComputedStyle(oControl, 'padding-left'), 10) +
+			parseInt(this._getComputedStyle(oControl, 'padding-right'), 10) +
+			parseInt(this._getComputedStyle(oControl, 'border-left-width'), 10) +
+			parseInt(this._getComputedStyle(oControl, 'border-right-width'), 10)
+		);
 	},
-	
+
 	_setStyles: function(oControl, oStyles) {
 		enyo.mixin(oControl.domStyles, oStyles);
 		oControl.domStylesChanged();
@@ -137,10 +125,8 @@ enyo.kind({
 
 			// Set box-flex to flex value
 			oStyles['-webkit-box-flex'] = nFlex;
-			oStyles['overflow']         = 'hidden';
 
-			// TODO: experiment with removing this block, causes scroller to break	
-			// We redefine flex to mean 'be exactly the left over space' 
+			// We redefine flex to mean 'be exactly the left over space' TODO: experiment with removing this block, causes scroller to break	
 			// as opposed to 'natural size plus the left over space'
 			if (!oControl.domStyles[sDimension]) {
 				oStyles[sDimension] = '0px';
@@ -165,7 +151,6 @@ enyo.kind({
 
 			// Set box-flex to flex value
 			oStyles['-moz-box-flex'] = nFlex;
-			oStyles['overflow']      = 'hidden';
 
 			this._setStyles(oControl, oStyles);
 		}
@@ -176,72 +161,54 @@ enyo.kind({
 			oControl,
 			oStyles,
 			nFlex,
-			nOccupiedSize       = 0,
-			aFlexChildren       = [],
-			oSumStyles          = null,
-			oSumStylesContainer = this._getSumStyles(this.container),
-			oBounds             = {},
-			oBoundsContainer    = this._getAbsoluteBounds(this.container),
-			nHeightRemaining    = 0,
-			nWidthRemaining     = 0;
-			
+			nOccupiedSize     = 0,
+			nHOffset          = 0,
+			nVOffset          = 0,
+			oBounds           = {},
+			aFlexChildren     = [],
+			oBoundsContainer  = this._getAbsoluteBounds(this.container),
+			nHOffsetContainer = this._getHOffset(this.container),
+			nVOffsetContainer = this._getVOffset(this.container);
 
-		for (;n<this.container.children.length; n++) {                                                   // Loop1: Iterate all children
-			oControl   = this.container.children[n];
-			oSumStyles = this._getSumStyles(oControl);
-			nFlex      = this._getFlex(oControl);
-			oBounds    = this._getAbsoluteBounds(oControl);
+		for (;n<this.container.children.length; n++) {
+			oControl = this.container.children[n];
+			nHOffset = this._getHOffset(oControl);
+			nVOffset = this._getVOffset(oControl);
+			nFlex    = this._getFlex(oControl);
+			oBounds  = this._getAbsoluteBounds(oControl);
+			oStyles  = {
+				'overflow'  : 'hidden'
+			};
 
 			if (this.orient == 'vertical') {
-				if (nFlex > 0)  { aFlexChildren.push(oControl);    }                                      // Collect list of flex siblings
-				else            { nOccupiedSize += oBounds.height + oSumStyles.v.margin + oSumStyles.v.border; }                // Collect size occupied by non-flex siblings
-				
-				oStyles = {
-					'overflow' : 'hidden',
-					'width'    : (
-						oBoundsContainer.width -
-						oSumStylesContainer.h.padding - 
-						oSumStylesContainer.h.border -
-						oSumStyles.h.offset
-					) + 'px'
-				};
+				if (nFlex > 0)  { aFlexChildren.push(oControl); }
+				else            { nOccupiedSize += oBounds.height; }
+				oStyles.width = oBoundsContainer.width - nHOffset - nHOffsetContainer + 'px';
 			} else {
-				if (nFlex > 0)  { aFlexChildren.push(oControl);   }                                      // Collect list of flex siblings
-				else            { nOccupiedSize += oBounds.width + oSumStyles.h.margin + oSumStyles.h.border; }                // Collect size occupied by non-flex siblings
-				
-				oStyles = {
-					'overflow' : 'hidden',
-					'float'    : 'left',
-					'height'   : (
-						oBoundsContainer.height -
-						oSumStylesContainer.v.padding - 
-						oSumStylesContainer.v.border -
-						oSumStyles.v.offset
-					) + 'px'
-				};
+				if (nFlex > 0)  { aFlexChildren.push(oControl); }
+				else            { nOccupiedSize += oBounds.width; }
+				oStyles['float'] = 'left';
+				oStyles.height = oBoundsContainer.height - nVOffset - nVOffsetContainer + 'px';
 			}
 			this._setStyles(oControl, oStyles);
 		}
 
-		for (n=0; n<aFlexChildren.length; n++) {                                                          // Loop2: Iterate flex children collected in loop1
-			oControl   = aFlexChildren[n];
-			oSumStyles = this._getSumStyles(oControl);
-			oStyles    = {};
-			
+		for (n=0; n<aFlexChildren.length; n++) {
+			oControl = aFlexChildren[n];
+			nHOffset = this._getHOffset(oControl);
+			nVOffset = this._getVOffset(oControl);
+			oStyles  = {};
+
 			if (this.orient == 'vertical') {
-				nHeightRemaining = Math.floor((
-					oBoundsContainer.height - 
-					oSumStylesContainer.v.offset - 
-					nOccupiedSize) / aFlexChildren.length);
-					
-				oStyles.height = nHeightRemaining - oSumStyles.v.offset + 'px';
+				oStyles.height = Math.floor(
+					(oBoundsContainer.height - nOccupiedSize - nVOffsetContainer) /
+					aFlexChildren.length - nVOffset
+				) + 'px';
 			} else {
-				nWidthRemaining = Math.floor((
-					oBoundsContainer.width - 
-					oSumStylesContainer.h.offset -
-					nOccupiedSize) / aFlexChildren.length);
-					
-				oStyles.width = nWidthRemaining - oSumStyles.h.offset + 'px';
+				oStyles.width = Math.floor(
+					(oBoundsContainer.width - nOccupiedSize - nHOffsetContainer) /
+					aFlexChildren.length - nHOffset
+				) + 'px';
 			}
 			this._setStyles(oControl, oStyles);
 		}
@@ -253,8 +220,7 @@ enyo.kind({
 			'-webkit-box-pack'      : this.pack,
 			'-webkit-box-align'     : this.align,
 			'-webkit-box-orient'    : this.orient,
-			'box-sizing'            : 'border-box',
-			'overflow'              : 'hidden'
+			'box-sizing'            : 'border-box'
 		});
 		this._reflowChildrenWebkit();
 	},
@@ -267,7 +233,7 @@ enyo.kind({
 			'-moz-box-orient'   : this.orient,
 			'-moz-box-sizing'   : 'border-box',
 			'position'          : 'relative',
-		 	'overflow'          : 'visible'
+			'overflow'          : 'visible'
 		};
 		if (this.orient == 'horizontal') {
 			oStyles.height = '100%';
