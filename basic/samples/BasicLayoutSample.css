@@ -1,0 +1,15 @@
+.basic-layout-sample {
+	font-size: 11px;
+}
+
+.basic-layout-sample * {
+	border: 1px solid grey;
+}
+
+
+.enyo-v-box > * {
+	display: block;
+}
+.enyo-h-box > * {
+	display: inline-block;
+}
