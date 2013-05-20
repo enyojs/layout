@@ -296,7 +296,6 @@ enyo.kind({
 		if (inEvent.holdTime >= this.reorderHoldTimeMS) {
 			// determine if we should handle the hold event
 			if (this.shouldStartReordering(inSender, inEvent)) {
-				inEvent.preventDefault();
 				this.startReordering(inEvent);
 				return false;
 			}
