@@ -1,4 +1,5 @@
 enyo.depends(
+	"basic",
 	"contextual",
 	"fittable",
 	"list",

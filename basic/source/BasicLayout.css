@@ -1,15 +1,17 @@
-.basic-layout-sample {
-	font-size: 11px;
-}
-
-.basic-layout-sample  * {
-	border: 1px solid blue;
-	margin: 2px;
-}
-
 /* table style */
+.enyo-vcenter {
+	position: relative;
+	height: 100%;
+}
+
 .enyo-table {
 	display: table;
+}
+
+.enyo-table-fit {
+	word-wrap: break-word; 
+    table-layout:fixed;
+    width: 100%;
 }
 
 .enyo-table-row {
