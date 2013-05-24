@@ -34,6 +34,10 @@
 	white-space: nowrap;
 }
 
+.enyo-locale-right-to-left .enyo-fittable-columns-layout {
+	text-align: right;
+}
+
 .enyo-fittable-columns-layout.enyo-center {
 	text-align: center;
 }
