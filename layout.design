@@ -140,36 +140,13 @@
                     "name": "List",
                     "kind": "enyo.List",
                     "description": "Infinite scrolling list",
-                    "inline": {
-                        "kind": "FittableRows",
-                        "style": "height: 80px; position: relative;",
-                        "padding": 4,
-                        "components": [
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; height: 10px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; height: 10px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green;",
-                                "fit": true,
-                                "content": ". . ."
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; height: 10px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; height: 10px;"
-                            }
-                        ]
-                    },
+                    "inline": {},
                     "config": {
-                        "content": "$name",
-                        "isContainer": false,
                         "kind": "List",
-                        "onSetupItem": "",
-                        "count": 0
+                        "fit": true,
+                        "options": {
+                            "isRepeater": true
+                        }
                     }
                 },
                 {
