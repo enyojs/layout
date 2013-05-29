@@ -194,23 +194,7 @@
                     "name": "CardArranger",
                     "kind": "enyo.Panels",
                     "description": "Selectable sub-view",
-                    "inline": {
-                        "kind": "FittableColumns",
-                        "style": "height: 60px; position: relative;",
-                        "padding": 4,
-                        "components": [
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green;",
-                                "fit": true
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            }
-                        ]
-                    },
+                    "inline": {},
                     "config": {
                         "content": "$name",
                         "isContainer": true,
@@ -222,23 +206,7 @@
                     "name": "CardSlideInArranger",
                     "kind": "enyo.Panels",
                     "description": "Selectable sub-view",
-                    "inline": {
-                        "kind": "FittableColumns",
-                        "style": "height: 60px; position: relative;",
-                        "padding": 4,
-                        "components": [
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green;",
-                                "fit": true
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            }
-                        ]
-                    },
+                    "inline": {},
                     "config": {
                         "content": "$name",
                         "isContainer": true,
