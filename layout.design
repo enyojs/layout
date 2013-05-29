@@ -74,11 +74,10 @@
                     "description": "List with elements above the list",
                     "inline": {},
                     "config": {
-                        "content": "$name",
-                        "isContainer": false,
                         "kind": "AroundList",
-                        "onSetupItem": "",
-                        "count": 0
+                        "options": {
+                            "isRepeater": true
+                        }
                     }
                 },
                 {
@@ -100,11 +99,10 @@
                     "description": "List with pull-to-refresh",
                     "inline": {},
                     "config": {
-                        "content": "$name",
-                        "isContainer": false,
                         "kind": "PulldownList",
-                        "onSetupItem": "",
-                        "count": 0
+                        "options": {
+                            "isRepeater": true
+                        }
                     }
                 }
             ]
@@ -118,10 +116,9 @@
                     "description": "Selectable sub-view",
                     "inline": {},
                     "config": {
-                        "content": "$name",
-                        "isContainer": true,
                         "kind": "Panels",
-                        "arrangerKind": "CardArranger"
+                        "arrangerKind": "CardArranger",
+                        "classes": "enyo-fit"
                     }
                 },
                 {
