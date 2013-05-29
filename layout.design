@@ -7,23 +7,7 @@
                     "name": "FittableRows",
                     "kind": "enyo.FittableRows",
                     "description": "Vertical stacked layout",
-                    "inline": {
-                        "kind": "FittableRows",
-                        "style": "height: 80px; position: relative;",
-                        "padding": 4,
-                        "components": [
-                            {
-                                "style": "background-color: lightblue; border: 1px dotted blue; height: 15px;"
-                            },
-                            {
-                                "style": "background-color: lightblue; border: 1px dotted blue;",
-                                "fit": true
-                            },
-                            {
-                                "style": "background-color: lightblue; border: 1px dotted blue; height: 15px;"
-                            }
-                        ]
-                    },
+                    "inline": {},
                     "config": {
                         "content": "$name",
                         "isContainer": true,
@@ -34,23 +18,7 @@
                     "name": "FittableColumns",
                     "kind": "enyo.FittableColumns",
                     "description": "Horizontal stacked layout",
-                    "inline": {
-                        "kind": "FittableColumns",
-                        "style": "height: 60px; position: relative;",
-                        "padding": 4,
-                        "components": [
-                            {
-                                "style": "background-color: lightblue; border: 1px dotted blue; width: 20px;"
-                            },
-                            {
-                                "style": "background-color: lightblue; border: 1px dotted blue;",
-                                "fit": true
-                            },
-                            {
-                                "style": "background-color: lightblue; border: 1px dotted blue; width: 20px;"
-                            }
-                        ]
-                    },
+                    "inline": {},
                     "config": {
                         "content": "$name",
                         "isContainer": true,
@@ -104,30 +72,7 @@
                     "name": "AroundList",
                     "kind": "enyo.AroundList",
                     "description": "List with elements above the list",
-                    "inline": {
-                        "kind": "FittableRows",
-                        "style": "height: 80px; position: relative;",
-                        "padding": 4,
-                        "components": [
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; height: 10px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; height: 10px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green;",
-                                "fit": true,
-                                "content": ". . ."
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; height: 10px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; height: 10px;"
-                            }
-                        ]
-                    },
+                    "inline": {},
                     "config": {
                         "content": "$name",
                         "isContainer": false,
@@ -153,30 +98,7 @@
                     "name": "PulldownList",
                     "kind": "enyo.PulldownList",
                     "description": "List with pull-to-refresh",
-                    "inline": {
-                        "kind": "FittableRows",
-                        "style": "height: 80px; position: relative;",
-                        "padding": 4,
-                        "components": [
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; height: 10px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; height: 10px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green;",
-                                "fit": true,
-                                "content": ". . ."
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; height: 10px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; height: 10px;"
-                            }
-                        ]
-                    },
+                    "inline": {},
                     "config": {
                         "content": "$name",
                         "isContainer": false,
@@ -218,23 +140,7 @@
                     "name": "CarouselArranger",
                     "kind": "enyo.Panels",
                     "description": "Selectable sub-view",
-                    "inline": {
-                        "kind": "FittableColumns",
-                        "style": "height: 60px; position: relative;",
-                        "padding": 4,
-                        "components": [
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green;",
-                                "fit": true
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            }
-                        ]
-                    },
+                    "inline": {},
                     "config": {
                         "content": "$name",
                         "isContainer": true,
@@ -246,23 +152,7 @@
                     "name": "CollapsingArranger",
                     "kind": "enyo.Panels",
                     "description": "Selectable sub-view",
-                    "inline": {
-                        "kind": "FittableColumns",
-                        "style": "height: 60px; position: relative;",
-                        "padding": 4,
-                        "components": [
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green;",
-                                "fit": true
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            }
-                        ]
-                    },
+                    "inline": {},
                     "config": {
                         "content": "$name",
                         "isContainer": true,
@@ -279,23 +169,7 @@
                     "name": "DockRightArranger",
                     "kind": "enyo.Panels",
                     "description": "Selectable sub-view",
-                    "inline": {
-                        "kind": "FittableColumns",
-                        "style": "height: 60px; position: relative;",
-                        "padding": 4,
-                        "components": [
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green;",
-                                "fit": true
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            }
-                        ]
-                    },
+                    "inline": {},
                     "config": {
                         "content": "$name",
                         "isContainer": true,
@@ -307,23 +181,7 @@
                     "name": "GridArranger",
                     "kind": "enyo.Panels",
                     "description": "Selectable sub-view",
-                    "inline": {
-                        "kind": "FittableColumns",
-                        "style": "height: 60px; position: relative;",
-                        "padding": 4,
-                        "components": [
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green;",
-                                "fit": true
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            }
-                        ]
-                    },
+                    "inline": {},
                     "config": {
                         "content": "$name",
                         "isContainer": true,
@@ -335,23 +193,7 @@
                     "name": "LeftRightArranger",
                     "kind": "enyo.Panels",
                     "description": "Selectable sub-view",
-                    "inline": {
-                        "kind": "FittableColumns",
-                        "style": "height: 60px; position: relative;",
-                        "padding": 4,
-                        "components": [
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green;",
-                                "fit": true
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            }
-                        ]
-                    },
+                    "inline": {},
                     "config": {
                         "content": "$name",
                         "isContainer": true,
@@ -363,23 +205,7 @@
                     "name": "UpDownArranger",
                     "kind": "enyo.Panels",
                     "description": "Selectable sub-view",
-                    "inline": {
-                        "kind": "FittableColumns",
-                        "style": "height: 60px; position: relative;",
-                        "padding": 4,
-                        "components": [
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green;",
-                                "fit": true
-                            },
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            }
-                        ]
-                    },
+                    "inline": {},
                     "config": {
                         "content": "$name",
                         "isContainer": true,
@@ -396,20 +222,7 @@
                     "name": "Slideable",
                     "kind": "enyo.Slideable",
                     "description": "Slideable sub-view",
-                    "inline": {
-                        "kind": "FittableColumns",
-                        "style": "height: 40px; position: relative;",
-                        "padding": 4,
-                        "components": [
-                            {
-                                "style": "background-color: lightgreen; border: 1px dotted green; width: 20px;"
-                            },
-                            {
-                                "style": "background-color: lightblue; border: 1px dotted blue;",
-                                "fit": true
-                            }
-                        ]
-                    },
+                    "inline": {},
                     "config": {
                         "content": "$name",
                         "isContainer": true,
