@@ -62,26 +62,10 @@ enyo.kind({
                     ]
                 },
                 {
-                    kind: "enyo.Table",
+                    kind: "enyo.VCenter",
+                    style: "height: 500px;",
                     components: [
-                        {
-                            components: [
-                                {content: "Organized"},
-                                {content: "organizedDate"}
-                            ]
-                        },
-                        {
-                            components: [
-                                {content: "Debut"},
-                                {content: "debutDate"}
-                            ]
-                        },
-                        {
-                            components: [
-                                {content: "Type"},
-                                {content: "type"}
-                            ]
-                        }
+                        {content: "Vertically Centered"},
                     ]
                 }
         	]

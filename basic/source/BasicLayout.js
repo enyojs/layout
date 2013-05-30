@@ -1,7 +1,9 @@
 /**
- * Basic Layout
- * Allows for masic multiple columns and rows.
- * @author Kunmyon Choi <kunmyon.choi@lge.com>
+    _moon.VCenter_ is a kind that centering components in vertical.
+    _moon.HLayout_ is a kind that align components in horizontal.
+    _moon.VLayout_ is a kind that align components in vertical.
+
+    @author Kunmyon Choi <kunmyon.choi@lge.com>
  */
 
 /** Vertical layout needs always height in container */
