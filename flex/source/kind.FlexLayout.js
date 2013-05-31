@@ -66,18 +66,18 @@ enyo.kind({
 		}
 		return oControl.getComputedStyleValue(sStyleName);
 	},
-	
+
 	_getSumStyleValue: function(oControl, aStyles) {
 		var n    = 0,
 			nSum = 0;
-			
+
 		for (;n<aStyles.length; n++) {
 			nSum += parseInt(this._getComputedStyle(oControl, aStyles[n]), 10);
 		}
-		
+
 		return nSum;
 	},
-	
+
 	_getSumStyles: function(oControl) {
 		var oSumStyles = {
 			v : { // Vertical margin, border, padding
@@ -93,10 +93,10 @@ enyo.kind({
 		};
 		oSumStyles.h.offset = oSumStyles.h.margin + oSumStyles.h.border + oSumStyles.h.padding;
 		oSumStyles.v.offset = oSumStyles.v.margin + oSumStyles.v.border + oSumStyles.v.padding;
-		
+
 		return oSumStyles;
 	},
-	
+
 	_setStyles: function(oControl, oStyles) {
 		enyo.mixin(oControl.domStyles, oStyles);
 		oControl.domStylesChanged();
@@ -139,8 +139,8 @@ enyo.kind({
 			oStyles['-webkit-box-flex'] = nFlex;
 			oStyles['overflow']         = 'hidden';
 
-			// TODO: experiment with removing this block, causes scroller to break	
-			// We redefine flex to mean 'be exactly the left over space' 
+			// TODO: experiment with removing this block, causes scroller to break
+			// We redefine flex to mean 'be exactly the left over space'
 			// as opposed to 'natural size plus the left over space'
 			if (!oControl.domStyles[sDimension]) {
 				oStyles[sDimension] = '0px';
@@ -184,7 +184,7 @@ enyo.kind({
 			oBoundsContainer    = this._getAbsoluteBounds(this.container),
 			nHeightRemaining    = 0,
 			nWidthRemaining     = 0;
-			
+
 
 		for (;n<this.container.children.length; n++) {                                                   // Loop1: Iterate all children
 			oControl   = this.container.children[n];
@@ -195,12 +195,12 @@ enyo.kind({
 			if (this.orient == 'vertical') {
 				if (nFlex > 0)  { aFlexChildren.push(oControl);    }                                      // Collect list of flex siblings
 				else            { nOccupiedSize += oBounds.height + oSumStyles.v.margin + oSumStyles.v.border; }                // Collect size occupied by non-flex siblings
-				
+
 				oStyles = {
 					'overflow' : 'hidden',
 					'width'    : (
 						oBoundsContainer.width -
-						oSumStylesContainer.h.padding - 
+						oSumStylesContainer.h.padding -
 						oSumStylesContainer.h.border -
 						oSumStyles.h.offset
 					) + 'px'
@@ -208,13 +208,13 @@ enyo.kind({
 			} else {
 				if (nFlex > 0)  { aFlexChildren.push(oControl);   }                                      // Collect list of flex siblings
 				else            { nOccupiedSize += oBounds.width + oSumStyles.h.margin + oSumStyles.h.border; }                // Collect size occupied by non-flex siblings
-				
+
 				oStyles = {
 					'overflow' : 'hidden',
 					'float'    : 'left',
 					'height'   : (
 						oBoundsContainer.height -
-						oSumStylesContainer.v.padding - 
+						oSumStylesContainer.v.padding -
 						oSumStylesContainer.v.border -
 						oSumStyles.v.offset
 					) + 'px'
@@ -227,20 +227,20 @@ enyo.kind({
 			oControl   = aFlexChildren[n];
 			oSumStyles = this._getSumStyles(oControl);
 			oStyles    = {};
-			
+
 			if (this.orient == 'vertical') {
 				nHeightRemaining = Math.floor((
-					oBoundsContainer.height - 
-					oSumStylesContainer.v.offset - 
+					oBoundsContainer.height -
+					oSumStylesContainer.v.offset -
 					nOccupiedSize) / aFlexChildren.length);
-					
+
 				oStyles.height = nHeightRemaining - oSumStyles.v.offset + 'px';
 			} else {
 				nWidthRemaining = Math.floor((
-					oBoundsContainer.width - 
+					oBoundsContainer.width -
 					oSumStylesContainer.h.offset -
 					nOccupiedSize) / aFlexChildren.length);
-					
+
 				oStyles.width = nWidthRemaining - oSumStyles.h.offset + 'px';
 			}
 			this._setStyles(oControl, oStyles);
@@ -267,7 +267,7 @@ enyo.kind({
 			'-moz-box-orient'   : this.orient,
 			'-moz-box-sizing'   : 'border-box',
 			'position'          : 'relative',
-		 	'overflow'          : 'visible'
+			'overflow'          : 'visible'
 		};
 		if (this.orient == 'horizontal') {
 			oStyles.height = '100%';
