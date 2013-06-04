@@ -9,7 +9,6 @@
                     "description": "Vertical stacked layout",
                     "config": {
                         "content": "$name",
-                        "isContainer": true,
                         "kind": "FittableRows"
                     }
                 },
@@ -19,7 +18,6 @@
                     "description": "Horizontal stacked layout",
                     "config": {
                         "content": "$name",
-                        "isContainer": true,
                         "kind": "FittableColumns"
                     }
                 }
@@ -34,7 +32,6 @@
                     "description": "A carousel of images",
                     "config": {
                         "content": "$name",
-                        "isContainer": true,
                         "kind": "ImageCarousel"
                     }
                 },
@@ -44,7 +41,6 @@
                     "description": "A scalable Image View",
                     "config": {
                         "content": "$name",
-                        "isContainer": true,
                         "kind": "ImageView"
                     }
                 },
@@ -54,7 +50,6 @@
                     "description": "An unscaled item inside an ImageView",
                     "config": {
                         "content": "$name",
-                        "isContainer": true,
                         "kind": "ImageViewPin"
                     }
                 }
@@ -118,7 +113,6 @@
                     "description": "Selectable sub-view",
                     "config": {
                         "content": "$name",
-                        "isContainer": true,
                         "kind": "Panels",
                         "arrangerKind": "CardSlideInArranger"
                     }
@@ -129,7 +123,6 @@
                     "description": "Selectable sub-view",
                     "config": {
                         "content": "$name",
-                        "isContainer": true,
                         "kind": "Panels",
                         "arrangerKind": "CarouselArranger"
                     }
@@ -140,7 +133,6 @@
                     "description": "Selectable sub-view",
                     "config": {
                         "content": "$name",
-                        "isContainer": true,
                         "kind": "Panels",
                         "arrangerKind": "CollapsingArranger",
                         "components": [
@@ -156,7 +148,6 @@
                     "description": "Selectable sub-view",
                     "config": {
                         "content": "$name",
-                        "isContainer": true,
                         "kind": "Panels",
                         "arrangerKind": "DockRightArranger"
                     }
@@ -167,7 +158,6 @@
                     "description": "Selectable sub-view",
                     "config": {
                         "content": "$name",
-                        "isContainer": true,
                         "kind": "Panels",
                         "arrangerKind": "GridArranger"
                     }
@@ -178,7 +168,6 @@
                     "description": "Selectable sub-view",
                     "config": {
                         "content": "$name",
-                        "isContainer": true,
                         "kind": "Panels",
                         "arrangerKind": "LeftRightArranger"
                     }
@@ -189,7 +178,6 @@
                     "description": "Selectable sub-view",
                     "config": {
                         "content": "$name",
-                        "isContainer": true,
                         "kind": "Panels",
                         "arrangerKind": "UpDownArranger"
                     }
@@ -205,7 +193,6 @@
                     "description": "Slideable sub-view",
                     "config": {
                         "content": "$name",
-                        "isContainer": true,
                         "kind": "Slideable"
                     }
                 }
@@ -220,7 +207,6 @@
                     "description": "A tree node",
                     "config": {
                         "content": "$name",
-                        "isContainer": true,
                         "kind": "Node"
                     }
                 }
