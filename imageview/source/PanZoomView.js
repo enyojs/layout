@@ -284,7 +284,6 @@ enyo.kind({
 		//this.stabilize();
 	},
 	limitScale: function(scale) {
-		enyo.log(scale, this.maxScale, this.minScale);
 		if(this.disableZoom) {
 			scale = this.scale;
 		} else if(scale > this.maxScale) {
