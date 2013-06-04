@@ -4,7 +4,7 @@ enyo.kind({
 		onresize: "resized"
 	},
 	components: [
-		{kind:"PanZoomView", contentWidth: 600, contentHeight: 600, classes:"demo", onZoom:"zoom", components: [
+		{kind:"PanZoomView", contentWidth: 600, contentHeight: 600, classes:"panzoomview-demo", onZoom:"zoom", components: [
 			{kind: "FittableColumns", components: [
 				{content: "Hello World", style:"background: orange; width: 200px; height: 200px;"},
 				{content: "Hello World", style:"background: blue; width: 200px; height: 200px;"},
@@ -25,28 +25,19 @@ enyo.kind({
 		{kind:"onyx.Groupbox",  style:"padding-top:10px; width:60%; margin:auto;", components: [
 			{kind:"onyx.GroupboxHeader", content: "panZoomView Scale"},
 			{style:"text-align:center;", components: [
-				{kind:"onyx.Button", content:"\"auto\"",   ontap:"autoScale",   classes:"demoButton"},
-				{kind:"onyx.Button", content:"\"width\"",  ontap:"widthScale",  classes:"demoButton"},
-				{kind:"onyx.Button", content:"\"height\"", ontap:"heightScale", classes:"demoButton"},
-				{kind:"onyx.Button", content:"\"fit\"",    ontap:"fitScale",    classes:"demoButton"},
-				{kind:"onyx.Button", content:"0.5", ontap:"halfScale", classes:"demoButton"},
-				{kind:"onyx.Button", content:"1.0", ontap:"normalScale", classes:"demoButton"},
-				{kind:"onyx.Button", content:"2.0", ontap:"doubleScale", classes:"demoButton"}
+				{kind:"onyx.Button", content:"auto",   ontap:"autoScale",   classes:"panzoomview-demoButton"},
+				{kind:"onyx.Button", content:"width",  ontap:"widthScale",  classes:"panzoomview-demoButton"},
+				{kind:"onyx.Button", content:"height", ontap:"heightScale", classes:"panzoomview-demoButton"},
+				{kind:"onyx.Button", content:"fit",    ontap:"fitScale",    classes:"panzoomview-demoButton"},
+				{kind:"onyx.Button", content:"0.5", ontap:"halfScale", classes:"panzoomview-demoButton"},
+				{kind:"onyx.Button", content:"1.0", ontap:"normalScale", classes:"panzoomview-demoButton"},
+				{kind:"onyx.Button", content:"2.0", ontap:"doubleScale", classes:"panzoomview-demoButton"}
 			]}
 		]}
 	],
 	create: function() {
 		this.inherited(arguments);
 		this.scale = "auto";
-	},
-	load: function(inSender, inEvent) {
-		enyo.log("onload occurred: " + inSender.src);
-	},
-	error: function(inSender, inEvent) {
-		enyo.log("onerror occurred: " + inSender.src);
-	},
-	zoom: function(inSender, inEvent) {
-		enyo.log("onZoom occurred: " + inEvent.scale + " scale");
 	},
 	resized: function(inSender, inEvent) {
 		this.$.panZoomView.setScale(this.scale);

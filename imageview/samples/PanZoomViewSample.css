@@ -2,18 +2,12 @@
 	Put anything you reference with "url()" in ../assets/
 	This way, you can minify your application, and just remove the "source" folder for production
 */
-#app {
-	margin: 5px;
-	border-radius: 4px;
-	background-color: silver;
-	padding: 10px;
-}
 
-.demoButton {
+.panzoomview-demoButton {
 	margin:8px;
 }
 
-.demo {
+.panzoomview-demo {
 	width: 800px;
 	height:500px;
 	margin:auto;
@@ -21,14 +15,14 @@
 }
 
 @media all and (max-width: 900px) {
-	.demo {
+	.panzoomview-demo {
 		width: 550px;
 		height:400px;
 	}
 }
 
 @media all and (max-width: 650px) {
-	.demo {
+	.panzoomview-demo {
 		width: 280px;
 		height:250px;
 	}
