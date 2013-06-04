@@ -87,10 +87,25 @@ enyo.kind({
 		onSetDimensions: "setDimensions"
 	},
 	components:[
-		{name: "animator", kind: "Animator", onStep: "zoomAnimationStep", onEnd: "zoomAnimationEnd"},
-		{name:"viewport", style:"overflow:hidden;min-height:100%;min-width:100%;", classes:"enyo-fit", ongesturechange: "gestureTransform", ongestureend: "saveState", ontap: "singleTap", ondblclick:"doubleClick", onmousewheel:"mousewheel", components:[
-			{name: "content"}
-		]}
+		{
+			name: "animator",
+			kind: "Animator",
+			onStep: "zoomAnimationStep",
+			onEnd: "zoomAnimationEnd"
+		},
+		{
+			name:"viewport",
+			style:"overflow:hidden;min-height:100%;min-width:100%;",
+			classes:"enyo-fit",
+			ongesturechange: "gestureTransform",
+			ongestureend: "saveState",
+			ontap: "singleTap",
+			ondblclick:"doubleClick",
+			onmousewheel:"mousewheel",
+			components:[
+				{name: "content"}
+			]
+		}
 	],
 	create: function() {
 		// remember scale keyword
@@ -198,14 +213,16 @@ enyo.kind({
 		this.eventPt = this.calcEventLocation();
 		this.transform(this.scale);
 		// start scroller
-		this.getStrategy().$.scrollMath.start();
+		if(this.getStrategy().$.scrollMath) {
+			this.getStrategy().$.scrollMath.start();
+		}
 		this.align();
 	},
 	align: function() {
-		if ( this.fitAlignment && this.fitAlignment === "center") {
+		if (this.fitAlignment && this.fitAlignment === "center") {
 			var sb = this.getScrollBounds();
-			this.setScrollLeft( sb.maxLeft / 2);
-			this.setScrollTop( sb.maxTop / 2);
+			this.setScrollLeft(sb.maxLeft / 2);
+			this.setScrollTop(sb.maxTop / 2);
 		}
 	},
 	gestureTransform: function(inSender, inEvent) {
@@ -330,7 +347,7 @@ enyo.kind({
 		}
 	},
 	singleTap: function(inSender, inEvent) {
-		setTimeout(enyo.bind(this, function() {
+		setTimeout(this.bindSafely(function() {
 			this.tapped = false;
 		}), 300);
 		if(this.tapped) { //dbltap

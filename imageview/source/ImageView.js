@@ -48,6 +48,14 @@ enyo.kind({
 			this.getStrategy().$.scrollMath.start();
 		}
 	},
+	destroy: function() {
+		if (this.bufferImage) {
+			this.bufferImage.onerror = undefined;
+			this.bufferImage.onerror = undefined;
+			delete this.bufferImage;
+		}
+		this.inherited(arguments);
+	},
 	down: function(inSender, inEvent) {
 		// Fix to prevent image drag in Firefox
 		inEvent.preventDefault();
