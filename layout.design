@@ -8,7 +8,6 @@
                     "kind": "enyo.FittableRows",
                     "description": "Vertical stacked layout",
                     "config": {
-                        "content": "$name",
                         "kind": "FittableRows"
                     }
                 },
@@ -17,7 +16,6 @@
                     "kind": "enyo.FittableColumns",
                     "description": "Horizontal stacked layout",
                     "config": {
-                        "content": "$name",
                         "kind": "FittableColumns"
                     }
                 }
@@ -31,7 +29,6 @@
                     "kind": "enyo.ImageCarousel",
                     "description": "A carousel of images",
                     "config": {
-                        "content": "$name",
                         "kind": "ImageCarousel"
                     }
                 },
@@ -40,7 +37,6 @@
                     "kind": "enyo.ImageView",
                     "description": "A scalable Image View",
                     "config": {
-                        "content": "$name",
                         "kind": "ImageView"
                     }
                 },
@@ -49,7 +45,6 @@
                     "kind": "enyo.ImageViewPin",
                     "description": "An unscaled item inside an ImageView",
                     "config": {
-                        "content": "$name",
                         "kind": "ImageViewPin"
                     }
                 }
@@ -112,7 +107,6 @@
                     "kind": "enyo.Panels",
                     "description": "Selectable sub-view",
                     "config": {
-                        "content": "$name",
                         "kind": "Panels",
                         "arrangerKind": "CardSlideInArranger"
                     }
@@ -122,7 +116,6 @@
                     "kind": "enyo.Panels",
                     "description": "Selectable sub-view",
                     "config": {
-                        "content": "$name",
                         "kind": "Panels",
                         "arrangerKind": "CarouselArranger"
                     }
@@ -132,7 +125,6 @@
                     "kind": "enyo.Panels",
                     "description": "Selectable sub-view",
                     "config": {
-                        "content": "$name",
                         "kind": "Panels",
                         "arrangerKind": "CollapsingArranger",
                         "components": [
@@ -147,7 +139,6 @@
                     "kind": "enyo.Panels",
                     "description": "Selectable sub-view",
                     "config": {
-                        "content": "$name",
                         "kind": "Panels",
                         "arrangerKind": "DockRightArranger"
                     }
@@ -157,7 +148,6 @@
                     "kind": "enyo.Panels",
                     "description": "Selectable sub-view",
                     "config": {
-                        "content": "$name",
                         "kind": "Panels",
                         "arrangerKind": "GridArranger"
                     }
@@ -167,7 +157,6 @@
                     "kind": "enyo.Panels",
                     "description": "Selectable sub-view",
                     "config": {
-                        "content": "$name",
                         "kind": "Panels",
                         "arrangerKind": "LeftRightArranger"
                     }
@@ -177,7 +166,6 @@
                     "kind": "enyo.Panels",
                     "description": "Selectable sub-view",
                     "config": {
-                        "content": "$name",
                         "kind": "Panels",
                         "arrangerKind": "UpDownArranger"
                     }
@@ -192,7 +180,6 @@
                     "kind": "enyo.Slideable",
                     "description": "Slideable sub-view",
                     "config": {
-                        "content": "$name",
                         "kind": "Slideable"
                     }
                 }
@@ -206,7 +193,6 @@
                     "kind": "enyo.Node",
                     "description": "A tree node",
                     "config": {
-                        "content": "$name",
                         "kind": "Node"
                     }
                 }
