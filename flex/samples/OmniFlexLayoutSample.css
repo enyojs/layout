@@ -1,0 +1,30 @@
+.omniflex-layout-sample {
+	font-size: 11px;
+	border: 20px solid red !important;
+	padding: 10px !important;
+	margin: 20px !important;
+	border-radius: 25px;
+}
+
+	.omniflex-layout-sample > * {
+		background-color : #CCC;
+		text-align       : justify;
+		border           : 1px solid #999;
+		
+		padding       : 10px;
+		margin        : 0px;
+		border-radius : 5px;
+	}
+
+.omniflex-layout-sample .column {
+	width: 200px;
+}
+
+.omniflex-layout-sample .row {
+	height: 50px;
+}
+
+.omniflex-layout-sample .repeater-sample-item {
+	font-size: 14px;
+	margin: 10px;
+}

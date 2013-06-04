@@ -1,4 +1,6 @@
 enyo.depends(
 	'FlexLayoutSample.css',
-	'FlexLayoutSample.js'
+	'FlexLayoutSample.js',
+	'ContentLayoutSample.css',
+	'ContentLayoutSample.js'
 );

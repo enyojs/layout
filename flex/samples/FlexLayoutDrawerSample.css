@@ -1,0 +1,43 @@
+.grid-layout-drawer-sample {
+	border: 10px solid red !important;
+}
+
+	.grid-layout-drawer-sample.enyo-vgrid-layout,
+	.grid-layout-drawer-sample .enyo-vgrid-layout,
+	.grid-layout-drawer-sample.enyo-hgrid-layout,
+	.grid-layout-drawer-sample .enyo-hgrid-layout {
+		background-color: #EEE !important;
+	}
+
+	.grid-layout-drawer-sample.enyo-vgrid-layout>*,
+	.grid-layout-drawer-sample .enyo-vgrid-layout>*,
+	.grid-layout-drawer-sample.enyo-hgrid-layout>*,
+	.grid-layout-drawer-sample .enyo-hgrid-layout>* {
+		background-color: #CCC;
+		padding: 10px;
+		text-align: justify;
+		margin: 0px;
+		border: 1px solid blue;
+	}
+
+.grid-layout-drawer-sample .column {
+	width: 200px;
+}
+
+.grid-layout-drawer-sample .row {
+	height: 50px;
+}
+
+.grid-layout-drawer-sample .leaf {
+	background-color: #CCC;
+}
+
+.grid-layout-drawer-sample .drawer {
+	background-color: #EEE;
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+	.grid-layout-drawer-sample .drawer > * {
+		padding: 10px;
+	}

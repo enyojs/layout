@@ -1,41 +1,16 @@
 
 enyo.kind({
-	name : 'enyo.sample.FlexLayoutSample',
-	classes: 'flex-layout-sample enyo-fit',
-	layoutKind: 'VFlexLayout',
-	spacing: 10,
+	name    : 'enyo.sample.FlexBoxSample',
+	classes : 'flex-box-sample enyo-fit',
+	kind    : enyo.FlexBox,
+	spacing : 10,
 	components: [
-		{name: 'row0', layoutKind: 'HFlexLayout', flex: true, spacing: 10, components: [
-			{name: 'col0', classes: 'leaf column', components: [
-				{name: 'button1', kind: 'onyx.Button', content: 'Add content to Col1', ontap: 'addContent1', style: 'width: 200px'},
-				{name: 'button2', kind: 'onyx.Button', content: 'Add content to Row1', ontap: 'addContent2', style: 'width: 200px'},
-			]}, 
-			{name: 'col1', classes: 'leaf', layoutKind: 'ContentLayout', minWidth: 200, maxWidth: 300},
-			{name: 'col2', content: 'column 2', classes: 'leaf', flex: true, layoutKind: 'VFlexLayout', spacing: 10, components:[
-				{name: 'row1', classes: 'leaf', layoutKind: 'ContentLayout', minHeight: 100, maxHeight: 200},
-				{ 
-					name         : 'scroller',
-					kind         : 'Scroller',
-					flex         : true,
-					style        : 'padding: 0',
-					strategyKind : 'TouchScrollStrategy',
-					components   : [
-						{kind: 'Repeater', onSetupItem:'setupItem', components: [
-							{name:'item', classes:'repeater-sample-item', components: [
-								{tag:'span', name: 'personNumber'},
-								{tag:'span', name: 'personName'}
-							]}
-						]}
-					]
-				}
-			]},
-			{name: 'col3', content: 'column 3', classes: 'leaf', flex: true},
-			{name: 'col4', content: 'column 4', classes: 'leaf', flex: true},
-			{name: 'col5', content: 'column 5', classes: 'leaf', flex: true},
-		]},
-		{name: 'row01', classes: 'leaf', components: [
-			{kind: 'onyx.Button', content: 'hello'}
-		]}
+		{name: 'child1', flexOrientation: 'row',    classes: 'leaf', content: 'child 1'},
+		{name: 'child2', flexOrientation: 'row',    classes: 'leaf', content: 'child 2'},
+		{name: 'child3', flexOrientation: 'column', classes: 'leaf', content: 'child 3', flex: true},
+		{name: 'child4', flexOrientation: 'column', classes: 'leaf', content: 'child 4', flex: true},
+		{name: 'child5', flexOrientation: 'column', classes: 'leaf', content: 'child 5', flex: true},
+		{name: 'child6', flexOrientation: 'row',    classes: 'leaf', content: 'child 6'}		
 	],
 
 	statics: {
@@ -78,7 +53,7 @@ enyo.kind({
 	
 	create: function() {
 		this.inherited(arguments);
-		this.$.repeater.setCount(this.people.length);
+		// this.$.repeater.setCount(this.people.length);
 	},
 	
 	setupItem: function(inSender, inEvent) {
@@ -100,10 +75,5 @@ enyo.kind({
 		this.$.row1.addContent(' asdflkjasdf lkajdsflkjasdflkj ;lkasjdf;lk a;lksdjf klsjdflkjsdflkj lksdjf lksdjf sdfsdfslkj kljsdf');
 		this.$.row1.layout.reflow();
 		this.$.col1.layout.reflow();
-		// this.$.col2.layout.reflow();
-	},
-
-	appendContent3: function() {
-		this.$.content3.addContent(' Bar Foo Bar Foo Bar Foo');
-	},
+	}
 });

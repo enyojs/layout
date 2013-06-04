@@ -1,0 +1,41 @@
+.flex-box-sample {
+	font-size: 11px;
+	border: 20px solid red !important;
+	padding: 10px !important;
+	margin: 20px !important;
+}
+
+	.flex-box-sample.enyo-vflex-layout,
+	.flex-box-sample .enyo-vflex-layout,
+	.flex-box-sample.enyo-hflex-layout,
+	.flex-box-sample .enyo-hflex-layout {
+		background-color: #EEE !important;
+	}
+
+	.flex-box-sample.enyo-vflex-layout>*,
+	.flex-box-sample .enyo-vflex-layout>*,
+	.flex-box-sample.enyo-hflex-layout>*,
+	.flex-box-sample .enyo-hflex-layout>* {
+		background-color: #CCC;
+		padding: 10px;
+		text-align: justify;
+		margin: 0px;
+		border: 1px solid blue;
+	}
+
+.flex-box-sample .column {
+	width: 200px;
+}
+
+.flex-box-sample .row {
+	height: 50px;
+}
+
+.flex-box-sample .leaf {
+	background-color: #CCC;
+}
+
+.flex-box-sample .repeater-sample-item {
+	font-size: 14px;
+	margin: 10px;
+}
