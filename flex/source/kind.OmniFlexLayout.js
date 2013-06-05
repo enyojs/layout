@@ -10,7 +10,10 @@ enyo.kind({
 	kind        : 'Layout',
 	layoutClass : 'enyo-omniflex-layout',
 	defaultFlex : 10,                   // if container's child flex property set to true, default to this value
-	debug       : false,
+	
+	/******************** PRIVATE *********************/
+	
+	_bInitialized : false,
 
 	_hasFlexLayout: function(oControl) {
 		return (
@@ -193,12 +196,30 @@ enyo.kind({
 		
 		return aMetrics;
 	},
+	
+	_initialize : function() {
+		if (this._bInitialized) { return; }
+		this._bInitialized = true;
+		
+		// This code runes only on (right before) first reflow
+		var n = 0,
+			oControl;
+			
+		for (;n<this.container.children.length; n++) {
+			oControl = this.container.children[n];
+			if (oControl.flex == 'content') {
+				oControl.layoutKind = 'enyo.ContentLayout';
+				oControl.layoutKindChanged();
+			}
+		}
+	},
 
 	/******************** PUBLIC *********************/
 	
 	reflow: function() {
 		this.inherited(arguments);
 		this.spacing = this.container.spacing || 0;
+		this._initialize();
 		
 		var oStylesContainer = new enyo.Styles(this.container),
 			aMetrics         = this._collectMetrics({
@@ -207,52 +228,7 @@ enyo.kind({
 			});
 			
 		this._renderMetrics(aMetrics, oStylesContainer);
-		enyo.FlexLayout._registerFlexLayout(this);
 	},
-
-	/******************** STATIC *********************/
-
-	// Needed for IE only
-	statics: {
-		_aFlexLayouts: [],
-
-		_registerFlexLayout: function(oLayout) {
-			var bFound = false,
-				n      = 0;
-
-			for (;n<this._aFlexLayouts.length; n++) {
-				if (this._aFlexLayouts[n] === oLayout) {
-					bFound = true;
-				}
-			}
-			if (!bFound) {
-				console.log('extending');
-				oLayout.container.rendered = function() {
-					console.log('renderered');
-					oLayout.container.rendered.apply(oLayout.container, arguments);
-				}
-				this._aFlexLayouts.push(oLayout);
-			}
-		},
-
-		_unregisterFlexLayout: function(oLayout) {
-			var n = 0;
-			for (;n<this._aFlexLayouts.length; n++) {
-				if (this._aFlexLayouts[n] === oLayout) {
-					delete this._aFlexLayouts[n];
-					return;
-				}
-			}
-		},
-
-		reflowAll: function() {
-			var n = 0;
-			for (;n<this._aFlexLayouts.length; n++) {
-				this._aFlexLayouts[n].reflow();
-			}
-		}
-	}
-
 });
 
 enyo.kind({

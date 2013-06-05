@@ -7,19 +7,18 @@
 enyo.createMixin({
 	name: 'LayoutInvalidator',
 	
-	// handlers: {
-	// 	onInvalidateLayout: 'onInvalidateLayout'
-	// },
-	// 
-	// onInvalidateLayout: function() {
-	// 	switch (this.layoutKind) {
-	// 		case 'enyo.OmniFlexLayout':
-	// 			console.log('layout is', this.layout);
-	// 			// this.layout.reflow();
-	// 			break;
-	// 	}
-	// 	console.log(this.name, 'onInvalidateLayout');
-	// },
+	handlers: {
+		onInvalidateLayout: 'onInvalidateLayout'
+	},
+	
+	onInvalidateLayout: function() {
+		if (!this.layoutKind) { return false; }
+		switch (this.layout.kindName) {
+			case 'enyo.ContentLayout':
+				this.layout.reflow();
+				break;
+		}
+	},
 	
 	rendered: function() {
 		this.inherited(arguments);
@@ -28,10 +27,10 @@ enyo.createMixin({
 
 	invalidateLayout: function() {
 		if (!this.hasNode()) { return; }
-		// this.bubbleUp('onInvalidateLayout', {}, this);
-		if (typeof this.reflow == 'function') {
-			this.reflow();
-		}
+		this.bubble('onInvalidateLayout', {}, this);
+		// if (typeof this.reflow == 'function') {
+		// 			this.reflow();
+		// 		}
 	},
 
 	contentChanged: function() {
