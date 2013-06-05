@@ -8,7 +8,7 @@ enyo.depends(
 	'kind.FlexBox.js',
 	
 	'kind.OmniFlexLayout.js',
-	'kind.OmniFlexLayout.css'
+	'kind.OmniFlexLayout.css',
 	
-	// 'mixin.LayoutInvalidator.js'
+	'mixin.LayoutInvalidator.js'
 );

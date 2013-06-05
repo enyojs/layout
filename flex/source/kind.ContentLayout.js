@@ -140,11 +140,6 @@ enyo.kind({
 	
 	reflow : function() {
 		this.inherited(arguments);
-		
-		var oSize = this._updateSize();
-		
-		if (this.container.parent.layout instanceof enyo.FlexLayout) {
-			this.container.parent.layout.reflow();
-		}
+		this._updateSize();
 	}
 });

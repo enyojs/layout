@@ -7,40 +7,40 @@
 enyo.createMixin({
 	name: 'LayoutInvalidator',
 	
-	handlers: {
-		onInvalidateLayout: 'onInvalidateLayout'
-	},
-	
-	onInvalidateLayout: function() {
-		if (!this.hasNode()) { return; }
-		switch (this.layoutKind) {
-			case 'enyo.OmniFlexLayout':
-				console.log('layout is', this.layout);
-				// this.layout.reflow();
-				break;
-		}
-		console.log(this.name, 'onInvalidateLayout');
-	},
+	// handlers: {
+	// 	onInvalidateLayout: 'onInvalidateLayout'
+	// },
+	// 
+	// onInvalidateLayout: function() {
+	// 	switch (this.layoutKind) {
+	// 		case 'enyo.OmniFlexLayout':
+	// 			console.log('layout is', this.layout);
+	// 			// this.layout.reflow();
+	// 			break;
+	// 	}
+	// 	console.log(this.name, 'onInvalidateLayout');
+	// },
 	
 	rendered: function() {
 		this.inherited(arguments);
-		console.log('rendered', this.name);
 		this.invalidateLayout();
 	},
 
 	invalidateLayout: function() {
-		this.bubbleUp('onInvalidateLayout', {}, this);
+		if (!this.hasNode()) { return; }
+		// this.bubbleUp('onInvalidateLayout', {}, this);
+		if (typeof this.reflow == 'function') {
+			this.reflow();
+		}
 	},
 
 	contentChanged: function() {
 		this.inherited(arguments);
-		console.log(this.name, 'contentChanged');
 		this.invalidateLayout();
 	},
 
 	classesChanged: function() {
 		this.inherited(arguments);
-		console.log(this.name, 'classesChanged');
 		this.invalidateLayout();
 	}
 

@@ -75,7 +75,6 @@ enyo.kind({
 	
 	addContent: function(oControl, nLength) {
 		oControl.addContent(' ' + enyo.sample.OmniFlexLayoutSample.loremIpsum.substr(0, nLength));
-		oControl.layout.reflow();
 	},
 
 	addContent1: function() {
