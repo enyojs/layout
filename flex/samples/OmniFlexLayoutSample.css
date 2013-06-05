@@ -4,9 +4,11 @@
 	padding: 10px !important;
 	margin: 20px !important;
 	border-radius: 25px;
+	box-shadow: 2px 2px 5px #999;
 }
 
-	.omniflex-layout-sample > * {
+	.omniflex-layout-sample.enyo-omniflex-layout > *,
+	.omniflex-layout-sample .enyo-omniflex-layout > * {
 		background-color : #CCC;
 		text-align       : justify;
 		border           : 1px solid #999;
@@ -14,6 +16,7 @@
 		padding       : 10px;
 		margin        : 0px;
 		border-radius : 5px;
+/*		box-shadow    : 2px 2px 5px #999;*/
 	}
 
 .omniflex-layout-sample .column {
@@ -27,4 +30,10 @@
 .omniflex-layout-sample .repeater-sample-item {
 	font-size: 14px;
 	margin: 10px;
+}
+
+.omniflex-layout-sample .onyx-button {
+	width: 190px;
+	margin-bottom: 10px;
+	border-radius: 7px;
 }

@@ -1,4 +1,7 @@
 .enyo-omniflex-layout {
-	position: relative;
-	overflow: hidden;
+	position: relative;             /* To handle inline cases in sampler */
+	overflow: hidden;               /*  */
 }
+	.enyo-omniflex-layout > * {
+		display: inline-block;      /* To prevent block elements from stretching beyond remaining boundaries */
+	}

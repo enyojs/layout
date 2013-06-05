@@ -197,6 +197,7 @@ enyo.kind({
 	/******************** PUBLIC *********************/
 	
 	reflow: function() {
+		this.inherited(arguments);
 		this.spacing = this.container.spacing || 0;
 		
 		var oStylesContainer = new enyo.Styles(this.container),
@@ -225,6 +226,11 @@ enyo.kind({
 				}
 			}
 			if (!bFound) {
+				console.log('extending');
+				oLayout.container.rendered = function() {
+					console.log('renderered');
+					oLayout.container.rendered.apply(oLayout.container, arguments);
+				}
 				this._aFlexLayouts.push(oLayout);
 			}
 		},

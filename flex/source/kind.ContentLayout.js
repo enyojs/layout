@@ -15,14 +15,64 @@ enyo.kind({
 	maxWidth    : 0,
 	maxHeight   : 0,
 	
+	/************** PRIVATE **************/
+	
+	_width      : 0,
+	_height     : 0,
+	
 	_updateBoundValues: function() {
-		this.minWidth  = this.container.minWidth;
-		this.minHeight = this.container.minHeight;
-		this.maxWidth  = this.container.maxWidth;
-		this.maxHeight = this.container.maxHeight;
+		if (this._isFlexChild()) {
+			if (this._isFlexColumn()) {
+				// console.log(this.container.name, 'updating max/min width');
+				this.minWidth  = this.container.minWidth;
+				this.maxWidth  = this.container.maxWidth;
+			} else {
+				// console.log(this.container.name, 'updating max/min height');
+				this.minHeight = this.container.minHeight;
+				this.maxHeight = this.container.maxHeight;
+			}
+		} else {
+			this.minWidth  = this.container.minWidth;
+			this.minHeight = this.container.minHeight;
+			this.maxWidth  = this.container.maxWidth;
+			this.maxHeight = this.container.maxHeight;
+		}
 	},
 	
-	_resize: function() {
+	_isFlexChild: function() {
+		return this.container.parent.layoutKind == 'enyo.OmniFlexLayout';
+	},
+	
+	_isFlexColumn: function() {
+		return this.container.parent.layout._isColumn(this.container);
+	},
+	
+	_setSize: function(nWidth, nHeight, oStyles) {
+		var bReflow = this._width != nWidth || this._height != nHeight;
+		
+		this._width  = nWidth;
+		this._height = nHeight;
+		
+		if (this._isFlexChild()) {
+			if (this._isFlexColumn()) {	oStyles.setContentWidth(nWidth);   }
+			else                      { oStyles.setContentHeight(nHeight); }
+		} else {
+			oStyles.setContentWidth(nWidth);
+			oStyles.setContentHeight(nHeight);
+		}
+		
+		oStyles.set('overflow', 'auto');
+		oStyles.commit();
+		
+		if (bReflow) {
+			if (this._isFlexChild()) {
+				this.reflow();
+				this.container.parent.layout.reflow();
+			}
+		}
+	},
+	
+	_updateSize: function() {
 		this._updateBoundValues();
 		
 		var oStyles = new enyo.Styles(this.container);
@@ -30,18 +80,14 @@ enyo.kind({
 		// If empty container, return min sizes
 		/************************************************************************/
 		if (this.container.children.length == 0 && this.container.content.length == 0) {
-			oStyles.setBoxWidth(this.minWidth);
-			oStyles.setBoxHeight(this.minHeight);
-			oStyles.commit();
+			this._setSize(this.minWidth, this.minHeight, oStyles);
 			return;
 		}
 		
 		// If at max size, simply return max sizes
 		/************************************************************************/
 		if (oStyles.content.width >= this.maxWidth && oStyles.content.height >= this.maxHeight) {
-			oStyles.setBoxWidth(this.maxWidth);
-			oStyles.setBoxHeight(this.maxHeight);
-			oStyles.commit();
+			this._setSize(this.maxWidth, this.maxHeight, oStyles);
 			return;
 		}
 		
@@ -54,14 +100,14 @@ enyo.kind({
 			
 		// Get width
 		/************************************************************************/
-			
+
+		this.container.node.parentNode.appendChild(oElement);
+		
 		oElement.innerHTML     = this.container.node.innerHTML;
 		oElement.className     = this.container.node.className;
 		oElement.id            = this.container.node.id;
 		oElement.style.display = 'inline';
-		
-		this.container.node.parentNode.appendChild(oElement);
-		nWidth = oElement.offsetWidth;// - oStyles.h.border - oStyles.h.padding;
+		nWidth                 = oElement.offsetWidth - oStyles.h.padding;
 		
 		// Constrain to maxWidth
 		
@@ -71,10 +117,9 @@ enyo.kind({
 		// Get height
 		/************************************************************************/
 		
-		oElement.height = 'auto';
-		oElement.style.display   = 'block';
-		oElement.style.width     = nWidth + 'px';
-		nHeight                  = oElement.offsetHeight - oStyles.v.outerOffset;
+		oElement.height       = 'auto';
+		oElement.style.width  = nWidth + 'px';
+		nHeight               = oElement.offsetHeight - oStyles.v.padding;
 			
 		this.container.node.parentNode.removeChild(oElement);
 		
@@ -84,16 +129,19 @@ enyo.kind({
 		if (nHeight > this.maxHeight) { nHeight = this.maxHeight; }
 		
 		/************************************************************************/
-		
-		oStyles.setContentWidth(nWidth);
-		oStyles.setContentHeight(nHeight);
-		oStyles.set('overflow', 'auto');
-		
-		oStyles.commit();
+		this._setSize(nWidth, nHeight, oStyles);
+	},
+	
+	/************** PUBLIC **************/
+	
+	flow: function() {
+		this.inherited(arguments);
 	},
 	
 	reflow : function() {
-		var oSize = this._resize();
+		this.inherited(arguments);
+		
+		var oSize = this._updateSize();
 		
 		if (this.container.parent.layout instanceof enyo.FlexLayout) {
 			this.container.parent.layout.reflow();
