@@ -18,7 +18,7 @@
 
 	For the PanZoomView to work you need to specify width and height of the
 	scaled content via the contentWidth and contentHeight properties.
-	Alternatively you may bubble an onSetDimensions event from on of the
+	Alternatively you may bubble an onSetDimensions event from one of the
 	underlying components at a later time.
 
 	Note that it's best to specify a size for the PanZoomView in order to avoid
@@ -172,10 +172,13 @@ enyo.kind({
 		this.inherited(arguments);
 		this.scaleChanged();
 	},
-	setDimensions: function(inEvent, payload){
-		this.$.content.applyStyle("width", payload.width + "px");
-		this.$.content.applyStyle("height", payload.height + "px");
-		this.getOriginalScale();
+	setDimensions: function(inSender, inEvent){
+		this.$.content.applyStyle("width", inEvent.width + "px");
+		this.$.content.applyStyle("height", inEvent.height + "px");
+		this.originalWidth = inEvent.width;
+		this.originalHeight = inEvent.height;
+		this.scale = this.scaleKeyword;
+		this.scaleChanged();
 		return true;
 	},
 	getOriginalScale : function(){
