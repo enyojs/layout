@@ -118,14 +118,14 @@ enyo.kind({
 	//
 	addNodes: function(inNodes) {
 		this.destroyClientControls();
-		for (var i=0, n; n=inNodes[i]; i++) {
+		for (var i=0, n; (n=inNodes[i]); i++) {
 			this.createComponent(n);
 		}
 		this.$.client.render();
 	},
 	addTextNodes: function(inNodes) {
 		this.destroyClientControls();
-		for (var i=0, n; n=inNodes[i]; i++) {
+		for (var i=0, n; (n=inNodes[i]); i++) {
 			this.createComponent({content: n});
 		}
 		this.$.client.render();
@@ -163,7 +163,7 @@ enyo.kind({
 		var h = this.$.client.getBounds().height;
 		this.$.box.setBounds({height: h});
 		this.$.client.setBounds({top: 0});
-		setTimeout(enyo.bind(this, function() {
+		setTimeout(this.bindSafely(function() {
 			// things may have happened in the interim, make sure
 			// we only fix height if we are still expanded
 			if (this.expanded) {
@@ -180,7 +180,7 @@ enyo.kind({
 		var h = this.$.client.getBounds().height;
 		this.$.box.setBounds({height: h});
 		// yield the thead so DOM can make those changes (without transitions)
-		setTimeout(enyo.bind(this, function() {
+		setTimeout(this.bindSafely(function() {
 			// enable transitions
 			this.addClass("enyo-animate");
 			// shrink our box to 0
@@ -209,61 +209,5 @@ enyo.kind({
 			}
 		}
 		//this.contentChanged();
-	}/*,
-	//
-	//
-	levelChanged: function() {
-		this.applyStyle("padding-left", 16 + "px");
-	},
-	toggleChildren: function() {
-		if (this.$.list) {
-			this.$.list.setShowing(this.expanded);
-		}
-	},
-	renderNodes: function(inNodes) {
-		var list = this.createComponent({name: "list", container: this});
-		for (var i=0, n; n=inNodes[i]; i++) {
-			n.setLevel(this.level + 1);
-			n.setContainer(list);
-			n.render();
-		}
-		list.render();
-	},
-	//* @public
-	addNodes: function(inNodes) {
-		this.renderNodes(inNodes);
-		this.toggleChildren();
-	},
-	removeNodes: function() {
-		if (this.$.list) {
-			this.$.list.destroy();
-		}
-	},
-	hasVisibleChildren: function() {
-		return this.expanded && this.$.list && this.$.list.controls.length > 0;
-	},
-	fetchParent: function() {
-		return this.level > 0 && this.container.container;
-	},
-	fetchChildren: function() {
-		return this.$.list && this.$.list.controls;
-	},
-	fetchFirstChild: function() {
-		return this.$.list && this.$.list.controls[0];
-	},
-	fetchLastChild: function() {
-		return this.$.list && this.$.list.controls[this.$.list.controls.length-1];
-	},
-	fetchPrevSibling: function() {
-		var i = this.container.controls.indexOf(this);
-		return this.level > 0 && this.container.controls[i-1];
-	},
-	fetchNextSibling: function() {
-		var i = this.container.controls.indexOf(this);
-		return this.level > 0 && this.container.controls[i+1];
-	},
-	getVisibleBounds: function() {
-		return this.$.client.getBounds();
 	}
-	*/
 });

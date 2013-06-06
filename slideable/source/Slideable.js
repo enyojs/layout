@@ -12,7 +12,7 @@
 	between the minimum and maximum positions.
 
 	_min_, _max_, and _value_ may be specified in units of "px" or "%".
-	
+
 	The _axis_ property determines whether the Slideable slides left-to-right
 	("h") or up-and-down ("v").
 
@@ -32,7 +32,7 @@ enyo.kind({
 	published: {
 		//* Direction of sliding; can be "h" or "v"
 		axis: "h",
-		//* Current position of the Slideable (a value between _min_ and _max_) 
+		//* Current position of the Slideable (a value between _min_ and _max_)
 		value: 0,
 		//* Unit for _min_, _max_, and _value_; can be "px" or "%"
 		unit: "px",
@@ -40,6 +40,8 @@ enyo.kind({
 		min: 0,
 		//* A maximum value to slide to
 		max: 0,
+		//* When truthy, apply CSS styles to allow GPU compositing of slideable content
+		//* if the platform allows.
 		accelerated: "auto",
 		//* Set to false to prevent the Slideable from dragging with elasticity
 		//* past its _min_ or _max_ value
@@ -113,7 +115,7 @@ enyo.kind({
 		var inBounds = {};
 		inBounds[this.boundary] = inValue;
 		this.setBounds(inBounds, this.unit);
-		
+
 		this.setInlineStyles(inValue, inDimensions);
 	},
 	updateDragScalar: function() {
@@ -130,7 +132,7 @@ enyo.kind({
 		this.canTransform = enyo.dom.canTransform();
 	},
 	acceleratedChanged: function() {
-		if (!(enyo.platform.android > 2)) {
+		if (!enyo.platform.android || enyo.platform.android <= 2) {
 			enyo.dom.accelerate(this, this.accelerated);
 		}
 	},
@@ -144,7 +146,7 @@ enyo.kind({
 	},
 	setInlineStyles: function(inValue, inDimensions) {
 		var inBounds = {};
-		
+
 		if (this.unitModifier) {
 			inBounds[this.boundary] = this.percentToPixels(inValue, this.unitModifier);
 			inBounds[this.dimension] = this.unitModifier;
@@ -161,7 +163,7 @@ enyo.kind({
 	valueChanged: function(inLast) {
 		var v = this.value;
 		if (this.isOob(v) && !this.isAnimating()) {
-				this.value = this.overMoving ? this.dampValue(v) : this.clampValue(v);
+			this.value = this.overMoving ? this.dampValue(v) : this.clampValue(v);
 		}
 		// FIXME: android cannot handle nested compositing well so apply acceleration only if needed
 		// desktop chrome doesn't like this code path so avoid...

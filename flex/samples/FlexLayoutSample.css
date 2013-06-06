@@ -1,0 +1,34 @@
+.flex-layout-sample {
+	font-size: 11px;
+}
+
+.flex-layout-sample .enyo-vflex-layout {
+/*	background: blue !important;*/
+}
+	.flex-layout-sample .enyo-vflex-layout > * {
+		border: 5px solid gray;
+		background-color: #A6A6A9;
+		padding: 20px;
+		text-align: justify;
+	}
+
+
+.flex-layout-sample .enyo-hflex-layout {
+	background: #EEE !important;
+}
+	.flex-layout-sample.enyo-hflex-layout>*,
+	.flex-layout-sample .enyo-hflex-layout>* {
+		border: 5px solid gray;
+		background-color: #FFFFFF;
+		padding: 20px;
+		text-align: justify;
+	}
+
+.flex-layout-sample .column {
+	width: 130px;
+}
+
+.flex-layout-sample .row {
+	height: 50px;
+	overflow: auto;
+}

@@ -3,7 +3,7 @@ enyo.kind({
 	classes: "enyo-unselectable",
 	style:"width: 600px; padding: 20px; border: 1px solid #ccc; margin: auto;",
 	components: [
-	
+
 	// add zoom in and zoom out controls
 	// add down and up controls
 		{content: "Please review this fine print:", tag: "h1"},

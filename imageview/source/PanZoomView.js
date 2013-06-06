@@ -1,55 +1,56 @@
 /**
-    _enyo.PanZoomView_ is a control that displays arbitrary content at a given 
-    scaling factor, with enhanced support for double-tap/double-click to zoom,
-    panning, mousewheel zooming and pinch-zoom (on touchscreen devices that
-    support it).
+	_enyo.PanZoomView_ is a control that displays arbitrary content at a given
+	scaling factor, with enhanced support for double-tap/double-click to zoom,
+	panning, mousewheel zooming and pinch-zoom (on touchscreen devices that
+	support it).
 
-        {kind: "PanZoomView", scale: "auto", contentWidth: 500, contentHeight: 500, style: "width:500px; height:400px;",
-          components: [{content: "Hello World"}]
-        }
+		{kind: "PanZoomView", scale: "auto", contentWidth: 500, contentHeight: 500,
+			style: "width:500px; height:400px;",
+			components: [{content: "Hello World"}]
+		}
 
-    An _onZoom_ event is triggered when the user changes the zoom level.
+	An _onZoom_ event is triggered when the user changes the zoom level.
 
-    If you wish, you may add <a href="#enyo.ScrollThumb">enyo.ScrollThumb</a>
-    indicators, disable zoom animation, allow panning overscroll (with a
-    bounce-back effect), and control the propagation of drag events, all via
-    boolean properties.
+	If you wish, you may add <a href="#enyo.ScrollThumb">enyo.ScrollThumb</a>
+	indicators, disable zoom animation, allow panning overscroll (with a
+	bounce-back effect), and control the propagation of drag events, all via
+	boolean properties.
 
-    For the PanZoomView to work you need to specify width and height of the 
-    scaled content via the contentWidth and contentHeight properties.
-    Alternatively you may bubble an onSetDimensions event from on of the
-    underlying components at a later time.
+	For the PanZoomView to work you need to specify width and height of the
+	scaled content via the contentWidth and contentHeight properties.
+	Alternatively you may bubble an onSetDimensions event from on of the
+	underlying components at a later time.
 
-    Note that it's best to specify a size for the PanZoomView in order to avoid
-    complications.
+	Note that it's best to specify a size for the PanZoomView in order to avoid
+	complications.
 */
 
 enyo.kind({
 	name: "enyo.PanZoomView",
 	kind: enyo.Scroller,
 	/**
-	    If true, allows for overscrolling during panning, with a bounce-back
-	    effect. (Defaults to false.)
+		If true, allows for overscrolling during panning, with a bounce-back
+		effect. (Defaults to false.)
 	*/
 	touchOverscroll: false,
 	/**
-	    If true, a ScrollThumb is used to indicate scroll position/bounds.
-	    (Defaults to false.)
+		If true, a ScrollThumb is used to indicate scroll position/bounds.
+		(Defaults to false.)
 	*/
 	thumb: false,
 	/**
-	    If true (the default), the zoom action triggered by a double-tap (or
-	    double-click) will be animated.
+		If true (the default), the zoom action triggered by a double-tap (or
+		double-click) will be animated.
 	*/
 	animate: true,
 	/**
-	    If true (the default), allows propagation of vertical drag events when
-	    already at the top or bottom of the pannable area.
+		If true (the default), allows propagation of vertical drag events when
+		already at the top or bottom of the pannable area.
 	*/
 	verticalDragPropagation: true,
 	/**
-	    If true (the default), allows propagation of horizontal drag events when
-	    already at the left or right edge of the pannable area.
+		If true (the default), allows propagation of horizontal drag events when
+		already at the left or right edge of the pannable area.
 	*/
 	horizontalDragPropagation: true,
 	published: {
@@ -57,13 +58,13 @@ enyo.kind({
 			The scale at which the content should be displayed. It may be any
 			positive numeric value or one of the following key words (which will
 			be resolved to a value dynamically):
-	
+
 			* "auto": Fits the content to the size of the PanZoomView
 			* "width": Fits the content the width of the PanZoomView
 			* "height": Fits the content to the height of the PanZoomView
 			* "fit": Fits the content to the height and width of the PanZoomView.
-				 Overflow of the larger dimension is cropped and the content is centered
-				 on this axis
+				Overflow of the larger dimension is cropped and the content is centered
+				on this axis
 		*/
 		scale: "auto",
 		//* Disables the zoom functionality
@@ -71,10 +72,10 @@ enyo.kind({
 	},
 	events: {
 		/**
-		    Fires whenever the user adjusts the zoom, via
-		    double-tap/double-click, mousewheel, or pinch-zoom.
-		    
-		    _inEvent.scale_ contains the new scaling factor.
+			Fires whenever the user adjusts the zoom, via
+			double-tap/double-click, mousewheel, or pinch-zoom.
+
+			_inEvent.scale_ contains the new scaling factor.
 		*/
 		onZoom:""
 	},
@@ -86,10 +87,25 @@ enyo.kind({
 		onSetDimensions: "setDimensions"
 	},
 	components:[
-		{name: "animator", kind: "Animator", onStep: "zoomAnimationStep", onEnd: "zoomAnimationEnd"},
-		{name:"viewport", style:"overflow:hidden;min-height:100%;min-width:100%;", classes:"enyo-fit", ongesturechange: "gestureTransform", ongestureend: "saveState", ontap: "singleTap", ondblclick:"doubleClick", onmousewheel:"mousewheel", components:[
-			{name: "content"}
-		]}
+		{
+			name: "animator",
+			kind: "Animator",
+			onStep: "zoomAnimationStep",
+			onEnd: "zoomAnimationEnd"
+		},
+		{
+			name:"viewport",
+			style:"overflow:hidden;min-height:100%;min-width:100%;",
+			classes:"enyo-fit",
+			ongesturechange: "gestureTransform",
+			ongestureend: "saveState",
+			ontap: "singleTap",
+			ondblclick:"doubleClick",
+			onmousewheel:"mousewheel",
+			components:[
+				{name: "content"}
+			]
+		}
 	],
 	create: function() {
 		// remember scale keyword
@@ -197,14 +213,16 @@ enyo.kind({
 		this.eventPt = this.calcEventLocation();
 		this.transform(this.scale);
 		// start scroller
-		this.getStrategy().$.scrollMath.start();
+		if(this.getStrategy().$.scrollMath) {
+			this.getStrategy().$.scrollMath.start();
+		}
 		this.align();
 	},
 	align: function() {
-		if ( this.fitAlignment && this.fitAlignment === "center") {
+		if (this.fitAlignment && this.fitAlignment === "center") {
 			var sb = this.getScrollBounds();
-			this.setScrollLeft( sb.maxLeft / 2);
-			this.setScrollTop( sb.maxTop / 2);
+			this.setScrollLeft(sb.maxLeft / 2);
+			this.setScrollTop(sb.maxTop / 2);
 		}
 	},
 	gestureTransform: function(inSender, inEvent) {
@@ -225,10 +243,10 @@ enyo.kind({
 	},
 	transform: function(scale) {
 		this.tapped = false;
-		
+
 		var prevBounds = this.bounds || this.innerBounds(scale);
 		this.bounds = this.innerBounds(scale);
-		
+
 		//style cursor if needed to indicate the content is movable
 		if(this.scale>this.minScale) {
 			this.$.viewport.applyStyle("cursor", "move");
@@ -236,7 +254,7 @@ enyo.kind({
 			this.$.viewport.applyStyle("cursor", null);
 		}
 		this.$.viewport.setBounds({width: this.bounds.width + "px", height: this.bounds.height + "px"});
-		
+
 		//determine the exact ratio where on the content was tapped
 		this.ratioX = this.ratioX || (this.eventPt.x + this.getScrollLeft()) / prevBounds.width;
 		this.ratioY = this.ratioY || (this.eventPt.y + this.getScrollTop()) / prevBounds.height;
@@ -250,7 +268,7 @@ enyo.kind({
 		}
 		scrollLeft = Math.max(0, Math.min((this.bounds.width - this.containerWidth), scrollLeft));
 		scrollTop = Math.max(0, Math.min((this.bounds.height - this.containerHeight), scrollTop));
-		
+
 		if(this.canTransform) {
 			var params = {scale: scale};
 			// translate needs to be first, or scale and rotation will not be in the correct spot
@@ -273,17 +291,16 @@ enyo.kind({
 		} else {
 			// ...no transforms and not IE... there's nothin' I can do.
 		}
-		
+
 		//adjust scroller to new position that keeps ratio with the new content size
 		this.setScrollLeft(scrollLeft);
 		this.setScrollTop(scrollTop);
-		
+
 		this.positionClientControls(scale);
-		
+
 		//this.stabilize();
 	},
 	limitScale: function(scale) {
-		enyo.log(scale, this.maxScale, this.minScale)
 		if(this.disableZoom) {
 			scale = this.scale;
 		} else if(scale > this.maxScale) {
@@ -330,7 +347,7 @@ enyo.kind({
 		}
 	},
 	singleTap: function(inSender, inEvent) {
-		setTimeout(enyo.bind(this, function() {
+		setTimeout(this.bindSafely(function() {
 			this.tapped = false;
 		}), 300);
 		if(this.tapped) { //dbltap

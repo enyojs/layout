@@ -3,44 +3,71 @@ enyo.kind({
 	kind: "FittableRows",
 	classes: "list-sample-contacts enyo-fit",
 	components: [
-		{kind: "onyx.MoreToolbar", layoutKind: "FittableColumnsLayout", style: "height: 55px;", components: [
-			{kind: "onyx.Button", content: "setup", ontap: "showSetupPopup"},
-			{kind: "onyx.InputDecorator", components: [
-				{name: "newContactInput", kind: "onyx.Input", value: "Frankie Fu"}
-			]},
-			{kind: "onyx.Button", content: "new contact", ontap: "addItem"},
-			{fit: true},
-			{kind: "onyx.InputDecorator", components: [
-				{kind: "onyx.Input", placeholder: "Search...", style: "width: 140px;", oninput: "searchInputChange"},
-				{kind: "Image", src: "assets/search-input-search.png", style: "width: 20px;"}
-			]},
-			{kind: "onyx.Button", content: "remove selected", ontap: "removeSelected"}
-		]},
-		{kind: "List", classes: "list-sample-contacts-list", fit: true, multiSelect: true, onSetupItem: "setupItem", components: [
-			{name: "divider", classes: "list-sample-contacts-divider"},
-			{name: "item", kind: "ContactItem", classes: "list-sample-contacts-item enyo-border-box", onRemove: "removeTap"}
-		]},
-		{name: "popup", kind: "onyx.Popup", modal: true, centered: true, classes: "list-sample-contacts-popup", components: [
-			{components: [
-				{style:"display:inline-block", components:[
-					{content: "count:", classes: "list-sample-contacts-label"},
-					{name:"countOutput", style:"display:inline-block;", content: "200"}
+		{
+			kind: "onyx.MoreToolbar",
+			layoutKind: "FittableColumnsLayout",
+			style: "height: 55px;",
+			components: [
+				{kind: "onyx.Button", content: "setup", ontap: "showSetupPopup"},
+				{kind: "onyx.InputDecorator", components: [
+					{name: "newContactInput", kind: "onyx.Input", value: "Frankie Fu"}
 				]},
-				{kind: "onyx.Slider", value: 4, onChanging:"countSliderChanging"}
-			]},
-			{components: [
-				{content: "rowsPerPage:", classes: "list-sample-contacts-label"},
-				{name:"rowsPerPageOutput", style:"display:inline-block;", content: "50"},
-				{kind: "onyx.Slider", value: 10, onChanging:"rowsSliderChanging"}
-			]},
-			{components: [
-				{content: "hide divider:", classes: "list-sample-contacts-label"},
-				{name: "hideDividerCheckbox", kind: "onyx.Checkbox"}
-			]},
-			{components: [
-				{kind: "onyx.Button", content: "populate list", classes: "list-sample-contacts-populate-button", ontap: "populateList"}
-			]}
-		]}
+				{kind: "onyx.Button", content: "new contact", ontap: "addItem"},
+				{fit: true},
+				{kind: "onyx.InputDecorator", components: [
+					{kind: "onyx.Input", placeholder: "Search...", style: "width: 140px;", oninput: "searchInputChange"},
+					{kind: "Image", src: "assets/search-input-search.png", style: "width: 20px;"}
+				]},
+				{kind: "onyx.Button", content: "remove selected", ontap: "removeSelected"}
+			]
+		},
+		{
+			kind: "List",
+			classes: "list-sample-contacts-list enyo-unselectable",
+			fit: true,
+			multiSelect: true,
+			onSetupItem: "setupItem",
+			components: [
+				{name: "divider", classes: "list-sample-contacts-divider"},
+				{name: "item", kind: "ContactItem", classes: "list-sample-contacts-item enyo-border-box", onRemove: "removeTap"}
+			]
+		},
+		{
+			name: "popup",
+			kind: "onyx.Popup",
+			modal: true,
+			centered: true,
+			classes: "list-sample-contacts-popup",
+			components: [
+				{
+					components: [
+						{style: "display:inline-block", components:[
+							{content: "count:", classes: "list-sample-contacts-label"},
+							{name: "countOutput", style: "display:inline-block;", content: "200"}
+						]},
+						{kind: "onyx.Slider", value: 4, onChanging: "countSliderChanging", onChange: "countSliderChanging"}
+					]
+				},
+				{
+					components: [
+						{content: "rowsPerPage:", classes: "list-sample-contacts-label"},
+						{name: "rowsPerPageOutput", style: "display:inline-block;", content: "50"},
+						{kind: "onyx.Slider", value: 10, onChanging: "rowsSliderChanging", onChange: "rowsSliderChanging"}
+					]
+				},
+				{
+					components: [
+						{content: "hide divider:", classes: "list-sample-contacts-label"},
+						{name: "hideDividerCheckbox", kind: "onyx.Checkbox"}
+					]
+				},
+				{
+					components: [
+						{kind: "onyx.Button", content: "populate list", classes: "list-sample-contacts-populate-button", ontap: "populateList"}
+					]
+				}
+			]
+		}
 	],
 	rendered: function() {
 		this.inherited(arguments);
@@ -63,6 +90,7 @@ enyo.kind({
 			this.$.divider.canGenerate = showd;
 			this.$.item.applyStyle("border-top", showd ? "none" : null);
 		}
+		return true;
 	},
 	refreshList: function() {
 		if (this.filter) {
@@ -122,11 +150,12 @@ enyo.kind({
 		this.$.list.setRowsPerPage(~~this.$.rowsPerPageOutput.getContent());
 		//
 		this.hideDivider = this.$.hideDividerCheckbox.getValue();
-		this.$.divider.canGenerate = !this.hideDivider;
+		//this.$.divider.canGenerate = !this.hideDivider;
 		//
 		this.$.list.reset();
 	},
 	createDb: function(inCount) {
+		/* global makeName */
 		this.db = [];
 		for (var i=0; i<inCount; i++) {
 			this.db.push(this.generateItem(makeName(4, 6) + " " + makeName(5, 10)));
@@ -137,21 +166,28 @@ enyo.kind({
 		return {
 			name: inName,
 			avatar: "assets/avatars/" + avatars[enyo.irand(avatars.length)],
-			title: titles[enyo.irand(titles.length)]
+			title: titles[enyo.irand(titles.length)],
+			importance: 0
 		};
 	},
 	sortDb: function() {
 		this.db.sort(function(a, b) {
-			if (a.name < b.name) return -1;
-			else if (a.name > b.name) return 1;
-			else return 0;
+			if (a.name < b.name) {
+				return -1;
+			}
+			else if (a.name > b.name) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
 		});
 	},
 	showSetupPopup: function() {
 		this.$.popup.show();
 	},
 	searchInputChange: function(inSender) {
-		enyo.job(this.id + ":search", enyo.bind(this, "filterList", inSender.getValue()), 200);
+		enyo.job(this.id + ":search", this.bindSafely("filterList", inSender.getValue()), 200);
 	},
 	filterList: function(inFilter) {
 		if (inFilter != this.filter) {
@@ -214,6 +250,9 @@ enyo.kind({
 	events: {
 		onRemove: ""
 	},
+	published: {
+		importance: 0
+	},
 	components: [
 		{name: "avatar", kind: "Image", classes: "list-sample-contacts-avatar"},
 		{components: [
@@ -230,7 +269,23 @@ enyo.kind({
 	},
 	setSelected: function(inSelected) {
 		this.addRemoveClass("list-sample-contacts-item-selected", inSelected);
-		this.$.remove.applyStyle("display", inSelected ? "inline-block" : "none");
+		this.$.remove.applyStyle("display", inSelected ? "inline-block" : "gne");
+	},
+	renderImportance: function() {
+		switch(this.importance) {
+		case 0:
+			this.$.importance.setContent("not important");
+			break;
+		case -1:
+			this.$.importance.setContent("important");
+			break;
+		case -2:
+			this.$.importance.setContent("very important");
+			break;
+		default:
+			window.alert(this.importance+" - wowzer");
+			break;
+		}
 	},
 	removeTap: function(inSender, inEvent) {
 		this.doRemove(inEvent);

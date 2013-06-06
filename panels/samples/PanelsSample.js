@@ -15,7 +15,7 @@ enyo.kind({
 				{classes: "onyx-toolbar-inline", style: "white-space: nowrap;", components: [
 					{kind: "onyx.MenuDecorator", components: [
 						{content:"Arranger"},
-						{name:"arrangerPicker", kind: "onyx.Menu", floating:true, onSelect:"arrangerSelected"}
+						{name:"arrangerPicker", kind: "onyx.Menu", maxHeight: 360, floating: true, onSelect:"arrangerSelected"}
 					]},
 					{kind: "onyx.Button", content: "Previous", ontap: "prevPanel"},
 					{kind: "onyx.Button", content: "Next", ontap: "nextPanel"},
@@ -46,7 +46,8 @@ enyo.kind({
 		{name: "LeftRightArranger", arrangerKind: "LeftRightArranger"},
 		{name: "TopBottomArranger", arrangerKind: "TopBottomArranger", classes: "panels-sample-topbottom"},
 		{name: "SpiralArranger", arrangerKind: "SpiralArranger", classes: "panels-sample-spiral"},
-		{name: "GridArranger", arrangerKind: "enyo.sample.MyGridArranger", classes: "panels-sample-grid"}
+		{name: "GridArranger", arrangerKind: "enyo.sample.MyGridArranger", classes: "panels-sample-grid"},
+		{name: "DockRightArranger", arrangerKind: "DockRightArranger", classes: "panels-sample-collapsible"}
 	],
 	bgcolors: ["red", "orange", "yellow", "green", "blue", "indigo", "violet"],
 	create: function() {
@@ -63,7 +64,7 @@ enyo.kind({
 		var sp = this.$.samplePanels;
 		var p = this.panelArrangers[inEvent.originator.indexInContainer()-1];
 		if (this.currentClass) {
-			sp.removeClass(this.currentClass)
+			sp.removeClass(this.currentClass);
 		}
 		if (p.classes) {
 			sp.addClass(p.classes);

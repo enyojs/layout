@@ -1,4 +1,4 @@
-﻿/** 
+﻿/**
 	_enyo.FittableLayout_ provides the base positioning and boundary logic for
 	the fittable layout strategy. The fittable layout strategy is based on
 	laying out items in either a set of rows or a set of columns, with most of
@@ -20,7 +20,7 @@ enyo.kind({
 	kind: "Layout",
 	//* @protected
 	calcFitIndex: function() {
-		for (var i=0, c$=this.container.children, c; c=c$[i]; i++) {
+		for (var i=0, c$=this.container.children, c; (c=c$[i]); i++) {
 			if (c.fit && c.showing) {
 				return i;
 			}
@@ -61,7 +61,7 @@ enyo.kind({
 			p = enyo.dom.calcPaddingExtents(n);
 			// measure 2
 			s = n[cMeasure] - (p[mAttr] + p[nAttr]);
-			//console.log("overall size", s);
+			//enyo.log("overall size", s);
 		}
 		//
 		// calculate space above fitting control
@@ -69,7 +69,7 @@ enyo.kind({
 		var fb = f.getBounds();
 		// offset - container padding.
 		a = fb[mAttr] - ((p && p[mAttr]) || 0);
-		//console.log("above", a);
+		//enyo.log("above", a);
 		//
 		// calculate space below fitting control
 		var l = this.getLastControl();
@@ -89,10 +89,12 @@ enyo.kind({
 				b = mb;
 			}
 		}
-		
+		this.applyFitSize(measure, s, a, b);
+	},
+	applyFitSize: function(measure, total, before, after) {
 		// calculate appropriate size for fit control
-		var fs = s - (a + b);
-		//console.log(f.id, fs);
+		var fs = total - (before + after);
+		var f = this.getFitControl();
 		// note: must be border-box;
 		f.applyStyle(measure, fs + "px");
 	},
@@ -110,7 +112,7 @@ enyo.kind({
 	}
 });
 
-/** 
+/**
 	_enyo.FittableColumnsLayout_ provides a container in which items are laid
 	out in a set of vertical columns, with most of the items having natural
 	size, but one expanding to fill the remaining space. The one that expands is
@@ -120,7 +122,7 @@ enyo.kind({
 	_layoutKind_ property of other kinds. _layoutKind_ provides a way to add
 	layout behavior in a pluggable fashion while retaining the ability to use a
 	specific base kind.
-	
+
 	For more information, see the documentation on
 	[Fittables](https://github.com/enyojs/enyo/wiki/Fittables) in the Enyo
 	Developer Guide.
@@ -133,7 +135,7 @@ enyo.kind({
 });
 
 
-/** 
+/**
 	_enyo.FittableRowsLayout_ provides a container in which items are laid out
 	in a set of horizontal rows, with most of the items having natural size, but
 	one expanding to fill the remaining space. The one that expands is labeled

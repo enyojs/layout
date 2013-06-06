@@ -9,7 +9,7 @@ enyo.kind({
 					{kind: "onyx.Input", placeholder: "Search...", fit: true, oninput: "searchInputChange"},
 					{kind: "Image", src: "assets/search-input-search.png", style: "height: 20px; width: 20px;"}
 				]}
-			]},
+			]}
 		], components: [
 			{name: "divider", classes: "list-sample-around-divider"},
 			{name: "item", kind: "AroundListContactItem", classes: "list-sample-around-item enyo-border-box", onRemove: "removeTap"}
@@ -57,6 +57,7 @@ enyo.kind({
 			this.$.divider.canGenerate = showd;
 			this.$.item.applyStyle("border-top", showd ? "none" : null);
 		}
+		return true;
 	},
 	refreshList: function() {
 		if (this.filter) {
@@ -70,7 +71,7 @@ enyo.kind({
 	addItem: function() {
 		var item = this.generateItem(enyo.cap(this.$.newContactInput.getValue()));
 		var i = 0;
-		for (var di; di=this.db[i]; i++) {
+		for (var di; (di=this.db[i]); i++) {
 			if (di.name > item.name) {
 				this.db.splice(i, 0, item);
 				break;
@@ -105,6 +106,7 @@ enyo.kind({
 		this.$.list.scrollToContentStart();
 	},
 	createDb: function(inCount) {
+		/* global makeName */
 		this.db = [];
 		for (var i=0; i<inCount; i++) {
 			this.db.push(this.generateItem(makeName(4, 6) + " " + makeName(5, 10)));
@@ -116,20 +118,27 @@ enyo.kind({
 			name: inName,
 			avatar: "assets/avatars/" + avatars[enyo.irand(avatars.length)],
 			title: titles[enyo.irand(titles.length)]
-		}
+		};
 	},
 	sortDb: function() {
 		this.db.sort(function(a, b) {
-			if (a.name < b.name) return -1;
-			else if (a.name > b.name) return 1;
-			else return 0;
+			if (a.name < b.name) {
+				return -1;
+			}
+			else if (a.name > b.name) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
 		});
 	},
 	showSetupPopup: function() {
 		this.$.popup.show();
 	},
 	searchInputChange: function(inSender) {
-		enyo.job(this.id + ":search", enyo.bind(this, "filterList", inSender.getValue()), 200);
+		enyo.job(this.id + ":search", this.bindSafely("filterList", inSender.getValue()), 200);
+		return true;
 	},
 	filterList: function(inFilter) {
 		if (inFilter != this.filter) {
@@ -142,7 +151,7 @@ enyo.kind({
 	generateFilteredData: function(inFilter) {
 		var re = new RegExp("^" + inFilter, "i");
 		var r = [];
-		for (var i=0, d; d=this.db[i]; i++) {
+		for (var i=0, d; (d=this.db[i]); i++) {
 			if (d.name.match(re)) {
 				d.dbIndex = i;
 				r.push(d);

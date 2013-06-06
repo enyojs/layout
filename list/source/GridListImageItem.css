@@ -1,0 +1,29 @@
+/*
+	Put anything you reference with "url()" in ../assets/
+	This way, you can minify your application, and just remove the "source" folder for production
+*/
+.enyo-gridlist-imageitem {
+	width: 100%;
+	height: 100%;
+	background: #333;
+	color: #fff;
+}
+.enyo-gridlist-imageitem img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+.enyo-gridlist-imageitem .caption, .enyo-gridlist-imageitem .sub-caption {
+	opacity: 0.7;
+	font-weight: bold;
+	text-align: center;
+	font-size: 10pt;
+	text-transform: uppercase;
+	z-index: 10;
+	padding-top: 10px;
+	width: 100%;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	color: #fff;
+}

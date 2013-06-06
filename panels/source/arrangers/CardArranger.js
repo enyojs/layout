@@ -17,7 +17,7 @@ enyo.kind({
 		return this.containerBounds.width;
 	},
 	arrange: function(inC, inName) {
-		for (var i=0, c, b, v; (c=inC[i]); i++) {
+		for (var i=0, c, v; (c=inC[i]); i++) {
 			v = (i === 0) ? 1 : 0;
 			this.arrangeControl(c, {opacity: v});
 		}
@@ -32,7 +32,6 @@ enyo.kind({
 				c.resized();
 			}
 		}
-		
 	},
 	finish: function() {
 		this.inherited(arguments);

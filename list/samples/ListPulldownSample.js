@@ -28,7 +28,7 @@ enyo.kind({
 	pullRelease: function() {
 		this.pulled = true;
 		// add 1 second delay so we can see the loading message
-		setTimeout(enyo.bind(this, function() {
+		setTimeout(this.bindSafely(function() {
 			this.search();
 		}), 1000);
 	},
@@ -39,18 +39,32 @@ enyo.kind({
 	search: function() {
 		// Capture searchText and strip any whitespace
 		var searchText = this.$.searchInput.getValue().replace(/^\s+|\s+$/g, '');
-
+		var url = "http://search.twitter.com/search.json";
+		var req;
 		if (searchText !== "") {
-			var req = new enyo.JsonpRequest({
-				url: "http://search.twitter.com/search.json",
-				callbackName: "callback"
-			});
-			req.response(enyo.bind(this, "processSearchResults"));
+			if (window.location.protocol === "ms-appx:") {
+				// Use ajax for platforms with no jsonp support (Windows 8)
+				req = new enyo.Ajax({
+					url: url,
+					handleAs: "text"
+				});
+				req.response(this.bindSafely("processAjaxSearchResults"));
+			} else {
+				req = new enyo.JsonpRequest({
+					url: url,
+					callbackName: "callback"
+				});
+				req.response(this.bindSafely("processSearchResults"));
+			}
 			req.go({q: searchText, rpp: 20});
 		} else {
 			// For whitespace searches, set new content value in order to display placeholder
 			this.$.searchInput.setValue(searchText);
 		}
+	},
+	processAjaxSearchResults: function(inRequest, inResponse) {
+		inResponse = JSON.parse(inResponse);
+		this.processSearchResults(inRequest, inResponse);
 	},
 	processSearchResults: function(inRequest, inResponse) {
 		this.results = inResponse.results;
@@ -69,6 +83,7 @@ enyo.kind({
 		this.$.handle.setContent(" @" + item.from_user);
 		this.$.date.setContent(this.getRelativeDateString(item.created_at));
 		this.$.text.setContent(this.parseTweet(item.text));
+		return true;
 	},
 	getRelativeDateString: function(inDateString) {
 		var d = new Date(inDateString);
@@ -86,10 +101,10 @@ enyo.kind({
 	},
 	parseTweet: function(inText) {
 		var t = inText;
-		t = t.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
+		t = t.replace(/[A-Za-z]+:\/\/[A-Za-z0-9_-]+\.[A-Za-z0-9_:%&~\?\/.=-]+/g, function(url) {
 			return "<a href='" + url + "'target='_blank'>" + url + "</a>";
 		});
-		return t.replace(/[@]+[A-Za-z0-9-_]+/, function(u) {
+		return t.replace(/[@]+[A-Za-z0-9_-]+/, function(u) {
 			var username = u.replace("@", "");
 			return "<a href='http://twitter.com/" + u + "'target='_blank'>@" + username + "</a>";
 		});

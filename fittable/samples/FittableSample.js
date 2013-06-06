@@ -3,6 +3,12 @@ enyo.kind({
 	kind: "FittableRows",
 	classes: "fittable-sample-box enyo-fit",
 	components: [
+		{layoutKind: "FittableHeaderLayout", components:[
+			{kind: "Button", content: "Back"},
+			{content: "Fittable Sample", fit: true, style: "text-align:center"},
+			{kind: "Button", content: "Action 1"},
+			{kind: "Button", content: "Action 2"}
+		]},
 		{content: "Foo<br>Foo", allowHtml: true, classes: "fittable-sample-box fittable-sample-mtb"},
 		{content: "Foo<br>Foo", allowHtml: true, classes: "fittable-sample-box fittable-sample-mtb"},
 		{kind: "FittableColumns", fit: true, classes: "fittable-sample-box fittable-sample-mtb fittable-sample-o", components: [

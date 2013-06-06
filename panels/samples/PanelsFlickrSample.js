@@ -32,7 +32,7 @@ enyo.kind({
 				{name: "imageSpinner", kind: "Image", src: "assets/spinner-large.gif", classes: "enyo-fit panels-sample-flickr-center", showing: false}
 			]}
 		]},
-		{kind: "FlickrSearch", onResults: "searchResults"}
+		{name: "flickrSearch", kind: "enyo.sample.PanelsFlickrSearch", onResults: "searchResults"}
 	],
 	rendered: function() {
 		this.inherited(arguments);
@@ -49,7 +49,7 @@ enyo.kind({
 	search: function() {
 		this.searchText = this.$.searchInput.getValue();
 		this.page = 0;
-		this.results = []
+		this.results = [];
 		this.$.searchSpinner.show();
 		this.$.flickrSearch.search(this.searchText);
 	},
@@ -58,7 +58,7 @@ enyo.kind({
 		this.$.moreSpinner.hide();
 		this.results = this.results.concat(inResults);
 		this.$.list.setCount(this.results.length);
-		if (this.page == 0) {
+		if (this.page === 0) {
 			this.$.list.reset();
 		} else {
 			this.$.list.refresh();
@@ -71,6 +71,7 @@ enyo.kind({
 		this.$.thumbnail.setSrc(item.thumbnail);
 		this.$.title.setContent(item.title || "Untitled");
 		this.$.more.canGenerate = !this.results[i+1];
+		return true;
 	},
 	more: function() {
 		this.page++;
@@ -87,24 +88,32 @@ enyo.kind({
 		if (item.original == this.$.flickrImage.getSrc()) {
 			this.imageLoaded();
 		} else {
-	    	this.$.flickrImage.hide();			
-			this.$.flickrImage.setSrc(item.original);	
+			this.$.flickrImage.hide();
+			this.$.flickrImage.setSrc(item.original);
 		}
 	},
 	imageLoaded: function() {
-		this.$.flickrImage.show();
-		var b = this.$.flickrImage.getBounds();
-		this.$.flickrImage.addRemoveClass("tall", b.height > b.width);
+		var img = this.$.flickrImage;
+		img.removeClass("tall");
+		img.removeClass("wide");
+		img.show();
+		var b = img.getBounds();
+		var r = b.height / b.width;
+		if (r >= 1.25) {
+			img.addClass("tall");
+		} else if (r <= 0.8 ) {
+			img.addClass("wide");
+		}
 		this.$.imageSpinner.hide();
 	},
-	showList: function() {		
+	showList: function() {
 		this.setIndex(0);
 	}
 });
 
 // A simple component to do a Flickr search.
 enyo.kind({
-	name: "FlickrSearch",
+	name: "enyo.sample.PanelsFlickrSearch",
 	kind: "Component",
 	published: {
 		searchText: ""
@@ -126,14 +135,27 @@ enyo.kind({
 			page: i,
 			text: this.searchText
 		};
-		return new enyo.JsonpRequest({url: this.url, callbackName: "jsoncallback"})
-			.response(this, "processResponse")
-			.go(params)
-			;
+		var req;
+		if (window.location.protocol === "ms-appx:") {
+			params.nojsoncallback = 1;
+			// Use ajax for platforms with no jsonp support (Windows 8)
+			req = new enyo.Ajax({url: this.url, handleAs: "text"})
+				.response(this, "processAjaxResponse")
+				.go(params);
+		} else {
+			req = new enyo.JsonpRequest({url: this.url, callbackName: "jsoncallback"})
+				.response(this, "processResponse")
+				.go(params);
+		}
+		return req;
+	},
+	processAjaxResponse: function(inSender, inResponse) {
+		inResponse = JSON.parse(inResponse);
+		this.processResponse(inSender, inResponse);
 	},
 	processResponse: function(inSender, inResponse) {
 		var photos = inResponse.photos ? inResponse.photos.photo || [] : [];
-		for (var i=0, p; p=photos[i]; i++) {
+		for (var i=0, p; (p=photos[i]); i++) {
 			var urlprefix = "http://farm" + p.farm + ".static.flickr.com/" + p.server + "/" + p.id + "_" + p.secret;
 			p.thumbnail = urlprefix + "_s.jpg";
 			p.original = urlprefix + ".jpg";

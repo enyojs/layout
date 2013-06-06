@@ -41,9 +41,9 @@ enyo.kind({
 			}
 		}
 		if (fit) {
-				var w = pb.width - s;
-				fit.width = w >= 0 ? w : fit.width;
-			}
+			var w = pb.width - s;
+			fit.width = w >= 0 ? w : fit.width;
+		}
 		for (i=0, e=padding.left; (c=c$[i]); i++) {
 			c.setBounds({top: padding.top, bottom: padding.bottom, width: c.fit ? c.width : null});
 		}
@@ -71,7 +71,6 @@ enyo.kind({
 		var n = nw - cw;
 		var o = 0;
 		if (n > 0) {
-			var s1 = s;
 			for (i=s-1, aw=0; (c=c$[i]); i--) {
 				aw += c.width + c.marginWidth;
 				if (n - aw <= 0) {
@@ -94,7 +93,7 @@ enyo.kind({
 		}
 	},
 	arrangeWrap: function(inC, inName) {
-		for (var i=0, e=this.containerPadding.left, m, c; (c=inC[i]); i++) {
+		for (var i=0, e=this.containerPadding.left, c; (c=inC[i]); i++) {
 			this.arrangeControl(c, {left: e});
 			e += c.width + c.marginWidth;
 		}
@@ -113,5 +112,5 @@ enyo.kind({
 			c.applyStyle("width", null);
 		}
 		this.inherited(arguments);
-	}	
+	}
 });

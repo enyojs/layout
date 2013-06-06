@@ -1,8 +1,11 @@
 enyo.depends(
+	"contextual",
 	"fittable",
 	"list",
 	"slideable",
 	"panels",
 	"tree",
-	"imageview"
+	"imageview",
+	"flex",
+	"layout.design"
 );
