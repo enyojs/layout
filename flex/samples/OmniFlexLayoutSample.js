@@ -12,7 +12,7 @@ enyo.kind({
 		{name: 'uberBlock2', flexOrient: 'column', classes: '', flex: true, layoutKind : 'enyo.OmniFlexLayout', style: 'background-color: #FFF', spacing: 10, components: [
 			{name: 'block1', flexOrient: 'column', classes: 'column',  content: 'Block 1', flex: true},
 			{name: 'block2', flexOrient: 'column', classes: '',        content: 'Block 2'},
-			{name: 'block3', flexOrient: 'column', classes: '',        content: 'Block 3', flex: 'content', maxWidth: 200, maxHeight: 100, components: [
+			{name: 'block3', flexOrient: 'column', classes: '',        content: 'Block 3', flex: 'content', responseWidth: 200, maxWidth: 200, maxHeight: 100, components: [
 				{name: 'block3a', content: 'Block 3a', style: 'border: 1px solid white; display: inline;'}
 			]},
 			{name: 'block5', flexOrient: 'column', classes: '',        content: 'Block 5', flex: true},

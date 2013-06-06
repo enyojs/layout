@@ -6,10 +6,12 @@
  */
 
 enyo.kind({
-	name        : 'enyo.OmniFlexLayout',
-	kind        : 'Layout',
-	layoutClass : 'enyo-omniflex-layout',
-	defaultFlex : 10,                   // if container's child flex property set to true, default to this value
+	name         : 'enyo.OmniFlexLayout',
+	kind         : 'Layout',
+	layoutClass  : 'enyo-omniflex-layout',
+	defaultFlex  : 10,                          // if container's child flex property set to true, default to this value
+	strategyKind : 'enyo.ResponseStrategy',     // Default strategy, if none specified at control
+	strategy     : null,
 	
 	/******************** PRIVATE *********************/
 	
@@ -112,12 +114,12 @@ enyo.kind({
 			aMetrics         = [],
 			
 			nFlexHeight      = 0,
-			nRemainingHeight = oBounds.height,
+			nRemainingHeight = oBounds.content.height,
 			nFlexRows        = 0,
 			nRows            = 0,
 			
 			nFlexWidth       = 0,
-			nRemainingWidth  = oBounds.width,
+			nRemainingWidth  = oBounds.content.width,
 			nFlexCols        = 0,
 			nCols            = 0,
 			
@@ -126,7 +128,7 @@ enyo.kind({
 		function _beginColumnGroup() {
 			if (!bInCols) {
 				bInCols         = true;
-				nRemainingWidth = oBounds.width;
+				nRemainingWidth = oBounds.content.width;
 				nFlexCols       = 0;
 				nCols           = 0;
 				
@@ -175,7 +177,7 @@ enyo.kind({
 				else                   { nRemainingHeight -= oStyles.box.height; }
 				
 				nRows ++;
-				oMetrics.width    = oBounds.width;
+				oMetrics.width    = oBounds.content.width;
 				oMetrics.isColumn = false;
 			}
 			aMetrics.push(oMetrics);
@@ -197,11 +199,7 @@ enyo.kind({
 		return aMetrics;
 	},
 	
-	_initialize : function() {
-		if (this._bInitialized) { return; }
-		this._bInitialized = true;
-		
-		// This code runes only on (right before) first reflow
+	_applyContentLayouts: function() {
 		var n = 0,
 			oControl;
 			
@@ -213,22 +211,59 @@ enyo.kind({
 			}
 		}
 	},
+	
+	_updateStrategy: function() {
+		if (this.container.strategyKind && this.container.strategyKind != '') {
+			if (this.strategyKind != this.container.strategyKind) {
+				this.strategyKind = this.container.strategyKind;
+			}
+		}
+		
+		if (!this.strategy) { 
+			this.strategy = enyo.createFromKind(this.strategyKind, this);
+		} else if (this.strategyKind != this.strategy.kindName) { 
+			this.strategy.destroy();
+			this.strategy = enyo.createFromKind(this.strategyKind, this);
+		}
+		
+		this.strategy.layout = this;
+	},
+	
+	_initialize : function() {
+		if (this._bInitialized) { return; }
+		this._bInitialized = true;
+		
+		// This code runes only on (right before) first reflow
+		this._applyContentLayouts();
+	},
 
 	/******************** PUBLIC *********************/
 	
-	reflow: function() {
+	reflow: function(bDontTriggerStragety) {
+		// var nTime = (new Date()).getTime();
 		this.inherited(arguments);
 		this.spacing = this.container.spacing || 0;
 		this._initialize();
+		this._updateStrategy();
 		
 		var oStylesContainer = new enyo.Styles(this.container),
-			aMetrics         = this._collectMetrics({
-				width  : oStylesContainer.content.width,
-				height : oStylesContainer.content.height
-			});
+			aMetrics         = this._collectMetrics(oStylesContainer);
 			
 		this._renderMetrics(aMetrics, oStylesContainer);
+		
+		if (!bDontTriggerStragety) {
+			this.strategy.respond();
+		}
+		// enyo.OmniFlexLayout.time += ((new Date()).getTime() - nTime);
+		// console.log(enyo.OmniFlexLayout.time);
+		// setTimeout(function() {
+		// 	enyo.OmniFlexLayout.time = 0;
+		// }, 1000)
 	},
+	
+	statics: {
+		time: 0
+	}
 });
 
 enyo.kind({
