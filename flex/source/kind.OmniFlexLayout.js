@@ -1,7 +1,6 @@
 /**
  * Flex Layout
- * Allows for multiple flexible columns and rows.
- * Supports Webkit, Mozilla, Partially supports IE8+
+ * Supports Webkit, Mozilla, IE8+
  * @author Lex Podgorny <lex.podgorny@lge.com>
  */
 
@@ -17,7 +16,8 @@ enyo.kind({
 	/******************** PRIVATE *********************/
 	
 	_nReflow      : 0,                          // Reflow counter
-
+	
+	// Predicate function. Returns true if oControl has FlexLayout
 	_hasFlexLayout: function(oControl) {
 		return (
 			oControl.layout &&
@@ -25,6 +25,7 @@ enyo.kind({
 		);
 	},
 
+	// Returns flex value assigned to oControl
 	_getFlex: function(oControl) {
 		var nFit = this._getFit(oControl);
 		if (nFit) { return nFit; }
@@ -37,6 +38,7 @@ enyo.kind({
 		return oControl.flex;
 	},
 	
+	// Returns fit value assigned to oControl
 	_getFit: function(oControl) {
 		if (typeof oControl.fit == 'undefined' || oControl.fit === false) {
 			return 0;
@@ -47,6 +49,7 @@ enyo.kind({
 		return oControl.fit;
 	},
 	
+	// Returns spacing value assigned to container of this layout
 	_getSpacing: function() {
 		if (typeof this.container.flexSpacing == 'undefined' || this.container.flexSpacing === false) {
 			return this.spacing;
@@ -54,6 +57,7 @@ enyo.kind({
 		return parseInt(this.container.flexSpacing, 10);
 	},
 
+	// Predicate function. Returns true if oControl.flexOrient is "column"
 	_isColumn: function(oControl) {
 		return (
 			typeof oControl.flexOrient != 'undefined' && 
@@ -61,6 +65,8 @@ enyo.kind({
 		);
 	},
 	
+	// Renders values set to aMetrics arrray by collectMetrics() 
+	// Calculates and renders coordinates of children
 	_renderMetrics: function(aMetrics, oStylesContainer) {
 		var n  = 0,
 			nX = 0,
@@ -105,6 +111,9 @@ enyo.kind({
 		}
 	},
 	
+	// Makes a pass through children and gathers their sizes
+	// Calculates sizes of flexible controls in row/column groups
+	// Sets values to metrics array for subsequent rendering
 	_collectMetrics: function(aChildren, oBounds) {
 		var oThis            = this,
 			oControl,
@@ -200,6 +209,8 @@ enyo.kind({
 		return aMetrics;
 	},
 	
+	// Returns clone array of children that have been ordered accordingly
+	// to their flexOrder
 	_getOrderedChildren: function() {
 		var n = 0,
 			oControl,
@@ -219,6 +230,8 @@ enyo.kind({
 		return aChildren;
 	},
 	
+	// Applies enyo.ContentLayout to children that are designated
+	// with flex:"content"
 	_applyContentLayouts: function() {
 		var n = 0,
 			oControl;
@@ -248,17 +261,17 @@ enyo.kind({
 		this.strategy.layout = this;
 	},
 	
+	// Runs once and initializes all that needs to be initialized
+	// Calls function that applies enyo.ContentLayout to children
 	_initialize : function() {
 		if (this._nReflow > 0) { return; }
-		
 		this._nReflow = 1;
-		
-		// This code runes only on (right before) first reflow
 		this._applyContentLayouts();
 	},
 
 	/******************** PUBLIC *********************/
 	
+	// Main reflow function, re-renders sizes and positions of children
 	reflow: function(bDontTriggerStragety) {
 		// var nTime = (new Date()).getTime();
 		this.inherited(arguments);
