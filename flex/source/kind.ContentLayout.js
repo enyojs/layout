@@ -79,7 +79,7 @@ enyo.kind({
 
 		// If empty container, return min sizes
 		/************************************************************************/
-		if (this.container.children.length == 0 && this.container.content.length == 0) {
+		if (this.container.children.length === 0 && this.container.content.length === 0) {
 			this._setSize(this.minWidth, this.minHeight, oStyles);
 			return;
 		}

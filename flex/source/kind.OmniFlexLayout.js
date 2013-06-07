@@ -272,14 +272,14 @@ enyo.kind({
 			nChildren = aChildren.length;
 			
 		for (;n<nChildren; n++) {
-				oControl = aChildren[n];
-				if (typeof oControl.flexOrder != 'undefined' && oControl._flexMoved != this._nReflow) {
-					aChildren.splice(n, 1);
-					aChildren.splice(oControl.flexOrder, 0, oControl);
-					oControl._flexMoved = this._nReflow;
-					n --;
-				}
+			oControl = aChildren[n];
+			if (typeof oControl.flexOrder != 'undefined' && oControl._flexMoved != this._nReflow) {
+				aChildren.splice(n, 1);
+				aChildren.splice(oControl.flexOrder, 0, oControl);
+				oControl._flexMoved = this._nReflow;
+				n --;
 			}
+		}
 		
 		return aChildren;
 	},
