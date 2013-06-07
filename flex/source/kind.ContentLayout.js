@@ -40,7 +40,7 @@ enyo.kind({
 	},
 	
 	_isFlexChild: function() {
-		return this.container.parent.layoutKind == 'enyo.OmniFlexLayout';
+		return this.container.parent.layoutKind == 'enyo.FlexLayout';
 	},
 	
 	_isFlexColumn: function() {

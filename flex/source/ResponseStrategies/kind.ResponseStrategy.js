@@ -1,10 +1,10 @@
 /**
- * enyo.OmniFlexLayout.ResponseStrategy kind definition
+ * enyo.FlexLayout.ResponseStrategy kind definition
  * @author: Lex Podgorny
  */
 
 enyo.kind({
-	name: 'enyo.OmniFlexLayout.ResponseStrategy',
+	name: 'enyo.FlexLayout.ResponseStrategy',
 	
 	setProperty: function(oControl, sProperty, mValue) {
 		if (sProperty == 'flexOrient') {

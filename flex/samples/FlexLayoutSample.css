@@ -1,4 +1,4 @@
-.omniflex-layout-sample {
+.flex-layout-sample {
 	font-size: 11px;
 	border: 20px solid red !important;
 	padding: 10px !important;
@@ -7,8 +7,8 @@
 	box-shadow: 2px 2px 5px #999;
 }
 
-	.omniflex-layout-sample.enyo-omniflex-layout > *,
-	.omniflex-layout-sample .enyo-omniflex-layout > * {
+	.flex-layout-sample.enyo-flex-layout > *,
+	.flex-layout-sample .enyo-flex-layout > * {
 		background-color : #CCC;
 		text-align       : justify;
 		border           : 1px solid #999;
@@ -19,20 +19,20 @@
 /*		box-shadow    : 2px 2px 5px #999;*/
 	}
 
-.omniflex-layout-sample .column {
+.flex-layout-sample .column {
 	width: 200px;
 }
 
-.omniflex-layout-sample .row {
+.flex-layout-sample .row {
 	height: 50px;
 }
 
-.omniflex-layout-sample .repeater-sample-item {
+.flex-layout-sample .repeater-sample-item {
 	font-size: 14px;
 	margin: 10px;
 }
 
-.omniflex-layout-sample .onyx-button {
+.flex-layout-sample .onyx-button {
 	width: 190px;
 	margin-bottom: 10px;
 	border-radius: 7px;

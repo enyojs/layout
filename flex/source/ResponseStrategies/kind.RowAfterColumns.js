@@ -3,8 +3,8 @@
  * @author: Lex Podgorny
  */
 
-enyo.OmniFlexLayout.ResponseStrategy.RowAfterColumns = enyo.singleton({
-	kind: 'enyo.OmniFlexLayout.ResponseStrategy',
+enyo.FlexLayout.ResponseStrategy.RowAfterColumns = enyo.singleton({
+	kind: 'enyo.FlexLayout.ResponseStrategy',
 	_getPositionAfterColumns: function(oControl) {
 		var n         = 0,
 			bFound    = false,

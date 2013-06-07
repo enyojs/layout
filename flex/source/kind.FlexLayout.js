@@ -5,9 +5,9 @@
  */
 
 enyo.kind({
-	name         : 'enyo.OmniFlexLayout',
+	name         : 'enyo.FlexLayout',
 	kind         : 'Layout',
-	layoutClass  : 'enyo-omniflex-layout',
+	layoutClass  : 'enyo-flex-layout',
 	defaultFlex  : 10,                          // if container's child flex property set to true, default to this value
 	spacing      : 0,
 	
@@ -93,8 +93,8 @@ enyo.kind({
 	// Returns response strategy kind object as specified in oControl.flexResponse, otherwise null
 	_getResponseStrategy: function(oControl) {
 		if (typeof oControl.flexResponse != 'undefined') {
-			if (typeof enyo.OmniFlexLayout.ResponseStrategy[oControl.flexResponse] != 'undefined') {
-				return enyo.OmniFlexLayout.ResponseStrategy[oControl.flexResponse];
+			if (typeof enyo.FlexLayout.ResponseStrategy[oControl.flexResponse] != 'undefined') {
+				return enyo.FlexLayout.ResponseStrategy[oControl.flexResponse];
 			}
 		}
 		return null;
@@ -327,7 +327,7 @@ enyo.kind({
 });
 
 enyo.kind({
-	name        : 'enyo.OmniFlexBox',
+	name        : 'enyo.FlexBox',
 	kind        : enyo.Control,
-	layoutKind  : 'OmniFlexLayout'
+	layoutKind  : 'FlexLayout'
 });

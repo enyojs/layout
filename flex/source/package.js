@@ -1,8 +1,8 @@
 enyo.depends(
 	'enyo.Styles.js',
 	'kind.ContentLayout.js',
-	'kind.OmniFlexLayout.js',
-	'kind.OmniFlexLayout.css',
+	'kind.FlexLayout.js',
+	'kind.FlexLayout.css',
 	'mixin.LayoutInvalidator.js',
 	
 	'ResponseStrategies'
