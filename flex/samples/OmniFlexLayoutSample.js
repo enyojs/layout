@@ -20,8 +20,8 @@ enyo.kind({
 			{name: 'block6', flexOrient: 'row',    classes: 'column',  content: 'Block 6', flex: 'content', maxWidth: 200, maxHeight: 100},
 			{name: 'block7', flexOrient: 'column', classes: 'column',  content: 'Block 7'},
 			{name: 'block8', flexOrient: 'column', classes: '',        content: 'Block 8', flex: true},
-			{name: 'block9', flexOrient: 'row',    classes: '',        content: 'Block 9', flex: true},
-		]},
+			{name: 'block9', flexOrient: 'row',    classes: '',        content: 'Block 9', flex: true}
+		]}
 	],
 	statics: {
 		loremIpsum: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, ' +
@@ -85,5 +85,5 @@ enyo.kind({
 
 	addContent2: function() {
 		this.addContent(this.$.block6, 51);
-	},
+	}
 });

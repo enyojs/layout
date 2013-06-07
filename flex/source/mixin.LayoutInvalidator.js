@@ -13,10 +13,8 @@ enyo.createMixin({
 	
 	onInvalidateLayout: function() {
 		if (!this.layoutKind) { return false; }
-		switch (this.layout.kindName) {
-			case 'enyo.ContentLayout':
-				this.layout.reflow();
-				break;
+		if (this.layout.kindName == 'enyo.ContentLayout') {
+			this.layout.reflow();
 		}
 	},
 	
@@ -28,9 +26,6 @@ enyo.createMixin({
 	invalidateLayout: function() {
 		if (!this.hasNode()) { return; }
 		this.bubble('onInvalidateLayout', {}, this);
-		// if (typeof this.reflow == 'function') {
-		// 			this.reflow();
-		// 		}
 	},
 
 	contentChanged: function() {

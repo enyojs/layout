@@ -95,8 +95,6 @@ enyo.kind({
 		if (typeof oControl.flexResponse != 'undefined') {
 			if (typeof enyo.OmniFlexLayout.ResponseStrategy[oControl.flexResponse] != 'undefined') {
 				return enyo.OmniFlexLayout.ResponseStrategy[oControl.flexResponse];
-			} else {
-				console.log('enyo.OmniFlexLayout.ResponseStrategy[',oControl.flexResponse,'] is undefined');
 			}
 		}
 		return null;
@@ -110,10 +108,11 @@ enyo.kind({
 			nChildren     = this.container.children.length,
 			n             = 0;
 			
-		if (nResponseFlag != 0) {
+		if (nResponseFlag !== 0) {
 			for (;n<nChildren; n++) {
 				oControl  = this.container.children[n];
-				if (oStrategy = this._getResponseStrategy(oControl)) {
+				oStrategy = this._getResponseStrategy(oControl);
+				if (oStrategy) {
 					oStrategy.respond(oControl, nResponseFlag > 0);
 				}
 			}
@@ -310,8 +309,7 @@ enyo.kind({
 	/******************** PUBLIC *********************/
 	
 	// Main reflow function, re-renders sizes and positions of children
-	reflow: function(bDontTriggerStragety) {
-		// var nTime = (new Date()).getTime();
+	reflow: function() {
 		this.inherited(arguments);
 		this.spacing = this._getSpacing();
 		this._initialize();
@@ -324,22 +322,7 @@ enyo.kind({
 			aMetrics         = this._collectMetrics(aChildren, oStylesContainer);
 			
 		this._renderMetrics(aMetrics, oStylesContainer);
-		
-		if (!bDontTriggerStragety) {
-			// this.strategy.respond();
-		}
-		
 		this._nReflow ++;
-		
-		// enyo.OmniFlexLayout.time += ((new Date()).getTime() - nTime);
-		// console.log(enyo.OmniFlexLayout.time);
-		// setTimeout(function() {
-		// 	enyo.OmniFlexLayout.time = 0;
-		// }, 1000)
-	},
-	
-	statics: {
-		time: 0
 	}
 });
 

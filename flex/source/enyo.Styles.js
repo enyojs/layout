@@ -16,7 +16,7 @@ enyo.Styles = function(oControl) {
 			});
 		}
 		return oControl.getComputedStyleValue(sStyleName);
-	};
+	}
 
 	function _initialize() {
 		var oBounds = oControl.getBounds(),
@@ -86,37 +86,38 @@ enyo.Styles = function(oControl) {
 			left   : nLeft,
 			top    : nTop
 		};
-	};
+	}
 	
 	this.commit = function() {
 		enyo.mixin(oControl.domStyles, _oStyles);
 		oControl.domStylesChanged();
-	}
+	};
 	
 	this.set = function(sProperty, mValue) {
 		_oStyles[sProperty] = mValue;
-	}
+	};
 	
-	this.setBoxLeft       = function(nLeft, oContainerStyles) { _oStyles.left   = nLeft + oContainerStyles.l.padding  + 'px'; }
+	this.setBoxLeft       = function(nLeft, oContainerStyles) { _oStyles.left   = nLeft + oContainerStyles.l.padding  + 'px'; };
 	this.setBoxTop        = function(nTop,  oContainerStyles) { 
 		_oStyles.top   = nTop + oContainerStyles.t.padding   + 'px';
-	}
+	};
 	
 	this.setBoxWidth      = function(nWidth)  { 
 		_oStyles.width  = nWidth  - this.h.offset + 'px'; 
-	}
-	this.setBoxHeight     = function(nHeight) { _oStyles.height = nHeight - this.v.offset + 'px'; }
+	};
+	
+	this.setBoxHeight     = function(nHeight) { _oStyles.height = nHeight - this.v.offset + 'px'; };
 	
 	
-	this.setContentWidth  = function(nWidth)  { _oStyles.width  = nWidth  + 'px'; }
-	this.setContentHeight = function(nHeight) { _oStyles.height = nHeight + 'px'; }
+	this.setContentWidth  = function(nWidth)  { _oStyles.width  = nWidth  + 'px'; };
+	this.setContentHeight = function(nHeight) { _oStyles.height = nHeight + 'px'; };
 	
-	this.setPosition      = function(sPosition) { _oStyles.position = sPosition; }
+	this.setPosition      = function(sPosition) { _oStyles.position = sPosition; };
 	
 	_initialize();
-}
+};
 
 enyo.Styles.setStyles = function(oControl, oStyles) {
 	enyo.mixin(oControl.domStyles, oStyles);
 	oControl.domStylesChanged();
-}
+};
