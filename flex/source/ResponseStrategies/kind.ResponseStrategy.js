@@ -16,6 +16,10 @@ enyo.kind({
 			: oControl[sProperty]
 		);
 		oControl[sProperty] = mValue;
+		
+		if (oControl.layout) {
+			oControl.layout.reflow();
+		}
 	},
 	
 	reverseProperty: function(oControl, sProperty) {
@@ -31,6 +35,10 @@ enyo.kind({
 				delete oControl[sProperty];
 			}
 			delete oControl[sTempProperty];
+		}
+		
+		if (oControl.layout) {
+			oControl.layout.reflow();
 		}
 	},
 	

@@ -12,7 +12,7 @@ enyo.kind({
 		{name: 'uberBlock2', flexOrient: 'column', classes: '', flex: true, flexSpacing: 10, flexResponseWidth: 1000, layoutKind : 'enyo.OmniFlexLayout', style: 'background-color: #FFF', components: [
 			{name: 'block1', flexOrient: 'column', classes: 'column',  content: 'Block 1', flex: true},
 			{name: 'block2', flexOrient: 'column', classes: '',        content: 'Block 2', flexResponse: 'RowAfterColumns'},
-			{name: 'block3', flexOrient: 'column', classes: '',        content: 'Block 3', flexResponse: 'RowAfterColumns', flex: true, maxWidth: 200, maxHeight: 100, components: [
+			{name: 'block3', flexOrient: 'column', classes: '',        content: 'Block 3', flexResponse: 'RowAfterColumns', flex: 'content', maxWidth: 200, maxHeight: 100, components: [
 				{name: 'block3a', content: 'Block 3a', style: 'border: 1px solid white; display: inline;'}
 			]},
 			{name: 'block5', flexOrient: 'column', classes: '',        content: 'Block 5', flex: true},
@@ -80,7 +80,7 @@ enyo.kind({
 	},
 
 	addContent1: function() {
-		this.addContent(this.$.block3a, 11);
+		this.addContent(this.$.block3a, 31);
 	},
 
 	addContent2: function() {
