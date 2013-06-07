@@ -9,13 +9,12 @@ enyo.kind({
 	kind         : 'Layout',
 	layoutClass  : 'enyo-omniflex-layout',
 	defaultFlex  : 10,                          // if container's child flex property set to true, default to this value
-	strategyKind : 'enyo.ResponseStrategy',     // Default strategy, if none specified at control
-	strategy     : null,
 	spacing      : 0,
 	
 	/******************** PRIVATE *********************/
 	
-	_nReflow      : 0,                          // Reflow counter
+	_nReflow            : 0,                          // Reflow counter
+	_nResponseCondition : 0,
 	
 	// Predicate function. Returns true if oControl has FlexLayout
 	_hasFlexLayout: function(oControl) {
@@ -63,6 +62,62 @@ enyo.kind({
 			typeof oControl.flexOrient != 'undefined' && 
 			oControl.flexOrient        == 'column'
 		);
+	},
+	
+	// Returns 0 if container width has NOT crossed flexResponseWidth
+	// Otherwise returns 1 if flexResponseWidth has been crossed while increasing width, 
+	// and -1 while decreasing
+	_getResponseFlag: function(oBounds) {
+		var nResponseWidth        = this.container.flexResponseWidth,
+			nNewResponseCondition = 0;
+			
+		if (typeof nResponseWidth != 'undefined' && nResponseWidth > 0) {
+			if (oBounds.content.width < nResponseWidth) {
+				nNewResponseCondition = -1;
+			} else {
+				nNewResponseCondition = 1;
+			}
+		}
+		
+		if (this._nResponseCondition > nNewResponseCondition) {
+			this._nResponseCondition = nNewResponseCondition;
+			return -1;
+		} else if (this._nResponseCondition < nNewResponseCondition) {
+			this._nResponseCondition = nNewResponseCondition;
+			return 1;
+		}
+		
+		return 0;
+	},
+	
+	// Returns response strategy kind object as specified in oControl.flexResponse, otherwise null
+	_getResponseStrategy: function(oControl) {
+		if (typeof oControl.flexResponse != 'undefined') {
+			if (typeof enyo.OmniFlexLayout.ResponseStrategy[oControl.flexResponse] != 'undefined') {
+				return enyo.OmniFlexLayout.ResponseStrategy[oControl.flexResponse];
+			} else {
+				console.log('enyo.OmniFlexLayout.ResponseStrategy[',oControl.flexResponse,'] is undefined');
+			}
+		}
+		return null;
+	},
+	
+	// Walks children and triggers their response strategies if specified
+	_setResponseValues: function(oBounds) {
+		var oControl,
+			oStrategy,
+			nResponseFlag = this._getResponseFlag(oBounds),
+			nChildren     = this.container.children.length,
+			n             = 0;
+			
+		if (nResponseFlag != 0) {
+			for (;n<nChildren; n++) {
+				oControl  = this.container.children[n];
+				if (oStrategy = this._getResponseStrategy(oControl)) {
+					oStrategy.respond(oControl, nResponseFlag > 0);
+				}
+			}
+		}
 	},
 	
 	// Renders values set to aMetrics arrray by collectMetrics() 
@@ -244,23 +299,6 @@ enyo.kind({
 		}
 	},
 	
-	_updateStrategy: function() {
-		if (this.container.strategyKind && this.container.strategyKind != '') {
-			if (this.strategyKind != this.container.strategyKind) {
-				this.strategyKind = this.container.strategyKind;
-			}
-		}
-		
-		if (!this.strategy) { 
-			this.strategy = enyo.createFromKind(this.strategyKind, this);
-		} else if (this.strategyKind != this.strategy.kindName) { 
-			this.strategy.destroy();
-			this.strategy = enyo.createFromKind(this.strategyKind, this);
-		}
-		
-		this.strategy.layout = this;
-	},
-	
 	// Runs once and initializes all that needs to be initialized
 	// Calls function that applies enyo.ContentLayout to children
 	_initialize : function() {
@@ -277,10 +315,12 @@ enyo.kind({
 		this.inherited(arguments);
 		this.spacing = this._getSpacing();
 		this._initialize();
-		this._updateStrategy();
 		
-		var oStylesContainer = new enyo.Styles(this.container),
-			aChildren        = this._getOrderedChildren(),
+		var oStylesContainer = new enyo.Styles(this.container);
+		
+		this._setResponseValues(oStylesContainer);
+		
+		var aChildren        = this._getOrderedChildren(),
 			aMetrics         = this._collectMetrics(aChildren, oStylesContainer);
 			
 		this._renderMetrics(aMetrics, oStylesContainer);
