@@ -218,14 +218,19 @@ enyo.kind(
         },
         //* @protected
         _setComponents: function() {
-            var c = this.listTools[0].components, comp;
+            // TODO: The entire implementation of GridList needs an overhaul, but for now this ugly cloning is
+            // needed to prevent the generator kind modification below from modifying enyo.Lists's generator
+            this.listTools = enyo.clone(this.listTools);
+            this.listTools[0] = enyo.clone(this.listTools[0]);
+            this.listTools[0].components = enyo.clone(this.listTools[0].components);
+            var c = this.listTools[0].components;
             // Create a dummy component to dynamically compute the dimensions of items at run-time (once for each item during sizeupItem) based on the actual content inside the item (only for variable sized items where sizeupItem is called).
             this.createComponent(new enyo.Component({name: "_dummy_", allowHtml: true, classes: "enyo-gridlist-dummy", showing: false}, {owner: this}));
             // Override List's listTools array to use GridFlyweightRepeater instead of FlyweightRepeater
             for (var i=0; i<c.length; i++) {
-                comp = c[i];
-                if (comp.name == 'generator') {
-                    comp.kind = "enyo.GridFlyWeightRepeater";
+                if (c[i].name == 'generator') {
+                    c[i] = enyo.clone(c[i]);
+                    c[i].kind = "enyo.GridFlyWeightRepeater";
                     return;
                 }
             }
