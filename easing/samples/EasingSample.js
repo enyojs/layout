@@ -47,11 +47,11 @@ enyo.kind({
 	buildMenu: function() {
 		var i = 0;
 		for (var k in enyo.easing){
-		    this.$.menuScroller.createComponent({content: k});
-		    if (i === 0) {
-		    	this.$.menuButton.setContent(k);
-		    }
-		    i++;
+			this.$.menuScroller.createComponent({content: k});
+			if (i === 0) {
+				this.$.menuButton.setContent(k);
+			}
+			i++;
 		}
 	}
 });
