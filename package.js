@@ -6,6 +6,5 @@ enyo.depends(
 	"panels",
 	"tree",
 	"imageview",
-	"flex",
 	"layout.design"
 );
