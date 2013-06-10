@@ -215,7 +215,7 @@ enyo.kind({
 			nCols            = 0,
 			
 			bInSecondary     = false, // bBiasCols ? bInRows : bInCols
-			bColumn          = false;
+			bColumn          = false,
 			bBiasCols        = (this.flexBias == 'columns');
 			
 		function _beginSecondaryGroup() {
@@ -339,104 +339,6 @@ enyo.kind({
 		
 		return aMetrics;
 	},
-	
-	// Makes a pass through children and gathers their sizes
-	// Calculates sizes of flexible controls in row/column groups
-	// Sets values to metrics array for subsequent rendering
-	// _collectMetrics: function(aChildren, oBounds) {
-	// 	var oThis            = this,
-	// 		oControl,
-	// 		oStyles,
-	// 		nChildren        = aChildren.length,
-	// 		n                = 0,
-	// 		oMetrics         = {},
-	// 		aMetrics         = [],
-	// 		
-	// 		nFlexHeight      = 0,
-	// 		nRemainingHeight = oBounds.content.height,
-	// 		nFlexRows        = 0,
-	// 		nRows            = 0,
-	// 		
-	// 		nFlexWidth       = 0,
-	// 		nRemainingWidth  = oBounds.content.width,
-	// 		nFlexCols        = 0,
-	// 		nCols            = 0,
-	// 		
-	// 		bInCols          = false;
-	// 		
-	// 	function _beginColumnGroup() {
-	// 		if (!bInCols) {
-	// 			bInCols         = true;
-	// 			nRemainingWidth = oBounds.content.width;
-	// 			nFlexCols       = 0;
-	// 			nCols           = 0;
-	// 			
-	// 			nRows     ++;
-	// 			nFlexRows ++;
-	// 		}
-	// 	}
-	// 	
-	// 	function _endColumnGroup() {
-	// 		if (bInCols) {
-	// 			bInCols    = false;
-	// 			nFlexWidth = Math.ceil((nRemainingWidth - oThis.flexSpacing * (nCols - 1))/(nFlexCols ? nFlexCols : 1));
-	// 			var n1 = n - 1;
-	// 			while (aMetrics[n1] && aMetrics[n1].isColumn) {
-	// 				if (aMetrics[n1].flex > 0) {
-	// 					aMetrics[n1].width = nFlexWidth;
-	// 				}
-	// 				n1 --;
-	// 			}
-	// 		}
-	// 	}
-	// 	
-	// 	for (;n<nChildren; n++) {
-	// 		oControl = aChildren[n];
-	// 		oStyles  = new enyo.Styles(oControl);
-	// 		oMetrics  = {
-	// 			control : oControl,
-	// 			flex    : this._getFlex(oControl),
-	// 			styles  : oStyles,
-	// 			width   : null,
-	// 			height  : null
-	// 		};
-	// 		
-	// 		if (this._isColumn(oControl)) {
-	// 			_beginColumnGroup();
-	// 
-	// 			if (oMetrics.flex > 0) { nFlexCols ++; } 
-	// 			else                   { nRemainingWidth -= oStyles.box.width; }
-	// 
-	// 			nCols ++;
-	// 			oMetrics.isColumn = true;
-	// 		} else {
-	// 			_endColumnGroup();
-	// 			
-	// 			if (oMetrics.flex > 0) { nFlexRows ++; } 
-	// 			else                   { nRemainingHeight -= oStyles.box.height; }
-	// 			
-	// 			nRows ++;
-	// 			oMetrics.width    = oBounds.content.width;
-	// 			oMetrics.isColumn = false;
-	// 		}
-	// 		aMetrics.push(oMetrics);
-	// 	}
-	// 	_endColumnGroup();
-	// 	
-	// 	nFlexHeight = Math.ceil((nRemainingHeight - this.flexSpacing * (nRows - 1))/nFlexRows);
-	// 
-	// 	for (n=0; n<aMetrics.length; n++) {
-	// 		if (aMetrics[n].isColumn) {
-	// 			aMetrics[n].height = nFlexHeight;
-	// 		} else {
-	// 			if (aMetrics[n].flex > 0) {
-	// 				aMetrics[n].height = nFlexHeight;
-	// 			}
-	// 		}
-	// 	}
-	// 	
-	// 	return aMetrics;
-	// },
 	
 	// Returns clone array of children that have been ordered accordingly
 	// to their flexOrder
