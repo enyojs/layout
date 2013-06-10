@@ -140,6 +140,8 @@ enyo.kind({
 	
 	reflow : function() {
 		this.inherited(arguments);
+		enyo.Benchmark.begin(this.container.name);
 		this._updateSize();
+		enyo.Benchmark.end(this.container.name, true);
 	}
 });

@@ -5,23 +5,32 @@ enyo.kind({
 	layoutKind  : 'enyo.FlexLayout',
 	flexSpacing : 10,
 	components: [
+		{kind: 'Signals', onBenchmark: 'onBenchmark'},
 		{name: 'uberBlock1', flexOrient: 'column', classes: 'column',  content: 'Block 1', components: [
 			{name: 'button1', kind: 'onyx.Button', content: 'Add column content', ontap: 'addContent1'},
-			{name: 'button2', kind: 'onyx.Button', content: 'Add row content',    ontap: 'addContent2'}
+			{name: 'button2', kind: 'onyx.Button', content: 'Add row content',    ontap: 'addContent2'},
+			{name: 'stats'},
 		]},
-		{name: 'uberBlock2', flexOrient: 'column', classes: '', flex: true, flexSpacing: 10, flexResponseWidth: 1000, layoutKind : 'enyo.FlexLayout', style: 'background-color: #FFF', components: [
-			{name: 'block1', flexOrient: 'column', classes: 'column',  content: 'Block 1', flex: true},
-			{name: 'block2', flexOrient: 'column', classes: '',        content: 'Block 2', flexResponse: 'RowAfterColumns'},
-			{name: 'block3', flexOrient: 'column', classes: '',        content: 'Block 3', flexResponse: 'RowAfterColumns', flex: 'content', maxWidth: 200, maxHeight: 100, components: [
-				{name: 'block3a', content: 'Block 3a', style: 'border: 1px solid white; display: inline;'}
-			]},
-			{name: 'block5', flexOrient: 'column', classes: '',        content: 'Block 5', flex: true},
+		{name: 'uberBlock2', layoutKind : 'enyo.FlexLayout', style: 'background-color: #FFF',
+			flexOrient        : 'column', 
+			flex              : true, 
+			flexSpacing       : 10, 
+			flexBias          : 'rows', 
+			flexResponseWidth : 1000, 
+			components: [
+				{name: 'block1', flexOrient: 'column', classes: 'column',  content: 'Block 1', flex: true},
+				{name: 'block2', flexOrient: 'column', classes: '',        content: 'Block 2', flexResponse: 'RowAfterColumns'},
+				{name: 'block3', flexOrient: 'column', classes: '',        content: 'Block 3', flexResponse: 'RowAfterColumns', flex: 'content', maxWidth: 200, maxHeight: 100, components: [
+					{name: 'block3a', content: 'Block 3a', style: 'border: 1px solid white; display: inline;'}
+				]},
+				{name: 'block5', flexOrient: 'column', classes: '',        content: 'Block 5', flex: true},
 		
-			{name: 'block6', flexOrient: 'row',    classes: 'column',  content: 'Block 6', flex: 'content', maxWidth: 200, maxHeight: 100},
-			{name: 'block7', flexOrient: 'column', classes: 'column',  content: 'Block 7'},
-			{name: 'block8', flexOrient: 'column', classes: '',        content: 'Block 8', flex: true},
-			{name: 'block9', flexOrient: 'row',    classes: '',        content: 'Block 9', flex: true}
-		]}
+				{name: 'block6', flexOrient: 'row',    classes: 'column',  content: 'Block 6', flex: 'content', maxWidth: 200, maxHeight: 100},
+				{name: 'block7', flexOrient: 'row', classes: 'column',  content: 'Block 7', flex: true},
+				{name: 'block8', flexOrient: 'column', classes: '',        content: 'Block 8', flex: true},
+				{name: 'block9', flexOrient: 'row',    classes: '',        content: 'Block 9', flex: true}
+			]
+		}
 	],
 	statics: {
 		loremIpsum: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, ' +
@@ -85,5 +94,13 @@ enyo.kind({
 
 	addContent2: function() {
 		this.addContent(this.$.block6, 51);
+	},
+	
+	onBenchmark: function(oSender, oEvent) {
+		var s = '';
+		for (sName in oEvent.data) {
+			s += sName + '                 ' + Math.ceil(oEvent.data[sName].average) + '                ';
+		}
+		this.$.stats.setContent(s);
 	}
 });
