@@ -11,29 +11,52 @@ enyo.kind({
 			{name: 'stats'}
 		]},
 		{name: 'uberBlock2', layoutKind : 'enyo.FlexLayout', style: 'background-color: #FFF',
-			flexOrient        : 'column', 
-			flex              : true, 
-			flexSpacing       : 10, 
-			flexBias          : 'rows', 
-			flexResponseWidth : 1000, 
+			flexOrient        : 'column',
+			flex              : true,
+			flexSpacing       : 10,
+			flexBias          : 'rows',
+			flexResponseWidth : 1000,
 			components: [
-				{name: 'block1', flexOrient: 'column', classes: 'column',  content: 'Block 1', flex: true},
-				{name: 'block2', flexOrient: 'column', classes: '',        content: 'Block 2', flexResponse: 'RowAfterColumns'},
-				{name: 'block3', flexOrient: 'column', classes: '',        content: 'Block 3', 
-					flexResponse: 'RowAfterColumns', 
-					flex: 'content', 
-					maxWidth: 200, 
-					maxHeight: 100, 
-					components: [
+				{name: 'block1', classes: 'column',	content: 'Block 1',
+					flexOrient   : 'column',
+					flex         : true
+				},
+				{name: 'block2', classes: '', content: 'Block 2',
+					flexOrient   : 'column',
+					flexResponse : 'RowAfterColumns'
+				},
+				{name: 'block3', content: 'Block 3', classes: '',
+					flexOrient   : 'column',
+					flexResponse : 'RowAfterColumns',
+					flex         : 'content',
+					maxWidth     : 200,
+					maxHeight    : 100,
+					components   : [
 						{name: 'block3a', content: 'Block 3a', style: 'border: 1px solid white; display: inline;'}
 					]
 				},
-				{name: 'block5', flexOrient: 'column', classes: '',        content: 'Block 5', flex: true},
-		
-				{name: 'block6', flexOrient: 'row',    classes: 'column',  content: 'Block 6', flex: 'content', maxWidth: 200, maxHeight: 100},
-				{name: 'block7', flexOrient: 'row',    classes: 'column',  content: 'Block 7', flex: true},
-				{name: 'block8', flexOrient: 'column', classes: '',        content: 'Block 8', flex: true},
-				{name: 'block9', flexOrient: 'row',    classes: '',        content: 'Block 9', flex: true}
+				{name: 'block5', classes: '', content: 'Block 5',
+					flexOrient   : 'column',
+					flex         : true
+				},
+				{name: 'block6', classes: 'column', content: 'Block 6',
+					flex         : 'content',
+					flexOrient   : 'row',
+					maxWidth     : 200,
+					maxHeight    : 100
+				},
+				{name: 'block7', classes: 'column', content: 'Block 7',
+					flexOrient   : 'row',
+					flex         : true
+				},
+				{name: 'block8', classes: '', content: 'Block 8',
+					flexOrient   : 'column',
+					flex         : true
+				},
+				{name: 'block9', classes: '', content: 'Block 9',
+					flexOrient   : 'row',
+					flex         : true
+				}
 			]
 		}
 	],
@@ -48,31 +71,31 @@ enyo.kind({
 	},
 	
 	people: [
-		{name: 'Andrew',      sex:'male'},
-		{name: 'Betty',       sex:'female'},
-		{name: 'Christopher', sex:'male'},
-		{name: 'Donna',       sex:'female'},
-		{name: 'Ephraim',     sex:'male'},
-		{name: 'Frankie',     sex:'male'},
-		{name: 'Gerald',      sex:'male'},
-		{name: 'Heather',     sex:'female'},
-		{name: 'Ingred',      sex:'female'},
-		{name: 'Jack',        sex:'male'},
-		{name: 'Kevin',       sex:'male'},
-		{name: 'Lucy',        sex:'female'},
-		{name: 'Matthew',     sex:'male'},
-		{name: 'Noreen',      sex:'female'},
-		{name: 'Oscar',       sex:'male'},
-		{name: 'Pedro',       sex:'male'},
-		{name: 'Quentin',     sex:'male'},
-		{name: 'Ralph',       sex:'male'},
-		{name: 'Steven',      sex:'male'},
-		{name: 'Tracy',       sex:'female'},
-		{name: 'Uma',         sex:'female'},
-		{name: 'Victor',      sex:'male'},
-		{name: 'Wendy',       sex:'female'},
-		{name: 'Xin',         sex:'male'},
-		{name: 'Yulia',       sex:'female'}
+		{name: 'Andrew',      sex: 'male'},
+		{name: 'Betty',       sex: 'female'},
+		{name: 'Christopher', sex: 'male'},
+		{name: 'Donna',       sex: 'female'},
+		{name: 'Ephraim',     sex: 'male'},
+		{name: 'Frankie',     sex: 'male'},
+		{name: 'Gerald',      sex: 'male'},
+		{name: 'Heather',     sex: 'female'},
+		{name: 'Ingred',      sex: 'female'},
+		{name: 'Jack',        sex: 'male'},
+		{name: 'Kevin',       sex: 'male'},
+		{name: 'Lucy',        sex: 'female'},
+		{name: 'Matthew',     sex: 'male'},
+		{name: 'Noreen',      sex: 'female'},
+		{name: 'Oscar',       sex: 'male'},
+		{name: 'Pedro',       sex: 'male'},
+		{name: 'Quentin',     sex: 'male'},
+		{name: 'Ralph',       sex: 'male'},
+		{name: 'Steven',      sex: 'male'},
+		{name: 'Tracy',       sex: 'female'},
+		{name: 'Uma',         sex: 'female'},
+		{name: 'Victor',      sex: 'male'},
+		{name: 'Wendy',       sex: 'female'},
+		{name: 'Xin',         sex: 'male'},
+		{name: 'Yulia',       sex: 'female'}
 	],
 	
 	create: function() {
