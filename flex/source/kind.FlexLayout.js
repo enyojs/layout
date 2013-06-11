@@ -9,11 +9,11 @@ enyo.kind({
 	kind           : 'Layout',
 	layoutClass    : 'enyo-flex-layout',
 	flexSpacing    : 0,
-	flexBias       : 'rows',
+	flexBias       : 'row',
 	
 	defaultSpacing : 0,
 	defaultFlex    : 10,
-	defaultBias    : 'rows',
+	defaultBias    : 'row',
 	
 	/******************** PRIVATE *********************/
 	
@@ -69,10 +69,10 @@ enyo.kind({
 
 	// Predicate function. Returns true if oControl.flexOrient is "column"
 	_isColumn: function(oControl) {
-		return (
-			typeof oControl.flexOrient != 'undefined' && 
-			oControl.flexOrient        == 'column'
-		);
+		if (typeof oControl.flexOrient == 'undefined' || oControl.flexOrient != 'column' && oControl.flexOrient != 'row') {
+			return this.flexBias == 'column';
+		}
+		return oControl.flexOrient == 'column';
 	},
 	
 	// Returns 0 if container width has NOT crossed flexResponseWidth
@@ -137,7 +137,7 @@ enyo.kind({
 			nX           = 0,
 			nY           = 0,
 			bInSecondary = false, // bBiasCols ? bInRows : bInCols
-			bBiasCols    = (this.flexBias == 'columns'),
+			bBiasCols    = (this.flexBias == 'column'),
 			o;
 			
 		for (;n<aMetrics.length; n++) {
@@ -216,7 +216,7 @@ enyo.kind({
 			
 			bInSecondary     = false, // bBiasCols ? bInRows : bInCols
 			bColumn          = false,
-			bBiasCols        = (this.flexBias == 'columns');
+			bBiasCols        = (this.flexBias == 'column');
 			
 		function _beginSecondaryGroup() {
 			if (!bInSecondary) {
@@ -245,7 +245,7 @@ enyo.kind({
 				var n1 = n - 1;
 				
 				if (bBiasCols) {
-					nFlexHeight = Math.ceil((nRemainingHeight - oThis.flexSpacing * (nRows - 1))/(nFlexRows ? nFlexRows : 1));
+					nFlexHeight = Math.round((nRemainingHeight - oThis.flexSpacing * (nRows - 1))/(nFlexRows ? nFlexRows : 1));
 					while (aMetrics[n1] && !aMetrics[n1].isColumn) {
 						if (aMetrics[n1].flex > 0) {
 							aMetrics[n1].height = nFlexHeight;
@@ -253,7 +253,7 @@ enyo.kind({
 						n1 --;
 					}
 				} else {
-					nFlexWidth = Math.ceil((nRemainingWidth - oThis.flexSpacing * (nCols - 1))/(nFlexCols ? nFlexCols : 1));
+					nFlexWidth = Math.round((nRemainingWidth - oThis.flexSpacing * (nCols - 1))/(nFlexCols ? nFlexCols : 1));
 					while (aMetrics[n1] && aMetrics[n1].isColumn) {
 						if (aMetrics[n1].flex > 0) {
 							aMetrics[n1].width = nFlexWidth;
@@ -311,7 +311,7 @@ enyo.kind({
 		_endSecondaryGroup();
 		
 		if (bBiasCols) {
-			nFlexWidth = Math.ceil((nRemainingWidth - this.flexSpacing * (nCols - 1))/nFlexCols);
+			nFlexWidth = Math.round((nRemainingWidth - this.flexSpacing * (nCols - 1))/nFlexCols);
 			
 			for (n=0; n<aMetrics.length; n++) {
 				if (!aMetrics[n].isColumn ?1: aMetrics[n].flex > 0) {
@@ -319,7 +319,7 @@ enyo.kind({
 				}
 			}
 		} else {
-			nFlexHeight = Math.ceil((nRemainingHeight - this.flexSpacing * (nRows - 1))/nFlexRows);
+			nFlexHeight = Math.round((nRemainingHeight - this.flexSpacing * (nRows - 1))/nFlexRows);
 
 			for (n=0; n<aMetrics.length; n++) {
 				if (aMetrics[n].isColumn ?1: aMetrics[n].flex > 0) { 

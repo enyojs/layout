@@ -1,3 +1,19 @@
+// enyo.kind({
+// 	name        : 'enyo.sample.FlexLayoutSample',
+// 	classes     : 'flex-container enyo-fit',
+// 	layoutKind  : 'enyo.FlexLayout',
+// 	flexSpacing : 10,
+// 	// flexBias    : 'column',
+// 	components  : [
+// 		{content: 'Block 0', flex: true},
+// 		{content: 'Block 1'},
+// 		{content: 'Block 2', flexOrient: 'column', flex: true, flexOrder: 0},
+// 		{content: 'Block 3', flexOrient: 'column', flexOrder: 1}
+// 	]}
+// );
+
+
+
 
 enyo.kind({
 	name        : 'enyo.sample.FlexLayoutSample',
@@ -6,15 +22,16 @@ enyo.kind({
 	flexSpacing : 10,
 	components: [
 		{name: 'uberBlock1', flexOrient: 'column', classes: 'column',  content: 'Block 1', components: [
-			{name: 'button1', kind: 'onyx.Button', content: 'Add column content', ontap: 'addContent1'},
-			{name: 'button2', kind: 'onyx.Button', content: 'Add row content',    ontap: 'addContent2'},
+			{name: 'button1', kind: 'onyx.Button', content: 'Add column content',       ontap: 'addContent1'},
+			{name: 'button2', kind: 'onyx.Button', content: 'Add row content',          ontap: 'addContent2'},
+			{name: 'button3', kind: 'onyx.Button', content: 'Set flexBias to "column"', ontap: 'toggleBias'},
 			{name: 'stats'}
 		]},
-		{name: 'uberBlock2', layoutKind : 'enyo.FlexLayout', style: 'background-color: #FFF',
+		{name: 'uberBlock2', layoutKind : 'enyo.FlexLayout', 
 			flexOrient        : 'column',
 			flex              : true,
 			flexSpacing       : 10,
-			flexBias          : 'rows',
+			flexBias          : 'row',
 			flexResponseWidth : 1000,
 			components: [
 				{name: 'block1', classes: 'column',	content: 'Block 1',
@@ -103,6 +120,26 @@ enyo.kind({
 		// this.$.repeater.setCount(this.people.length);
 	},
 	
+	rendered: function() {
+		this.inherited(arguments);
+		
+		var oControl, 
+			n       = 0,
+			aColors = [
+				'#668CFF', '#8C66FF', '#D966FF', '#FF66D9', 
+				'#FF668C', '#FF8C66', '#FFD966', '#D9FF66', 
+				'#8CFF66', '#66FF8C', '#66FFD9', '#66D9FF', 
+				'#295EFF', '#003BEB', '#FFC929', '#EBB000'
+			];
+			
+		for (; n<this.$.uberBlock2.children.length; n++) {
+			oControl = this.$.uberBlock2.children[n];
+			enyo.Styles.setStyles(oControl, {'background-color' : aColors[n]});
+		}
+		
+		// enyo.Styles.setStyles(this.$.uberBlock1, {'background-color' : aColors[aColors.length - 9]});
+	},
+	
 	setupItem: function(inSender, inEvent) {
 		var index = inEvent.index;
 		var item = inEvent.item;
@@ -122,5 +159,16 @@ enyo.kind({
 
 	addContent2: function() {
 		this.addContent(this.$.block6, 51);
-	}
+	},
+	
+	toggleBias: function() {
+		if (this.$.uberBlock2.flexBias != 'column') {
+			this.$.uberBlock2.flexBias = 'column';
+			this.$.button3.setContent('Set flexBias to "row"');
+		} else {
+			this.$.uberBlock2.flexBias = 'row';
+			this.$.button3.setContent('Set flexBias to "column"');
+		}
+		this.$.uberBlock2.layout.reflow();
+	},
 });
