@@ -284,6 +284,7 @@ enyo.kind({
 				} else {
 					_beginSecondaryGroup();
 				}
+				
 				nCols ++;
 				oMetrics.isColumn = true;
 				
@@ -306,33 +307,23 @@ enyo.kind({
 				
 			aMetrics.push(oMetrics);
 		}
+
+		_endSecondaryGroup();
 		
 		if (bBiasCols) {
-			_endSecondaryGroup();
-			
 			nFlexWidth = Math.ceil((nRemainingWidth - this.flexSpacing * (nCols - 1))/nFlexCols);
 			
 			for (n=0; n<aMetrics.length; n++) {
-				if (!aMetrics[n].isColumn) {
+				if (!aMetrics[n].isColumn ?1: aMetrics[n].flex > 0) {
 					aMetrics[n].width = nFlexWidth;
-				} else {
-					if (aMetrics[n].flex > 0) {
-						aMetrics[n].width = nFlexWidth;
-					}
 				}
 			}
 		} else {
-			_endSecondaryGroup();
-			
 			nFlexHeight = Math.ceil((nRemainingHeight - this.flexSpacing * (nRows - 1))/nFlexRows);
 
 			for (n=0; n<aMetrics.length; n++) {
-				if (aMetrics[n].isColumn) {
+				if (aMetrics[n].isColumn ?1: aMetrics[n].flex > 0) { 
 					aMetrics[n].height = nFlexHeight;
-				} else {
-					if (aMetrics[n].flex > 0) {
-						aMetrics[n].height = nFlexHeight;
-					}
 				}
 			}
 		}

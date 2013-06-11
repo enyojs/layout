@@ -15,7 +15,7 @@ enyo.kind({
 			flexOrient        : 'column', 
 			flex              : true, 
 			flexSpacing       : 10, 
-			flexBias          : 'rows', 
+			flexBias          : 'columns', 
 			flexResponseWidth : 1000, 
 			components: [
 				{name: 'block1', flexOrient: 'column', classes: 'column',  content: 'Block 1', flex: true},
