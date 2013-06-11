@@ -379,7 +379,6 @@ enyo.kind({
 	// Main reflow function, re-renders sizes and positions of children
 	reflow: function() {
 		this.inherited(arguments);
-		enyo.Benchmark.begin(this.container.name);
 		
 		this.flexSpacing = this._getSpacing();
 		this.flexBias    = this._getBias();
@@ -395,7 +394,6 @@ enyo.kind({
 			
 		this._renderMetrics(aMetrics, oStylesContainer);
 		this._nReflow ++;
-		enyo.Benchmark.end(this.container.name, true);
 	}
 });
 

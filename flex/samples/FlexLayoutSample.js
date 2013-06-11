@@ -5,7 +5,6 @@ enyo.kind({
 	layoutKind  : 'enyo.FlexLayout',
 	flexSpacing : 10,
 	components: [
-		{kind: 'Signals', onBenchmark: 'onBenchmark'},
 		{name: 'uberBlock1', flexOrient: 'column', classes: 'column',  content: 'Block 1', components: [
 			{name: 'button1', kind: 'onyx.Button', content: 'Add column content', ontap: 'addContent1'},
 			{name: 'button2', kind: 'onyx.Button', content: 'Add row content',    ontap: 'addContent2'},
@@ -94,13 +93,5 @@ enyo.kind({
 
 	addContent2: function() {
 		this.addContent(this.$.block6, 51);
-	},
-	
-	onBenchmark: function(oSender, oEvent) {
-		var s = '';
-		for (sName in oEvent.data) {
-			s += sName + '                 ' + Math.ceil(oEvent.data[sName].average) + '                ';
-		}
-		this.$.stats.setContent(s);
 	}
 });
