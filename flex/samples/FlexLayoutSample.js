@@ -8,24 +8,30 @@ enyo.kind({
 		{name: 'uberBlock1', flexOrient: 'column', classes: 'column',  content: 'Block 1', components: [
 			{name: 'button1', kind: 'onyx.Button', content: 'Add column content', ontap: 'addContent1'},
 			{name: 'button2', kind: 'onyx.Button', content: 'Add row content',    ontap: 'addContent2'},
-			{name: 'stats'},
+			{name: 'stats'}
 		]},
 		{name: 'uberBlock2', layoutKind : 'enyo.FlexLayout', style: 'background-color: #FFF',
 			flexOrient        : 'column', 
 			flex              : true, 
 			flexSpacing       : 10, 
-			flexBias          : 'columns', 
+			flexBias          : 'rows', 
 			flexResponseWidth : 1000, 
 			components: [
 				{name: 'block1', flexOrient: 'column', classes: 'column',  content: 'Block 1', flex: true},
 				{name: 'block2', flexOrient: 'column', classes: '',        content: 'Block 2', flexResponse: 'RowAfterColumns'},
-				{name: 'block3', flexOrient: 'column', classes: '',        content: 'Block 3', flexResponse: 'RowAfterColumns', flex: 'content', maxWidth: 200, maxHeight: 100, components: [
-					{name: 'block3a', content: 'Block 3a', style: 'border: 1px solid white; display: inline;'}
-				]},
+				{name: 'block3', flexOrient: 'column', classes: '',        content: 'Block 3', 
+					flexResponse: 'RowAfterColumns', 
+					flex: 'content', 
+					maxWidth: 200, 
+					maxHeight: 100, 
+					components: [
+						{name: 'block3a', content: 'Block 3a', style: 'border: 1px solid white; display: inline;'}
+					]
+				},
 				{name: 'block5', flexOrient: 'column', classes: '',        content: 'Block 5', flex: true},
 		
 				{name: 'block6', flexOrient: 'row',    classes: 'column',  content: 'Block 6', flex: 'content', maxWidth: 200, maxHeight: 100},
-				{name: 'block7', flexOrient: 'row', classes: 'column',  content: 'Block 7', flex: true},
+				{name: 'block7', flexOrient: 'row',    classes: 'column',  content: 'Block 7', flex: true},
 				{name: 'block8', flexOrient: 'column', classes: '',        content: 'Block 8', flex: true},
 				{name: 'block9', flexOrient: 'row',    classes: '',        content: 'Block 9', flex: true}
 			]
