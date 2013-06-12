@@ -1,35 +1,3 @@
-// enyo.kind({
-// 	name        : 'enyo.sample.FlexLayoutSample',
-// 	classes     : 'flex-container enyo-fit',
-// 	layoutKind  : 'enyo.FlexLayout',
-// 	flexSpacing : 10,
-// 	// flexBias    : 'column',
-// 	components  : [
-// 		{content: 'Block 0', flex: true},
-// 		{content: 'Block 1'},
-// 		{content: 'Block 2', flexOrient: 'column', flex: true, flexOrder: 0},
-// 		{content: 'Block 3', flexOrient: 'column', flexOrder: 1}
-// 	]}
-// );
-
-
-// enyo.kind({
-// 	name        : 'enyo.sample.FlexLayoutSample',
-// 	classes     : 'enyo-fit enyo-unselectable',
-// 	components: [
-// 		{kind:"onyx.Toolbar", components:[
-// 			{content:"Foo"},
-// 			{flex:true},
-// 			{content:"Bar"}
-// 		]},
-// 		{name: 'toolbar1', kind:"onyx.Toolbar", layoutKind:"enyo.FlexLayout", flexSpacing: 20, flexBias: 'column', components:[
-// 			{name: 'block1', content:"Foo"},
-// 			{name: 'block2', flex:true},
-// 			{name: 'block3', content:"Bar"}
-// 		]}
-// 	]
-// });
-
 enyo.kind({
 	name        : 'enyo.sample.FlexLayoutSample',
 	classes     : 'flex-layout-sample enyo-unselectable',
@@ -136,15 +104,6 @@ enyo.kind({
 		this.inherited(arguments);
 		// this.$.repeater.setCount(this.people.length);
 	},
-	
-	// tap: function(inSender, inEvent) {
-	// 	var now = enyo.now();
-	// 	var h = enyo.dom.getWindowHeight()/2;
-	// 	var w = enyo.dom.getWindowWidth()/2;
-	// 	this.setBounds({height:h+Math.random()*h, width:w+Math.random()*w});
-	// 	this.resized();
-	// 	this.log(enyo.now() - now);
-	// },
 	
 	rendered: function() {
 		this.inherited(arguments);
