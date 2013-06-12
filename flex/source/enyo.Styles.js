@@ -19,13 +19,15 @@ enyo.Styles = function(oControl) {
 	}
 
 	function _initialize() {
+		// if (oControl.id == "app_tooltipDecorator") debugger;
 		var oBounds = oControl.getBounds(),
 			nWidth  = parseInt(oBounds.width,  10), 
 			nHeight = parseInt(oBounds.height, 10),
 			nLeft   = parseInt(oBounds.left,   10),
 			nTop    = parseInt(oBounds.top,    10); 
 			
-		_oThis.display = _getComputedStyleValue(oControl, 'display');
+		_oThis.display   = _getComputedStyleValue(oControl, 'display');
+		_oThis.boxSizing = _getComputedStyleValue(oControl, 'box-sizing');
 		
 		_oThis.l = {
 			margin  : parseInt(_getComputedStyleValue(oControl, 'margin-left'),         10),
@@ -74,18 +76,31 @@ enyo.Styles = function(oControl) {
 		_oThis.v.innerOffset = _oThis.v.border + _oThis.v.padding;
 		
 		// Deal with width and height
+		if (this.boxSizing == 'border-box') {
+			_oThis.content = {
+				width  : nWidth  - _oThis.h.innerOffset,
+				height : nHeight - _oThis.v.innerOffset
+			};
 
-		_oThis.content = {
-			width  : nWidth  - _oThis.h.innerOffset,
-			height : nHeight - _oThis.v.innerOffset
-		};
+			_oThis.box = {
+				width  : nWidth  + _oThis.h.outerOffset,
+				height : nHeight + _oThis.v.outerOffset,
+				left   : nLeft,
+				top    : nTop
+			};
+		} else {
+			_oThis.content = {
+				width  : nWidth  - _oThis.h.innerOffset,
+				height : nHeight - _oThis.v.innerOffset
+			};
 
-		_oThis.box = {
-			width  : nWidth  + _oThis.h.outerOffset,
-			height : nHeight + _oThis.v.outerOffset,
-			left   : nLeft,
-			top    : nTop
-		};
+			_oThis.box = {
+				width  : nWidth  + _oThis.h.outerOffset,
+				height : nHeight + _oThis.v.outerOffset,
+				left   : nLeft,
+				top    : nTop
+			};
+		}
 	}
 	
 	this.commit = function() {
@@ -102,18 +117,40 @@ enyo.Styles = function(oControl) {
 		_oStyles.top   = nTop + oContainerStyles.t.padding   + 'px';
 	};
 	
-	this.setBoxWidth      = function(nWidth)  { 
-		_oStyles.width  = nWidth  - this.h.offset + 'px'; 
+	this.setBoxWidth      = function(nWidth) {
+		if (this.boxSizing == 'border-box') {
+			_oStyles.width  = nWidth  - this.h.margin + 'px';
+		} else {
+			_oStyles.width  = nWidth  - this.h.offset + 'px';
+		}
 	};
 	
-	this.setBoxHeight     = function(nHeight) { _oStyles.height = nHeight - this.v.offset + 'px'; };
+	this.setBoxHeight     = function(nHeight) { 
+		if (this.boxSizing == 'border-box') {
+			_oStyles.height = nHeight - this.v.margin + 'px';
+		} else {
+			_oStyles.height = nHeight - this.v.offset + 'px';
+		}
+	};
 	
 	
-	this.setContentWidth  = function(nWidth)  { _oStyles.width  = nWidth  + 'px'; };
-	this.setContentHeight = function(nHeight) { _oStyles.height = nHeight + 'px'; };
+	this.setContentWidth  = function(nWidth) { 
+		if (this.boxSizing == 'border-box') {
+			_oStyles.width  = nWidth + this.h.padding + this.h.border + 'px';
+		} else {
+			_oStyles.width  = nWidth  + 'px'; 
+		}
+	};
+	this.setContentHeight = function(nHeight) { 
+		if (this.boxSizing == 'border-box') {
+			_oStyles.height  = nHeight + this.v.padding + this.v.border + 'px';
+		} else {
+			_oStyles.height  = nHeight  + 'px'; 
+		}
+	};
 	
 	this.setPosition      = function(sPosition) { _oStyles.position = sPosition; };
-	
+	this.control          = oControl;
 	_initialize();
 };
 

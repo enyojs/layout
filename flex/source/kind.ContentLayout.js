@@ -118,9 +118,9 @@ enyo.kind({
 		/************************************************************************/
 		
 		oElement.height       = 'auto';
-		oElement.style.width  = nWidth + 'px';
+		oElement.style.width  = nWidth > 0 ? nWidth + 'px' : 'auto';
 		nHeight               = oElement.offsetHeight - oStyles.v.padding;
-			
+
 		this.container.node.parentNode.removeChild(oElement);
 		
 		// Constrain to maxHeight

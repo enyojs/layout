@@ -13,21 +13,38 @@
 // );
 
 
-
+// enyo.kind({
+// 	name        : 'enyo.sample.FlexLayoutSample',
+// 	classes     : 'enyo-fit enyo-unselectable',
+// 	components: [
+// 		{kind:"onyx.Toolbar", components:[
+// 			{content:"Foo"},
+// 			{flex:true},
+// 			{content:"Bar"}
+// 		]},
+// 		{name: 'toolbar1', kind:"onyx.Toolbar", layoutKind:"enyo.FlexLayout", flexSpacing: 20, flexBias: 'column', components:[
+// 			{name: 'block1', content:"Foo"},
+// 			{name: 'block2', flex:true},
+// 			{name: 'block3', content:"Bar"}
+// 		]}
+// 	]
+// });
 
 enyo.kind({
 	name        : 'enyo.sample.FlexLayoutSample',
-	classes     : 'flex-layout-sample enyo-fit',
+	classes     : 'flex-layout-sample enyo-unselectable',
 	layoutKind  : 'enyo.FlexLayout',
 	flexSpacing : 10,
 	components: [
-		{name: 'uberBlock1', flexOrient: 'column', classes: 'column',  content: 'Block 1', components: [
+		{name: 'uberBlock1', flexOrient: 'column', style: 'width: 200px',  content: 'Block 1', components: [
 			{name: 'button1', kind: 'onyx.Button', content: 'Add column content',       ontap: 'addContent1'},
 			{name: 'button2', kind: 'onyx.Button', content: 'Add row content',          ontap: 'addContent2'},
 			{name: 'button3', kind: 'onyx.Button', content: 'Set flexBias to "column"', ontap: 'toggleBias'},
+			{name: 'button4', kind: 'onyx.Button', content: 'Set flexStretch to false', ontap: 'toggleStretch'},
 			{name: 'stats'}
 		]},
 		{name: 'uberBlock2', layoutKind : 'enyo.FlexLayout', 
+			flexStretch       : true,
 			flexOrient        : 'column',
 			flex              : true,
 			flexSpacing       : 10,
@@ -120,6 +137,15 @@ enyo.kind({
 		// this.$.repeater.setCount(this.people.length);
 	},
 	
+	// tap: function(inSender, inEvent) {
+	// 	var now = enyo.now();
+	// 	var h = enyo.dom.getWindowHeight()/2;
+	// 	var w = enyo.dom.getWindowWidth()/2;
+	// 	this.setBounds({height:h+Math.random()*h, width:w+Math.random()*w});
+	// 	this.resized();
+	// 	this.log(enyo.now() - now);
+	// },
+	
 	rendered: function() {
 		this.inherited(arguments);
 		
@@ -127,8 +153,8 @@ enyo.kind({
 			n       = 0,
 			aColors = [
 				'#668CFF', '#8C66FF', '#D966FF', '#FF66D9', 
-				'#FF668C', '#FF8C66', '#FFD966', '#D9FF66', 
-				'#8CFF66', '#66FF8C', '#66FFD9', '#66D9FF', 
+				'#FF668C', '#FF8C66', // '#FFD966', '#D9FF66', 
+//				'#8CFF66', '#66FF8C', '#66FFD9', '#66D9FF', 
 				'#295EFF', '#003BEB', '#FFC929', '#EBB000'
 			];
 			
@@ -137,7 +163,15 @@ enyo.kind({
 			enyo.Styles.setStyles(oControl, {'background-color' : aColors[n]});
 		}
 		
+		this.markBlocks();
 		// enyo.Styles.setStyles(this.$.uberBlock1, {'background-color' : aColors[aColors.length - 9]});
+	},
+	
+	markBlocks: function() {
+		enyo.forEach(this.$.uberBlock2.children, function(oControl) {
+			oControl.setContent('flex:' + (typeof oControl.flex == 'undefined' ? 'false' : oControl.flex) + ', orient:' + oControl.flexOrient);
+		});
+		this.$.uberBlock2.layout.reflow();
 	},
 	
 	setupItem: function(inSender, inEvent) {
@@ -154,11 +188,20 @@ enyo.kind({
 	},
 
 	addContent1: function() {
-		this.addContent(this.$.block3a, 31);
+		this.addContent(this.$.block3a, 11);
 	},
 
 	addContent2: function() {
-		this.addContent(this.$.block6, 51);
+		this.addContent(this.$.block6, 100);
+	},
+	
+	reflowUberBlock2: function() {
+		enyo.forEach(this.$.uberBlock2.children, function(oControl) {
+			if (oControl.layout) {
+				oControl.layout.reflow();
+			}
+		});
+		this.$.uberBlock2.layout.reflow();
 	},
 	
 	toggleBias: function() {
@@ -169,6 +212,21 @@ enyo.kind({
 			this.$.uberBlock2.flexBias = 'row';
 			this.$.button3.setContent('Set flexBias to "column"');
 		}
-		this.$.uberBlock2.layout.reflow();
+		this.reflowUberBlock2();
+		this.markBlocks();
 	},
+	
+	toggleStretch: function() {
+		if (typeof this.$.uberBlock2.flexStretch == 'undefined' || !this.$.uberBlock2.flexStretch) {
+			this.$.uberBlock2.flexStretch = true;
+			this.$.button4.setContent('Set flexStretch to false');
+		} else {
+			this.$.uberBlock2.flexStretch = false;
+			this.$.button4.setContent('Set flexStretch to true');
+		}
+		enyo.forEach(this.$.uberBlock2.children, function(oControl) {
+			enyo.Styles.setStyles(oControl, {width: 'auto', height: 'auto'});
+		});
+		this.reflowUberBlock2();
+	}
 });

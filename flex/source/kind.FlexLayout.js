@@ -9,11 +9,13 @@ enyo.kind({
 	kind           : 'Layout',
 	layoutClass    : 'enyo-flex-layout',
 	flexSpacing    : 0,
-	flexBias       : 'row',
+	flexBias       : null,
+	flexStretch    : null,
 	
 	defaultSpacing : 0,
 	defaultFlex    : 10,
 	defaultBias    : 'row',
+	defaultStretch : true,
 	
 	/******************** PRIVATE *********************/
 	
@@ -58,6 +60,16 @@ enyo.kind({
 			return this.defaultSpacing;
 		}
 		return parseInt(this.container.flexSpacing, 10);
+	},
+	
+	_getStretch: function() {
+		if (typeof this.container.noStretch != 'undefined') {
+			return !this.container.noStretch;
+		}
+		if (typeof this.container.flexStretch == 'undefined') {
+			return this.defaultStretch;
+		}
+		return !!this.container.flexStretch;
 	},
 	
 	_getBias: function() {
@@ -187,7 +199,7 @@ enyo.kind({
 			if (o.width)  { o.styles.setBoxWidth (o.width);  }
 			if (o.height) { o.styles.setBoxHeight(o.height); }
 			
-			o.styles.setPosition('absolute');
+			// o.styles.setPosition('absolute');
 			o.styles.commit();
 		}
 	},
@@ -270,23 +282,24 @@ enyo.kind({
 			bColumn  = this._isColumn(oControl);
 			
 			oMetrics  = {
-				control : oControl,
-				flex    : this._getFlex(oControl),
-				styles  : oStyles,
-				width   : null,
-				height  : null
+				control  : oControl,
+				flex     : this._getFlex(oControl),
+				styles   : oStyles,
+				width    : null,
+				height   : null,
+				isColumn : bColumn,
+				styles   : oStyles
 			};
 			
 			if (bColumn) {
 				if (bBiasCols) {
 					_endSecondaryGroup();
-					oMetrics.height    = oBounds.content.height;
+					if (this.flexStretch) {	oMetrics.height = oBounds.content.height; }
 				} else {
 					_beginSecondaryGroup();
 				}
 				
 				nCols ++;
-				oMetrics.isColumn = true;
 				
 				if (oMetrics.flex > 0) { nFlexCols ++; } 
 				else                   { nRemainingWidth -= oStyles.box.width; }
@@ -295,11 +308,10 @@ enyo.kind({
 					_beginSecondaryGroup();
 				} else {
 					_endSecondaryGroup();
-					oMetrics.width    = oBounds.content.width;
+					if (this.flexStretch) { oMetrics.width = oBounds.content.width; }
 				}
 				
 				nRows ++;
-				oMetrics.isColumn = false;
 				
 				if (oMetrics.flex > 0) { nFlexRows ++; } 
 				else                   { nRemainingHeight -= oStyles.box.height; }
@@ -314,7 +326,7 @@ enyo.kind({
 			nFlexWidth = Math.round((nRemainingWidth - this.flexSpacing * (nCols - 1))/nFlexCols);
 			
 			for (n=0; n<aMetrics.length; n++) {
-				if (!aMetrics[n].isColumn ?1: aMetrics[n].flex > 0) {
+				if (!aMetrics[n].isColumn && this.flexStretch || aMetrics[n].flex > 0) {
 					aMetrics[n].width = nFlexWidth;
 				}
 			}
@@ -322,7 +334,7 @@ enyo.kind({
 			nFlexHeight = Math.round((nRemainingHeight - this.flexSpacing * (nRows - 1))/nFlexRows);
 
 			for (n=0; n<aMetrics.length; n++) {
-				if (aMetrics[n].isColumn ?1: aMetrics[n].flex > 0) { 
+				if (aMetrics[n].isColumn && this.flexStretch || aMetrics[n].flex > 0) { 
 					aMetrics[n].height = nFlexHeight;
 				}
 			}
@@ -368,7 +380,7 @@ enyo.kind({
 	
 	// Runs once and initializes all that needs to be initialized
 	// Calls function that applies enyo.ContentLayout to children
-	_initialize : function() {
+	_initialize : function(oStylesContainer) {
 		if (this._nReflow > 0) { return; }
 		this._nReflow = 1;
 		this._applyContentLayouts();
@@ -380,13 +392,19 @@ enyo.kind({
 	reflow: function() {
 		this.inherited(arguments);
 		
+		// var now = enyo.now();
 		this.flexSpacing = this._getSpacing();
 		this.flexBias    = this._getBias();
+		this.flexStretch = this._getStretch();
 		
-		this._initialize();
-		
+		this.container.addClass('enyo-flex-layout-relative');
 		var oStylesContainer = new enyo.Styles(this.container);
+		enyo.Styles.setStyles(this.container, {
+			'min-height' : oStylesContainer.content.height + 'px'
+		});
+		this.container.removeClass('enyo-flex-layout-relative');
 		
+		this._initialize(oStylesContainer);
 		this._setResponseValues(oStylesContainer);
 		
 		var aChildren        = this._getOrderedChildren(),
@@ -394,7 +412,21 @@ enyo.kind({
 			
 		this._renderMetrics(aMetrics, oStylesContainer);
 		this._nReflow ++;
+
+		// enyo.log(this.container.name, enyo.now() - now);
 	}
+});
+
+enyo.kind({
+	name        : 'enyo.HFlexLayout',
+	kind        : 'enyo.FlexLayout',
+	defaultBias : 'column',
+});
+
+enyo.kind({
+	name        : 'enyo.VFlexLayout',
+	kind        : 'enyo.FlexLayout',
+	defaultBias : 'row',
 });
 
 enyo.kind({
