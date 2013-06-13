@@ -23,40 +23,40 @@ enyo.kind({
 			flexBias          : 'row',
 			flexResponseWidth : 1000,
 			components: [
-				{name: 'block1', classes: 'column',	content: 'Block 1', allowHtml: true,
+				{name: 'block1', allowHtml: true,
 					flexOrient   : 'column',
 					flex         : true
 				},
-				{name: 'block2', classes: '', content: 'Block 2', allowHtml: true,
+				{name: 'block2', allowHtml: true,
 					flexOrient   : 'column',
 					flexResponse : 'RowAfterColumns'
 				},
-				{name: 'block3', content: 'Block 3', classes: '', allowHtml: true,
+				{name: 'block3', allowHtml: true,
 					flexOrient   : 'column',
 					flexResponse : 'RowAfterColumns',
 					flex         : 'content',
 					maxWidth     : 250,
 					maxHeight    : 100
 				},
-				{name: 'block5', classes: '', content: 'Block 5', allowHtml: true,
+				{name: 'block5', allowHtml: true,
 					flexOrient   : 'column',
 					flex         : true
 				},
-				{name: 'block6', classes: 'column', content: 'Block 6', allowHtml: true,
+				{name: 'block6', allowHtml: true,
 					flex         : 'content',
 					flexOrient   : 'row',
 					maxWidth     : 200,
 					maxHeight    : 100
 				},
-				{name: 'block7', classes: 'column', content: 'Block 7', allowHtml: true,
+				{name: 'block7', allowHtml: true,
 					flexOrient   : 'row',
 					flex         : true
 				},
-				{name: 'block8', classes: '', content: 'Block 8', allowHtml: true,
+				{name: 'block8', allowHtml: true,
 					flexOrient   : 'column',
 					flex         : true
 				},
-				{name: 'block9', classes: '', content: 'Block 9', allowHtml: true,
+				{name: 'block9', allowHtml: true,
 					flexOrient   : 'row',
 					flex         : true
 				}
@@ -128,10 +128,11 @@ enyo.kind({
 	
 	markBlocks: function() {
 		enyo.forEach(this.$.uberBlock2.children, function(oControl) {
+			var aContent = oControl.getContent().split('<br />');
 			oControl.setContent([
 				'flex:&nbsp;'       + (typeof oControl.flex == 'undefined' ? 'false' : oControl.flex),
 			 	'flexOrient:&nbsp;' + oControl.flexOrient
-			].join('<br />') + '<br />');
+			].join('<br />') + '<br />'+ aContent[aContent.length - 1]);
 		});
 		// this.$.uberBlock2.layout.reflow();
 	},
