@@ -129,8 +129,8 @@ enyo.kind({
 	markBlocks: function() {
 		enyo.forEach(this.$.uberBlock2.children, function(oControl) {
 			oControl.setContent([
-				'flex:'       + (typeof oControl.flex == 'undefined' ? 'false' : oControl.flex),
-			 	'flexOrient:' + oControl.flexOrient
+				'flex:&nbsp;'       + (typeof oControl.flex == 'undefined' ? 'false' : oControl.flex),
+			 	'flexOrient:&nbsp;' + oControl.flexOrient
 			].join('<br />') + '<br />');
 		});
 		// this.$.uberBlock2.layout.reflow();
