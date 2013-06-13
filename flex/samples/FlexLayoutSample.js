@@ -3,6 +3,9 @@ enyo.kind({
 	classes     : 'flex-layout-sample enyo-unselectable',
 	layoutKind  : 'enyo.FlexLayout',
 	flexSpacing : 10,
+	handlers: {
+		onReflow: 'onReflow'
+	},
 	components: [
 		{name: 'uberBlock1', flexOrient: 'column', style: 'width: 200px',  content: 'Block 1', components: [
 			{name: 'button1', kind: 'onyx.Button', content: 'Add column content',       ontap: 'addContent1'},
@@ -119,15 +122,17 @@ enyo.kind({
 			enyo.Styles.setStyles(oControl, {'background-color' : aColors[n]});
 		}
 		
-		this.markBlocks();
 		// enyo.Styles.setStyles(this.$.uberBlock1, {'background-color' : aColors[aColors.length - 9]});
 	},
 	
 	markBlocks: function() {
 		enyo.forEach(this.$.uberBlock2.children, function(oControl) {
-			oControl.setContent('flex:' + (typeof oControl.flex == 'undefined' ? 'false' : oControl.flex) + '<br />flexOrient:' + oControl.flexOrient + '<br />');
+			oControl.setContent([
+				'flex:'       + (typeof oControl.flex == 'undefined' ? 'false' : oControl.flex),
+			 	'flexOrient:' + oControl.flexOrient
+			].join('<br />') + '<br />');
 		});
-		this.$.uberBlock2.layout.reflow();
+		// this.$.uberBlock2.layout.reflow();
 	},
 	
 	setupItem: function(inSender, inEvent) {
@@ -169,7 +174,6 @@ enyo.kind({
 			this.$.button3.setContent('Set flexBias to "column"');
 		}
 		this.reflowUberBlock2();
-		this.markBlocks();
 	},
 	
 	toggleStretch: function() {
@@ -184,5 +188,11 @@ enyo.kind({
 			enyo.Styles.setStyles(oControl, {width: 'auto', height: 'auto'});
 		});
 		this.reflowUberBlock2();
-	}
+	},
+	
+	onReflow: function(oSender, oEvent) {
+		if (oEvent.originator == this.$.uberBlock2) {
+			this.markBlocks();
+		}
+	},
 });

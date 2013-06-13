@@ -412,6 +412,8 @@ enyo.kind({
 			
 		this._renderMetrics(aMetrics, oStylesContainer);
 		this._nReflow ++;
+		
+		this.container.bubble('onReflow', {layout: this});
 
 		// enyo.log(this.container.name, enyo.now() - now);
 	}
