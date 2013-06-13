@@ -197,7 +197,7 @@ enyo.kind({
 			this.$.button5.setContent('Set flexSpacing to 10');
 		} else {
 			this.$.uberBlock2.flexSpacing = 10;
-			this.$.button5.setContent('Set flexStretch to 0');
+			this.$.button5.setContent('Set flexSpacing to 0');
 		}
 		this.reflowUberBlock2();
 	},
