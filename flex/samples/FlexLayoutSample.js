@@ -3,6 +3,7 @@ enyo.kind({
 	classes     : 'flex-layout-sample enyo-unselectable',
 	layoutKind  : 'enyo.FlexLayout',
 	flexSpacing : 10,
+	
 	handlers: {
 		onReflow: 'onReflow'
 	},
@@ -16,8 +17,8 @@ enyo.kind({
 			{name: 'stats'}
 		]},
 		{
-			name: 'uberBlock2',
-			layoutKind : 'enyo.FlexLayout',
+			name              : 'uberBlock2',
+			layoutKind        : 'enyo.FlexLayout',
 			flexStretch       : true,
 			flexOrient        : 'column',
 			flex              : true,
@@ -114,10 +115,10 @@ enyo.kind({
 		var oControl,
 			n       = 0,
 			aColors = [
-				'#668CFF', '#8C66FF', '#D966FF', '#FF66D9',
-				'#FF668C', '#FF8C66', // '#FFD966', '#D9FF66',
-//				'#8CFF66', '#66FF8C', '#66FFD9', '#66D9FF',
-				'#295EFF', '#003BEB', '#FFC929', '#EBB000'
+				'#668CFF', '#8C66FF', '#D966FF',
+				'#FF66D9', '#FF668C', '#FF8C66',
+				'#295EFF', '#003BEB', '#FFC929',
+				'#EBB000'
 			];
 
 		for (; n<this.$.uberBlock2.children.length; n++) {
