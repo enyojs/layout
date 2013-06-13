@@ -19,43 +19,40 @@ enyo.kind({
 			flexBias          : 'row',
 			flexResponseWidth : 1000,
 			components: [
-				{name: 'block1', classes: 'column',	content: 'Block 1',
+				{name: 'block1', classes: 'column',	content: 'Block 1', allowHtml: true,
 					flexOrient   : 'column',
 					flex         : true
 				},
-				{name: 'block2', classes: '', content: 'Block 2',
+				{name: 'block2', classes: '', content: 'Block 2', allowHtml: true,
 					flexOrient   : 'column',
 					flexResponse : 'RowAfterColumns'
 				},
-				{name: 'block3', content: 'Block 3', classes: '',
+				{name: 'block3', content: 'Block 3', classes: '', allowHtml: true,
 					flexOrient   : 'column',
 					flexResponse : 'RowAfterColumns',
 					flex         : 'content',
-					maxWidth     : 200,
-					maxHeight    : 100,
-					components   : [
-						{name: 'block3a', content: 'Block 3a', style: 'border: 1px solid white; display: inline;'}
-					]
+					maxWidth     : 250,
+					maxHeight    : 100
 				},
-				{name: 'block5', classes: '', content: 'Block 5',
+				{name: 'block5', classes: '', content: 'Block 5', allowHtml: true,
 					flexOrient   : 'column',
 					flex         : true
 				},
-				{name: 'block6', classes: 'column', content: 'Block 6',
+				{name: 'block6', classes: 'column', content: 'Block 6', allowHtml: true,
 					flex         : 'content',
 					flexOrient   : 'row',
 					maxWidth     : 200,
 					maxHeight    : 100
 				},
-				{name: 'block7', classes: 'column', content: 'Block 7',
+				{name: 'block7', classes: 'column', content: 'Block 7', allowHtml: true,
 					flexOrient   : 'row',
 					flex         : true
 				},
-				{name: 'block8', classes: '', content: 'Block 8',
+				{name: 'block8', classes: '', content: 'Block 8', allowHtml: true,
 					flexOrient   : 'column',
 					flex         : true
 				},
-				{name: 'block9', classes: '', content: 'Block 9',
+				{name: 'block9', classes: '', content: 'Block 9', allowHtml: true,
 					flexOrient   : 'row',
 					flex         : true
 				}
@@ -128,7 +125,7 @@ enyo.kind({
 	
 	markBlocks: function() {
 		enyo.forEach(this.$.uberBlock2.children, function(oControl) {
-			oControl.setContent('flex:' + (typeof oControl.flex == 'undefined' ? 'false' : oControl.flex) + ', orient:' + oControl.flexOrient);
+			oControl.setContent('flex:' + (typeof oControl.flex == 'undefined' ? 'false' : oControl.flex) + '<br />flexOrient:' + oControl.flexOrient + '<br />');
 		});
 		this.$.uberBlock2.layout.reflow();
 	},
@@ -147,7 +144,7 @@ enyo.kind({
 	},
 
 	addContent1: function() {
-		this.addContent(this.$.block3a, 11);
+		this.addContent(this.$.block3, 11);
 	},
 
 	addContent2: function() {
