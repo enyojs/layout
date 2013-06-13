@@ -12,6 +12,7 @@ enyo.kind({
 			{name: 'button2', kind: 'onyx.Button', content: 'Add row content',          ontap: 'addContent2'},
 			{name: 'button3', kind: 'onyx.Button', content: 'Set flexBias to "column"', ontap: 'toggleBias'},
 			{name: 'button4', kind: 'onyx.Button', content: 'Set flexStretch to false', ontap: 'toggleStretch'},
+			{name: 'button5', kind: 'onyx.Button', content: 'Set flexSpacing to 0',     ontap: 'toggleSpacing'},
 			{name: 'stats'}
 		]},
 		{name: 'uberBlock2', layoutKind : 'enyo.FlexLayout', 
@@ -187,6 +188,17 @@ enyo.kind({
 		enyo.forEach(this.$.uberBlock2.children, function(oControl) {
 			enyo.Styles.setStyles(oControl, {width: 'auto', height: 'auto'});
 		});
+		this.reflowUberBlock2();
+	},
+	
+	toggleSpacing: function() {
+		if (typeof this.$.uberBlock2.flexSpacing == 'undefined' || this.$.uberBlock2.flexSpacing == 10) {
+			this.$.uberBlock2.flexSpacing = 0;
+			this.$.button5.setContent('Set flexSpacing to 10');
+		} else {
+			this.$.uberBlock2.flexSpacing = 10;
+			this.$.button5.setContent('Set flexStretch to 0');
+		}
 		this.reflowUberBlock2();
 	},
 	
