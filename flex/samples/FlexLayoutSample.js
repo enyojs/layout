@@ -15,7 +15,9 @@ enyo.kind({
 			{name: 'button5', kind: 'onyx.Button', content: 'Set flexSpacing to 0',     ontap: 'toggleSpacing'},
 			{name: 'stats'}
 		]},
-		{name: 'uberBlock2', layoutKind : 'enyo.FlexLayout', 
+		{
+			name: 'uberBlock2',
+			layoutKind : 'enyo.FlexLayout',
 			flexStretch       : true,
 			flexOrient        : 'column',
 			flex              : true,
@@ -72,7 +74,7 @@ enyo.kind({
 		'occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit ' +
 		'anim id est laborum.'
 	},
-	
+
 	people: [
 		{name: 'Andrew',      sex: 'male'},
 		{name: 'Betty',       sex: 'female'},
@@ -100,43 +102,43 @@ enyo.kind({
 		{name: 'Xin',         sex: 'male'},
 		{name: 'Yulia',       sex: 'female'}
 	],
-	
+
 	create: function() {
 		this.inherited(arguments);
 		// this.$.repeater.setCount(this.people.length);
 	},
-	
+
 	rendered: function() {
 		this.inherited(arguments);
-		
-		var oControl, 
+
+		var oControl,
 			n       = 0,
 			aColors = [
-				'#668CFF', '#8C66FF', '#D966FF', '#FF66D9', 
-				'#FF668C', '#FF8C66', // '#FFD966', '#D9FF66', 
-//				'#8CFF66', '#66FF8C', '#66FFD9', '#66D9FF', 
+				'#668CFF', '#8C66FF', '#D966FF', '#FF66D9',
+				'#FF668C', '#FF8C66', // '#FFD966', '#D9FF66',
+//				'#8CFF66', '#66FF8C', '#66FFD9', '#66D9FF',
 				'#295EFF', '#003BEB', '#FFC929', '#EBB000'
 			];
-			
+
 		for (; n<this.$.uberBlock2.children.length; n++) {
 			oControl = this.$.uberBlock2.children[n];
 			enyo.Styles.setStyles(oControl, {'background-color' : aColors[n]});
 		}
-		
+
 		// enyo.Styles.setStyles(this.$.uberBlock1, {'background-color' : aColors[aColors.length - 9]});
 	},
-	
+
 	markBlocks: function() {
 		enyo.forEach(this.$.uberBlock2.children, function(oControl) {
 			var aContent = oControl.getContent().split('<br />');
 			oControl.setContent([
 				'flex:&nbsp;'       + (typeof oControl.flex == 'undefined' ? 'false' : oControl.flex),
-			 	'flexOrient:&nbsp;' + oControl.flexOrient
+				'flexOrient:&nbsp;' + oControl.flexOrient
 			].join('<br />') + '<br />'+ aContent[aContent.length - 1]);
 		});
 		// this.$.uberBlock2.layout.reflow();
 	},
-	
+
 	setupItem: function(inSender, inEvent) {
 		var index = inEvent.index;
 		var item = inEvent.item;
@@ -145,7 +147,7 @@ enyo.kind({
 		item.$.personName.setContent(person.name);
 		return true;
 	},
-	
+
 	addContent: function(oControl, nLength) {
 		oControl.addContent(' ' + enyo.sample.FlexLayoutSample.loremIpsum.substr(0, nLength));
 	},
@@ -157,7 +159,7 @@ enyo.kind({
 	addContent2: function() {
 		this.addContent(this.$.block6, 100);
 	},
-	
+
 	reflowUberBlock2: function() {
 		enyo.forEach(this.$.uberBlock2.children, function(oControl) {
 			if (oControl.layout) {
@@ -166,7 +168,7 @@ enyo.kind({
 		});
 		this.$.uberBlock2.layout.reflow();
 	},
-	
+
 	toggleBias: function() {
 		if (this.$.uberBlock2.flexBias != 'column') {
 			this.$.uberBlock2.flexBias = 'column';
@@ -177,7 +179,7 @@ enyo.kind({
 		}
 		this.reflowUberBlock2();
 	},
-	
+
 	toggleStretch: function() {
 		if (typeof this.$.uberBlock2.flexStretch == 'undefined' || !this.$.uberBlock2.flexStretch) {
 			this.$.uberBlock2.flexStretch = true;
@@ -191,7 +193,7 @@ enyo.kind({
 		});
 		this.reflowUberBlock2();
 	},
-	
+
 	toggleSpacing: function() {
 		if (typeof this.$.uberBlock2.flexSpacing == 'undefined' || this.$.uberBlock2.flexSpacing == 10) {
 			this.$.uberBlock2.flexSpacing = 0;
@@ -202,7 +204,7 @@ enyo.kind({
 		}
 		this.reflowUberBlock2();
 	},
-	
+
 	onReflow: function(oSender, oEvent) {
 		if (oEvent.originator == this.$.uberBlock2) {
 			this.markBlocks();
