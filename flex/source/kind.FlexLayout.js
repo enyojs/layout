@@ -1,107 +1,28 @@
 /**
  * Flex Layout
- * Allows for multiple flexible columns and rows.
- * Supports Webkit, Mozilla, Partially supports IE8+
+ * Supports Webkit, Mozilla, IE8+
  * @author Lex Podgorny <lex.podgorny@lge.com>
  */
 
 enyo.kind({
-	name        : 'enyo.FlexLayout',
-	kind        : 'Layout',
+	name           : 'enyo.FlexLayout',
+	kind           : 'Layout',
+	layoutClass    : 'enyo-flex-layout',
+	flexSpacing    : 0,
+	flexBias       : null,
+	flexStretch    : null,
 
-	orient      : 'horizontal',         // horizontal | vertical
-	pack        : 'start',              // start | center | end | baseline | stretch
-	align       : 'stretch',            // start | center | end | baseline | stretch
-	prefix      : '-webkit',            // style browser-specific prefix
-	defaultFlex : 10,                   // if container's child flex property set to true, default to this value
+	defaultSpacing : 0,
+	defaultFlex    : 10,
+	defaultBias    : 'row',
+	defaultStretch : true,
 
-	_getAbsoluteBounds: function(oControl) {
-		var oLeft           = 0,
-			oTop            = 0,
-			oMatch          = null,
-			oNode           = oControl instanceof enyo.Control ? oControl.hasNode() : oControl,
-			nWidth          = oNode.offsetWidth,
-			nHeight         = oNode.offsetHeight,
-			sTransformProp  = enyo.dom.getStyleTransformProp(),
-			oXRegEx         = /translateX\((-?\d+)px\)/i,
-			oYRegEx         = /translateY\((-?\d+)px\)/i;
+	/******************** PRIVATE *********************/
 
-		if (oNode.offsetParent) {
-			do {
-				// Fix for FF (GF-2036), offsetParent is working differently between FF and chrome
-				// if (enyo.platform.firefox) {
-				//                  oLeft += oNode.offsetLeft;
-				//                  oTop  += oNode.offsetTop;
-				//              } else {
-				oLeft += oNode.offsetLeft - (oNode.offsetParent ? oNode.offsetParent.scrollLeft : 0);
-				oTop  += oNode.offsetTop  - (oNode.offsetParent ? oNode.offsetParent.scrollTop  : 0);
-				// }
-				if (sTransformProp) {
-					oMatch = oNode.style[sTransformProp].match(oXRegEx);
-					if (oMatch && typeof oMatch[1] != 'undefined' && oMatch[1]) {
-						oLeft += parseInt(oMatch[1], 10);
-					}
-					oMatch = oNode.style[sTransformProp].match(oYRegEx);
-					if (oMatch && typeof oMatch[1] != 'undefined' && oMatch[1]) {
-						oTop += parseInt(oMatch[1], 10);
-					}
-				}
-			} while ((oNode = oNode.offsetParent));
-		}
-		return {
-			top     : oTop,
-			left    : oLeft,
-			bottom  : document.body.offsetHeight - oTop  - nHeight,
-			right   : document.body.offsetWidth  - oLeft - nWidth,
-			height  : nHeight,
-			width   : nWidth
-		};
-	},
+	_nReflow            : 0,                          // Reflow counter
+	_nResponseCondition : 0,
 
-	_getComputedStyle: function(oControl, sStyleName) {
-		if (enyo.platform.ie && enyo.platform.ie < 9) {
-			sStyleName = sStyleName.replace(/([\-][a-z]+)/gi, function($1) {
-				return $1.charAt(1).toUpperCase() + $1.substr(2);
-			});
-		}
-		return oControl.getComputedStyleValue(sStyleName);
-	},
-
-	_getSumStyleValue: function(oControl, aStyles) {
-		var n    = 0,
-			nSum = 0;
-
-		for (;n<aStyles.length; n++) {
-			nSum += parseInt(this._getComputedStyle(oControl, aStyles[n]), 10);
-		}
-
-		return nSum;
-	},
-
-	_getSumStyles: function(oControl) {
-		var oSumStyles = {
-			v : { // Vertical margin, border, padding
-				margin  : this._getSumStyleValue(oControl, ['margin-top',        'margin-bottom']),
-				border  : this._getSumStyleValue(oControl, ['border-top-width',  'border-bottom-width']),
-				padding : this._getSumStyleValue(oControl, ['padding-top',       'padding-bottom'])
-			},
-			h : { // Horizontal margin, border, padding
-				margin  : this._getSumStyleValue(oControl, ['margin-left',        'margin-right']),
-				border  : this._getSumStyleValue(oControl, ['border-left-width',  'border-right-width']),
-				padding : this._getSumStyleValue(oControl, ['padding-left',       'padding-right'])
-			}
-		};
-		oSumStyles.h.offset = oSumStyles.h.margin + oSumStyles.h.border + oSumStyles.h.padding;
-		oSumStyles.v.offset = oSumStyles.v.margin + oSumStyles.v.border + oSumStyles.v.padding;
-
-		return oSumStyles;
-	},
-
-	_setStyles: function(oControl, oStyles) {
-		enyo.mixin(oControl.domStyles, oStyles);
-		oControl.domStylesChanged();
-	},
-
+	// Predicate function. Returns true if oControl has FlexLayout
 	_hasFlexLayout: function(oControl) {
 		return (
 			oControl.layout &&
@@ -109,7 +30,10 @@ enyo.kind({
 		);
 	},
 
+	// Returns flex value assigned to oControl
 	_getFlex: function(oControl) {
+		var nFit = this._getFit(oControl);
+		if (nFit) { return nFit; }
 		if (typeof oControl.flex == 'undefined' || oControl.flex === false) {
 			return 0;
 		}
@@ -119,268 +43,395 @@ enyo.kind({
 		return oControl.flex;
 	},
 
-	_reflowChildrenWebkit: function() {
-		var n = 0,
-			sDimension = this.orient == 'vertical' ? 'height' : 'width',
-			oControl,
-			oStyles,
-			nFlex;
+	// Returns fit value assigned to oControl
+	_getFit: function(oControl) {
+		if (typeof oControl.fit == 'undefined' || oControl.fit === false) {
+			return 0;
+		}
+		if (oControl.fit === true) {
+			return this.defaultFlex;
+		}
+		return oControl.fit;
+	},
 
-		for (;n<this.container.children.length; n++) {
-			oControl    = this.container.children[n];
-			oStyles     = {};
-			nFlex       = this._getFlex(oControl);
+	// Returns spacing value assigned to container of this layout
+	_getSpacing: function() {
+		if (typeof this.container.flexSpacing == 'undefined' || this.container.flexSpacing === false) {
+			return this.defaultSpacing;
+		}
+		return parseInt(this.container.flexSpacing, 10);
+	},
 
-			this._setStyles(oControl, {display: 'block'});
+	_getStretch: function() {
+		if (typeof this.container.noStretch != 'undefined') {
+			return !this.container.noStretch;
+		}
+		if (typeof this.container.flexStretch == 'undefined') {
+			return this.defaultStretch;
+		}
+		return !!this.container.flexStretch;
+	},
 
-			if (nFlex === 0) { continue; }
+	_getBias: function() {
+		if (typeof this.container.flexBias == 'undefined' || !this.container.flexBias) {
+			return this.defaultBias;
+		}
+		return this.container.flexBias;
+	},
 
-			// Set box-flex to flex value
-			oStyles['-webkit-box-flex'] = nFlex;
-			oStyles['overflow']         = 'hidden';
+	// Predicate function. Returns true if oControl.flexOrient is "column"
+	_isColumn: function(oControl) {
+		if (typeof oControl.flexOrient == 'undefined' || oControl.flexOrient != 'column' && oControl.flexOrient != 'row') {
+			return this.flexBias == 'column';
+		}
+		return oControl.flexOrient == 'column';
+	},
 
-			// TODO: experiment with removing this block, causes scroller to break
-			// We redefine flex to mean 'be exactly the left over space'
-			// as opposed to 'natural size plus the left over space'
-			if (!oControl.domStyles[sDimension]) {
-				oStyles[sDimension] = '0px';
+	// Returns 0 if container width has NOT crossed flexResponseWidth
+	// Otherwise returns 1 if flexResponseWidth has been crossed while increasing width,
+	// and -1 while decreasing
+	_getResponseFlag: function(oBounds) {
+		var nResponseWidth        = this.container.flexResponseWidth,
+			nNewResponseCondition = 0;
+
+		if (typeof nResponseWidth != 'undefined' && nResponseWidth > 0) {
+			if (oBounds.content.width < nResponseWidth) {
+				nNewResponseCondition = -1;
+			} else {
+				nNewResponseCondition = 1;
 			}
+		}
 
-			this._setStyles(oControl, oStyles);
+		if (this._nResponseCondition > nNewResponseCondition) {
+			this._nResponseCondition = nNewResponseCondition;
+			return -1;
+		} else if (this._nResponseCondition < nNewResponseCondition) {
+			this._nResponseCondition = nNewResponseCondition;
+			return 1;
+		}
+
+		return 0;
+	},
+
+	// Returns response strategy kind object as specified in oControl.flexResponse, otherwise null
+	_getResponseStrategy: function(oControl) {
+		if (typeof oControl.flexResponse != 'undefined') {
+			if (typeof enyo.FlexLayout.ResponseStrategy[oControl.flexResponse] != 'undefined') {
+				return enyo.FlexLayout.ResponseStrategy[oControl.flexResponse];
+			}
+		}
+		return null;
+	},
+
+	// Walks children and triggers their response strategies if specified
+	_setResponseValues: function(oBounds) {
+		var oControl,
+			oStrategy,
+			nResponseFlag = this._getResponseFlag(oBounds),
+			nChildren     = this.container.children.length,
+			n             = 0;
+
+		if (nResponseFlag !== 0) {
+			for (;n<nChildren; n++) {
+				oControl  = this.container.children[n];
+				oStrategy = this._getResponseStrategy(oControl);
+				if (oStrategy) {
+					oStrategy.respond(oControl, nResponseFlag > 0);
+				}
+			}
 		}
 	},
 
-	_reflowChildrenMozilla: function() {
-		var n = 0,
+	// Renders values set to aMetrics arrray by collectMetrics()
+	// Calculates and renders coordinates of children
+	_renderMetrics: function(aMetrics, oStylesContainer) {
+		var n            = 0,
+			nX           = 0,
+			nY           = 0,
+			bInSecondary = false, // bBiasCols ? bInRows : bInCols
+			bBiasCols    = (this.flexBias == 'column'),
+			o;
+
+		for (;n<aMetrics.length; n++) {
+			o = aMetrics[n];
+
+			if (o.isColumn) {
+				if (bBiasCols) {
+					if (bInSecondary) {
+						bInSecondary = false;
+						nY           = 0;
+						nX          += aMetrics[n-1].width + this.flexSpacing;
+					}
+				} else {
+					if (!bInSecondary) {
+						bInSecondary = true;
+						nX           = 0;
+					}
+				}
+
+				o.styles.setBoxLeft(nX, oStylesContainer);
+				o.styles.setBoxTop (nY, oStylesContainer);
+
+				if (o.flex > 0) { nX += o.width            + this.flexSpacing; }
+				else            { nX += o.styles.box.width + this.flexSpacing; }
+			} else {
+				if (bBiasCols) {
+					if (!bInSecondary) {
+						bInSecondary = true;
+						nY           = 0;
+					}
+				} else {
+					if (bInSecondary) {
+						bInSecondary = false;
+						nX           = 0;
+						nY          += aMetrics[n-1].height + this.flexSpacing;
+					}
+				}
+
+				o.styles.setBoxLeft(nX, oStylesContainer);
+				o.styles.setBoxTop (nY, oStylesContainer);
+
+				if (o.flex > 0) { nY += o.height            + this.flexSpacing; }
+				else            { nY += o.styles.box.height + this.flexSpacing; }
+			}
+
+
+			if (o.width)  { o.styles.setBoxWidth (o.width);  }
+			if (o.height) { o.styles.setBoxHeight(o.height); }
+
+			// o.styles.setPosition('absolute');
+			o.styles.commit();
+		}
+	},
+
+	// Makes a pass through children and gathers their sizes
+	// Calculates sizes of flexible controls in row/column groups
+	// Sets values to metrics array for subsequent rendering
+	_collectMetrics: function(aChildren, oBounds) {
+		var oThis            = this,
 			oControl,
 			oStyles,
-			nFlex;
+			nChildren        = aChildren.length,
+			n                = 0,
+			oMetrics         = {},
+			aMetrics         = [],
+
+			nFlexHeight      = 0,
+			nRemainingHeight = oBounds.content.height,
+			nFlexRows        = 0,
+			nRows            = 0,
+
+			nFlexWidth       = 0,
+			nRemainingWidth  = oBounds.content.width,
+			nFlexCols        = 0,
+			nCols            = 0,
+
+			bInSecondary     = false, // bBiasCols ? bInRows : bInCols
+			bColumn          = false,
+			bBiasCols        = (this.flexBias == 'column');
+
+		function _beginSecondaryGroup() {
+			if (!bInSecondary) {
+				bInSecondary     = true;
+				if (bBiasCols) {
+					nRemainingHeight = oBounds.content.height;
+					nFlexRows        = 0;
+					nRows            = 0;
+
+					nCols     ++;
+					nFlexCols ++;
+				} else {
+					nRemainingWidth = oBounds.content.width;
+					nFlexCols       = 0;
+					nCols           = 0;
+
+					nRows     ++;
+					nFlexRows ++;
+				}
+			}
+		}
+
+		function _endSecondaryGroup() {
+			if (bInSecondary) {
+				bInSecondary = false;
+				var n1 = n - 1;
+
+				if (bBiasCols) {
+					nFlexHeight = Math.round((nRemainingHeight - oThis.flexSpacing * (nRows - 1))/(nFlexRows ? nFlexRows : 1));
+					while (aMetrics[n1] && !aMetrics[n1].isColumn) {
+						if (aMetrics[n1].flex > 0) {
+							aMetrics[n1].height = nFlexHeight;
+						}
+						n1 --;
+					}
+				} else {
+					nFlexWidth = Math.round((nRemainingWidth - oThis.flexSpacing * (nCols - 1))/(nFlexCols ? nFlexCols : 1));
+					while (aMetrics[n1] && aMetrics[n1].isColumn) {
+						if (aMetrics[n1].flex > 0) {
+							aMetrics[n1].width = nFlexWidth;
+						}
+						n1 --;
+					}
+				}
+			}
+		}
+
+		for (;n<nChildren; n++) {
+			oControl = aChildren[n];
+			oStyles  = new enyo.Styles(oControl);
+			bColumn  = this._isColumn(oControl);
+
+			oMetrics  ={
+				control  : oControl,
+				flex     : this._getFlex(oControl),
+				styles   : oStyles,
+				width    : null,
+				height   : null,
+				isColumn : bColumn,
+			};
+
+			if (bColumn) {
+				if (bBiasCols) {
+					_endSecondaryGroup();
+					if (this.flexStretch) {	oMetrics.height = oBounds.content.height; }
+				} else {
+					_beginSecondaryGroup();
+				}
+
+				nCols ++;
+
+				if (oMetrics.flex > 0) { nFlexCols ++; }
+				else                   { nRemainingWidth -= oStyles.box.width; }
+			} else {
+				if (bBiasCols) {
+					_beginSecondaryGroup();
+				} else {
+					_endSecondaryGroup();
+					if (this.flexStretch) { oMetrics.width = oBounds.content.width; }
+				}
+
+				nRows ++;
+
+				if (oMetrics.flex > 0) { nFlexRows ++; }
+				else                   { nRemainingHeight -= oStyles.box.height; }
+			}
+
+			aMetrics.push(oMetrics);
+		}
+
+		_endSecondaryGroup();
+
+		if (bBiasCols) {
+			nFlexWidth = Math.round((nRemainingWidth - this.flexSpacing * (nCols - 1))/nFlexCols);
+
+			for (n=0; n<aMetrics.length; n++) {
+				if (!aMetrics[n].isColumn && this.flexStretch || aMetrics[n].flex > 0) {
+					aMetrics[n].width = nFlexWidth;
+				}
+			}
+		} else {
+			nFlexHeight = Math.round((nRemainingHeight - this.flexSpacing * (nRows - 1))/nFlexRows);
+
+			for (n=0; n<aMetrics.length; n++) {
+				if (aMetrics[n].isColumn && this.flexStretch || aMetrics[n].flex > 0) {
+					aMetrics[n].height = nFlexHeight;
+				}
+			}
+		}
+
+		return aMetrics;
+	},
+
+	// Returns clone array of children that have been ordered accordingly
+	// to their flexOrder
+	_getOrderedChildren: function() {
+		var n = 0,
+			oControl,
+			aChildren = enyo.cloneArray(this.container.children),
+			nChildren = aChildren.length;
+
+		for (;n<nChildren; n++) {
+			oControl = aChildren[n];
+			if (typeof oControl.flexOrder != 'undefined' && oControl._flexMoved != this._nReflow) {
+				aChildren.splice(n, 1);
+				aChildren.splice(oControl.flexOrder, 0, oControl);
+				oControl._flexMoved = this._nReflow;
+				n --;
+			}
+		}
+
+		return aChildren;
+	},
+
+	// Applies enyo.ContentLayout to children that are designated
+	// with flex:"content"
+	_applyContentLayouts: function() {
+		var n = 0,
+			oControl;
 
 		for (;n<this.container.children.length; n++) {
 			oControl = this.container.children[n];
-			oStyles  = {};
-			nFlex    = this._getFlex(oControl);
-
-			if (nFlex === 0) { continue; }
-
-			// Set box-flex to flex value
-			oStyles['-moz-box-flex'] = nFlex;
-			oStyles['overflow']      = 'hidden';
-
-			this._setStyles(oControl, oStyles);
-		}
-	},
-
-	_reflowChildrenIE: function() {
-		var n = 0,
-			oControl,
-			oStyles,
-			nFlex,
-			nOccupiedSize       = 0,
-			aFlexChildren       = [],
-			oSumStyles          = null,
-			oSumStylesContainer = this._getSumStyles(this.container),
-			oBounds             = {},
-			oBoundsContainer    = this._getAbsoluteBounds(this.container),
-			nHeightRemaining    = 0,
-			nWidthRemaining     = 0;
-
-
-		for (;n<this.container.children.length; n++) {                                                   // Loop1: Iterate all children
-			oControl   = this.container.children[n];
-			oSumStyles = this._getSumStyles(oControl);
-			nFlex      = this._getFlex(oControl);
-			oBounds    = this._getAbsoluteBounds(oControl);
-
-			if (this.orient == 'vertical') {
-				if (nFlex > 0)  { aFlexChildren.push(oControl);    }                                      // Collect list of flex siblings
-				else            { nOccupiedSize += oBounds.height + oSumStyles.v.margin + oSumStyles.v.border; }                // Collect size occupied by non-flex siblings
-
-				oStyles = {
-					'overflow' : 'hidden',
-					'width'    : (
-						oBoundsContainer.width -
-						oSumStylesContainer.h.padding -
-						oSumStylesContainer.h.border -
-						oSumStyles.h.offset
-					) + 'px'
-				};
-			} else {
-				if (nFlex > 0)  { aFlexChildren.push(oControl);   }                                      // Collect list of flex siblings
-				else            { nOccupiedSize += oBounds.width + oSumStyles.h.margin + oSumStyles.h.border; }                // Collect size occupied by non-flex siblings
-
-				oStyles = {
-					'overflow' : 'hidden',
-					'float'    : 'left',
-					'height'   : (
-						oBoundsContainer.height -
-						oSumStylesContainer.v.padding -
-						oSumStylesContainer.v.border -
-						oSumStyles.v.offset
-					) + 'px'
-				};
+			if (oControl.flex == 'content') {
+				oControl.setLayoutKind('enyo.ContentLayout');
 			}
-			this._setStyles(oControl, oStyles);
-		}
-
-		for (n=0; n<aFlexChildren.length; n++) {                                                          // Loop2: Iterate flex children collected in loop1
-			oControl   = aFlexChildren[n];
-			oSumStyles = this._getSumStyles(oControl);
-			oStyles    = {};
-
-			if (this.orient == 'vertical') {
-				nHeightRemaining = Math.floor((
-					oBoundsContainer.height -
-					oSumStylesContainer.v.offset -
-					nOccupiedSize) / aFlexChildren.length);
-
-				oStyles.height = nHeightRemaining - oSumStyles.v.offset + 'px';
-			} else {
-				nWidthRemaining = Math.floor((
-					oBoundsContainer.width -
-					oSumStylesContainer.h.offset -
-					nOccupiedSize) / aFlexChildren.length);
-
-				oStyles.width = nWidthRemaining - oSumStyles.h.offset + 'px';
-			}
-			this._setStyles(oControl, oStyles);
 		}
 	},
 
-	_reflowWebkit: function() {
-		this._setStyles(this.container, {
-			'display'               : '-webkit-box',
-			'-webkit-box-pack'      : this.pack,
-			'-webkit-box-align'     : this.align,
-			'-webkit-box-orient'    : this.orient,
-			'box-sizing'            : 'border-box',
-			'overflow'              : 'hidden'
-		});
-		this._reflowChildrenWebkit();
-	},
-
-	_reflowMozilla: function() {
-		var oStyles = {
-			'display'           : '-moz-box',
-			'-moz-box-pack'     : this.pack,
-			'-moz-box-align'    : this.align,
-			'-moz-box-orient'   : this.orient,
-			'-moz-box-sizing'   : 'border-box',
-			'position'          : 'relative',
-			'overflow'          : 'visible'
-		};
-		if (this.orient == 'horizontal') {
-			oStyles.height = '100%';
-		}
-		this._setStyles(this.container, oStyles);
-		this._reflowChildrenMozilla();
-	},
-
-	_reflowIE: function() {
-		var oStyles = {
-			'box-sizing' : 'border-box'
-		};
-
-		if (this.orient == 'horizontal') { oStyles.width  = '100%'; }
-		else                             { oStyles.height = '100%'; }
-
-		this._setStyles(this.container, oStyles);
-		this._reflowChildrenIE();
-
-		// For JS size to be calculated correctly, layout must reflow twice when loaded
-		var oThis = this;
-		if (!this._reflowIE.bRepeated) {
-			setTimeout(function() {
-				oThis._reflowIE.bRepeated = true;
-				oThis._reflowIE();
-			}, 50);
-		}
-
-		enyo.FlexLayout.registerFlexLayout(this);
+	// Runs once and initializes all that needs to be initialized
+	// Calls function that applies enyo.ContentLayout to children
+	_initialize : function(oStylesContainer) {
+		if (this._nReflow > 0) { return; }
+		this._nReflow = 1;
+		this._applyContentLayouts();
 	},
 
 	/******************** PUBLIC *********************/
 
-	constructor: function(oContainer) {
-		this.inherited(arguments);
-		this.pack   = this.container.pack   || this.pack;
-		this.align  = this.container.align  || this.align;
-	},
-
+	// Main reflow function, re-renders sizes and positions of children
 	reflow: function() {
-		this._setStyles(this.container, {
-			'margin'    : '0',
-			'padding'   : '0',
-			'border'    : '0',
-			'overflow'  : 'hidden'
+		this.inherited(arguments);
+
+		// var now = enyo.now();
+		this.flexSpacing = this._getSpacing();
+		this.flexBias    = this._getBias();
+		this.flexStretch = this._getStretch();
+
+		this.container.addClass('enyo-flex-layout-relative');
+		var oStylesContainer = new enyo.Styles(this.container);
+		enyo.Styles.setStyles(this.container, {
+			'min-height' : oStylesContainer.content.height + 'px'
 		});
-		if (enyo.platform.firefox)  { this._reflowMozilla(); }
-		else if (enyo.platform.ie)  { this._reflowIE();      }
-		else                        { this._reflowWebkit();  }
-	},
+		this.container.removeClass('enyo-flex-layout-relative');
 
-	/******************** STATIC *********************/
+		this._initialize(oStylesContainer);
+		this._setResponseValues(oStylesContainer);
 
-	// Needed for IE only
-	statics: {
-		_aFlexLayouts: [],
+		var aChildren        = this._getOrderedChildren(),
+			aMetrics         = this._collectMetrics(aChildren, oStylesContainer);
 
-		registerFlexLayout: function(oLayout) {
-			var bFound = false,
-				n      = 0;
+		this._renderMetrics(aMetrics, oStylesContainer);
+		this._nReflow ++;
 
-			for (;n<this._aFlexLayouts.length; n++) {
-				if (this._aFlexLayouts[n] === oLayout) {
-					bFound = true;
-				}
-			}
-			if (!bFound) {
-				this._aFlexLayouts.push(oLayout);
-			}
-		},
+		this.container.bubble('onReflow', {layout: this});
 
-		unregisterFlexLayout: function(oLayout) {
-			var n = 0;
-			for (;n<this._aFlexLayouts.length; n++) {
-				if (this._aFlexLayouts[n] === oLayout) {
-					delete this._aFlexLayouts[n];
-					return;
-				}
-			}
-		},
-
-		reflowFlexLayouts: function() {
-			var n = 0;
-			for (;n<this._aFlexLayouts.length; n++) {
-				this._aFlexLayouts[n].reflow();
-			}
-		}
+		// enyo.log(this.container.name, enyo.now() - now);
 	}
-
-});
-
-enyo.kind({
-	name        : 'enyo.VFlexLayout',
-	kind        : 'FlexLayout',
-	orient      : 'vertical',
-	layoutClass : 'enyo-vflex-layout'
 });
 
 enyo.kind({
 	name        : 'enyo.HFlexLayout',
-	kind        : 'FlexLayout',
-	layoutClass : 'enyo-hflex-layout',
-	orient      : 'horizontal'
+	kind        : 'enyo.FlexLayout',
+	defaultBias : 'column',
 });
 
 enyo.kind({
-	name        : 'enyo.HFlexBox',
-	kind        : enyo.Control,
-	layoutKind  : 'HFlexLayout'
+	name        : 'enyo.VFlexLayout',
+	kind        : 'enyo.FlexLayout',
+	defaultBias : 'row',
 });
 
 enyo.kind({
-	name        : 'enyo.VFlexBox',
+	name        : 'enyo.FlexBox',
 	kind        : enyo.Control,
-	layoutKind  : 'VFlexLayout'
+	layoutKind  : 'FlexLayout'
 });

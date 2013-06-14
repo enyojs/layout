@@ -4,28 +4,47 @@
  * @author Lex Podgorny <lex.podgorny@lge.com>
  */
 
-if (enyo.platform.ie) {
-	enyo.createMixin({
-		name: 'LayoutInvalidator',
-		invalidateLayout: function() {
-			enyo.FlexLayout.reflowFlexLayouts();
-		},
-		contentChanged: function() {
-			this.inherited(arguments);
-			this.invalidateLayout();
-		},
-		classesChanged: function() {
-			this.inherited(arguments);
-			this.invalidateLayout();
+enyo.createMixin({
+	name: 'LayoutInvalidator',
+	
+	handlers: {
+		onInvalidateLayout: 'onInvalidateLayout'
+	},
+	
+	onInvalidateLayout: function() {
+		if (!this.layoutKind) { return false; }
+		if (this.layout.kindName == 'enyo.ContentLayout') {
+			this.layout.reflow();
 		}
-		// Causes stack overflow
-		// domStylesChanged: function() {
-		//    this.inherited(arguments);
-		//    this.invalidateLayout();
-		// }
-	});
+	},
+	
+	rendered: function() {
+		this.inherited(arguments);
+		this.invalidateLayout();
+	},
 
-	enyo.Control.extend({
-		mixins: ['LayoutInvalidator']
-	});
-}
+	invalidateLayout: function() {
+		if (!this.hasNode()) { return; }
+		this.bubble('onInvalidateLayout', {}, this);
+	},
+
+	contentChanged: function() {
+		this.inherited(arguments);
+		this.invalidateLayout();
+	},
+
+	classesChanged: function() {
+		this.inherited(arguments);
+		this.invalidateLayout();
+	}
+
+	// Causes stack overflow
+	// domStylesChanged: function() {
+	//    this.inherited(arguments);
+	//    this.invalidateLayout();
+	// }
+});
+
+enyo.Control.extend({
+	mixins: ['LayoutInvalidator']
+});
