@@ -1,37 +1,73 @@
-
 enyo.kind({
-	name : 'enyo.sample.FlexLayoutSample',
-	classes: 'flex-layout-sample enyo-fit',
-	layoutKind: 'HFlexLayout',
-	textFields: ['col1', 'col2', 'col4', 'row1', 'row2', 'row3', 'row4', 'row5', 'col2_1', 'col2_2', 'col2_3'],
+	name        : 'enyo.sample.FlexLayoutSample',
+	classes     : 'flex-layout-sample enyo-unselectable',
+	layoutKind  : 'enyo.FlexLayout',
+	flexSpacing : 10,
+	
+	handlers: {
+		onReflow: 'onReflow'
+	},
 	components: [
-		{name: 'col1', content: 'column 1', classes: 'column'},
-		{name: 'col2', layoutKind: 'VFlexLayout', flex: true, components: [
-			{name: 'row1', content: 'row 1', components: [
-				{name: 'button1', kind: 'Button', content: 'Add content', ontap: 'appendContent1'},
-				{name: 'content1'}
-			]},
-			{name: 'row2', flex: true},
-			{name: 'row3', layoutKind: 'HFlexLayout', flex: true, components: [
-				{name: 'col2_1', content: 'column 2_1', classes: 'column'},
-				{name: 'col2_2', content: 'column 2_2', flex: true, components: [
-					{name: 'button2', kind: 'Button', content: 'Add content', ontap: 'appendContent2'},
-					{name: 'content2'}
-				]},
-				{name: 'col2_3', content: 'column 2_3', classes: 'column'}
-			]},
-			{name: 'row4', content: 'row 4', classes: 'row'},
-			{name: 'row5', content: 'row 5', classes: 'row'}
-		], style: 'padding: 0'},
-		{name: 'col3', content: 'column 3', style: 'white-space:nowrap;', components: [
-			{name: 'button3', kind: 'Button', content: 'Add content', ontap: 'appendContent3'},
-			{name: 'content3'}
+		{name: 'uberBlock1', flexOrient: 'column', style: 'width: 200px',  content: 'Block 1', components: [
+			{name: 'button1', kind: 'onyx.Button', content: 'Add column content',       ontap: 'addContent1'},
+			{name: 'button2', kind: 'onyx.Button', content: 'Add row content',          ontap: 'addContent2'},
+			{name: 'button3', kind: 'onyx.Button', content: 'Set flexBias to "column"', ontap: 'toggleBias'},
+			{name: 'button4', kind: 'onyx.Button', content: 'Set flexStretch to false', ontap: 'toggleStretch'},
+			{name: 'button5', kind: 'onyx.Button', content: 'Set flexSpacing to 0',     ontap: 'toggleSpacing'},
+			{name: 'stats'}
 		]},
-		{name: 'col4', content: 'column 4', flex: true}
+		{
+			name              : 'uberBlock2',
+			layoutKind        : 'enyo.FlexLayout',
+			flexStretch       : true,
+			flexOrient        : 'column',
+			flex              : true,
+			flexSpacing       : 10,
+			flexBias          : 'row',
+			flexResponseWidth : 1000,
+			components: [
+				{name: 'block1', allowHtml: true,
+					flexOrient   : 'column',
+					flex         : true
+				},
+				{name: 'block2', allowHtml: true,
+					flexOrient   : 'column',
+					flexResponse : 'RowAfterColumns'
+				},
+				{name: 'block3', allowHtml: true,
+					flexOrient   : 'column',
+					flexResponse : 'RowAfterColumns',
+					flex         : 'content',
+					maxWidth     : 250,
+					maxHeight    : 100
+				},
+				{name: 'block5', allowHtml: true,
+					flexOrient   : 'column',
+					flex         : true
+				},
+				{name: 'block6', allowHtml: true,
+					flex         : 'content',
+					flexOrient   : 'row',
+					maxWidth     : 200,
+					maxHeight    : 100
+				},
+				{name: 'block7', allowHtml: true,
+					flexOrient   : 'row',
+					flex         : true
+				},
+				{name: 'block8', allowHtml: true,
+					flexOrient   : 'column',
+					flex         : true
+				},
+				{name: 'block9', allowHtml: true,
+					flexOrient   : 'row',
+					flex         : true
+				}
+			]
+		}
 	],
-
 	statics: {
-		sLoremIpsum: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, ' +
+		loremIpsum: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, ' +
 		'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ' +
 		'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut ' +
 		'aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in ' +
@@ -40,22 +76,139 @@ enyo.kind({
 		'anim id est laborum.'
 	},
 
-	appendContent1: function() {
-		this.$.content1.createComponent({content:'More content LA LA LA LA LA!'}).render();
-	},
+	people: [
+		{name: 'Andrew',      sex: 'male'},
+		{name: 'Betty',       sex: 'female'},
+		{name: 'Christopher', sex: 'male'},
+		{name: 'Donna',       sex: 'female'},
+		{name: 'Ephraim',     sex: 'male'},
+		{name: 'Frankie',     sex: 'male'},
+		{name: 'Gerald',      sex: 'male'},
+		{name: 'Heather',     sex: 'female'},
+		{name: 'Ingred',      sex: 'female'},
+		{name: 'Jack',        sex: 'male'},
+		{name: 'Kevin',       sex: 'male'},
+		{name: 'Lucy',        sex: 'female'},
+		{name: 'Matthew',     sex: 'male'},
+		{name: 'Noreen',      sex: 'female'},
+		{name: 'Oscar',       sex: 'male'},
+		{name: 'Pedro',       sex: 'male'},
+		{name: 'Quentin',     sex: 'male'},
+		{name: 'Ralph',       sex: 'male'},
+		{name: 'Steven',      sex: 'male'},
+		{name: 'Tracy',       sex: 'female'},
+		{name: 'Uma',         sex: 'female'},
+		{name: 'Victor',      sex: 'male'},
+		{name: 'Wendy',       sex: 'female'},
+		{name: 'Xin',         sex: 'male'},
+		{name: 'Yulia',       sex: 'female'}
+	],
 
-	appendContent2: function() {
-		this.$.content2.addContent(enyo.sample.FlexLayoutSample.sLoremIpsum);
-	},
-
-	appendContent3: function() {
-		this.$.content3.addContent(' Bar Foo Bar Foo Bar Foo');
+	create: function() {
+		this.inherited(arguments);
+		// this.$.repeater.setCount(this.people.length);
 	},
 
 	rendered: function() {
 		this.inherited(arguments);
-		for (var s in this.textFields) {
-			this.$[this.textFields[s]].setContent(enyo.sample.FlexLayoutSample.sLoremIpsum);
+
+		var oControl,
+			n       = 0,
+			aColors = [
+				'#668CFF', '#8C66FF', '#D966FF',
+				'#FF66D9', '#FF668C', '#FF8C66',
+				'#295EFF', '#003BEB', '#FFC929',
+				'#EBB000'
+			];
+
+		for (; n<this.$.uberBlock2.children.length; n++) {
+			oControl = this.$.uberBlock2.children[n];
+			enyo.Styles.setStyles(oControl, {'background-color' : aColors[n]});
 		}
-	}
+
+		// enyo.Styles.setStyles(this.$.uberBlock1, {'background-color' : aColors[aColors.length - 9]});
+	},
+
+	markBlocks: function() {
+		enyo.forEach(this.$.uberBlock2.children, function(oControl) {
+			var aContent = oControl.getContent().split('<br />');
+			oControl.setContent([
+				'flex:&nbsp;'       + (typeof oControl.flex == 'undefined' ? 'false' : oControl.flex),
+				'flexOrient:&nbsp;' + oControl.flexOrient
+			].join('<br />') + '<br />'+ aContent[aContent.length - 1]);
+		});
+		// this.$.uberBlock2.layout.reflow();
+	},
+
+	setupItem: function(inSender, inEvent) {
+		var index = inEvent.index;
+		var item = inEvent.item;
+		var person = this.people[index];
+		item.$.personNumber.setContent((index+1) + '. ');
+		item.$.personName.setContent(person.name);
+		return true;
+	},
+
+	addContent: function(oControl, nLength) {
+		oControl.addContent(' ' + enyo.sample.FlexLayoutSample.loremIpsum.substr(0, nLength));
+	},
+
+	addContent1: function() {
+		this.addContent(this.$.block3, 11);
+	},
+
+	addContent2: function() {
+		this.addContent(this.$.block6, 100);
+	},
+
+	reflowUberBlock2: function() {
+		enyo.forEach(this.$.uberBlock2.children, function(oControl) {
+			if (oControl.layout) {
+				oControl.layout.reflow();
+			}
+		});
+		this.$.uberBlock2.layout.reflow();
+	},
+
+	toggleBias: function() {
+		if (this.$.uberBlock2.flexBias != 'column') {
+			this.$.uberBlock2.flexBias = 'column';
+			this.$.button3.setContent('Set flexBias to "row"');
+		} else {
+			this.$.uberBlock2.flexBias = 'row';
+			this.$.button3.setContent('Set flexBias to "column"');
+		}
+		this.reflowUberBlock2();
+	},
+
+	toggleStretch: function() {
+		if (typeof this.$.uberBlock2.flexStretch == 'undefined' || !this.$.uberBlock2.flexStretch) {
+			this.$.uberBlock2.flexStretch = true;
+			this.$.button4.setContent('Set flexStretch to false');
+		} else {
+			this.$.uberBlock2.flexStretch = false;
+			this.$.button4.setContent('Set flexStretch to true');
+		}
+		enyo.forEach(this.$.uberBlock2.children, function(oControl) {
+			enyo.Styles.setStyles(oControl, {width: 'auto', height: 'auto'});
+		});
+		this.reflowUberBlock2();
+	},
+
+	toggleSpacing: function() {
+		if (typeof this.$.uberBlock2.flexSpacing == 'undefined' || this.$.uberBlock2.flexSpacing == 10) {
+			this.$.uberBlock2.flexSpacing = 0;
+			this.$.button5.setContent('Set flexSpacing to 10');
+		} else {
+			this.$.uberBlock2.flexSpacing = 10;
+			this.$.button5.setContent('Set flexSpacing to 0');
+		}
+		this.reflowUberBlock2();
+	},
+
+	onReflow: function(oSender, oEvent) {
+		if (oEvent.originator == this.$.uberBlock2) {
+			this.markBlocks();
+		}
+	},
 });
