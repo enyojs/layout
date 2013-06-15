@@ -392,11 +392,13 @@ enyo.kind({
 	zoomAnimationStep: function(inSender, inEvent) {
 		var currScale = this.$.animator.baseScale + (this.$.animator.deltaScale * this.$.animator.value);
 		this.transform(currScale);
+		return true;
 	},
 	zoomAnimationEnd: function(inSender, inEvent) {
 		this.stabilize();
 		this.doZoom({scale:this.scale});
 		this.$.animator.ratioLock = undefined;
+		return true;
 	},
 	positionClientControls: function(scale) {
 		this.waterfallDown("onPositionPin", {
