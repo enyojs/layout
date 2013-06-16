@@ -4,6 +4,6 @@ enyo.depends(
 	'kind.FlexLayout.js',
 	'kind.FlexLayout.css',
 	'mixin.LayoutInvalidator.js',
-	
+
 	'ResponseStrategies'
 );

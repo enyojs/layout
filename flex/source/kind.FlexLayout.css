@@ -6,7 +6,7 @@
 		display: inline-block;      /* To prevent block elements from stretching beyond remaining boundaries */
 		position: absolute;
 	}
-	
+
 
 /* This class is applied and removed during reflow to allow correct height measuring */
 
