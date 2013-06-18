@@ -14,12 +14,12 @@ enyo.kind({
 	minHeigh    : 0,
 	maxWidth    : 0,
 	maxHeight   : 0,
-	
+
 	/************** PRIVATE **************/
-	
+
 	_width      : 0,
 	_height     : 0,
-	
+
 	_updateBoundValues: function() {
 		if (this._isFlexChild()) {
 			if (this._isFlexColumn()) {
@@ -38,21 +38,21 @@ enyo.kind({
 			this.maxHeight = this.container.maxHeight;
 		}
 	},
-	
+
 	_isFlexChild: function() {
 		return this.container.parent.layoutKind == 'enyo.FlexLayout';
 	},
-	
+
 	_isFlexColumn: function() {
 		return this.container.parent.layout._isColumn(this.container);
 	},
-	
+
 	_setSize: function(nWidth, nHeight, oStyles) {
 		var bReflow = this._width != nWidth || this._height != nHeight;
-		
+
 		this._width  = nWidth;
 		this._height = nHeight;
-		
+
 		if (this._isFlexChild()) {
 			if (this._isFlexColumn()) {	oStyles.setContentWidth(nWidth);   }
 			else                      { oStyles.setContentHeight(nHeight); }
@@ -60,10 +60,10 @@ enyo.kind({
 			oStyles.setContentWidth(nWidth);
 			oStyles.setContentHeight(nHeight);
 		}
-		
+
 		oStyles.set('overflow', 'auto');
 		oStyles.commit();
-		
+
 		if (bReflow) {
 			if (this._isFlexChild()) {
 				this.reflow();
@@ -71,10 +71,10 @@ enyo.kind({
 			}
 		}
 	},
-	
+
 	_updateSize: function() {
 		this._updateBoundValues();
-		
+
 		var oStyles = new enyo.Styles(this.container);
 
 		// If empty container, return min sizes
@@ -83,61 +83,61 @@ enyo.kind({
 			this._setSize(this.minWidth, this.minHeight, oStyles);
 			return;
 		}
-		
+
 		// If at max size, simply return max sizes
 		/************************************************************************/
 		if (oStyles.content.width >= this.maxWidth && oStyles.content.height >= this.maxHeight) {
 			this._setSize(this.maxWidth, this.maxHeight, oStyles);
 			return;
 		}
-		
+
 		// Otherwise
 		/************************************************************************/
-		
+
 		var oElement = document.createElement(this.container.node.nodeName),
 			nWidth,
 			nHeight = this.minHeight;
-			
+
 		// Get width
 		/************************************************************************/
 
 		this.container.node.parentNode.appendChild(oElement);
-		
+
 		oElement.innerHTML     = this.container.node.innerHTML;
 		oElement.className     = this.container.node.className;
 		oElement.id            = this.container.node.id;
 		oElement.style.display = 'inline';
 		nWidth                 = oElement.offsetWidth - oStyles.h.padding;
-		
+
 		// Constrain to maxWidth
-		
+
 		if (nWidth < this.minWidth)   { nWidth = this.minWidth; }
 		if (nWidth > this.maxWidth)   { nWidth = this.maxWidth; }
-		
+
 		// Get height
 		/************************************************************************/
-		
+
 		oElement.height       = 'auto';
 		oElement.style.width  = nWidth > 0 ? nWidth + 'px' : 'auto';
 		nHeight               = oElement.offsetHeight - oStyles.v.padding;
 
 		this.container.node.parentNode.removeChild(oElement);
-		
+
 		// Constrain to maxHeight
-		
+
 		if (nHeight < this.minHeight) { nHeight = this.minHeight; }
 		if (nHeight > this.maxHeight) { nHeight = this.maxHeight; }
-		
+
 		/************************************************************************/
 		this._setSize(nWidth, nHeight, oStyles);
 	},
-	
+
 	/************** PUBLIC **************/
-	
+
 	flow: function() {
 		this.inherited(arguments);
 	},
-	
+
 	reflow : function() {
 		this.inherited(arguments);
 		this._updateSize();

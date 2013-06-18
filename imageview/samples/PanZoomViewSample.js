@@ -8,7 +8,7 @@ enyo.kind({
 			{kind: "FittableColumns", components: [
 				{content: "Hello World", style:"background: orange; width: 200px; height: 200px;"},
 				{content: "Hello World", style:"background: blue; width: 200px; height: 200px;"},
-				{content: "Hello World", style:"background: cyan; width: 200px; height: 200px;"},
+				{content: "Hello World", style:"background: cyan; width: 200px; height: 200px;"}
 			]},
 			{kind: "FittableColumns", components: [
 				{content: "Hello World", style:"background: lightblue; width: 200px; height: 200px;"},
