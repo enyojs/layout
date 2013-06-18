@@ -262,6 +262,7 @@ enyo.kind({
 	step: function(inSender) {
 		this.fraction = inSender.value;
 		this.stepTransition();
+		return true;
 	},
 	completed: function() {
 		if (this.$.animator.isAnimating()) {
