@@ -141,7 +141,7 @@ enyo.kind({
 		this.c$ = [].concat(this.container.getPanels());
 		this.controlsIndex = 0;
 		for (var i=0, c$=this.container.getPanels(), c; (c=c$[i]); i++) {
-			enyo.dom.accelerate(c, this.accelerated);
+			enyo.dom.accelerate(c, this.accelerated && !c.preventAccelerate);
 			if (enyo.platform.safari) {
 				// On Safari-desktop, sometimes having the panel's direct child set to accelerate isn't sufficient
 				// this is most often the case with Lists contained inside another control, inside a Panels
@@ -204,7 +204,7 @@ enyo.kind({
 			var unit = inUnit || "px";
 			if (!this.updating) {
 				// IE10 uses setBounds because of control hit caching problems seem in some apps
-				if (enyo.dom.canTransform() && !enyo.platform.android && enyo.platform.ie !== 10) {
+				if (enyo.dom.canTransform() && !inControl.preventTransform && !enyo.platform.android && enyo.platform.ie !== 10) {
 					var l = inBounds.left, t = inBounds.top;
 					l = enyo.isString(l) ? l : l && (l + unit);
 					t = enyo.isString(t) ? t : t && (t + unit);
