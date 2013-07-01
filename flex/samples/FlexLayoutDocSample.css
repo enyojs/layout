@@ -1,0 +1,15 @@
+.flex-container {
+    font-size     : 11px;
+    border        : 5px solid #CCC;
+    padding       : 10px;
+    margin        : 10px;
+    border-radius : 5px;
+}
+
+    .flex-container > * {
+        background-color : #CCC;
+        text-align       : justify;
+        border           : 1px solid #999;
+        padding          : 10px;
+        border-radius    : 5px;
+    }

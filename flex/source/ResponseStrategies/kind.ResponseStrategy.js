@@ -8,7 +8,7 @@ enyo.kind({
 	
 	setProperty: function(oControl, sProperty, mValue) {
 		if (sProperty == 'flexOrient') {
-			enyo.Styles.setStyles(oControl, {width: 'auto', height: 'auto'});
+			enyo.Styles.setStyles(oControl, {width: 'auto', height: 'auto'}, true);
 		}
 		
 		oControl['__' + sProperty] = (typeof oControl[sProperty] == 'undefined' 
@@ -24,7 +24,7 @@ enyo.kind({
 	
 	reverseProperty: function(oControl, sProperty) {
 		if (sProperty == 'flexOrient') {
-			enyo.Styles.setStyles(oControl, {width: 'auto', height: 'auto'});
+			enyo.Styles.setStyles(oControl, {width: 'auto', height: 'auto'}, true);
 		}
 		
 		var sTempProperty = '__' + sProperty;

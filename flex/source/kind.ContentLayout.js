@@ -62,7 +62,7 @@ enyo.kind({
 		}
 		
 		oStyles.set('overflow', 'auto');
-		oStyles.commit();
+		oStyles.commit(true);
 		
 		if (bReflow) {
 			if (this._isFlexChild()) {

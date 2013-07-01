@@ -19,6 +19,7 @@ enyo.kind({
 
 	/******************** PRIVATE *********************/
 
+	_oChildSizeCache    : 0,
 	_nReflow            : 0,                          // Reflow counter
 	_nResponseCondition : 0,
 
@@ -195,12 +196,10 @@ enyo.kind({
 				else            { nY += o.styles.box.height + this.flexSpacing; }
 			}
 
-
 			if (o.width)  { o.styles.setBoxWidth (o.width);  }
 			if (o.height) { o.styles.setBoxHeight(o.height); }
 
-			// o.styles.setPosition('absolute');
-			o.styles.commit();
+			o.styles.commit(true);
 		}
 	},
 
@@ -280,8 +279,10 @@ enyo.kind({
 			oControl = aChildren[n];
 			oStyles  = new enyo.Styles(oControl);
 			bColumn  = this._isColumn(oControl);
+			
+			this._oChildSizeCache[oControl.id] = oStyles;
 
-			oMetrics  ={
+			oMetrics = {
 				control  : oControl,
 				flex     : this._getFlex(oControl),
 				styles   : oStyles,
@@ -386,6 +387,18 @@ enyo.kind({
 	},
 
 	/******************** PUBLIC *********************/
+	
+	isSizeChanged: function(oControl) {
+		var oNewStyles = new enyo.Styles(oControl),
+			oOldStyles = this._oChildSizeCache[oControl.id];
+			
+		if (!oOldStyles) { return true; }
+		
+		return (
+			oNewStyles.box.width  != oOldStyles.box.width || 
+			oNewStyles.box.height != oOldStyles.box.height
+		);
+	},
 
 	// Main reflow function, re-renders sizes and positions of children
 	reflow: function() {
@@ -400,7 +413,7 @@ enyo.kind({
 		var oStylesContainer = new enyo.Styles(this.container);
 		enyo.Styles.setStyles(this.container, {
 			'min-height' : oStylesContainer.content.height + 'px'
-		});
+		}, true);
 		this.container.removeClass('enyo-flex-layout-relative');
 
 		this._initialize(oStylesContainer);

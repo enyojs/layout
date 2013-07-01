@@ -103,9 +103,8 @@ enyo.Styles = function(oControl) {
 		}
 	}
 	
-	this.commit = function() {
-		enyo.mixin(oControl.domStyles, _oStyles);
-		oControl.domStylesChanged();
+	this.commit = function(bDontInvalidate) {
+		enyo.Styles.setStyles(oControl, _oStyles, bDontInvalidate);
 	};
 	
 	this.set = function(sProperty, mValue) {
@@ -154,7 +153,7 @@ enyo.Styles = function(oControl) {
 	_initialize();
 };
 
-enyo.Styles.setStyles = function(oControl, oStyles) {
+enyo.Styles.setStyles = function(oControl, oStyles, bDontInvalidate) {
 	enyo.mixin(oControl.domStyles, oStyles);
-	oControl.domStylesChanged();
+	oControl.domStylesChanged(bDontInvalidate);
 };
