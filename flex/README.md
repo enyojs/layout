@@ -81,7 +81,7 @@ Child block properties can be defined for child components of control that speci
 
 Let's start with the following simple code example:
 
-	```javascript
+```javascript
 	enyo.kind({
 		name        : 'enyo.sample.FlexLayoutSample',
 		classes     : 'flex-container enyo-fit',
@@ -92,11 +92,11 @@ Let's start with the following simple code example:
 			{content: 'Block 3'}
 		]}
 	);
-	```
+```
 	
 Now apply these styles to it:
 
-	```css
+```css
 	.flex-container {
 		font-size     : 11px;
 		border        : 5px solid #CCC;
@@ -112,7 +112,7 @@ Now apply these styles to it:
 			padding          : 10px;
 			border-radius    : 5px;
 		}
-	```
+```
 	
 We will get the following result:
 
@@ -126,7 +126,7 @@ As you can see, even though FlexLayout is fully-javascript and all children are 
 
 Now, let's add **flexSpacing** and **flex: true** property on Block2:
 
-	```javascript
+```javascript
 	enyo.kind({
 		name        : 'enyo.sample.FlexLayoutSample',
 		classes     : 'flex-container enyo-fit',
@@ -138,7 +138,7 @@ Now, let's add **flexSpacing** and **flex: true** property on Block2:
 			{content: 'Block 3'}
 		]}
 	);
-	```
+```
 	
 The result will be:
 
@@ -153,7 +153,7 @@ You can have as many *flex:true* blocks as you wish. As you resize the browser w
 Let's extend this example by adding one more *flex:true* block, and **flexOrient** to all blocks:
 
 
-	```javascript
+```javascript
 	enyo.kind({
 		name        : 'enyo.sample.FlexLayoutSample',
 		classes     : 'flex-container enyo-fit',
@@ -166,7 +166,7 @@ Let's extend this example by adding one more *flex:true* block, and **flexOrient
 			{content: 'Block 3', flexOrient: 'column'}
 		]}
 	);
-	```
+```
 
 This will render into:
 
@@ -187,7 +187,7 @@ For example we are grouping columns into a row and not the other way around. Thi
 
 Let's change that by specifying *flexBias*, that by default has value *"row"**:
 
-	```javascript
+```javascript
 	enyo.kind({
 		name        : 'enyo.sample.FlexLayoutSample',
 		classes     : 'flex-container enyo-fit',
@@ -201,7 +201,7 @@ Let's change that by specifying *flexBias*, that by default has value *"row"**:
 			{content: 'Block 3', flexOrient: 'column'}
 		]}
 	);
-	```
+```
 	
 Now the entire grid is biased to see columns as main blocks, not rows. I.e, rows grouped into columns, not columns into rows:
 
@@ -209,7 +209,7 @@ Now the entire grid is biased to see columns as main blocks, not rows. I.e, rows
 
 Now, let's remove *flexOrient: 'row'* from Block0 and Block1, leaving *flexOrient* to it's default value:
 
-	```javascript
+```javascript
 	enyo.kind({
 		name        : 'enyo.sample.FlexLayoutSample',
 		classes     : 'flex-container enyo-fit',
@@ -223,14 +223,14 @@ Now, let's remove *flexOrient: 'row'* from Block0 and Block1, leaving *flexOrien
 			{content: 'Block 3', flexOrient: 'column'}
 		]}
 	);
-	```
+```
 	
 	
 ![Figure 5](docs/figure5_flexorient_default.png)
 
 The *flexOrient* value defaults to *flexBias*, which defaults to 'row'. To see that, let's remove *flexBias*:
 
-	```javascript
+```javascript
 	enyo.kind({
 		name        : 'enyo.sample.FlexLayoutSample',
 		classes     : 'flex-container enyo-fit',
@@ -243,7 +243,7 @@ The *flexOrient* value defaults to *flexBias*, which defaults to 'row'. To see t
 			{content: 'Block 3', flexOrient: 'column'}
 		]}
 	);
-	```
+```
 	
 ![Figure 3](docs/figure3_flexorient.png)
 
@@ -257,7 +257,7 @@ Now, lets take a look at **flexStrech**, it is a child block property that contr
 
 Let's add `flexStretch: false` to our layout:
 
-	```javascript
+```javascript
 	enyo.kind({
 		name        : 'enyo.sample.FlexLayoutSample',
 		classes     : 'flex-container enyo-fit',
@@ -271,7 +271,7 @@ Let's add `flexStretch: false` to our layout:
 			{content: 'Block 3', flexOrient: 'column'}
 		]}
 	);
-	```
+```
 	
 All blocks except flexible Block 2 are no longer stretched.
 
@@ -286,7 +286,7 @@ The result will look like this:
 What if we want to change the order in which the blocks are displayed? Yes, we can do that by specifying **flexOrder** property. 
 Let's move column group to the top:
 
-	```javascript
+```javascript
 	enyo.kind({
 		name        : 'enyo.sample.FlexLayoutSample',
 		classes     : 'flex-container enyo-fit',
@@ -299,7 +299,7 @@ Let's move column group to the top:
 			{content: 'Block 3', flexOrient: 'column', flexOrder: 1}
 		]}
 	);
-	```
+```
 
 ![Figure 6](docs/figure6_flexorder.png)
 
@@ -313,7 +313,7 @@ Having explored *flexOrient* and *flexOrder*, we can see how by changing them a 
 
 Consider the following code:
 
-	```javascript
+```javascript
 	enyo.kind({
 	    name         : 'enyo.sample.FlexLayoutSample',
 	    classes      : 'flex-container enyo-fit',
@@ -328,7 +328,7 @@ Consider the following code:
 			{content: 'Block 4'}
 	    ]}
 	);
-	```
+```
 	
 	
 You can see two new things **flexResponse** at block level and **flexResponseWidth** at container level.
@@ -346,7 +346,7 @@ This kind of strategy may be useful when transiting from a desktop viewport to a
 
 *RowAfterColumns* is one of but many strategies that can be defined to reconfigure FlexLayout. It resides in `flex/source/ResponseStrategies/kind.RowAfterColumns'. Let's take a look at the code and learn how to define it:
 
-	```javascript
+```javascript
 	/**
 	 * enyo.FlexLayout.ResponseStrategy.RowAfterColumns kind definition
 	 * @author: Lex Podgorny
@@ -382,7 +382,7 @@ This kind of strategy may be useful when transiting from a desktop viewport to a
 			}
 		}
 	});
-	```
+```
 	
 Response strategies of FlexLayout are singletons that inherit from `enyo.FlexLayout.ResponseStrategy` which defines useful methods like `setProperty` and `reverseProperty`, methods that keep the state of how block of FlexLayout has been modified when the *flexResponseWidth* threshold has been crossed the last time.
 
