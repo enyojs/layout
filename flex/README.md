@@ -66,6 +66,12 @@ Child block properties can be defined for child components of control that speci
 - VALUES:   Integer value greater than zero
 - DEFAULT:  **Defaults to block's order of definition within FlexLayout parent**
 
+### **flexResponse** ###
+- Defines strategy name to be triggered when flexResponseWidth threshold has been crossed during change in container width
+- VALUES:   String corresponding to a name of a ResponseStrategy kind
+- DEFAULT:  **NA**
+
+
 <br />
 ## 3. USAGE OF FLEX LAYOUT
 
