@@ -28,7 +28,7 @@ enyo.kind({
 			itemMinHeight: 160,
 			itemSpacing: 8,
 			components: [
-				{name: "tile", kind: "enyo.GridList.ImageItem"}
+				{name: "tile", kind: "enyo.GridListImageItem"}
 			]
 		}
 	],
