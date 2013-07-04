@@ -10,7 +10,7 @@ enyo.FlexLayout.ResponseStrategy.RowAfterColumns = enyo.singleton({
 			bFound    = false,
 			aChildren = oControl.parent.children,
 			nChildren = aChildren.length;
-			
+
 		for (;n<nChildren; n++) {
 			if (aChildren[n] == oControl) {
 				bFound = true;

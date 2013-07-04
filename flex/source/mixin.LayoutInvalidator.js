@@ -6,18 +6,18 @@
 
 enyo.createMixin({
 	name: 'LayoutInvalidator',
-	
+
 	handlers: {
 		onInvalidateLayout: 'onInvalidateLayout'
 	},
-	
+
 	onInvalidateLayout: function() {
 		if (!this.layoutKind) { return false; }
 		if (this.layout.kindName == 'enyo.ContentLayout') {
 			this.layout.reflow();
 		}
 	},
-	
+
 	rendered: function() {
 		this.inherited(arguments);
 		this.invalidateLayout();

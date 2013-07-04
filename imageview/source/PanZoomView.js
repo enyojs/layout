@@ -16,10 +16,9 @@
 	bounce-back effect), and control the propagation of drag events, all via
 	boolean properties.
 
-	For the PanZoomView to work you need to specify width and height of the
-	scaled content via the contentWidth and contentHeight properties.
-	Alternatively you may bubble an onSetDimensions event from one of the
-	underlying components at a later time.
+	For the PanZoomView to work, you must either specify the width and height of
+	the scaled content (via the _contentWidth_ and _contentHeight_ properties) or
+	bubble an _onSetDimensions_ event from one of the underlying components.
 
 	Note that it's best to specify a size for the PanZoomView in order to avoid
 	complications.
@@ -39,23 +38,23 @@ enyo.kind({
 	*/
 	thumb: false,
 	/**
-		If true (the default), the zoom action triggered by a double-tap (or
-		double-click) will be animated.
+		If true (the default), animates the zoom action triggered by a double-tap
+		(or double-click)
 	*/
 	animate: true,
 	/**
 		If true (the default), allows propagation of vertical drag events when
-		already at the top or bottom of the pannable area.
+		already at the top or bottom of the pannable area
 	*/
 	verticalDragPropagation: true,
 	/**
 		If true (the default), allows propagation of horizontal drag events when
-		already at the left or right edge of the pannable area.
+		already at the left or right edge of the pannable area
 	*/
 	horizontalDragPropagation: true,
 	published: {
 		/**
-			The scale at which the content should be displayed. It may be any
+			The scale at which the content should be displayed. This may be any
 			positive numeric value or one of the following key words (which will
 			be resolved to a value dynamically):
 
@@ -67,13 +66,13 @@ enyo.kind({
 				on this axis
 		*/
 		scale: "auto",
-		//* Disables the zoom functionality
+		//* If true, disables the zoom functionality
 		disableZoom: false
 	},
 	events: {
 		/**
-			Fires whenever the user adjusts the zoom, via
-			double-tap/double-click, mousewheel, or pinch-zoom.
+			Fires whenever the user adjusts the zoom via double-tap/double-click,
+			mousewheel, or pinch-zoom.
 
 			_inEvent.scale_ contains the new scaling factor.
 		*/
@@ -392,11 +391,13 @@ enyo.kind({
 	zoomAnimationStep: function(inSender, inEvent) {
 		var currScale = this.$.animator.baseScale + (this.$.animator.deltaScale * this.$.animator.value);
 		this.transform(currScale);
+		return true;
 	},
 	zoomAnimationEnd: function(inSender, inEvent) {
 		this.stabilize();
 		this.doZoom({scale:this.scale});
 		this.$.animator.ratioLock = undefined;
+		return true;
 	},
 	positionClientControls: function(scale) {
 		this.waterfallDown("onPositionPin", {

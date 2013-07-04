@@ -3,7 +3,7 @@ enyo.kind({
 	classes     : 'flex-layout-sample enyo-unselectable',
 	layoutKind  : 'enyo.FlexLayout',
 	flexSpacing : 10,
-	
+
 	handlers: {
 		onReflow: 'onReflow'
 	},
@@ -210,5 +210,5 @@ enyo.kind({
 		if (oEvent.originator == this.$.uberBlock2) {
 			this.markBlocks();
 		}
-	},
+	}
 });

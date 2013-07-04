@@ -287,7 +287,7 @@ enyo.kind({
 				styles   : oStyles,
 				width    : null,
 				height   : null,
-				isColumn : bColumn,
+				isColumn : bColumn
 			};
 
 			if (bColumn) {
@@ -421,13 +421,13 @@ enyo.kind({
 enyo.kind({
 	name        : 'enyo.HFlexLayout',
 	kind        : 'enyo.FlexLayout',
-	defaultBias : 'column',
+	defaultBias : 'column'
 });
 
 enyo.kind({
 	name        : 'enyo.VFlexLayout',
 	kind        : 'enyo.FlexLayout',
-	defaultBias : 'row',
+	defaultBias : 'row'
 });
 
 enyo.kind({
