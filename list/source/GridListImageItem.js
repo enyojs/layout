@@ -4,7 +4,7 @@
 */
 
 enyo.kind({
-    name: "enyo.GridList.ImageItem",
+    name: "enyo.GridListImageItem",
     classes: "enyo-gridlist-imageitem",
     components:[
         {name: 'image', kind: 'enyo.Image'},
