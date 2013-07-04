@@ -54,6 +54,7 @@ enyo.kind(
         name: "enyo.GridList",
         kind: "enyo.List",
         classes: "enyo-gridlist",
+        noDefer: true,
         published: {
             /**
                 Set to true if you want all items to be of same size with fluid

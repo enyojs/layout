@@ -26,6 +26,7 @@ enyo.kind({
 	name: "enyo.List",
 	kind: "Scroller",
 	classes: "enyo-list",
+	noDefer: true,
 	published: {
 		/**
 			The number of rows contained in the list. Note that as the amount of
