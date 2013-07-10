@@ -448,3 +448,15 @@ enyo.kind({
 	kind        : enyo.Control,
 	layoutKind  : 'FlexLayout'
 });
+
+enyo.kind({
+	name        : 'enyo.HFlexBox',
+	kind        : enyo.Control,
+	layoutKind  : 'HFlexLayout'
+});
+
+enyo.kind({
+	name        : 'enyo.VFlexBox',
+	kind        : enyo.Control,
+	layoutKind  : 'VFlexLayout'
+});
