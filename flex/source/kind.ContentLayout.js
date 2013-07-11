@@ -61,7 +61,7 @@ enyo.kind({
 			oStyles.setContentHeight(nHeight);
 		}
 		
-		oStyles.set('overflow', 'auto');
+		oStyles.set('overflow', 'hidden');
 		oStyles.commit(true);
 		
 		if (bReflow) {

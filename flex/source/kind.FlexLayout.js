@@ -408,7 +408,7 @@ enyo.kind({
 		this.flexSpacing = this._getSpacing();
 		this.flexBias    = this._getBias();
 		this.flexStretch = this._getStretch();
-
+		
 		this.container.addClass('enyo-flex-layout-relative');
 		var oStylesContainer = new enyo.Styles(this.container);
 		enyo.Styles.setStyles(this.container, {
