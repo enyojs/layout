@@ -18,7 +18,12 @@ enyo.kind({
 		//* The primary caption to be displayed with the image
 		caption: "",
 		//* The second caption line to be displayed with the image
-		subCaption: ""
+		subCaption: "",
+		/**
+            Set to true to add the _selected_ class to the image tile; set to
+            false to remove the _selected_ class
+        */
+		selected: false
 	},
 	bindings: [
 		{from: ".source", to: ".$.image.src"},
@@ -26,5 +31,12 @@ enyo.kind({
 		{from: ".caption", to: ".$.caption.showing", kind: "enyo.BooleanBinding"},
 		{from: ".subCaption", to: ".$.subCaption.content"},
 		{from: ".subCaption", to: ".$.subCaption.showing", kind: "enyo.BooleanBinding"}
-	]
+	],
+	create: function() {
+		this.inherited(arguments);
+		this.selectedChanged();
+	},
+	selectedChanged: function() {
+		this.addRemoveClass("selected", this.selected);
+	}
 });
