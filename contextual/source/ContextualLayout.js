@@ -1,8 +1,8 @@
 ﻿/**
     _enyo.ContextualLayout_ provides the base positioning logic for a contextual
-    layout strategy. This layout strategy is intended for a popup in a
-    decorator/activator scenario, where it will be positioned relative to the
-    activator element. For example, [onyx.ContextualPopup](#onyx.ContextualPopup)
+    layout strategy. This layout strategy is intended for use with a popup in a
+    decorator/activator scenario, where the popup will be positioned relative to
+    the activator. For example, [onyx.ContextualPopup](#onyx.ContextualPopup),
     would be used like so:
 
         {kind: "onyx.ContextualPopupDecorator", components: [
@@ -20,12 +20,12 @@
         ]}
 
     The decorator contains the popup and activator, with the activator being the
-    first child component (i.e., the "Show Popup" button). In the definition of
-    _onyx.ContextualPopup_ , its _layoutKind_ property is set to
-    _enyo.ContextualLayout_.
+    first child component (i.e., the "Show Popup" button). The contextual layout
+    strategy is applied because, in the definition of _onyx.ContextualPopup_,
+    its _layoutKind_ property is set to _enyo.ContextualLayout_.
 
     Note that a popup using ContextualLayout as its _layoutKind_ is expected to
-    declare several specific properties, including the following:
+    declare several specific properties:
 
     * _vertFlushMargin_: The vertical flush layout margin, i.e., how close the
         popup's edge may come to the vertical screen edge (in pixels) before
