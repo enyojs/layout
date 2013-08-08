@@ -38,5 +38,8 @@ enyo.kind({
 	},
 	selectedChanged: function() {
 		this.addRemoveClass("selected", this.selected);
+	},
+	disabledChanged: function() {
+		this.addRemoveClass("disabled", this.disabled);
 	}
 });
