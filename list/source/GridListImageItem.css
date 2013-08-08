@@ -22,3 +22,7 @@
 	overflow: hidden;
 	color: #fff;
 }
+.enyo-gridlist-imageitem.disabled {
+	opacity: 0.4;
+	filter: alpha(opacity=40);
+}
