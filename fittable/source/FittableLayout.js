@@ -15,99 +15,134 @@
 	[Fittables](https://github.com/enyojs/enyo/wiki/Fittables) in the Enyo
 	Developer Guide.
 */
+
 enyo.kind({
-	name: "enyo.FittableLayout",
-	kind: "Layout",
+	name: 'enyo.FittableLayout',
+	kind: 'Layout',
+	
 	//* @protected
 	calcFitIndex: function() {
-		for (var i=0, c$=this.container.children, c; (c=c$[i]); i++) {
-			if (c.fit && c.showing) {
-				return i;
+		var aChildren = this.container.children,
+			oChild,
+			n;
+			
+		for (n=0; n<aChildren.length; n++) {
+			oChild = aChildren[n];
+			if (oChild.fit && oChild.showing) {
+				return n;
 			}
 		}
 	},
+	
 	getFitControl: function() {
-		var c$=this.container.children;
-		var f = c$[this.fitIndex];
-		if (!(f && f.fit && f.showing)) {
+		var aChildren = this.container.children,
+			oFitChild = aChildren[this.fitIndex];
+			
+		if (!(oFitChild && oFitChild.fit && oFitChild.showing)) {
 			this.fitIndex = this.calcFitIndex();
-			f = c$[this.fitIndex];
+			oFitChild = aChildren[this.fitIndex];
 		}
-		return f;
+		return oFitChild;
 	},
-	getLastControl: function() {
-		var c$=this.container.children;
-		var i = c$.length-1;
-		var c = c$[i];
-		while ((c=c$[i]) && !c.showing) {
-			i--;
-		}
-		return c;
+	
+	isRTL: function() {
+		return enyo.dom.getComputedStyle(this.container.hasNode())['direction'] == 'rtl';
 	},
-	_reflow: function(measure, cMeasure, mAttr, nAttr) {
-		this.container.addRemoveClass("enyo-stretch", !this.container.noStretch);
-		var f = this.getFitControl();
-		// no sizing if nothing is fit.
-		if (!f) {
-			return;
-		}
-		//
-		// determine container size, available space
-		var s=0, a=0, b=0, p;
-		var n = this.container.hasNode();
-		// calculate available space
-		if (n) {
-			// measure 1
-			p = enyo.dom.calcPaddingExtents(n);
-			// measure 2
-			s = n[cMeasure] - (p[mAttr] + p[nAttr]);
-			//enyo.log("overall size", s);
-		}
-		//
-		// calculate space above fitting control
-		// measure 3
-		var fb = f.getBounds();
-		// offset - container padding.
-		a = fb[mAttr] - ((p && p[mAttr]) || 0);
-		//enyo.log("above", a);
-		//
-		// calculate space below fitting control
-		var l = this.getLastControl();
-		if (l) {
-			// measure 4
-			var mb = enyo.dom.getComputedBoxValue(l.hasNode(), "margin", nAttr) || 0;
-			if (l != f) {
-				// measure 5
-				var lb = l.getBounds();
-				// fit offset + size
-				var bf = fb[mAttr] + fb[measure];
-				// last offset + size + ending margin
-				var bl = lb[mAttr] + lb[measure] + mb;
-				// space below is bottom of last item - bottom of fit item.
-				b = bl - bf;
-			} else {
-				b = mb;
+	
+	getFirstChild: function() {
+		var aChildren = this.getShowingChildren();
+		
+		if (this.isRTL()) { return aChildren[aChildren.length - 1]; }
+		return aChildren[0];
+	},
+	
+	getLastChild: function() {
+		var aChildren = this.getShowingChildren();
+		
+		if (this.isRTL()) { return aChildren[0]; }
+		return aChildren[aChildren.length - 1];	
+	},
+	
+	getShowingChildren: function() {
+		var a = [],
+			n = 0,
+			aChildren = this.container.children,
+			nLength   = aChildren.length;
+			
+		for (;n<nLength; n++) {
+			if (aChildren[n].showing) {
+				a.push(aChildren[n]);
 			}
 		}
-		this.applyFitSize(measure, s, a, b);
+		
+		return a;
 	},
-	applyFitSize: function(measure, total, before, after) {
-		// calculate appropriate size for fit control
-		var fs = total - (before + after);
-		var f = this.getFitControl();
-		// note: must be border-box;
-		f.applyStyle(measure, fs + "px");
+	
+	_reflow: function(sMeasureName, sClienMeasure, sAttrBefore, sAttrAfter) {
+		this.container.addRemoveClass('enyo-stretch', !this.container.noStretch);
+		
+		var oFitChild       = this.getFitControl(),
+			oContainerNode  = this.container.hasNode(),  // Container node
+			nTotalSize     = 0,                         // Total container width or height without padding
+			nBeforeOffset   = 0,                         // Offset before fit child
+			nAfterOffset    = 0,                         // Offset after fit child
+			oPadding,                                    // Object containing t,b,r,l paddings
+			oBounds,                                     // Bounds object of fit control
+			oLastChild,
+			oFirstChild,
+			nFitSize;
+			
+		if (!oFitChild || !oContainerNode) { return; }
+		
+		oPadding   = enyo.dom.calcPaddingExtents(oContainerNode);
+		oBounds    = oFitChild.getBounds();
+		nTotalSize = oContainerNode[sClienMeasure] - (oPadding[sAttrBefore] + oPadding[sAttrAfter]);
+		
+		if (this.isRTL()) {
+			oFirstChild  = this.getFirstChild();
+			nAfterOffset = nTotalSize - (oBounds[sAttrBefore] + oBounds[sMeasureName]);
+			
+			var nMarginBeforeFirstChild = enyo.dom.getComputedBoxValue(oFirstChild.hasNode(), 'margin', sAttrBefore) || 0;
+			
+			if (oFirstChild == oFitChild) {
+				nBeforeOffset = nMarginBeforeFirstChild;
+			} else {
+				var oFirstChildBounds      = oFirstChild.getBounds(),
+					nSpaceBeforeFirstChild = oFirstChildBounds[sAttrBefore];
+					
+				nBeforeOffset = oBounds[sAttrBefore] + nMarginBeforeFirstChild - nSpaceBeforeFirstChild;
+			}
+		} else {
+			oLastChild    = this.getLastChild();
+			nBeforeOffset = oBounds[sAttrBefore] - (oPadding[sAttrBefore] || 0);
+			
+			var nMarginAfterLastChild = enyo.dom.getComputedBoxValue(oLastChild.hasNode(), 'margin', sAttrAfter) || 0;
+
+			if (oLastChild == oFitChild) {
+				nAfterOffset = nMarginAfterLastChild;
+			} else {
+				var oLastChildBounds = oLastChild.getBounds(),
+					nFitChildEnd     = oBounds[sAttrBefore] + oBounds[sMeasureName],
+					nLastChildEnd    = oLastChildBounds[sAttrBefore] + oLastChildBounds[sMeasureName] +  nMarginAfterLastChild;
+					
+				nAfterOffset = nLastChildEnd - nFitChildEnd;
+			}
+		}
+
+		nFitSize = nTotalSize - (nBeforeOffset + nAfterOffset);
+		oFitChild.applyStyle(sMeasureName, nFitSize + 'px');
 	},
+	
 	//* @public
 	/**
 		Updates the layout to reflect any changes to contained components or the
 		layout container.
 	*/
 	reflow: function() {
-		if (this.orient == "h") {
-			this._reflow("width", "clientWidth", "left", "right");
+		if (this.orient == 'h') {
+			this._reflow('width', 'clientWidth', 'left', 'right'); 
 		} else {
-			this._reflow("height", "clientHeight", "top", "bottom");
+			this._reflow('height', 'clientHeight', 'top', 'bottom');
 		}
 	}
 });
@@ -128,12 +163,12 @@ enyo.kind({
 	Developer Guide.
 */
 enyo.kind({
-	name: "enyo.FittableColumnsLayout",
-	kind: "FittableLayout",
-	orient: "h",
-	layoutClass: "enyo-fittable-columns-layout"
+	name        : 'enyo.FittableColumnsLayout',
+	kind        : 'FittableLayout',
+	orient      : 'h',
+	layoutClass : 'enyo-fittable-columns-layout'
 });
-
+ 
 
 /**
 	_enyo.FittableRowsLayout_ provides a container in which items are laid out
@@ -151,8 +186,8 @@ enyo.kind({
 	Developer Guide.
 */
 enyo.kind({
-	name: "enyo.FittableRowsLayout",
-	kind: "FittableLayout",
-	layoutClass: "enyo-fittable-rows-layout",
-	orient: "v"
+	name        : 'enyo.FittableRowsLayout',
+	kind        : 'FittableLayout',
+	layoutClass : 'enyo-fittable-rows-layout',
+	orient      : 'v'
 });
