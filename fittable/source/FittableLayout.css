@@ -75,3 +75,8 @@
 	margin-top: 0 !important;
 	margin-bottom: 0 !important;
 }
+
+.enyo-locale-right-to-left .enyo-fittable-columns-layout {
+	direction: rtl;
+	text-align: right;
+}
