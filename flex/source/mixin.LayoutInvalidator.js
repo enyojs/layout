@@ -4,7 +4,7 @@
  * @author Lex Podgorny <lex.podgorny@lge.com>
  */
 
-enyo.createMixin({
+enyo.LayoutInvalidator = {
 	name: 'LayoutInvalidator',
 
 	handlers: {
@@ -18,33 +18,39 @@ enyo.createMixin({
 		}
 	},
 
-	rendered: function() {
-		this.inherited(arguments);
-		this.invalidateLayout();
-	},
+	rendered: enyo.super(function (sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.invalidateLayout();
+		};
+	}),
 
 	invalidateLayout: function() {
 		if (!this.hasNode()) { return; }
 		this.bubble('onInvalidateLayout', {}, this);
 	},
 
-	contentChanged: function() {
-		this.inherited(arguments);
-		this.invalidateLayout();
-	},
+	contentChanged: enyo.super(function (sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.invalidateLayout();
+		};
+	}),
 
-	classesChanged: function() {
-		this.inherited(arguments);
-		this.invalidateLayout();
-	}
+	classesChanged: enyo.super(function (sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.invalidateLayout();
+		};
+	})
 
 	// Causes stack overflow
 	// domStylesChanged: function() {
 	//    this.inherited(arguments);
 	//    this.invalidateLayout();
 	// }
-});
+};
 
 enyo.Control.extend({
-	mixins: ['LayoutInvalidator']
+	mixins: ['enyo.LayoutInvalidator']
 });
