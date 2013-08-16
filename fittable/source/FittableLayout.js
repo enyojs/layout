@@ -19,13 +19,13 @@
 enyo.kind({
 	name: 'enyo.FittableLayout',
 	kind: 'Layout',
-	
+
 	//* @protected
 	calcFitIndex: function() {
 		var aChildren = this.container.children,
 			oChild,
 			n;
-			
+
 		for (n=0; n<aChildren.length; n++) {
 			oChild = aChildren[n];
 			if (oChild.fit && oChild.showing) {
@@ -33,57 +33,57 @@ enyo.kind({
 			}
 		}
 	},
-	
+
 	getFitControl: function() {
 		var aChildren = this.container.children,
 			oFitChild = aChildren[this.fitIndex];
-			
+
 		if (!(oFitChild && oFitChild.fit && oFitChild.showing)) {
 			this.fitIndex = this.calcFitIndex();
 			oFitChild = aChildren[this.fitIndex];
 		}
 		return oFitChild;
 	},
-	
+
 	isRTL: function() {
 		return enyo.dom.getComputedStyle(this.container.hasNode())['direction'] == 'rtl';
 	},
-	
+
 	getFirstChild: function() {
 		var aChildren = this.getShowingChildren();
-		
+
 		if (this.isRTL()) { return aChildren[aChildren.length - 1]; }
 		return aChildren[0];
 	},
-	
+
 	getLastChild: function() {
 		var aChildren = this.getShowingChildren();
-		
+
 		if (this.isRTL()) { return aChildren[0]; }
-		return aChildren[aChildren.length - 1];	
+		return aChildren[aChildren.length - 1];
 	},
-	
+
 	getShowingChildren: function() {
 		var a = [],
 			n = 0,
 			aChildren = this.container.children,
 			nLength   = aChildren.length;
-			
+
 		for (;n<nLength; n++) {
 			if (aChildren[n].showing) {
 				a.push(aChildren[n]);
 			}
 		}
-		
+
 		return a;
 	},
-	
+
 	_reflow: function(sMeasureName, sClienMeasure, sAttrBefore, sAttrAfter) {
 		this.container.addRemoveClass('enyo-stretch', !this.container.noStretch);
-		
+
 		var oFitChild       = this.getFitControl(),
 			oContainerNode  = this.container.hasNode(),  // Container node
-			nTotalSize     = 0,                         // Total container width or height without padding
+			nTotalSize     = 0,                          // Total container width or height without padding
 			nBeforeOffset   = 0,                         // Offset before fit child
 			nAfterOffset    = 0,                         // Offset after fit child
 			oPadding,                                    // Object containing t,b,r,l paddings
@@ -91,31 +91,31 @@ enyo.kind({
 			oLastChild,
 			oFirstChild,
 			nFitSize;
-			
+
 		if (!oFitChild || !oContainerNode) { return; }
-		
+
 		oPadding   = enyo.dom.calcPaddingExtents(oContainerNode);
 		oBounds    = oFitChild.getBounds();
 		nTotalSize = oContainerNode[sClienMeasure] - (oPadding[sAttrBefore] + oPadding[sAttrAfter]);
-		
+
 		if (this.isRTL()) {
 			oFirstChild  = this.getFirstChild();
 			nAfterOffset = nTotalSize - (oBounds[sAttrBefore] + oBounds[sMeasureName]);
-			
+
 			var nMarginBeforeFirstChild = enyo.dom.getComputedBoxValue(oFirstChild.hasNode(), 'margin', sAttrBefore) || 0;
-			
+
 			if (oFirstChild == oFitChild) {
 				nBeforeOffset = nMarginBeforeFirstChild;
 			} else {
 				var oFirstChildBounds      = oFirstChild.getBounds(),
 					nSpaceBeforeFirstChild = oFirstChildBounds[sAttrBefore];
-					
+
 				nBeforeOffset = oBounds[sAttrBefore] + nMarginBeforeFirstChild - nSpaceBeforeFirstChild;
 			}
 		} else {
 			oLastChild    = this.getLastChild();
 			nBeforeOffset = oBounds[sAttrBefore] - (oPadding[sAttrBefore] || 0);
-			
+
 			var nMarginAfterLastChild = enyo.dom.getComputedBoxValue(oLastChild.hasNode(), 'margin', sAttrAfter) || 0;
 
 			if (oLastChild == oFitChild) {
@@ -124,7 +124,7 @@ enyo.kind({
 				var oLastChildBounds = oLastChild.getBounds(),
 					nFitChildEnd     = oBounds[sAttrBefore] + oBounds[sMeasureName],
 					nLastChildEnd    = oLastChildBounds[sAttrBefore] + oLastChildBounds[sMeasureName] +  nMarginAfterLastChild;
-					
+
 				nAfterOffset = nLastChildEnd - nFitChildEnd;
 			}
 		}
@@ -132,7 +132,7 @@ enyo.kind({
 		nFitSize = nTotalSize - (nBeforeOffset + nAfterOffset);
 		oFitChild.applyStyle(sMeasureName, nFitSize + 'px');
 	},
-	
+
 	//* @public
 	/**
 		Updates the layout to reflect any changes to contained components or the
@@ -140,7 +140,7 @@ enyo.kind({
 	*/
 	reflow: function() {
 		if (this.orient == 'h') {
-			this._reflow('width', 'clientWidth', 'left', 'right'); 
+			this._reflow('width', 'clientWidth', 'left', 'right');
 		} else {
 			this._reflow('height', 'clientHeight', 'top', 'bottom');
 		}
@@ -168,7 +168,7 @@ enyo.kind({
 	orient      : 'h',
 	layoutClass : 'enyo-fittable-columns-layout'
 });
- 
+
 
 /**
 	_enyo.FittableRowsLayout_ provides a container in which items are laid out
