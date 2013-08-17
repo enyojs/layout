@@ -1,52 +1,56 @@
 ﻿/**
-	_enyo.ContextualLayout_ provides the base positioning logic for
-	a contextual layout strategy. This layout strategy is intended
-	for a popup in a decorator/activator scenario where it will be positioned
-	relative to the activator element. For example
-	<a href="#onyx.ContextualPopup">onyx.ContextualPopup</a> would be used like so:
+    _enyo.ContextualLayout_ provides the base positioning logic for a contextual
+    layout strategy. This layout strategy is intended for use with a popup in a
+    decorator/activator scenario, where the popup will be positioned relative to
+    the activator. For example, [onyx.ContextualPopup](#onyx.ContextualPopup),
+    would be used like so:
 
-	{kind: "onyx.ContextualPopupDecorator", components: [
-		{content: "Show Popup"},
-		{kind: "onyx.ContextualPopup",
-			title:"Sample Popup",
-			actionButtons:[
-				{content:"Button 1", classes: "onyx-button-warning"},
-				{content:"Button 2"}
-			],
-			components: [
-				{content:"Sample component in popup"}
-			]
-		}
-	]}
+        {kind: "onyx.ContextualPopupDecorator", components: [
+            {content: "Show Popup"},
+            {kind: "onyx.ContextualPopup",
+                title: "Sample Popup",
+                actionButtons: [
+                    {content: "Button 1", classes: "onyx-button-warning"},
+                    {content: "Button 2"}
+                ],
+                components: [
+                    {content: "Sample component in popup"}
+                ]
+            }
+        ]}
 
-	where the decorator contains the popup & activator, with the activator being the
-	first child component (ie "Show Popup" button). The definition of
-	<a href="#onyx.ContextualPopup">onyx.ContextualPopup</a> sets it's layoutKind
-	property to	<a href="#enyo.ContextualLayout">enyo.ContextualLayout</a>.
+    The decorator contains the popup and activator, with the activator being the
+    first child component (i.e., the "Show Popup" button). The contextual layout
+    strategy is applied because, in the definition of _onyx.ContextualPopup_,
+    its _layoutKind_ property is set to _enyo.ContextualLayout_.
 
-	Note that ContextualLayout expects the popup that uses it as it's layoutKind to
-	declare some specific properties including:
+    Note that a popup using ContextualLayout as its _layoutKind_ is expected to
+    declare several specific properties:
 
-		vertFlushMargin: the vertical flush layout margin, ie how close a popup's edge
-			can come to the vertical screen edge before being laid out "flush" style
+    * _vertFlushMargin_: The vertical flush layout margin, i.e., how close the
+        popup's edge may come to the vertical screen edge (in pixels) before
+        being laid out "flush" style
 
-		horizFlushMargin: the horizontal flush layout margin, ie how close a popup's edge
-			can come to the horizontal screen edge before being laid out "flush" style
+    * _horizFlushMargin_: The horizontal flush layout margin, i.e., how close
+        the popup's edge may come to the horizontal screen edge (in pixels)
+        before being laid out "flush" style
 
-		widePopup: a popup wider than this value is considered wide (for layout calculation purposes)
+    * _widePopup_: A popup wider than this value (in pixels) is considered wide
+        (for layout calculation purposes)
 
-		longPopup: a popup longer than this value is considered long (for layout calculation purposes)
+    * _longPopup_: A popup longer than this value (in pixels) is considered long
+        (for layout calculation purposes)
 
-		horizBuffer: do not allow horizontal flush popups past this space on left/right screen edge
+    * _horizBuffer_: Horizontal flush popups are not allowed within this buffer
+        area (in pixels) on the left or right screen edge
 
-		activatorOffset: this is the offset on the page of the popup activator. It should be calculated
-			whenever the popup is to be shown.
-
+    * _activatorOffset_: The popup activator's offset on the page (in pixels);
+        this should be calculated whenever the popup is to be shown
 */
 enyo.kind({
 	name: "enyo.ContextualLayout",
 	kind: "Layout",
-	//* Adjusts the popup position + nub location & direction
+	//* Adjusts the popup position, as well as the nub location and direction.
 	adjustPosition: function() {
 		if (this.container.showing && this.container.hasNode()) {
 			/****ContextualPopup positioning rules:
