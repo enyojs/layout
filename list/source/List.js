@@ -193,6 +193,7 @@ enyo.kind({
 		this.orientV = this.orient == "v";
 		this.vertical = this.orientV ? "default" : "hidden";
 		this.inherited(arguments);
+		if (this.rtl && !this.orientV) { this.setBottomUp(!this.bottomUp); }
 		this.$.generator.orient = this.orient;
 		this.getStrategy().translateOptimized = true;
 		this.pageBound = this.orientV ? "top" : "left";
