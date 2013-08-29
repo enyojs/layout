@@ -5,7 +5,6 @@
 .enyo-list-port {
 	overflow: hidden;
 	position: relative;
-	height: 1000000px;
 }
 
 .enyo-list-holdingarea {
@@ -16,6 +15,13 @@
 
 .enyo-list-port.horizontal {
 	white-space: nowrap;
+	width:  1000000px;
+	height: 1000000px;
+}
+
+.enyo-list-port.vertical {
+	white-space: nowrap;
+	height: 1000000px;
 }
 
 .enyo-list-page {

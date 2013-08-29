@@ -197,6 +197,7 @@ enyo.kind({
 		this.getStrategy().translateOptimized = true;
 		this.pageBound = this.orientV ? "top" : "left";
 		this.$.port.addRemoveClass("horizontal",!this.orientV);
+		this.$.port.addRemoveClass("vertical",this.orientV);
 		this.$.page0.addRemoveClass("vertical",this.orientV);
 		this.$.page1.addRemoveClass("vertical",this.orientV);
 		this.bottomUpChanged();
