@@ -50,16 +50,20 @@ enyo.kind({
 		{name: "DockRightArranger", arrangerKind: "DockRightArranger", classes: "panels-sample-collapsible"}
 	],
 	bgcolors: ["red", "orange", "yellow", "green", "blue", "indigo", "violet"],
-	create: function() {
-		this.inherited(arguments);
-		for (var i=0; i<this.panelArrangers.length; i++) {
-			this.$.arrangerPicker.createComponent({content:this.panelArrangers[i].name});
-		}
-		this.panelCount=this.$.samplePanels.getPanels().length;
-	},
-	rendered: function() {
-		this.inherited(arguments);
-	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			for (var i=0; i<this.panelArrangers.length; i++) {
+				this.$.arrangerPicker.createComponent({content:this.panelArrangers[i].name});
+			}
+			this.panelCount=this.$.samplePanels.getPanels().length;
+		};
+	}),
+	rendered: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+		};
+	}),
 	arrangerSelected: function(inSender, inEvent) {
 		var sp = this.$.samplePanels;
 		var p = this.panelArrangers[inEvent.originator.indexInContainer()-1];

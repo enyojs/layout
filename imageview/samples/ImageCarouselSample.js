@@ -12,22 +12,24 @@ enyo.kind({
 		]},
 		{name:"carousel", kind:"ImageCarousel", fit:true, onload:"load", onZoom:"zoom", onerror:"error", onTransitionStart: "transitionStart", onTransitionFinish: "transitionFinish"}
 	],
-	create: function() {
-		this.inherited(arguments);
-		this.urls = [
-			"assets/mercury.jpg",
-			"assets/venus.jpg",
-			"assets/earth.jpg",
-			"assets/mars.jpg",
-			"assets/jupiter.jpg",
-			"assets/saturn.jpg",
-			"assets/uranus.jpg",
-			"assets/neptune.jpg"
-		];
-		// although we're specifying all the image urls now, the images themselves
-		// only get created/loaded as needed
-		this.$.carousel.setImages(this.urls);
-	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.urls = [
+				"assets/mercury.jpg",
+				"assets/venus.jpg",
+				"assets/earth.jpg",
+				"assets/mars.jpg",
+				"assets/jupiter.jpg",
+				"assets/saturn.jpg",
+				"assets/uranus.jpg",
+				"assets/neptune.jpg"
+			];
+			// although we're specifying all the image urls now, the images themselves
+			// only get created/loaded as needed
+			this.$.carousel.setImages(this.urls);
+		};
+	}),
 	load: function(inSender, inEvent) {
 		//enyo.log("image loaded: " + inEvent.originator.src);
 	},

@@ -102,15 +102,17 @@ enyo.kind({
 		var i = Math.abs(inI0 % this.c$.length);
 		return inA0[i].left - inA1[i].left;
 	},
-	destroy: function() {
-		var c$ = this.container.getPanels();
-		for (var i=0, c; (c=c$[i]); i++) {
-			enyo.Arranger.positionControl(c, {left: null, top: null});
-			c.applyStyle("top", null);
-			c.applyStyle("bottom", null);
-			c.applyStyle("left", null);
-			c.applyStyle("width", null);
-		}
-		this.inherited(arguments);
-	}
+	destroy: enyo.inherit(function(sup) {
+		return function() {
+			var c$ = this.container.getPanels();
+			for (var i=0, c; (c=c$[i]); i++) {
+				enyo.Arranger.positionControl(c, {left: null, top: null});
+				c.applyStyle("top", null);
+				c.applyStyle("bottom", null);
+				c.applyStyle("left", null);
+				c.applyStyle("width", null);
+			}
+			sup.apply(this, arguments);
+		};
+	})
 });

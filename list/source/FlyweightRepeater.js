@@ -79,13 +79,15 @@ enyo.kind({
 		{kind: "Selection", onSelect: "selectDeselect", onDeselect: "selectDeselect"},
 		{name: "client"}
 	],
-	create: function() {
-		this.inherited(arguments);
-		this.noSelectChanged();
-		this.multiSelectChanged();
-		this.clientClassesChanged();
-		this.clientStyleChanged();
-	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.noSelectChanged();
+			this.multiSelectChanged();
+			this.clientClassesChanged();
+			this.clientStyleChanged();
+		};
+	}),
 	noSelectChanged: function() {
 		if (this.noSelect) {
 			this.$.selection.clear();
@@ -104,37 +106,41 @@ enyo.kind({
 		this.doSetupItem({index: inIndex, selected: this.isSelected(inIndex)});
 	},
 	//* Renders the list.
-	generateChildHtml: function() {
-		var h = "";
-		this.index = null;
-		// note: can supply a rowOffset
-		// and indicate if rows should be rendered top down or bottomUp
-		for (var i=0, r=0; i<this.count; i++) {
-			r = this.rowOffset + (this.bottomUp ? this.count - i-1 : i);
-			this.setupItem(r);
-			this.$.client.setAttribute("data-enyo-index", r);
-			if (this.orient == "h") {
-				this.$.client.setStyle("display:inline-block;");
+	generateChildHtml: enyo.inherit(function(sup) {
+		return function() {
+			var h = "";
+			this.index = null;
+			// note: can supply a rowOffset
+			// and indicate if rows should be rendered top down or bottomUp
+			for (var i=0, r=0; i<this.count; i++) {
+				r = this.rowOffset + (this.bottomUp ? this.count - i-1 : i);
+				this.setupItem(r);
+				this.$.client.setAttribute("data-enyo-index", r);
+				if (this.orient == "h") {
+					this.$.client.setStyle("display:inline-block;");
+				}
+				h += sup.apply(this, arguments);
+				this.$.client.teardownRender();
 			}
-			h += this.inherited(arguments);
-			this.$.client.teardownRender();
-		}
-		return h;
-	},
+			return h;
+		};
+	}),
 	previewDomEvent: function(inEvent) {
 		var i = this.index = this.rowForEvent(inEvent);
 		inEvent.rowIndex = inEvent.index = i;
 		inEvent.flyweight = this;
 	},
-	decorateEvent: function(inEventName, inEvent, inSender) {
-		// decorate event with index found via dom iff event does not already contain an index.
-		var i = (inEvent && inEvent.index != null) ? inEvent.index : this.index;
-		if (inEvent && i != null) {
-			inEvent.index = i;
-			inEvent.flyweight = this;
-		}
-		this.inherited(arguments);
-	},
+	decorateEvent: enyo.inherit(function(sup) {
+		return function(inEventName, inEvent, inSender) {
+			// decorate event with index found via dom iff event does not already contain an index.
+			var i = (inEvent && inEvent.index != null) ? inEvent.index : this.index;
+			if (inEvent && i != null) {
+				inEvent.index = i;
+				inEvent.flyweight = this;
+			}
+			sup.apply(this, arguments);
+		};
+	}),
 	tap: function(inSender, inEvent) {
 		// ignore taps if selecting is disabled or if they don't target a row
 		if (this.noSelect || inEvent.index === -1) {

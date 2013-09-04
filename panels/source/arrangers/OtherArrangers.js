@@ -21,10 +21,12 @@ enyo.kind({
 	axisSize: "width",
 	offAxisSize: "height",
 	axisPosition: "left",
-	constructor: function() {
-		this.inherited(arguments);
-		this.margin = this.container.margin != null ? this.container.margin : this.margin;
-	},
+	constructor: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.margin = this.container.margin != null ? this.container.margin : this.margin;
+		};
+	}),
 	size: function() {
 		var c$ = this.container.getPanels();
 		var port = this.containerBounds[this.axisSize];
@@ -36,30 +38,32 @@ enyo.kind({
 			c.setBounds(b);
 		}
 	},
-	start: function() {
-		this.inherited(arguments);
+	start: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
 
-		var s = this.container.fromIndex;
-		var f = this.container.toIndex;
-		var c$ = this.getOrderedControls(f);
-		var o = Math.floor(c$.length/2);
+			var s = this.container.fromIndex;
+			var f = this.container.toIndex;
+			var c$ = this.getOrderedControls(f);
+			var o = Math.floor(c$.length/2);
 
-		for (var i=0, c; (c=c$[i]); i++) {
-			if (s > f){
-				if (i == (c$.length - o)){
-					c.applyStyle("z-index", 0);
+			for (var i=0, c; (c=c$[i]); i++) {
+				if (s > f){
+					if (i == (c$.length - o)){
+						c.applyStyle("z-index", 0);
+					} else {
+						c.applyStyle("z-index", 1);
+					}
 				} else {
-					c.applyStyle("z-index", 1);
-				}
-			} else {
-				if (i == (c$.length-1 - o)){
-					c.applyStyle("z-index", 0);
-				} else {
-					c.applyStyle("z-index", 1);
+					if (i == (c$.length-1 - o)){
+						c.applyStyle("z-index", 0);
+					} else {
+						c.applyStyle("z-index", 1);
+					}
 				}
 			}
-		}
-	},
+		};
+	}),
 	arrange: function(inC, inIndex) {
 		var i,c,b;
 		if (this.container.getPanels().length==1){
@@ -88,18 +92,20 @@ enyo.kind({
 		//enyo.log(inI0, inI1);
 		return inA0[i][this.axisPosition] - inA1[i][this.axisPosition];
 	},
-	destroy: function() {
-		var c$ = this.container.getPanels();
-		for (var i=0, c; (c=c$[i]); i++) {
-			enyo.Arranger.positionControl(c, {left: null, top: null});
-			enyo.Arranger.opacifyControl(c, 1);
-			c.applyStyle("left", null);
-			c.applyStyle("top", null);
-			c.applyStyle("height", null);
-			c.applyStyle("width", null);
-		}
-		this.inherited(arguments);
-	}
+	destroy: enyo.inherit(function(sup) {
+		return function() {
+			var c$ = this.container.getPanels();
+			for (var i=0, c; (c=c$[i]); i++) {
+				enyo.Arranger.positionControl(c, {left: null, top: null});
+				enyo.Arranger.opacifyControl(c, 1);
+				c.applyStyle("left", null);
+				c.applyStyle("top", null);
+				c.applyStyle("height", null);
+				c.applyStyle("width", null);
+			}
+			sup.apply(this, arguments);
+		};
+	})
 });
 
 //* @public
@@ -170,28 +176,32 @@ enyo.kind({
 			this.arrangeControl(c, {left: x, top: y});
 		}
 	},
-	start: function() {
-		this.inherited(arguments);
-		var c$ = this.getOrderedControls(this.container.toIndex);
-		for (var i=0, c; (c=c$[i]); i++) {
-			c.applyStyle("z-index", c$.length - i);
-		}
-	},
+	start: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			var c$ = this.getOrderedControls(this.container.toIndex);
+			for (var i=0, c; (c=c$[i]); i++) {
+				c.applyStyle("z-index", c$.length - i);
+			}
+		};
+	}),
 	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
 		return this.controlWidth;
 	},
-	destroy: function() {
-		var c$ = this.container.getPanels();
-		for (var i=0, c; (c=c$[i]); i++) {
-			c.applyStyle("z-index", null);
-			enyo.Arranger.positionControl(c, {left: null, top: null});
-			c.applyStyle("left", null);
-			c.applyStyle("top", null);
-			c.applyStyle("height", null);
-			c.applyStyle("width", null);
-		}
-		this.inherited(arguments);
-	}
+	destroy: enyo.inherit(function(sup) {
+		return function() {
+			var c$ = this.container.getPanels();
+			for (var i=0, c; (c=c$[i]); i++) {
+				c.applyStyle("z-index", null);
+				enyo.Arranger.positionControl(c, {left: null, top: null});
+				c.applyStyle("left", null);
+				c.applyStyle("top", null);
+				c.applyStyle("height", null);
+				c.applyStyle("width", null);
+			}
+			sup.apply(this, arguments);
+		};
+	})
 });
 
 //* @public
@@ -237,22 +247,26 @@ enyo.kind({
 			}
 		}
 	},
-	flowControl: function(inControl, inA) {
-		this.inherited(arguments);
-		enyo.Arranger.opacifyControl(inControl, inA.top % this.colHeight !== 0 ? 0.25 : 1);
-	},
+	flowControl: enyo.inherit(function(sup) {
+		return function(inControl, inA) {
+			sup.apply(this, arguments);
+			enyo.Arranger.opacifyControl(inControl, inA.top % this.colHeight !== 0 ? 0.25 : 1);
+		};
+	}),
 	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
 		return this.colWidth;
 	},
-	destroy: function() {
-		var c$ = this.container.getPanels();
-		for (var i=0, c; (c=c$[i]); i++) {
-			enyo.Arranger.positionControl(c, {left: null, top: null});
-			c.applyStyle("left", null);
-			c.applyStyle("top", null);
-			c.applyStyle("height", null);
-			c.applyStyle("width", null);
-		}
-		this.inherited(arguments);
-	}
+	destroy: enyo.inherit(function(sup) {
+		return function() {
+			var c$ = this.container.getPanels();
+			for (var i=0, c; (c=c$[i]); i++) {
+				enyo.Arranger.positionControl(c, {left: null, top: null});
+				c.applyStyle("left", null);
+				c.applyStyle("top", null);
+				c.applyStyle("height", null);
+				c.applyStyle("width", null);
+			}
+			sup.apply(this, arguments);
+		};
+	})
 });

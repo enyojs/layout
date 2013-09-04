@@ -32,10 +32,12 @@ enyo.kind({
 		{from: ".subCaption", to: ".$.subCaption.content"},
 		{from: ".subCaption", to: ".$.subCaption.showing", kind: "enyo.BooleanBinding"}
 	],
-	create: function() {
-		this.inherited(arguments);
-		this.selectedChanged();
-	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.selectedChanged();
+		};
+	}),
 	selectedChanged: function() {
 		this.addRemoveClass("selected", this.selected);
 	},

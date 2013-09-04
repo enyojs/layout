@@ -102,7 +102,7 @@ enyo.kind(
                 normalized to the same height. If either _itemFluidWidth_ or
                 _itemFixedSize_ is set to true, this setting will be ignored
                 (i.e., rows will not be normalized for improved performance),
-                since we already know that the items have the same height. 
+                since we already know that the items have the same height.
             */
             normalizeRows: false
         },
@@ -128,19 +128,21 @@ enyo.kind(
             this.setCount(count);
             this.reset();
         },
-        create: function() {
-            this._setComponents();
-            this.inherited(arguments);
-            this.itemFluidWidthChanged();
-            this.itemFixedSizeChanged();
-            this.itemMinWidthChanged();
-            this.itemMinHeightChanged();
-            this.itemWidthChanged();
-            this.itemHeightChanged();
-            this.itemSpacingChanged();
-            this.normalizeRowsChanged();
-            this.$.generator.setClientClasses("enyo-gridlist-row");
-        },
+        create: enyo.inherit(function(sup) {
+            return function() {
+                this._setComponents();
+                sup.apply(this, arguments);
+                this.itemFluidWidthChanged();
+                this.itemFixedSizeChanged();
+                this.itemMinWidthChanged();
+                this.itemMinHeightChanged();
+                this.itemWidthChanged();
+                this.itemHeightChanged();
+                this.itemSpacingChanged();
+                this.normalizeRowsChanged();
+                this.$.generator.setClientClasses("enyo-gridlist-row");
+            };
+        }),
         // Relays the published-property changes over to the GridFlyweightRepeater.
         itemFluidWidthChanged: function() {
             this.$.generator.itemFluidWidth = this.itemFluidWidth;
@@ -193,10 +195,12 @@ enyo.kind(
             this.pageBound = 'top';
         },
         //* @protected
-        reflow: function() {
-            this._calculateItemsPerRow();
-            this.inherited(arguments);
-        },
+        reflow: enyo.inherit(function(sup) {
+            return function() {
+                this._calculateItemsPerRow();
+                sup.apply(this, arguments);
+            };
+        }),
         //* @protected
         _calculateItemsPerRow: function() {
             var n = this.hasNode();

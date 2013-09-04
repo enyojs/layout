@@ -60,10 +60,12 @@ enyo.kind({
 			]
 		}
 	],
-	rendered: function() {
-		this.inherited(arguments);
-		this.populateList();
-	},
+	rendered: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.populateList();
+		};
+	}),
 	listReorder: function(inSender, inEvent) {
 		var movedItem = enyo.clone(this.data[inEvent.reorderFrom]);
 		this.data.splice(inEvent.reorderFrom,1);

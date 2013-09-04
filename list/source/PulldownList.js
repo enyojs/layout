@@ -67,19 +67,23 @@ enyo.kind({
 	pulledIconClass: "enyo-puller-arrow enyo-puller-arrow-up",
 	loadingIconClass: "",
 	//* @protected
-	create: function() {
-		var p = {kind: "Puller", showing: false, text: this.loadingMessage, iconClass: this.loadingIconClass, onCreate: "setPully"};
-		this.listTools.splice(0, 0, p);
-		this.inherited(arguments);
-		this.setPulling();
-	},
-	initComponents: function() {
-		this.createChrome(this.pulldownTools);
-		this.accel = enyo.dom.canAccelerate();
-		this.translation = this.accel ? "translate3d" : "translate";
-		this.strategyKind = this.resetStrategyKind();
-		this.inherited(arguments);
-	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			var p = {kind: "Puller", showing: false, text: this.loadingMessage, iconClass: this.loadingIconClass, onCreate: "setPully"};
+			this.listTools.splice(0, 0, p);
+			sup.apply(this, arguments);
+			this.setPulling();
+		};
+	}),
+	initComponents: enyo.inherit(function(sup) {
+		return function() {
+			this.createChrome(this.pulldownTools);
+			this.accel = enyo.dom.canAccelerate();
+			this.translation = this.accel ? "translate3d" : "translate";
+			this.strategyKind = this.resetStrategyKind();
+			sup.apply(this, arguments);
+		};
+	}),
 	// Temporarily use TouchScrollStrategy on iOS devices (see ENYO-1714)
 	resetStrategyKind: function() {
 		return (enyo.platform.android >= 3)
@@ -94,33 +98,35 @@ enyo.kind({
 		this.firedPull = false;
 		this.firedPullCancel = false;
 	},
-	scroll: function(inSender, inEvent) {
-		var r = this.inherited(arguments);
-		if (this.completingPull) {
-			this.pully.setShowing(false);
-		}
-		var s = this.getStrategy().$.scrollMath || this.getStrategy();
-		var over = -1*this.getScrollTop();
-		if (s.isInOverScroll() && over > 0) {
-			enyo.dom.transformValue(this.$.pulldown, this.translation, "0," + over + "px" + (this.accel ? ",0" : ""));
-			if (!this.firedPullStart) {
-				this.firedPullStart = true;
-				this.pullStart();
-				this.pullHeight = this.$.pulldown.getBounds().height;
+	scroll: enyo.inherit(function(sup) {
+		return function(inSender, inEvent) {
+			var r = sup.apply(this, arguments);
+			if (this.completingPull) {
+				this.pully.setShowing(false);
 			}
-			if (over > this.pullHeight && !this.firedPull) {
-				this.firedPull = true;
-				this.firedPullCancel = false;
-				this.pull();
+			var s = this.getStrategy().$.scrollMath || this.getStrategy();
+			var over = -1*this.getScrollTop();
+			if (s.isInOverScroll() && over > 0) {
+				enyo.dom.transformValue(this.$.pulldown, this.translation, "0," + over + "px" + (this.accel ? ",0" : ""));
+				if (!this.firedPullStart) {
+					this.firedPullStart = true;
+					this.pullStart();
+					this.pullHeight = this.$.pulldown.getBounds().height;
+				}
+				if (over > this.pullHeight && !this.firedPull) {
+					this.firedPull = true;
+					this.firedPullCancel = false;
+					this.pull();
+				}
+				if (this.firedPull && !this.firedPullCancel && over < this.pullHeight) {
+					this.firedPullCancel = true;
+					this.firedPull = false;
+					this.pullCancel();
+				}
 			}
-			if (this.firedPull && !this.firedPullCancel && over < this.pullHeight) {
-				this.firedPullCancel = true;
-				this.firedPull = false;
-				this.pullCancel();
-			}
-		}
-		return r;
-	},
+			return r;
+		};
+	}),
 	scrollStopHandler: function() {
 		if (this.completingPull) {
 			this.completingPull = false;
@@ -187,12 +193,14 @@ enyo.kind({
 		{name: "icon"},
 		{name: "text", tag: "span", classes: "enyo-puller-text"}
 	],
-	create: function() {
-		this.inherited(arguments);
-		this.doCreate();
-		this.textChanged();
-		this.iconClassChanged();
-	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.doCreate();
+			this.textChanged();
+			this.iconClassChanged();
+		};
+	}),
 	textChanged: function() {
 		this.$.text.setContent(this.text);
 	},

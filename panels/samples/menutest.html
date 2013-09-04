@@ -47,14 +47,16 @@
 			]},
 			{fit:true}
 		],
-		create: function() {
-			this.inherited(arguments);
-			this.$.badMenu.createComponent({content:"Foo"});
-			this.$.badMenu.createComponent({content:"Bar"});
-			this.$.badMenu.createComponent({content:"Boom"});
-			this.$.badMenu.createComponent({content:"Boom"});
-			this.$.badMenu.createComponent({content:"Pow"});
-		}
+		create: enyo.inherit(function(sup) {
+			return function() {
+				sup.apply(this, arguments);
+				this.$.badMenu.createComponent({content:"Foo"});
+				this.$.badMenu.createComponent({content:"Bar"});
+				this.$.badMenu.createComponent({content:"Boom"});
+				this.$.badMenu.createComponent({content:"Boom"});
+				this.$.badMenu.createComponent({content:"Pow"});
+			};
+		})
 	});
 	new Test().renderInto(document.body);
 </script>

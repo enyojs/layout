@@ -24,38 +24,42 @@ enyo.kind({
 	subKindComponents: [
 		{kind:"Image", ondown: "down", style: "vertical-align: text-top;"}
 	],
-	create: function() {
-		// move components (most likely imageViewPins) to unscaledComponents
-		this.unscaledComponents = this.components;
-		this.components = [];
+	create: enyo.inherit(function(sup) {
+		return function() {
+			// move components (most likely imageViewPins) to unscaledComponents
+			this.unscaledComponents = this.components;
+			this.components = [];
 
-		//amend kindComponents
-		this.kindComponents[1].components[0].components = this.subKindComponents;
+			//amend kindComponents
+			this.kindComponents[1].components[0].components = this.subKindComponents;
 
-		this.inherited(arguments);
+			sup.apply(this, arguments);
 
-		// set content as inline-block to mimic behaviour of an image
-		this.$.content.applyStyle("display", "inline-block");
+			// set content as inline-block to mimic behaviour of an image
+			this.$.content.applyStyle("display", "inline-block");
 
-		//offscreen buffer image to get initial image dimensions
-		//before displaying a scaled down image that can fit in the container
-		this.bufferImage = new Image();
-		this.bufferImage.onload = enyo.bind(this, "imageLoaded");
-		this.bufferImage.onerror = enyo.bind(this, "imageError");
-		this.srcChanged();
-		//	Needed to kickoff pin redrawing (otherwise they wont' redraw on intitial scroll)
-		if(this.getStrategy().$.scrollMath) {
-			this.getStrategy().$.scrollMath.start();
-		}
-	},
-	destroy: function() {
-		if (this.bufferImage) {
-			this.bufferImage.onerror = undefined;
-			this.bufferImage.onerror = undefined;
-			delete this.bufferImage;
-		}
-		this.inherited(arguments);
-	},
+			//offscreen buffer image to get initial image dimensions
+			//before displaying a scaled down image that can fit in the container
+			this.bufferImage = new Image();
+			this.bufferImage.onload = enyo.bind(this, "imageLoaded");
+			this.bufferImage.onerror = enyo.bind(this, "imageError");
+			this.srcChanged();
+			//	Needed to kickoff pin redrawing (otherwise they wont' redraw on intitial scroll)
+			if(this.getStrategy().$.scrollMath) {
+				this.getStrategy().$.scrollMath.start();
+			}
+		};
+	}),
+	destroy: enyo.inherit(function(sup) {
+		return function() {
+			if (this.bufferImage) {
+				this.bufferImage.onerror = undefined;
+				this.bufferImage.onerror = undefined;
+				delete this.bufferImage;
+			}
+			sup.apply(this, arguments);
+		};
+	}),
 	down: function(inSender, inEvent) {
 		// Fix to prevent image drag in Firefox
 		inEvent.preventDefault();

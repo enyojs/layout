@@ -106,39 +106,43 @@ enyo.kind({
 			]
 		}
 	],
-	create: function() {
-		// remember scale keyword
-		this.scaleKeyword = this.scale;
+	create: enyo.inherit(function(sup) {
+		return function() {
+			// remember scale keyword
+			this.scaleKeyword = this.scale;
 
-		// Cache instance components
-		var instanceComponents = this.components;
-		this.components = [];
-		this.inherited(arguments);
-		this.$.content.applyStyle("width", this.contentWidth + "px");
-		this.$.content.applyStyle("height", this.contentHeight + "px");
+			// Cache instance components
+			var instanceComponents = this.components;
+			this.components = [];
+			sup.apply(this, arguments);
+			this.$.content.applyStyle("width", this.contentWidth + "px");
+			this.$.content.applyStyle("height", this.contentHeight + "px");
 
-		if(this.unscaledComponents){
-			this.createComponents(this.unscaledComponents);
-		}
+			if(this.unscaledComponents){
+				this.createComponents(this.unscaledComponents);
+			}
 
-		// Change controlParentName so PanZoomView instance components are created into viewport
-		this.controlParentName = "content";
-		this.discoverControlParent();
-		this.createComponents(instanceComponents);
+			// Change controlParentName so PanZoomView instance components are created into viewport
+			this.controlParentName = "content";
+			this.discoverControlParent();
+			this.createComponents(instanceComponents);
 
-		this.canTransform = enyo.dom.canTransform();
-		if(!this.canTransform) {
-			this.$.content.applyStyle("position", "relative");
-		}
-		this.canAccelerate = enyo.dom.canAccelerate();
+			this.canTransform = enyo.dom.canTransform();
+			if(!this.canTransform) {
+				this.$.content.applyStyle("position", "relative");
+			}
+			this.canAccelerate = enyo.dom.canAccelerate();
 
-		//	For panzoomview, disable drags during gesture (to fix flicker: ENYO-1208)
-		this.getStrategy().setDragDuringGesture(false);
-	},
-	rendered: function(){
-		this.inherited(arguments);
-		this.getOriginalScale();
-	},
+			//	For panzoomview, disable drags during gesture (to fix flicker: ENYO-1208)
+			this.getStrategy().setDragDuringGesture(false);
+		};
+	}),
+	rendered: enyo.inherit(function(sup) {
+		return function(){
+			sup.apply(this, arguments);
+			this.getOriginalScale();
+		};
+	}),
 	dragPropagation: function(inSender, inEvent) {
 		// Propagate drag events at the edges of the content as desired by the
 		// verticalDragPropagation and horizontalDragPropagation properties
@@ -167,10 +171,12 @@ enyo.kind({
 		inEvent.preventDefault();
 		return true;
 	},
-	resizeHandler: function() {
-		this.inherited(arguments);
-		this.scaleChanged();
-	},
+	resizeHandler: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.scaleChanged();
+		};
+	}),
 	setDimensions: function(inSender, inEvent){
 		this.$.content.applyStyle("width", inEvent.width + "px");
 		this.$.content.applyStyle("height", inEvent.height + "px");

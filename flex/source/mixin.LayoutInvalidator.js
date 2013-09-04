@@ -46,7 +46,7 @@ enyo.LayoutInvalidator = {
 
 	// Causes stack overflow
 	// domStylesChanged: function() {
-	//    this.inherited(arguments);
+	//    sup.apply(this, arguments);
 	//    this.invalidateLayout();
 	// }
 };
