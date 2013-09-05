@@ -2,6 +2,14 @@
 	position: relative;
 }
 
+.enyo-locale-right-to-left .enyo-list {
+	direction: ltr;
+}
+
+.enyo-locale-right-to-left .enyo-list-page > * {
+	direction: rtl;
+}
+
 .enyo-list-port {
 	overflow: hidden;
 	position: relative;
