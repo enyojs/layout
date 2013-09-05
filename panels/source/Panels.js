@@ -376,7 +376,7 @@ enyo.kind({
 		if (this.layout) {
 			this.layout.start();
 		}
-		if (this.sendEvents) {
+		if (sendEvents) {
 			this.fireTransitionStart();
 		}
 	},
@@ -387,7 +387,7 @@ enyo.kind({
 		this.transitionPoints = [];
 		this.fraction = 0;
 		this.fromIndex = this.toIndex = null;
-		if (this.sendEvents) {
+		if (sendEvents) {
 			this.fireTransitionFinish();
 		}
 	},
