@@ -263,7 +263,7 @@ enyo.kind({
 			this.$.animator.stop();
 			if (this.hasNode()) {
 				if (this.animate) {
-					this.startTransition();
+					this.startTransition(true);
 					this.$.animator.play({
 						startValue: this.fraction
 					});
@@ -284,7 +284,7 @@ enyo.kind({
 		}
 		this.fraction = 1;
 		this.stepTransition();
-		this.finishTransition();
+		this.finishTransition(true);
 		return true;
 	},
 	dragstart: function(inSender, inEvent) {
@@ -378,28 +378,32 @@ enyo.kind({
 		if (this.$.animator && this.$.animator.isAnimating()) {
 			this.$.animator.stop();
 		}
-		this.startTransition();
+		this.startTransition(false);
 		this.fraction = 1;
 		this.stepTransition();
-		this.finishTransition();
+		this.finishTransition(false);
 	},
-	startTransition: function() {
+	startTransition: function(sendEvents) {
 		this.fromIndex = this.fromIndex != null ? this.fromIndex : this.lastIndex || 0;
 		this.toIndex = this.toIndex != null ? this.toIndex : this.index;
 		//this.log(this.id, this.fromIndex, this.toIndex);
 		if (this.layout) {
 			this.layout.start();
 		}
-		this.fireTransitionStart();
+		if (sendEvents) {
+			this.fireTransitionStart();
+		}
 	},
-	finishTransition: function() {
+	finishTransition: function(sendEvents) {
 		if (this.layout) {
 			this.layout.finish();
 		}
 		this.transitionPoints = [];
 		this.fraction = 0;
 		this.fromIndex = this.toIndex = null;
-		this.fireTransitionFinish();
+		if (sendEvents) {
+			this.fireTransitionFinish();
+		}
 	},
 	fireTransitionStart: function() {
 		var t = this.startTransitionInfo;
