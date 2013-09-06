@@ -180,40 +180,46 @@ enyo.kind({
 	// Percentage of a swipe needed to force completion of the swipe
 	percentageDraggedThreshold: 0.2,
 
-	importProps: function(inProps) {
-		// force touch on desktop when we have reorderable items to work around
-		// problems with native scroller
-		if (inProps && inProps.reorderable) {
-			this.touch = true;
-		}
-		this.inherited(arguments);
-	},
-	create: function() {
-		this.pageSizes = [];
-		this.orientV = this.orient == "v";
-		this.vertical = this.orientV ? "default" : "hidden";
-		this.inherited(arguments);
-		if (this.rtl && !this.orientV) { this.setBottomUp(!this.bottomUp); }
-		this.$.generator.orient = this.orient;
-		this.getStrategy().translateOptimized = true;
-		this.pageBound = this.orientV ? "top" : "left";
-		this.$.port.addRemoveClass("horizontal",!this.orientV);
-		this.$.port.addRemoveClass("vertical",this.orientV);
-		this.$.page0.addRemoveClass("vertical",this.orientV);
-		this.$.page1.addRemoveClass("vertical",this.orientV);
-		this.bottomUpChanged();
-		this.noSelectChanged();
-		this.multiSelectChanged();
-		this.toggleSelectedChanged();
-		// setup generator to default to "full-list" values
-		this.$.generator.setRowOffset(0);
-		this.$.generator.setCount(this.count);
-	},
-	initComponents: function() {
-		this.createReorderTools();
-		this.inherited(arguments);
-		this.createSwipeableComponents();
-	},
+	importProps: enyo.inherit(function(sup) {
+		return function(inProps) {
+			// force touch on desktop when we have reorderable items to work around
+			// problems with native scroller
+			if (inProps && inProps.reorderable) {
+				this.touch = true;
+			}
+			sup.apply(this, arguments);
+		};
+	}),
+	create: enyo.inherit(function(sup) {
+		return function() {
+			this.pageSizes = [];
+			this.orientV = this.orient == "v";
+			this.vertical = this.orientV ? "default" : "hidden";
+			sup.apply(this, arguments);
+			if (this.rtl && !this.orientV) { this.setBottomUp(!this.bottomUp); }
+			this.$.generator.orient = this.orient;
+			this.getStrategy().translateOptimized = true;
+			this.pageBound = this.orientV ? "top" : "left";
+			this.$.port.addRemoveClass("horizontal",!this.orientV);
+			this.$.port.addRemoveClass("vertical",this.orientV);
+			this.$.page0.addRemoveClass("vertical",this.orientV);
+			this.$.page1.addRemoveClass("vertical",this.orientV);
+			this.bottomUpChanged();
+			this.noSelectChanged();
+			this.multiSelectChanged();
+			this.toggleSelectedChanged();
+			// setup generator to default to "full-list" values
+			this.$.generator.setRowOffset(0);
+			this.$.generator.setCount(this.count);
+		};
+	}),
+	initComponents: enyo.inherit(function(sup) {
+		return function() {
+			this.createReorderTools();
+			sup.apply(this, arguments);
+			this.createSwipeableComponents();
+		};
+	}),
 	createReorderTools: function() {
 		this.createComponent({
 			name: "reorderContainer",

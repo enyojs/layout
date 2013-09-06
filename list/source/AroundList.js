@@ -33,15 +33,17 @@ enyo.kind({
 	//* Block of components to be rendered above the list
 	aboveComponents: null,
 	//* @protected
-	initComponents: function() {
-		this.inherited(arguments);
-		if (this.aboveComponents) {
-			this.$.aboveClient.createComponents(this.aboveComponents, {owner: this.owner});
-		}
-		if (this.belowComponents) {
-			this.$.belowClient.createComponents(this.belowComponents, {owner: this.owner});
-		}
-	},
+	initComponents: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			if (this.aboveComponents) {
+				this.$.aboveClient.createComponents(this.aboveComponents, {owner: this.owner});
+			}
+			if (this.belowComponents) {
+				this.$.belowClient.createComponents(this.belowComponents, {owner: this.owner});
+			}
+		};
+	}),
 	updateMetrics: function() {
 		this.defaultPageSize = this.rowsPerPage * (this.rowSize || 100);
 		this.pageCount = Math.ceil(this.count / this.rowsPerPage);
