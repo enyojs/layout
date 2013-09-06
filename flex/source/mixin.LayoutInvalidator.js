@@ -18,7 +18,7 @@ enyo.LayoutInvalidator = {
 		}
 	},
 
-	rendered: enyo.super(function (sup) {
+	rendered: enyo.inherit(function (sup) {
 		return function() {
 			sup.apply(this, arguments);
 			this.invalidateLayout();
@@ -30,14 +30,14 @@ enyo.LayoutInvalidator = {
 		this.bubble('onInvalidateLayout', {}, this);
 	},
 
-	contentChanged: enyo.super(function (sup) {
+	contentChanged: enyo.inherit(function (sup) {
 		return function() {
 			sup.apply(this, arguments);
 			this.invalidateLayout();
 		};
 	}),
 
-	classesChanged: enyo.super(function (sup) {
+	classesChanged: enyo.inherit(function (sup) {
 		return function() {
 			sup.apply(this, arguments);
 			this.invalidateLayout();

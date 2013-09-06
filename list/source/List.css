@@ -2,10 +2,17 @@
 	position: relative;
 }
 
+.enyo-locale-right-to-left .enyo-list {
+	direction: ltr;
+}
+
+.enyo-locale-right-to-left .enyo-list-page > * {
+	direction: rtl;
+}
+
 .enyo-list-port {
 	overflow: hidden;
 	position: relative;
-	height: 1000000px;
 }
 
 .enyo-list-holdingarea {
@@ -16,6 +23,12 @@
 
 .enyo-list-port.horizontal {
 	white-space: nowrap;
+	width:  1000000px;
+	height: 1000000px;
+}
+
+.enyo-list-port.vertical {
+	height: 1000000px;
 }
 
 .enyo-list-page {
