@@ -18,18 +18,24 @@ enyo.kind({
 	scrollTools: [
 		{name: "jumper", kind: "AlphaJumper"}
 	],
-	initComponents: function() {
-		this.createChrome(this.scrollTools);
-		this.inherited(arguments);
-	},
-	rendered: function() {
-		this.inherited(arguments);
-		this.centerJumper();
-	},
-	resizeHandler: function() {
-		this.inherited(arguments);
-		this.centerJumper();
-	},
+	initComponents: enyo.inherit(function(sup) {
+		return function() {
+			this.createChrome(this.scrollTools);
+			sup.apply(this, arguments);
+		};
+	}),
+	rendered: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.centerJumper();
+		};
+	}),
+	resizeHandler: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.centerJumper();
+		};
+	}),
 	centerJumper: function() {
 		var b = this.getBounds(), sb = this.$.jumper.getBounds();
 		this.$.jumper.applyStyle("top", ((b.height - sb.height) / 2) + "px");

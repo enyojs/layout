@@ -104,30 +104,34 @@ enyo.kind({
 		{name: 'Yulia',       sex: 'female'}
 	],
 
-	create: function() {
-		this.inherited(arguments);
-		// this.$.repeater.setCount(this.people.length);
-	},
+	create: enyo.inherit(function (sup) {
+		return function() {
+			sup.apply(this, arguments);
+			// this.$.repeater.setCount(this.people.length);
+		};
+	}),
 
-	rendered: function() {
-		this.inherited(arguments);
+	rendered: enyo.inherit(function (sup) {
+		return function() {
+			sup.apply(this, arguments);
 
-		var oControl,
-			n       = 0,
-			aColors = [
-				'#668CFF', '#8C66FF', '#D966FF',
-				'#FF66D9', '#FF668C', '#FF8C66',
-				'#295EFF', '#003BEB', '#FFC929',
-				'#EBB000'
-			];
+			var oControl,
+				n       = 0,
+				aColors = [
+					'#668CFF', '#8C66FF', '#D966FF',
+					'#FF66D9', '#FF668C', '#FF8C66',
+					'#295EFF', '#003BEB', '#FFC929',
+					'#EBB000'
+				];
 
-		for (; n<this.$.uberBlock2.children.length; n++) {
-			oControl = this.$.uberBlock2.children[n];
-			enyo.Styles.setStyles(oControl, {'background-color' : aColors[n]});
-		}
+			for (; n<this.$.uberBlock2.children.length; n++) {
+				oControl = this.$.uberBlock2.children[n];
+				enyo.Styles.setStyles(oControl, {'background-color' : aColors[n]});
+			}
 
-		// enyo.Styles.setStyles(this.$.uberBlock1, {'background-color' : aColors[aColors.length - 9]});
-	},
+			// enyo.Styles.setStyles(this.$.uberBlock1, {'background-color' : aColors[aColors.length - 9]});
+		};
+	}),
 
 	markBlocks: function() {
 		enyo.forEach(this.$.uberBlock2.children, function(oControl) {

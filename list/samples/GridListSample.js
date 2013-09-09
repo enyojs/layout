@@ -32,10 +32,12 @@ enyo.kind({
 			]
 		}
 	],
-	rendered: function() {
-		this.inherited(arguments);
-		this.search();
-	},
+	rendered: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.search();
+		};
+	}),
 	setSizeFixed: function() {
 		this.$.list.setItemFixedSize(true);
 		this.$.list.setItemFluidWidth(false);

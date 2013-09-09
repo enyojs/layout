@@ -27,10 +27,12 @@ enyo.kind({
 			]
 		}
 	],
-	rendered: function() {
-		this.inherited(arguments);
-		this.populateList();
-	},
+	rendered: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.populateList();
+		};
+	}),
 	populateList: function() {
 		this.$.list.setCount(this.data.length);
 		this.$.list.reset();

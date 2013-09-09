@@ -28,11 +28,13 @@ enyo.kind({
 	//* Column width
 	layoutWidth: 0,
 	//* @protected
-	constructor: function() {
-		this.inherited(arguments);
-		this.overlap = this.container.overlap != null ? this.container.overlap : this.overlap;
-		this.layoutWidth = this.container.layoutWidth != null ? this.container.layoutWidth : this.layoutWidth;
-	},
+	constructor: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.overlap = this.container.overlap != null ? this.container.overlap : this.overlap;
+			this.layoutWidth = this.container.layoutWidth != null ? this.container.layoutWidth : this.layoutWidth;
+		};
+	}),
 	size: function() {
 		var c$ = this.container.getPanels();
 		var padding = this.containerPadding = this.container.hasNode() ? enyo.dom.calcPaddingExtents(this.container.node) : {};
@@ -120,15 +122,17 @@ enyo.kind({
 		var w = (inI0 < inI1) ? p[inI1].width : p[inI0].width;
 		return w;
 	},
-	destroy: function() {
-		var c$ = this.container.getPanels();
-		for (var i=0, c; (c=c$[i]); i++) {
-			enyo.Arranger.positionControl(c, {left: null, top: null});
-			c.applyStyle("top", null);
-			c.applyStyle("bottom", null);
-			c.applyStyle("left", null);
-			c.applyStyle("width", null);
-		}
-		this.inherited(arguments);
-	}
+	destroy: enyo.inherit(function(sup) {
+		return function() {
+			var c$ = this.container.getPanels();
+			for (var i=0, c; (c=c$[i]); i++) {
+				enyo.Arranger.positionControl(c, {left: null, top: null});
+				c.applyStyle("top", null);
+				c.applyStyle("bottom", null);
+				c.applyStyle("left", null);
+				c.applyStyle("width", null);
+			}
+			sup.apply(this, arguments);
+		};
+	})
 });

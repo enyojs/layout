@@ -12,12 +12,14 @@ enyo.kind({
 		onmove: "move",
 		onup: "up"
 	},
-	initComponents: function() {
-		for (var s="A".charCodeAt(0), i=s; i<s+26; i++) {
-			this.createComponent({content: String.fromCharCode(i)});
-		}
-		this.inherited(arguments);
-	},
+	initComponents: enyo.inherit(function(sup) {
+		return function() {
+			for (var s="A".charCodeAt(0), i=s; i<s+26; i++) {
+				this.createComponent({content: String.fromCharCode(i)});
+			}
+			sup.apply(this, arguments);
+		};
+	}),
 	down: function(inSender, inEvent) {
 		if (this.tracking) {
 			enyo.dispatcher.release();

@@ -32,13 +32,15 @@ enyo.kind({
 			i + "." + l + ".f"
 		];
 	},
-	finish: function() {
-		this.inherited(arguments);
-		var c$ = this.container.getPanels();
-		for (var i=0, c; (c=c$[i]); i++) {
-			c.setShowing(i == this.container.toIndex);
-		}
-	},
+	finish: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			var c$ = this.container.getPanels();
+			for (var i=0, c; (c=c$[i]); i++) {
+				c.setShowing(i == this.container.toIndex);
+			}
+		};
+	}),
 	arrange: function(inC, inName) {
 		var p = inName.split(".");
 		var f = p[0], s= p[1], starting = (p[2] == "s");
@@ -57,11 +59,13 @@ enyo.kind({
 			this.arrangeControl(c, {left: v});
 		}
 	},
-	destroy: function() {
-		var c$ = this.container.getPanels();
-		for (var i=0, c; (c=c$[i]); i++) {
-			enyo.Arranger.positionControl(c, {left: null});
-		}
-		this.inherited(arguments);
-	}
+	destroy: enyo.inherit(function(sup) {
+		return function() {
+			var c$ = this.container.getPanels();
+			for (var i=0, c; (c=c$[i]); i++) {
+				enyo.Arranger.positionControl(c, {left: null});
+			}
+			sup.apply(this, arguments);
+		};
+	})
 });

@@ -50,13 +50,15 @@ enyo.kind({
 	handlers: {
 		onPositionPin: "reAnchor"
 	},
-	create: function() {
-		this.inherited(arguments);
-		this.styleClientControls();
-		this.positionClientControls();
-		this.highlightAnchorPointChanged();
-		this.anchorChanged();
-	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.styleClientControls();
+			this.positionClientControls();
+			this.highlightAnchorPointChanged();
+			this.anchorChanged();
+		};
+	}),
 	// Absolutely position to client controls
 	styleClientControls: function() {
 		var controls = this.getClientControls();

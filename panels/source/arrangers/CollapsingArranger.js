@@ -28,10 +28,12 @@ enyo.kind({
 	*/
 	peekWidth: 0,
 	//* @protected
-	size: function() {
-		this.clearLastSize();
-		this.inherited(arguments);
-	},
+	size: enyo.inherit(function(sup) {
+		return function() {
+			this.clearLastSize();
+			sup.apply(this, arguments);
+		};
+	}),
 	// clear size from last if it's not actually the last
 	// (required for adding another control)
 	clearLastSize: function() {
@@ -42,10 +44,12 @@ enyo.kind({
 			}
 		}
 	},
-	constructor: function() {
-		this.inherited(arguments);
-		this.peekWidth = this.container.peekWidth != null ? this.container.peekWidth : this.peekWidth;
-	},
+	constructor: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.peekWidth = this.container.peekWidth != null ? this.container.peekWidth : this.peekWidth;
+		};
+	}),
 	arrange: function(inC, inIndex) {
 		var c$ = this.container.getPanels();
 		for (var i=0, e=this.containerPadding.left, c, n=0; (c=c$[i]); i++) {
@@ -71,28 +75,32 @@ enyo.kind({
 		var i = this.container.getPanels().length-1;
 		return Math.abs(inA1[i].left - inA0[i].left);
 	},
-	flowControl: function(inControl, inA) {
-		this.inherited(arguments);
-		if (this.container.realtimeFit) {
-			var c$ = this.container.getPanels();
-			var l = c$.length-1;
-			var last = c$[l];
-			if (inControl == last) {
-				this.fitControl(inControl, inA.left);
+	flowControl: enyo.inherit(function(sup) {
+		return function(inControl, inA) {
+			sup.apply(this, arguments);
+			if (this.container.realtimeFit) {
+				var c$ = this.container.getPanels();
+				var l = c$.length-1;
+				var last = c$[l];
+				if (inControl == last) {
+					this.fitControl(inControl, inA.left);
+				}
 			}
-		}
 
-	},
-	finish: function() {
-		this.inherited(arguments);
-		if (!this.container.realtimeFit && this.containerBounds) {
-			var c$ = this.container.getPanels();
-			var a$ = this.container.arrangement;
-			var l = c$.length-1;
-			var c = c$[l];
-			this.fitControl(c, a$[l].left);
-		}
-	},
+		};
+	}),
+	finish: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			if (!this.container.realtimeFit && this.containerBounds) {
+				var c$ = this.container.getPanels();
+				var a$ = this.container.arrangement;
+				var l = c$.length-1;
+				var c = c$[l];
+				this.fitControl(c, a$[l].left);
+			}
+		};
+	}),
 	fitControl: function(inControl, inOffset) {
 		inControl._fit = true;
 		inControl.applyStyle("width", (this.containerBounds.width - inOffset) + "px");

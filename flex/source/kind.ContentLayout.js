@@ -134,12 +134,16 @@ enyo.kind({
 
 	/************** PUBLIC **************/
 
-	flow: function() {
-		this.inherited(arguments);
-	},
+	flow: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+		};
+	}),
 
-	reflow : function() {
-		this.inherited(arguments);
-		this._updateSize();
-	}
+	reflow : enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this._updateSize();
+		};
+	})
 });

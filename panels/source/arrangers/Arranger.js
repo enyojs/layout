@@ -43,13 +43,15 @@ enyo.kind({
 		You *must* call the superclass implementation in your subclass's
 		_destroy_ function.
 	*/
-	destroy: function() {
-		var c$ = this.container.getPanels();
-		for (var i=0, c; (c=c$[i]); i++) {
-			c._arranger = null;
-		}
-		this.inherited(arguments);
-	},
+	destroy: enyo.inherit(function(sup) {
+		return function() {
+			var c$ = this.container.getPanels();
+			for (var i=0, c; (c=c$[i]); i++) {
+				c._arranger = null;
+			}
+			sup.apply(this, arguments);
+		};
+	}),
 	/**
 		Arranges the given array of controls (_inC_) in the layout specified by
 		_inName_. When implementing this method, rather than apply styling

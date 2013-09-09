@@ -59,14 +59,16 @@ enyo.kind({
 		onTransitionStart: "transitionStart",
 		onTransitionFinish: "transitionFinish"
 	},
-	create: function() {
-		this.inherited(arguments);
-		this.imageCount = this.images.length;
-		if (this.images.length>0) {
-			this.initContainers();
-			this.loadNearby();
-		}
-	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.imageCount = this.images.length;
+			if (this.images.length>0) {
+				this.initContainers();
+				this.loadNearby();
+			}
+		};
+	}),
 	initContainers: function() {
 		for (var i=0; i<this.images.length; i++) {
 			if (!this.$["container" + i]) {
@@ -120,10 +122,12 @@ enyo.kind({
 		}
 		return range;
 	},
-	reflow: function() {
-		this.inherited(arguments);
-		this.loadNearby();
-	},
+	reflow: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.loadNearby();
+		};
+	}),
 	loadImageView: function(index) {
 		// NOTE: wrap bugged in enyo.CarouselArranger, but once fixed, wrap should work in this
 		if (this.wrap) {
@@ -162,13 +166,15 @@ enyo.kind({
 		this.initContainers();
 		this.loadNearby();
 	},
-	indexChanged: function() {
-		this.loadNearby();
-		if (this.lowMemory) {
-			this.cleanupMemory();
-		}
-		this.inherited(arguments);
-	},
+	indexChanged: enyo.inherit(function(sup) {
+		return function() {
+			this.loadNearby();
+			if (this.lowMemory) {
+				this.cleanupMemory();
+			}
+			sup.apply(this, arguments);
+		};
+	}),
 	transitionStart: function(inSender, inEvent) {
 		if (inEvent.fromIndex==inEvent.toIndex) {
 			return true; //prevent from bubbling if there's no change

@@ -71,27 +71,35 @@ enyo.kind({
 	unitModifier: false,
 	canTransform: false,
 	//* @protected
-	create: function() {
-		this.inherited(arguments);
-		this.acceleratedChanged();
-		this.transformChanged();
-		this.axisChanged();
-		this.valueChanged();
-		this.addClass("enyo-slideable");
-	},
-	initComponents: function() {
-		this.createComponents(this.tools);
-		this.inherited(arguments);
-	},
-	rendered: function() {
-		this.inherited(arguments);
-		this.canModifyUnit();
-		this.updateDragScalar();
-	},
-	resizeHandler: function() {
-		this.inherited(arguments);
-		this.updateDragScalar();
-	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.acceleratedChanged();
+			this.transformChanged();
+			this.axisChanged();
+			this.valueChanged();
+			this.addClass("enyo-slideable");
+		};
+	}),
+	initComponents: enyo.inherit(function(sup) {
+		return function() {
+			this.createComponents(this.tools);
+			sup.apply(this, arguments);
+		};
+	}),
+	rendered: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.canModifyUnit();
+			this.updateDragScalar();
+		};
+	}),
+	resizeHandler: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.updateDragScalar();
+		};
+	}),
 	canModifyUnit: function() {
 		if (!this.canTransform) {
 			var b = this.getInitialStyleValue(this.hasNode(), this.boundary);

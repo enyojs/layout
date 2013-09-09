@@ -72,17 +72,21 @@ enyo.kind({
 		{kind: "Animator", onStep: "step", onEnd: "completed"}
 	],
 	fraction: 0,
-	create: function() {
-		this.transitionPoints = [];
-		this.inherited(arguments);
-		this.arrangerKindChanged();
-		this.narrowFitChanged();
-		this.indexChanged();
-	},
-	rendered: function() {
-		this.inherited(arguments);
-		enyo.makeBubble(this, "scroll");
-	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			this.transitionPoints = [];
+			sup.apply(this, arguments);
+			this.arrangerKindChanged();
+			this.narrowFitChanged();
+			this.indexChanged();
+		};
+	}),
+	rendered: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			enyo.makeBubble(this, "scroll");
+		};
+	}),
 	domScroll: function(inSender, inEvent) {
 		if (this.hasNode()) {
 			if (this.node.scrollLeft > 0) {
@@ -91,55 +95,65 @@ enyo.kind({
 			}
 		}
 	},
-	initComponents: function() {
-		this.createChrome(this.tools);
-		this.inherited(arguments);
-	},
+	initComponents: enyo.inherit(function(sup) {
+		return function() {
+			this.createChrome(this.tools);
+			sup.apply(this, arguments);
+		};
+	}),
 	arrangerKindChanged: function() {
 		this.setLayoutKind(this.arrangerKind);
 	},
 	narrowFitChanged: function() {
 		this.addRemoveClass("enyo-panels-fit-narrow", this.narrowFit);
 	},
-	destroy: function() {
-		// When the entire panels is going away, take note so we don't try and do single-panel
-		// remove logic such as changing the index and reflowing when each panel is destroyed
-		this.destroying = true;
-		this.inherited(arguments);
-	},
-	removeControl: function(inControl) {
-		// Skip extra work during panel destruction.
-		if (this.destroying) {
-			return this.inherited(arguments);
-		}
-		// adjust index if the current panel is being removed
-		// so it's either the previous panel or the first one.
-		var newIndex = -1;
-		var controlIndex = enyo.indexOf(inControl, this.controls);
-		if (controlIndex === this.index) {
-			newIndex = Math.max(controlIndex - 1, 0);
-		}
-		this.inherited(arguments);
-		if (newIndex !== -1 && this.controls.length > 0) {
-			this.setIndex(newIndex);
-			this.flow();
-			this.reflow();
-		}
-	},
+	destroy: enyo.inherit(function(sup) {
+		return function() {
+			// When the entire panels is going away, take note so we don't try and do single-panel
+			// remove logic such as changing the index and reflowing when each panel is destroyed
+			this.destroying = true;
+			sup.apply(this, arguments);
+		};
+	}),
+	removeControl: enyo.inherit(function(sup) {
+		return function(inControl) {
+			// Skip extra work during panel destruction.
+			if (this.destroying) {
+				return sup.apply(this, arguments);
+			}
+			// adjust index if the current panel is being removed
+			// so it's either the previous panel or the first one.
+			var newIndex = -1;
+			var controlIndex = enyo.indexOf(inControl, this.controls);
+			if (controlIndex === this.index) {
+				newIndex = Math.max(controlIndex - 1, 0);
+			}
+			sup.apply(this, arguments);
+			if (newIndex !== -1 && this.controls.length > 0) {
+				this.setIndex(newIndex);
+				this.flow();
+				this.reflow();
+			}
+		};
+	}),
 	isPanel: function() {
 		// designed to be overridden in kinds derived from Panels that have
 		// non-panel client controls
 		return true;
 	},
-	flow: function() {
-		this.arrangements = [];
-		this.inherited(arguments);
-	},
-	reflow: function() {
-		this.arrangements = [];
-		this.inherited(arguments);
-		this.refresh();
-	},
+	flow: enyo.inherit(function(sup) {
+		return function() {
+			this.arrangements = [];
+			sup.apply(this, arguments);
+		};
+	}),
+	reflow: enyo.inherit(function(sup) {
+		return function() {
+			this.arrangements = [];
+			sup.apply(this, arguments);
+			this.refresh();
+		};
+	}),
 	//* @public
 	/**
 		Returns an array of contained panels.

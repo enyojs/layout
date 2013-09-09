@@ -388,34 +388,36 @@ enyo.kind({
 	/******************** PUBLIC *********************/
 
 	// Main reflow function, re-renders sizes and positions of children
-	reflow: function() {
-		this.inherited(arguments);
+	reflow: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
 
-		// var now = enyo.now();
-		this.flexSpacing = this._getSpacing();
-		this.flexBias    = this._getBias();
-		this.flexStretch = this._getStretch();
+			// var now = enyo.now();
+			this.flexSpacing = this._getSpacing();
+			this.flexBias    = this._getBias();
+			this.flexStretch = this._getStretch();
 
-		this.container.addClass('enyo-flex-layout-relative');
-		var oStylesContainer = new enyo.Styles(this.container);
-		enyo.Styles.setStyles(this.container, {
-			'min-height' : oStylesContainer.content.height + 'px'
-		});
-		this.container.removeClass('enyo-flex-layout-relative');
+			this.container.addClass('enyo-flex-layout-relative');
+			var oStylesContainer = new enyo.Styles(this.container);
+			enyo.Styles.setStyles(this.container, {
+				'min-height' : oStylesContainer.content.height + 'px'
+			});
+			this.container.removeClass('enyo-flex-layout-relative');
 
-		this._initialize(oStylesContainer);
-		this._setResponseValues(oStylesContainer);
+			this._initialize(oStylesContainer);
+			this._setResponseValues(oStylesContainer);
 
-		var aChildren        = this._getOrderedChildren(),
-			aMetrics         = this._collectMetrics(aChildren, oStylesContainer);
+			var aChildren        = this._getOrderedChildren(),
+				aMetrics         = this._collectMetrics(aChildren, oStylesContainer);
 
-		this._renderMetrics(aMetrics, oStylesContainer);
-		this._nReflow ++;
+			this._renderMetrics(aMetrics, oStylesContainer);
+			this._nReflow ++;
 
-		this.container.bubble('onReflow', {layout: this});
+			this.container.bubble('onReflow', {layout: this});
 
-		// enyo.log(this.container.name, enyo.now() - now);
-	}
+			// enyo.log(this.container.name, enyo.now() - now);
+		};
+	})
 });
 
 enyo.kind({

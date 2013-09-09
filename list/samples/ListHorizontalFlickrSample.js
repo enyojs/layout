@@ -22,10 +22,12 @@ enyo.kind({
 		]},
 		{kind: "enyo.sample.ListHorizontalFlickrSearch", name: "flickrSearch", onResults: "searchResults"}
 	],
-	rendered: function() {
-		this.inherited(arguments);
-		this.search();
-	},
+	rendered: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.search();
+		};
+	}),
 	search: function() {
 		this.searchText = this.$.searchInput.getValue();
 		this.page = 0;
