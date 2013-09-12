@@ -1,10 +1,10 @@
 ﻿/**
-	_enyo.CollapsingArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a>
-	that displays the active control, along with some number of inactive
-	controls to fill the available space. The active control is positioned on
-	the left side of the container and the rest of the views are laid out to the
-	right. The last control, if visible, will expand to fill whatever space is
-	not taken up by the previous controls.
+	_enyo.CollapsingArranger_ is an [enyo.Arranger](#enyo.Arranger) that
+	displays the active control, along with some number of inactive	controls to
+	fill the available space. The active control is positioned on the left side
+	of the container and the rest of the views are laid out to the right. The
+	last control, if visible, will expand to fill whatever space is not taken
+	up by the previous controls.
 
 	For best results with CollapsingArranger, you should set a minimum width
 	for each control via a CSS style, e.g., _min-width: 25%_ or
@@ -14,17 +14,15 @@
 	from the right and collapsing the old control to the left.
 
 	For more information, see the documentation on
-	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
-	Developer Guide.
+	[Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.CollapsingArranger",
 	kind: "CarouselArranger",
 	/**
-		The "peekWidth" property specifies the amount each panel should be
-		offset from the left when it is selected. This allows controls on the
-		underlying panel to the left of the selected one to be partially
-		revealed.
+		The distance (in pixels) that each panel should be offset from the left
+		when it is selected. This allows controls on the underlying panel to the
+		left of the selected one to be partially revealed.
 	*/
 	peekWidth: 0,
 	//* @protected

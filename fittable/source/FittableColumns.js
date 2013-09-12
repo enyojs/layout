@@ -5,9 +5,7 @@
 	the attribute _fit: true_.
 
 	For more information, see the documentation on
-	[Fittables](https://github.com/enyojs/enyo/wiki/Fittables) in the Enyo
-	Developer Guide.
-
+	[Fittables](building-apps/layout/fittables.html) in the Enyo Developer Guide.
 */
 
 enyo.kind({

@@ -4,8 +4,8 @@
 	portion of the list is rendered at a given time. A flyweight pattern is
 	employed, in which controls placed inside the list are created once, but
 	rendered for each list item. For this reason, it's best to use only simple
-	controls in	a List, such as <a href="#enyo.Control">enyo.Control</a> and
-	<a href="#enyo.Image">enyo.Image</a>.
+	controls in	a List, such as [enyo.Control](#enyo.Control) and
+	[enyo.Image](#enyo.Image).
 
 	A List's _components_ block contains the controls to be used for a single
 	row. This set of controls will be rendered for each row. You may customize
@@ -16,11 +16,10 @@
 
 	Beginning with Enyo 2.2, lists have built-in support for swipeable and
 	reorderable list items.  Individual list items are swipeable by default; to
-	enable reorderability, set the _reorderable_ property to true.
+	enable reorderability, set the _reorderable_ property to _true_.
 
 	For more information, see the documentation on
-	[Lists](https://github.com/enyojs/enyo/wiki/Lists)
-	in the Enyo Developer Guide.
+	[Lists](building-apps/layout/lists.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.List",

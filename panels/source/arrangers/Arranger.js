@@ -1,19 +1,18 @@
 /**
-	_enyo.Arranger_ is an <a href="#enyo.Layout">enyo.Layout</a> that considers
-	one of the controls it lays out as active. The other controls are placed
-	relative to the active control as makes sense for the layout.
+	_enyo.Arranger_ is an [enyo.Layout](#enyo.Layout) that considers one of the
+	controls it lays out as active. The other controls are placed relative to
+	the active control as makes sense for the layout.
 
 	Arranger supports dynamic layouts, meaning it's possible to transition
 	between its layouts	via animation. Typically, arrangers should lay out
 	controls using CSS transforms, since these are optimized for animation. To
 	support this, the controls in an Arranger are absolutely positioned, and
-	the Arranger kind has an `accelerated` property, which marks controls for
-	CSS compositing. The default setting of "auto" ensures that this will occur
-	if enabled by the platform.
+	the Arranger kind has an _accelerated_ property, which marks controls for
+	CSS compositing. The default setting of _"auto"_ ensures that this will
+	occur if enabled by the platform.
 
 	For more information, see the documentation on
-	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers)
-	in the Enyo	Developer Guide.
+	[Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.Arranger",

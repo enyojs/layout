@@ -1,9 +1,8 @@
 /**
-	_enyo.CarouselArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a>
-	that displays the active control, along with some number of inactive
-	controls to fill the available space. The active control is positioned on
-	the left side of the container, and the rest of the views are laid out to
-	the right.
+	_enyo.CarouselArranger_ is an [enyo.Arranger](#enyo.Arranger) that displays
+	the active control, along with some number of inactive controls to fill the
+	available space. The active control is positioned on the left side of the
+	container, and the rest of the views are laid out to the right.
 
 	One of the controls may have _fit: true_ set, in which case it will take up
 	any remaining space after all of the other controls have been sized.
@@ -15,8 +14,7 @@
 	from the right and sliding the old controls off to the left.
 
 	For more information, see the documentation on
-	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
-	Developer Guide.
+	[Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.CarouselArranger",

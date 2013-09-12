@@ -1,15 +1,14 @@
 /**
-	_enyo.LeftRightArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a>
-	that displays the active control and some of the previous and next controls.
-	The active control is centered horizontally in the container, and the
-	previous and next controls are laid out to the left and right, respectively.
+	_enyo.LeftRightArranger_ is an [enyo.Arranger](#enyo.Arranger) that displays
+	the active control and some of the previous and next controls. The active
+	control is centered horizontally in the container, and the previous and next
+	controls are laid out to the left and right, respectively.
 
-	Transitions between arrangements are handled by sliding the new control
-	in from the right and sliding the active control out to the left.
+	Transitions between arrangements are handled by sliding the new control in
+	from the right and sliding the active control out to the left.
 
 	For more information, see the documentation on
-	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
-	Developer Guide.
+	[Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.LeftRightArranger",
@@ -110,17 +109,16 @@ enyo.kind({
 
 //* @public
 /**
-	_enyo.TopBottomArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a>
-	that displays the active control and some of the previous and next controls.
-	The active control is centered vertically in the container, and the previous
-	and next controls are laid out above and below, respectively.
+	_enyo.TopBottomArranger_ is an [enyo.Arranger](#enyo.Arranger) that displays
+	the active control and some of the previous and next controls. The active
+	control is centered vertically in the container, and the previous and next
+	controls are laid out above and below, respectively.
 
-	Transitions between arrangements are handled by sliding the new control
-	in from the bottom and sliding the active control out the top.
+	Transitions between arrangements are handled by sliding the new control in
+	from the bottom and sliding the active control out the top.
 
 	For more information, see the documentation on
-	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
-	Developer Guide.
+	[Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.TopBottomArranger",
@@ -140,16 +138,15 @@ enyo.kind({
 
 //* @public
 /**
-	_enyo.SpiralArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a> that
-	arranges controls in a spiral. The active control is positioned on top and
-	the other controls are laid out in a spiral pattern below.
+	_enyo.SpiralArranger_ is an [enyo.Arranger](#enyo.Arranger) that arranges
+	controls in a spiral. The active control is positioned on top and the other
+	controls are laid out in a spiral pattern below.
 
-	Transitions between arrangements are handled by rotating the new control
-	up from below and rotating the active control down to the end of the spiral.
+	Transitions between arrangements are handled by rotating the new control up
+	from below and rotating the active control down to the end of the spiral.
 
 	For more information, see the documentation on
-	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
-	Developer Guide.
+	[Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.SpiralArranger",
@@ -206,18 +203,17 @@ enyo.kind({
 
 //* @public
 /**
-	_enyo.GridArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a> that
-	arranges controls in a grid. The active control is positioned at the
-	top-left of the grid and the other controls are laid out from left to right
-	and then from top to bottom.
+	_enyo.GridArranger_ is an [enyo.Arranger](#enyo.Arranger) that arranges
+	controls in a grid. The active control is positioned at the top-left of the
+	grid and the other controls are laid out from left to right and then from
+	top to bottom.
 
 	Transitions between arrangements are handled by moving the active control to
-	the end of the grid and shifting the other controls	to the left, or up to
-	the previous row, to fill the space.
+	the end of the grid and shifting the other controls	to the left, or by
+	moving it up to the previous row, to fill the space.
 
 	For more information, see the documentation on
-	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
-	Developer Guide.
+	[Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.GridArranger",

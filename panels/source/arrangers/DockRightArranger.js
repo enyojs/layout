@@ -1,21 +1,20 @@
 /**
-	_enyo.DockRightArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a>
-	that displays the active control, along with some number of inactive
-	controls to fill the available space. The active control is positioned on
-	the right side of the container and the rest of the views are laid out to the
-	right.
+	_enyo.DockRightArranger_ is an [enyo.Arranger](#enyo.Arranger) that
+	displays the active control, along with some number of inactive controls to
+	fill the available space. The active control is positioned on the right
+	side of the container and the rest of the views are laid out to the right.
 
 	For best results with DockRightArranger, you should set a minimum width
 	for each control via a CSS style, e.g., _min-width: 25%_ or
 	_min-width: 250px_.
 
 	Transitions between arrangements are handled by sliding the new control	in
-	from the right. If the width of the old control(s) can fit within the container,
-	they will slide to the left. If not, the old control(s) will collapse to the left.
+	from the right. If the width of the old control(s) can fit within the
+	container, they will slide to the left. If not, the old control(s) will
+	collapse to the left.
 
 	For more information, see the documentation on
-	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
-	Developer Guide.
+	[Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.DockRightArranger",

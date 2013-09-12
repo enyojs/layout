@@ -10,16 +10,15 @@
 
 	The controls inside a FlyweightRepeater are non-interactive. This means that
 	calling methods that would normally cause rendering to occur (e.g.,
-	_setContent_) will not do so. However, you can force a row to render by
-	calling	_renderRow(inRow)_.
+	_set("content", value)_) will not do so. However, you may force a row to
+	render by calling _renderRow(inRow)_.
 
-	In addition, you can force a row to be temporarily interactive by calling
-	_prepareRow(inRow)_. Call the _lockRow_ method when the	interaction is
+	In addition, you may force a row to be temporarily interactive by calling
+	_prepareRow(inRow)_. Call the _lockRow()_ method when the	interaction is
 	complete.
 
 	For more information, see the documentation on
-	[Lists](https://github.com/enyojs/enyo/wiki/Lists)
-	in the Enyo Developer Guide.
+	[Lists](building-apps/layout/lists.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.FlyweightRepeater",
