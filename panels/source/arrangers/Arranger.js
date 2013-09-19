@@ -211,6 +211,11 @@ enyo.kind({
 					t = enyo.isString(t) ? t : t && (t + unit);
 					enyo.dom.transform(inControl, {translateX: l || null, translateY: t || null});
 				} else {
+					// If a previously positioned control has subsequently been marked with
+					// preventTransform, we need to clear out any old translation values.
+					if (enyo.dom.canTransform() && inControl.preventTransform) {
+						enyo.dom.transform(inControl, {translateX: null, translateY: null});
+					}
 					inControl.setBounds(inBounds, inUnit);
 				}
 			}
