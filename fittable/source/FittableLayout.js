@@ -43,22 +43,29 @@ enyo.kind({
 		return oFitChild;
 	},
 
-	isRTL: function() {
-		return enyo.dom.getComputedStyle(this.container.hasNode())['direction'] == 'rtl';
+	shouldReverse: function() {
+		console.log(this.container.rtl);
+		return this.container.rtl && this.orient === "h";
 	},
 
 	getFirstChild: function() {
 		var aChildren = this.getShowingChildren();
 
-		if (this.isRTL()) { return aChildren[aChildren.length - 1]; }
-		return aChildren[0];
+		if (this.shouldReverse()) {
+			return aChildren[aChildren.length - 1];
+		} else {
+			return aChildren[0];
+		}
 	},
 
 	getLastChild: function() {
 		var aChildren = this.getShowingChildren();
 
-		if (this.isRTL()) { return aChildren[0]; }
-		return aChildren[aChildren.length - 1];
+		if (this.shouldReverse()) {
+			return aChildren[0];
+		} else {
+			return aChildren[aChildren.length - 1];
+		}
 	},
 
 	getShowingChildren: function() {
@@ -96,7 +103,7 @@ enyo.kind({
 		oBounds    = oFitChild.getBounds();
 		nTotalSize = oContainerNode[sClienMeasure] - (oPadding[sAttrBefore] + oPadding[sAttrAfter]);
 
-		if (this.isRTL()) {
+		if (this.shouldReverse()) {
 			oFirstChild  = this.getFirstChild();
 			nAfterOffset = nTotalSize - (oBounds[sAttrBefore] + oBounds[sMeasureName]);
 
