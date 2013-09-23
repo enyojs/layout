@@ -44,7 +44,6 @@ enyo.kind({
 	},
 
 	shouldReverse: function() {
-		console.log(this.container.rtl);
 		return this.container.rtl && this.orient === "h";
 	},
 
