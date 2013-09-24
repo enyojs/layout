@@ -174,13 +174,13 @@ enyo.kind({
 			if (!inProps.isChrome) {
 				inProps.handlers = {
 					onDisableTranslation: "disableTranslation"
-				}
+				};
 				inProps.disableTranslation = function() {
 					this.preventTransform = true;
-				}
+				};
 			}
 			sup.apply(this, arguments);
-		}
+		};
 	}),
 
 	//* @public
