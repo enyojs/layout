@@ -48,7 +48,11 @@ enyo.kind({
 	//* @protected
 	style: "position:absolute;z-index:1000;width:0px;height:0px;",
 	handlers: {
-		onPositionPin: "reAnchor"
+		onPositionPin: "reAnchor",
+		ondblclick: "bubbleZoom"
+	},
+	bubbleZoom: function(inSender, inEvent) {
+		this.bubble("onPinTap", inEvent);
 	},
 	create: enyo.inherit(function(sup) {
 		return function() {

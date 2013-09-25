@@ -24,6 +24,18 @@ enyo.kind({
 	subKindComponents: [
 		{kind:"Image", ondown: "down", style: "vertical-align: text-top;"}
 	],
+	handlers: {
+		onPinTap : "pinZoom"
+	},
+	pinZoom: function(inSender, inEvent) {
+		if(enyo.platform.ie==8) {
+			this.doubleClick(inSender, inEvent);
+		}
+		else {
+			this.smartZoom(inSender, inEvent);
+		}
+		return true;
+	},
 	create: enyo.inherit(function(sup) {
 		return function() {
 			// move components (most likely imageViewPins) to unscaledComponents
