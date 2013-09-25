@@ -54,8 +54,22 @@ enyo.kind({
 			text: inSearchText,
 			sort: 'date-posted-desc',
 			extras: 'url_m'
-		};
-		new enyo.JsonpRequest({url: "http://api.flickr.com/services/rest/", callbackName: "jsoncallback"}).response(this, "processSearchResults").go(params);
+		}, url = "http://api.flickr.com/services/rest/";
+		if (window.location.protocol === "ms-appx:") {
+			params.nojsoncallback = 1;
+			// Use ajax for platforms with no jsonp support (Windows 8)
+			new enyo.Ajax({url: url, handleAs: "text"})
+				.response(this, "processAjaxSearchResults")
+				.go(params);
+		} else {
+			new enyo.JsonpRequest({url: url, callbackName: "jsoncallback"})
+				.response(this, "processSearchResults")
+				.go(params);
+		}
+	},
+	processAjaxSearchResults: function(inRequest, inResponse) {
+		inResponse = JSON.parse(inResponse);
+		this.processSearchResults(inRequest, inResponse);
 	},
 	processSearchResults: function(inRequest, inResponse) {
 		this.results = inResponse.photos.photo;
