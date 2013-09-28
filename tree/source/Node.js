@@ -78,25 +78,31 @@ enyo.kind({
 	},
 	//
 	//* @protected
-	create: function() {
-		this.inherited(arguments);
-		//this.expandedChanged();
-		//this.levelChanged();
-		this.selectedChanged();
-		this.iconChanged();
-	},
-	destroy: function() {
-		this.doDestroyed();
-		this.inherited(arguments);
-	},
-	initComponents: function() {
-		// TODO: optimize to create the childClient on demand
-		//this.hasChildren = this.components;
-		if (this.expandable) {
-			this.kindComponents = this.kindComponents.concat(this.childClient);
-		}
-		this.inherited(arguments);
-	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			//this.expandedChanged();
+			//this.levelChanged();
+			this.selectedChanged();
+			this.iconChanged();
+		};
+	}),
+	destroy: enyo.inherit(function(sup) {
+		return function() {
+			this.doDestroyed();
+			sup.apply(this, arguments);
+		};
+	}),
+	initComponents: enyo.inherit(function(sup) {
+		return function() {
+			// TODO: optimize to create the childClient on demand
+			//this.hasChildren = this.components;
+			if (this.expandable) {
+				this.kindComponents = this.kindComponents.concat(this.childClient);
+			}
+			sup.apply(this, arguments);
+		};
+	}),
 	//
 	contentChanged: function() {
 		//this.$.caption.setContent((this.expandable ? (this.expanded ? "-" : "+") : "") + this.content);
@@ -109,12 +115,14 @@ enyo.kind({
 	selectedChanged: function() {
 		this.addRemoveClass("enyo-selected", this.selected);
 	},
-	rendered: function() {
-		this.inherited(arguments);
-		if (this.expandable && !this.expanded) {
-			this.quickCollapse();
-		}
-	},
+	rendered: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			if (this.expandable && !this.expanded) {
+				this.quickCollapse();
+			}
+		};
+	}),
 	//
 	addNodes: function(inNodes) {
 		this.destroyClientControls();

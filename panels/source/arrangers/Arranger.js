@@ -1,19 +1,18 @@
 /**
-	_enyo.Arranger_ is an <a href="#enyo.Layout">enyo.Layout</a> that considers
-	one of the controls it lays out as active. The other controls are placed
-	relative to the active control as makes sense for the layout.
+	_enyo.Arranger_ is an [enyo.Layout](#enyo.Layout) that considers one of the
+	controls it lays out as active. The other controls are placed relative to
+	the active control as makes sense for the layout.
 
 	Arranger supports dynamic layouts, meaning it's possible to transition
 	between its layouts	via animation. Typically, arrangers should lay out
 	controls using CSS transforms, since these are optimized for animation. To
 	support this, the controls in an Arranger are absolutely positioned, and
-	the Arranger kind has an `accelerated` property, which marks controls for
-	CSS compositing. The default setting of "auto" ensures that this will occur
-	if enabled by the platform.
+	the Arranger kind has an _accelerated_ property, which marks controls for
+	CSS compositing. The default setting of _"auto"_ ensures that this will
+	occur if enabled by the platform.
 
 	For more information, see the documentation on
-	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers)
-	in the Enyo	Developer Guide.
+	[Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.Arranger",
@@ -43,13 +42,15 @@ enyo.kind({
 		You *must* call the superclass implementation in your subclass's
 		_destroy_ function.
 	*/
-	destroy: function() {
-		var c$ = this.container.getPanels();
-		for (var i=0, c; (c=c$[i]); i++) {
-			c._arranger = null;
-		}
-		this.inherited(arguments);
-	},
+	destroy: enyo.inherit(function(sup) {
+		return function() {
+			var c$ = this.container.getPanels();
+			for (var i=0, c; (c=c$[i]); i++) {
+				c._arranger = null;
+			}
+			sup.apply(this, arguments);
+		};
+	}),
 	/**
 		Arranges the given array of controls (_inC_) in the layout specified by
 		_inName_. When implementing this method, rather than apply styling
@@ -210,6 +211,11 @@ enyo.kind({
 					t = enyo.isString(t) ? t : t && (t + unit);
 					enyo.dom.transform(inControl, {translateX: l || null, translateY: t || null});
 				} else {
+					// If a previously positioned control has subsequently been marked with
+					// preventTransform, we need to clear out any old translation values.
+					if (enyo.dom.canTransform() && inControl.preventTransform) {
+						enyo.dom.transform(inControl, {translateX: null, translateY: null});
+					}
 					inControl.setBounds(inBounds, inUnit);
 				}
 			}

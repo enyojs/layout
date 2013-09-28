@@ -1,16 +1,15 @@
 /**
-	_enyo.CardSlideInArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a>
-	that displays only one active control. The non-active controls are hidden
-	with _setShowing(false)_. Transitions between arrangements are handled by
+	_enyo.CardSlideInArranger_ is an [enyo.Arranger](#enyo.Arranger) that
+	displays only one active control. The non-active controls are hidden with
+	_setShowing(false)_. Transitions between arrangements are handled by
 	sliding the new control	over the current one.
 
 	Note that CardSlideInArranger always slides controls in from the right. If
 	you want an arranger that slides to the right and left, try
-	<a href="#enyo.LeftRightArranger">enyo.LeftRightArranger</a>.
+	[enyo.LeftRightArranger](#enyo.LeftRightArranger).
 
 	For more information, see the documentation on
-	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
-	Developer Guide.
+	[Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.CardSlideInArranger",
@@ -32,13 +31,15 @@ enyo.kind({
 			i + "." + l + ".f"
 		];
 	},
-	finish: function() {
-		this.inherited(arguments);
-		var c$ = this.container.getPanels();
-		for (var i=0, c; (c=c$[i]); i++) {
-			c.setShowing(i == this.container.toIndex);
-		}
-	},
+	finish: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			var c$ = this.container.getPanels();
+			for (var i=0, c; (c=c$[i]); i++) {
+				c.setShowing(i == this.container.toIndex);
+			}
+		};
+	}),
 	arrange: function(inC, inName) {
 		var p = inName.split(".");
 		var f = p[0], s= p[1], starting = (p[2] == "s");
@@ -57,11 +58,13 @@ enyo.kind({
 			this.arrangeControl(c, {left: v});
 		}
 	},
-	destroy: function() {
-		var c$ = this.container.getPanels();
-		for (var i=0, c; (c=c$[i]); i++) {
-			enyo.Arranger.positionControl(c, {left: null});
-		}
-		this.inherited(arguments);
-	}
+	destroy: enyo.inherit(function(sup) {
+		return function() {
+			var c$ = this.container.getPanels();
+			for (var i=0, c; (c=c$[i]); i++) {
+				enyo.Arranger.positionControl(c, {left: null});
+			}
+			sup.apply(this, arguments);
+		};
+	})
 });

@@ -28,14 +28,16 @@ enyo.kind({
 	bindings: [
 		{from: ".source", to: ".$.image.src"},
 		{from: ".caption", to: ".$.caption.content"},
-		{from: ".caption", to: ".$.caption.showing", kind: "enyo.BooleanBinding"},
+		{from: ".caption", to: ".$.caption.showing", kind: "enyo.EmptyBinding"},
 		{from: ".subCaption", to: ".$.subCaption.content"},
-		{from: ".subCaption", to: ".$.subCaption.showing", kind: "enyo.BooleanBinding"}
+		{from: ".subCaption", to: ".$.subCaption.showing", kind: "enyo.EmptyBinding"}
 	],
-	create: function() {
-		this.inherited(arguments);
-		this.selectedChanged();
-	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.selectedChanged();
+		};
+	}),
 	selectedChanged: function() {
 		this.addRemoveClass("selected", this.selected);
 	},

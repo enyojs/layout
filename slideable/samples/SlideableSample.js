@@ -11,17 +11,19 @@ enyo.kind({
 	handlers: {
 		ondragstart: "suppressPanelDrag"
 	},
-	create: function() {
-		this.inherited(arguments);
-		var slideables = [];
+	create: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			var slideables = [];
 
-		for (var c in this.$) {
-			if (this.$[c].kind === "Slideable") {
-				slideables.push(this.$[c]);
+			for (var c in this.$) {
+				if (this.$[c].kind === "Slideable") {
+					slideables.push(this.$[c]);
+				}
 			}
-		}
-		this.populate(slideables);
-	},
+			this.populate(slideables);
+		};
+	}),
 	populate: function(inSlideables) {
 		var slideable;
 		for (var s in inSlideables) {
@@ -80,10 +82,12 @@ enyo.kind({
 	handlers: {
 		onUpdateInfo: "updateInfo"
 	},
-	create: function() {
-		this.inherited(arguments);
-		this.infoChanged();
-	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.infoChanged();
+		};
+	}),
 	infoChanged: function() {
 		for (var p in this.info) {
 			if (this.$[p]) {

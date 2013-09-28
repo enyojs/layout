@@ -38,7 +38,8 @@
 	text-align: right;
 }
 
-.enyo-fittable-columns-layout.enyo-center {
+.enyo-fittable-columns-layout.enyo-center,
+.enyo-locale-right-to-left .enyo-fittable-columns-layout.enyo-center {
 	text-align: center;
 }
 

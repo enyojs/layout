@@ -26,10 +26,12 @@ enyo.kind({
 		{kind: "Image", onload: "load", ondown: "down"},
 		{kind: "Image", onload: "load", ondown: "down"}
 	],
-	create: function(){
-		this.inherited(arguments);
-		this.srcChanged();
-	},
+	create: enyo.inherit(function(sup) {
+		return function(){
+			sup.apply(this, arguments);
+			this.srcChanged();
+		};
+	}),
 	srcChanged: function(){
 		this.height = this.width = 0;
 		this.$.image.setSrc(this.src);

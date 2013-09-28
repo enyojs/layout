@@ -1,19 +1,18 @@
 /**
-The _enyo.Panels_ kind is designed to satisfy a variety of common use cases for
-application layout. Using _enyo.Panels_, controls may be arranged as (among
-other things) a carousel, a set of collapsing panels, a card stack that fades
-between panels, or a grid.
+The _enyo.Panels_ kind is designed to satisfy a variety of common use cases
+for application layout. Using _enyo.Panels_, controls may be arranged as
+(among other things) a carousel, a set of collapsing panels, a card stack
+that fades between panels, or a grid.
 
 Any Enyo control may be placed inside an _enyo.Panels_, but by convention we
-refer to each of these controls as a "panel." From the set of panels in an
-_enyo.Panels_, one is considered to be active. The active panel is set by index
-using the _setIndex_ method. The actual layout of the panels typically changes
-each time the active panel is set, such that the new active panel has the most
-prominent position.
+refer to each of these controls as a "panel". From the set of panels in an
+_enyo.Panels_, one is considered to be active. The active panel is set by
+index using the _setIndex()_ method. The actual layout of the panels
+typically changes each time the active panel is set, such that the new
+active panel has the most prominent position.
 
-For more information, see the
-[Panels documentation](https://github.com/enyojs/enyo/wiki/Panels) in the Enyo
-Developer Guide.
+For more information, see the documentation on
+[Panels](building-apps/layout/panels.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.Panels",
@@ -66,23 +65,28 @@ enyo.kind({
 		ondragstart: "dragstart",
 		ondrag: "drag",
 		ondragfinish: "dragfinish",
-		onscroll: "domScroll"
+		onscroll: "domScroll",
+		onDisableTranslation: "disableTranslation"
 	},
 	tools: [
 		{kind: "Animator", onStep: "step", onEnd: "completed"}
 	],
 	fraction: 0,
-	create: function() {
-		this.transitionPoints = [];
-		this.inherited(arguments);
-		this.arrangerKindChanged();
-		this.narrowFitChanged();
-		this.indexChanged();
-	},
-	rendered: function() {
-		this.inherited(arguments);
-		enyo.makeBubble(this, "scroll");
-	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			this.transitionPoints = [];
+			sup.apply(this, arguments);
+			this.arrangerKindChanged();
+			this.narrowFitChanged();
+			this.indexChanged();
+		};
+	}),
+	rendered: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			enyo.makeBubble(this, "scroll");
+		};
+	}),
 	domScroll: function(inSender, inEvent) {
 		if (this.hasNode()) {
 			if (this.node.scrollLeft > 0) {
@@ -91,55 +95,94 @@ enyo.kind({
 			}
 		}
 	},
-	initComponents: function() {
-		this.createChrome(this.tools);
-		this.inherited(arguments);
-	},
+	initComponents: enyo.inherit(function(sup) {
+		return function() {
+			this.createChrome(this.tools);
+			sup.apply(this, arguments);
+		};
+	}),
 	arrangerKindChanged: function() {
 		this.setLayoutKind(this.arrangerKind);
 	},
 	narrowFitChanged: function() {
 		this.addRemoveClass("enyo-panels-fit-narrow", this.narrowFit);
 	},
-	destroy: function() {
-		// When the entire panels is going away, take note so we don't try and do single-panel
-		// remove logic such as changing the index and reflowing when each panel is destroyed
-		this.destroying = true;
-		this.inherited(arguments);
-	},
-	removeControl: function(inControl) {
-		// Skip extra work during panel destruction.
-		if (this.destroying) {
-			return this.inherited(arguments);
-		}
-		// adjust index if the current panel is being removed
-		// so it's either the previous panel or the first one.
-		var newIndex = -1;
-		var controlIndex = enyo.indexOf(inControl, this.controls);
-		if (controlIndex === this.index) {
-			newIndex = Math.max(controlIndex - 1, 0);
-		}
-		this.inherited(arguments);
-		if (newIndex !== -1 && this.controls.length > 0) {
-			this.setIndex(newIndex);
-			this.flow();
-			this.reflow();
-		}
-	},
+	destroy: enyo.inherit(function(sup) {
+		return function() {
+			// When the entire panels is going away, take note so we don't try and do single-panel
+			// remove logic such as changing the index and reflowing when each panel is destroyed
+			this.destroying = true;
+			sup.apply(this, arguments);
+		};
+	}),
+	removeControl: enyo.inherit(function(sup) {
+		return function(inControl) {
+			// Skip extra work during panel destruction.
+			if (this.destroying) {
+				return sup.apply(this, arguments);
+			}
+			// adjust index if the current panel is being removed
+			// so it's either the previous panel or the first one.
+			var newIndex = -1;
+			var controlIndex = enyo.indexOf(inControl, this.controls);
+			if (controlIndex === this.index) {
+				newIndex = Math.max(controlIndex - 1, 0);
+			}
+			sup.apply(this, arguments);
+			if (newIndex !== -1 && this.controls.length > 0) {
+				this.setIndex(newIndex);
+				this.flow();
+				this.reflow();
+			}
+		};
+	}),
 	isPanel: function() {
 		// designed to be overridden in kinds derived from Panels that have
 		// non-panel client controls
 		return true;
 	},
-	flow: function() {
-		this.arrangements = [];
-		this.inherited(arguments);
+	flow: enyo.inherit(function(sup) {
+		return function() {
+			this.arrangements = [];
+			sup.apply(this, arguments);
+		};
+	}),
+	reflow: enyo.inherit(function(sup) {
+		return function() {
+			this.arrangements = [];
+			sup.apply(this, arguments);
+			this.refresh();
+		};
+	}),
+
+	// Disable translation for a given panel when requested by a component
+	// within the panel, via the "onDisableTranslation" event.
+	//
+	// TODO: Currently needed to work around video rendering issues on webOS,
+	// this mechanism will most likely be removed when the root causes of
+	// those issues are addressed. Note that the mechanism is currently
+	// "one-way." If we end up keeping it for the longer term, we should
+	// probably extend it to allow translation to be re-enabled as needed.
+
+	disableTranslation: function() {
+		if (this.generated) {
+			this.layout.flowArrangement();
+		}
 	},
-	reflow: function() {
-		this.arrangements = [];
-		this.inherited(arguments);
-		this.refresh();
-	},
+	adjustComponentProps: enyo.inherit(function(sup) {
+		return function(inProps) {
+			if (!inProps.isChrome) {
+				inProps.handlers = {
+					onDisableTranslation: "disableTranslation"
+				};
+				inProps.disableTranslation = function() {
+					this.preventTransform = true;
+				};
+			}
+			sup.apply(this, arguments);
+		};
+	}),
+
 	//* @public
 	/**
 		Returns an array of contained panels.

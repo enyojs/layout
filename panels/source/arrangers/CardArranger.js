@@ -1,12 +1,11 @@
 /**
-	_enyo.CardArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a> that
-	displays only one active control. The non-active controls are hidden with
+	_enyo.CardArranger_ is an [enyo.Arranger](#enyo.Arranger) that displays only
+	one active control. The non-active controls are hidden with
 	_setShowing(false)_. Transitions between arrangements are handled by fading
 	from one control to the next.
 
 	For more information, see the documentation on
-	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
-	Developer Guide.
+	[Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.CardArranger",
@@ -22,32 +21,38 @@ enyo.kind({
 			this.arrangeControl(c, {opacity: v});
 		}
 	},
-	start: function() {
-		this.inherited(arguments);
-		var c$ = this.container.getPanels();
-		for (var i=0, c; (c=c$[i]); i++) {
-			var wasShowing=c.showing;
-			c.setShowing(i == this.container.fromIndex || i == (this.container.toIndex));
-			if (c.showing && !wasShowing) {
-				c.resized();
+	start: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			var c$ = this.container.getPanels();
+			for (var i=0, c; (c=c$[i]); i++) {
+				var wasShowing=c.showing;
+				c.setShowing(i == this.container.fromIndex || i == (this.container.toIndex));
+				if (c.showing && !wasShowing) {
+					c.resized();
+				}
 			}
-		}
-	},
-	finish: function() {
-		this.inherited(arguments);
-		var c$ = this.container.getPanels();
-		for (var i=0, c; (c=c$[i]); i++) {
-			c.setShowing(i == this.container.toIndex);
-		}
-	},
-	destroy: function() {
-		var c$ = this.container.getPanels();
-		for (var i=0, c; (c=c$[i]); i++) {
-			enyo.Arranger.opacifyControl(c, 1);
-			if (!c.showing) {
-				c.setShowing(true);
+		};
+	}),
+	finish: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			var c$ = this.container.getPanels();
+			for (var i=0, c; (c=c$[i]); i++) {
+				c.setShowing(i == this.container.toIndex);
 			}
-		}
-		this.inherited(arguments);
-	}
+		};
+	}),
+	destroy: enyo.inherit(function(sup) {
+		return function() {
+			var c$ = this.container.getPanels();
+			for (var i=0, c; (c=c$[i]); i++) {
+				enyo.Arranger.opacifyControl(c, 1);
+				if (!c.showing) {
+					c.setShowing(true);
+				}
+			}
+			sup.apply(this, arguments);
+		};
+	})
 });

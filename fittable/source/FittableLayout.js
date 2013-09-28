@@ -5,15 +5,13 @@
 	the items having natural size, but one item expanding to fill the remaining
 	space. The item that expands is labeled with the attribute _fit: true_.
 
-	The subkinds <a href="#enyo.FittableColumnsLayout">enyo.FittableColumnsLayout</a>
-	and	<a href="#enyo.FittableRowsLayout">enyo.FittableRowsLayout</a> (or
-	<i>their</i> subkinds) are used for layout rather than _enyo.FittableLayout_
-	because they specify properties that the framework expects to be available
-	when laying	items out.
+	The subkinds [enyo.FittableColumnsLayout](#enyo.FittableColumnsLayout) and
+	[enyo.FittableRowsLayout](#enyo.FittableRowsLayout) (or _their_ subkinds)
+	are used for layout rather than _enyo.FittableLayout_ because they specify
+	properties that the framework expects to be available when laying items out.
 
-	For more information,see the documentation on
-	[Fittables](https://github.com/enyojs/enyo/wiki/Fittables) in the Enyo
-	Developer Guide.
+	For more information, see the documentation on
+	[Fittables](building-apps/layout/fittables.html) in the Enyo Developer Guide.
 */
 
 enyo.kind({
@@ -45,22 +43,28 @@ enyo.kind({
 		return oFitChild;
 	},
 
-	isRTL: function() {
-		return enyo.dom.getComputedStyle(this.container.hasNode())['direction'] == 'rtl';
+	shouldReverse: function() {
+		return this.container.rtl && this.orient === "h";
 	},
 
 	getFirstChild: function() {
 		var aChildren = this.getShowingChildren();
 
-		if (this.isRTL()) { return aChildren[aChildren.length - 1]; }
-		return aChildren[0];
+		if (this.shouldReverse()) {
+			return aChildren[aChildren.length - 1];
+		} else {
+			return aChildren[0];
+		}
 	},
 
 	getLastChild: function() {
 		var aChildren = this.getShowingChildren();
 
-		if (this.isRTL()) { return aChildren[0]; }
-		return aChildren[aChildren.length - 1];
+		if (this.shouldReverse()) {
+			return aChildren[0];
+		} else {
+			return aChildren[aChildren.length - 1];
+		}
 	},
 
 	getShowingChildren: function() {
@@ -98,7 +102,7 @@ enyo.kind({
 		oBounds    = oFitChild.getBounds();
 		nTotalSize = oContainerNode[sClienMeasure] - (oPadding[sAttrBefore] + oPadding[sAttrAfter]);
 
-		if (this.isRTL()) {
+		if (this.shouldReverse()) {
 			oFirstChild  = this.getFirstChild();
 			nAfterOffset = nTotalSize - (oBounds[sAttrBefore] + oBounds[sMeasureName]);
 
@@ -159,8 +163,7 @@ enyo.kind({
 	specific base kind.
 
 	For more information, see the documentation on
-	[Fittables](https://github.com/enyojs/enyo/wiki/Fittables) in the Enyo
-	Developer Guide.
+	[Fittables](building-apps/layout/fittables.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name        : 'enyo.FittableColumnsLayout',
@@ -182,8 +185,7 @@ enyo.kind({
 	specific base kind.
 
 	For more information, see the documentation on
-	[Fittables](https://github.com/enyojs/enyo/wiki/Fittables) in the Enyo
-	Developer Guide.
+	[Fittables](building-apps/layout/fittables.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name        : 'enyo.FittableRowsLayout',

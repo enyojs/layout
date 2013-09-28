@@ -35,10 +35,12 @@ enyo.kind({
 			]}
 		]}
 	],
-	create: function() {
-		this.inherited(arguments);
-		this.scale = "auto";
-	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.scale = "auto";
+		};
+	}),
 	resized: function(inSender, inEvent) {
 		this.$.panZoomView.setScale(this.scale);
 	},

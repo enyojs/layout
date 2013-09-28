@@ -21,10 +21,12 @@ enyo.kind({
 			]}
 		]}
 	],
-	rendered: function() {
-		this.inherited(arguments);
-		this.search();
-	},
+	rendered: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.search();
+		};
+	}),
 	pullRelease: function() {
 		this.pulled = true;
 		// add 1 second delay so we can see the loading message

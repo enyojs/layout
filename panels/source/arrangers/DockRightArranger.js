@@ -1,21 +1,20 @@
 /**
-	_enyo.DockRightArranger_ is an <a href="#enyo.Arranger">enyo.Arranger</a>
-	that displays the active control, along with some number of inactive
-	controls to fill the available space. The active control is positioned on
-	the right side of the container and the rest of the views are laid out to the
-	right.
+	_enyo.DockRightArranger_ is an [enyo.Arranger](#enyo.Arranger) that
+	displays the active control, along with some number of inactive controls to
+	fill the available space. The active control is positioned on the right
+	side of the container and the rest of the views are laid out to the right.
 
 	For best results with DockRightArranger, you should set a minimum width
 	for each control via a CSS style, e.g., _min-width: 25%_ or
 	_min-width: 250px_.
 
 	Transitions between arrangements are handled by sliding the new control	in
-	from the right. If the width of the old control(s) can fit within the container,
-	they will slide to the left. If not, the old control(s) will collapse to the left.
+	from the right. If the width of the old control(s) can fit within the
+	container, they will slide to the left. If not, the old control(s) will
+	collapse to the left.
 
 	For more information, see the documentation on
-	[Arrangers](https://github.com/enyojs/enyo/wiki/Arrangers) in the Enyo
-	Developer Guide.
+	[Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
 */
 enyo.kind({
 	name: "enyo.DockRightArranger",
@@ -28,11 +27,13 @@ enyo.kind({
 	//* Column width
 	layoutWidth: 0,
 	//* @protected
-	constructor: function() {
-		this.inherited(arguments);
-		this.overlap = this.container.overlap != null ? this.container.overlap : this.overlap;
-		this.layoutWidth = this.container.layoutWidth != null ? this.container.layoutWidth : this.layoutWidth;
-	},
+	constructor: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.overlap = this.container.overlap != null ? this.container.overlap : this.overlap;
+			this.layoutWidth = this.container.layoutWidth != null ? this.container.layoutWidth : this.layoutWidth;
+		};
+	}),
 	size: function() {
 		var c$ = this.container.getPanels();
 		var padding = this.containerPadding = this.container.hasNode() ? enyo.dom.calcPaddingExtents(this.container.node) : {};
@@ -120,15 +121,17 @@ enyo.kind({
 		var w = (inI0 < inI1) ? p[inI1].width : p[inI0].width;
 		return w;
 	},
-	destroy: function() {
-		var c$ = this.container.getPanels();
-		for (var i=0, c; (c=c$[i]); i++) {
-			enyo.Arranger.positionControl(c, {left: null, top: null});
-			c.applyStyle("top", null);
-			c.applyStyle("bottom", null);
-			c.applyStyle("left", null);
-			c.applyStyle("width", null);
-		}
-		this.inherited(arguments);
-	}
+	destroy: enyo.inherit(function(sup) {
+		return function() {
+			var c$ = this.container.getPanels();
+			for (var i=0, c; (c=c$[i]); i++) {
+				enyo.Arranger.positionControl(c, {left: null, top: null});
+				c.applyStyle("top", null);
+				c.applyStyle("bottom", null);
+				c.applyStyle("left", null);
+				c.applyStyle("width", null);
+			}
+			sup.apply(this, arguments);
+		};
+	})
 });

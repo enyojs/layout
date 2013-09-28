@@ -22,14 +22,16 @@ enyo.FlexLayout.ResponseStrategy.RowAfterColumns = enyo.singleton({
 		}
 		return -1;
 	},
-	respond: function(oControl, bIncreasing) {
-		this.inherited(arguments);
-		if (bIncreasing) {
-			this.reverseProperty(oControl, 'flexOrder');
-			this.reverseProperty(oControl, 'flexOrient');
-		} else {
-			this.setProperty(oControl, 'flexOrder', this._getPositionAfterColumns(oControl));
-			this.setProperty(oControl, 'flexOrient', 'row');
-		}
-	}
+	respond: enyo.inherit(function(sup) {
+		return function(oControl, bIncreasing) {
+			sup.apply(this, arguments);
+			if (bIncreasing) {
+				this.reverseProperty(oControl, 'flexOrder');
+				this.reverseProperty(oControl, 'flexOrient');
+			} else {
+				this.setProperty(oControl, 'flexOrder', this._getPositionAfterColumns(oControl));
+				this.setProperty(oControl, 'flexOrient', 'row');
+			}
+		};
+	})
 });
