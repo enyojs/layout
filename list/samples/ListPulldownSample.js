@@ -5,19 +5,15 @@ enyo.kind({
 	components: [
 		{kind: "onyx.Toolbar", components: [
 			{kind: "onyx.InputDecorator", components: [
-				{name: "searchInput", kind: "onyx.Input", value: "enyojs", placeholder: "Enter seach term"},
+				{name: "searchInput", kind: "onyx.Input", value: "nature", placeholder: "Enter seach term"},
 				{kind: "Image", src: "assets/search-input-search.png", style: "width: 20px;"}
 			]},
 			{kind: "onyx.Button", content: "search", ontap: "search"}
 		]},
 		{name: "list", kind: "PulldownList", classes: "list-sample-pulldown-list", fit: true, onSetupItem: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [
-			{style: "padding: 10px;", classes: "list-sample-pulldown-item enyo-border-box", components: [
+			{style: "padding: 10px; height:70px", classes: "list-sample-pulldown-item enyo-border-box", components: [
 				{name: "icon", kind: "Image", style: "float: left; width: 48px; height: 48px; padding: 0 10px 10px 0;"},
-				{name: "name", tag: "span", style: "font-weight: bold;"},
-				{name: "handle", tag: "span", style: "color: lightgrey;"},
-				{name: "date", tag: "span", style: "float: right; color: lightgrey;"},
-				{tag: "br"},
-				{name: "text", tag: "p", style: "word-wrap: break-word;", allowHtml: true}
+				{name: "name", tag: "span", style: "font-weight: bold;"}
 			]}
 		]}
 	],
@@ -41,27 +37,34 @@ enyo.kind({
 	search: function() {
 		// Capture searchText and strip any whitespace
 		var searchText = this.$.searchInput.getValue().replace(/^\s+|\s+$/g, '');
-		var url = "http://search.twitter.com/search.json";
-		var req;
-		if (searchText !== "") {
-			if (window.location.protocol === "ms-appx:") {
-				// Use ajax for platforms with no jsonp support (Windows 8)
-				req = new enyo.Ajax({
-					url: url,
-					handleAs: "text"
-				});
-				req.response(this.bindSafely("processAjaxSearchResults"));
-			} else {
-				req = new enyo.JsonpRequest({
-					url: url,
-					callbackName: "callback"
-				});
-				req.response(this.bindSafely("processSearchResults"));
-			}
-			req.go({q: searchText, rpp: 20});
-		} else {
+		if (searchText === "") {
 			// For whitespace searches, set new content value in order to display placeholder
 			this.$.searchInput.setValue(searchText);
+			return;
+		}
+		this.searchFlickr(searchText);
+	},
+	searchFlickr: function(inSearchText) {
+		var params = {
+			method: "flickr.photos.search",
+			format: "json",
+			api_key: '2a21b46e58d207e4888e1ece0cb149a5',
+			per_page: 50,
+			page: 0,
+			text: inSearchText,
+			sort: 'date-posted-desc',
+			extras: 'url_m'
+		}, url = "http://api.flickr.com/services/rest/";
+		if (window.location.protocol === "ms-appx:") {
+			params.nojsoncallback = 1;
+			// Use ajax for platforms with no jsonp support (Windows 8)
+			new enyo.Ajax({url: url, handleAs: "text"})
+				.response(this, "processAjaxSearchResults")
+				.go(params);
+		} else {
+			new enyo.JsonpRequest({url: url, callbackName: "jsoncallback"})
+				.response(this, "processSearchResults")
+				.go(params);
 		}
 	},
 	processAjaxSearchResults: function(inRequest, inResponse) {
@@ -69,7 +72,7 @@ enyo.kind({
 		this.processSearchResults(inRequest, inResponse);
 	},
 	processSearchResults: function(inRequest, inResponse) {
-		this.results = inResponse.results;
+		this.results = inResponse.photos.photo;
 		this.$.list.setCount(this.results.length);
 		if (this.pulled) {
 			this.$.list.completePull();
@@ -80,35 +83,11 @@ enyo.kind({
 	setupItem: function(inSender, inEvent) {
 		var i = inEvent.index;
 		var item = this.results[i];
-		this.$.icon.setSrc(item.profile_image_url);
-		this.$.name.setContent(item.from_user_name);
-		this.$.handle.setContent(" @" + item.from_user);
-		this.$.date.setContent(this.getRelativeDateString(item.created_at));
-		this.$.text.setContent(this.parseTweet(item.text));
-		return true;
-	},
-	getRelativeDateString: function(inDateString) {
-		var d = new Date(inDateString);
-		var td = new Date();
-		var s;
-		if (td.toLocaleDateString() == d.toLocaleDateString()) {
-			var dh = td.getHours() - d.getHours();
-			var dm = td.getMinutes() - d.getMinutes();
-			s = dh ? dh + " hour" : (dm ? dm + " minute" : td.getSeconds() - d.getSeconds() + " second");
-		} else {
-			var dmo = td.getMonth() - d.getMonth();
-			s = dmo ? dmo + " month" : td.getDate() - d.getDate() + " day";
+		if (!item.url_m) {
+			return true;
 		}
-		return s.split(" ")[0] > 1 ? s + "s" : s;
-	},
-	parseTweet: function(inText) {
-		var t = inText;
-		t = t.replace(/[A-Za-z]+:\/\/[A-Za-z0-9_-]+\.[A-Za-z0-9_:%&~\?\/.=-]+/g, function(url) {
-			return "<a href='" + url + "'target='_blank'>" + url + "</a>";
-		});
-		return t.replace(/[@]+[A-Za-z0-9_-]+/, function(u) {
-			var username = u.replace("@", "");
-			return "<a href='http://twitter.com/" + u + "'target='_blank'>@" + username + "</a>";
-		});
+		this.$.icon.setSrc(item.url_m);
+		this.$.name.setContent(item.title);
+		return true;
 	}
 });
