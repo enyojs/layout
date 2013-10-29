@@ -304,7 +304,7 @@ enyo.kind({
 			if ((activatorCenter >= (innerHeight/2 - 0.05 * innerHeight)) && (activatorCenter <= (innerHeight/2 + 0.05 * innerHeight))) {
 				this.applyPosition({top: this.offset.top + this.offset.height/2 - clientRect.height/2, bottom: "auto"});
 			} else if (this.offset.top + this.offset.height < innerHeight/2) { //the activator is in the top 1/2 of the screen
-				this.applyPosition({top: this.offset.top - this.offset.height, bottom: "auto"});
+				this.applyPosition({top: this.offset.top, bottom: "auto"});
 				this.container.addRemoveClass("high", true);
 			} else { //otherwise the popup will be positioned in the bottom 1/2 of the screen
 				this.applyPosition({top: this.offset.top - clientRect.height + this.offset.height*2, bottom: "auto"});
