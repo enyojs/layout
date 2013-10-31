@@ -162,7 +162,7 @@ enyo.kind({
 	flowArrangement: function() {
 		var a = this.container.arrangement;
 		if (a) {
-			for (var i=0, c$=this.container.getPanels(), c; (c=c$[i]); i++) {
+			for (var i=0, c$=this.container.getPanels(), c; (c=c$[i]) && (a[i]); i++) {
 				this.flowControl(c, a[i]);
 			}
 		}
