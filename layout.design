@@ -1,75 +1,95 @@
 {
     "palette": [
         {
-            "name": "fittable",
+            "name": "layout",
             "items": [
                 {
-                    "name": "FittableRows",
-                    "kind": "enyo.FittableRows",
+                    "name": "enyo.Node",
+                    "description": "A tree node",
+                    "config": {
+                        "kind": "enyo.Node"
+                    }
+                },
+                {
+                    "name": "enyo.Panels",
+                    "description": "Selectable sub-view",
+                    "config": {
+                        "kind": "enyo.Panels",
+                        "classes": "enyo-fit"
+                    }
+                },
+                {
+                    "name": "enyo.Slideable",
+                    "description": "Slideable sub-view",
+                    "config": {
+                        "kind": "enyo.Slideable"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "layout-fittable",
+            "items": [
+                {
+                    "name": "enyo.FittableRows",
                     "description": "Vertical stacked layout",
                     "config": {
-                        "kind": "FittableRows"
+                        "kind": "enyo.FittableRows"
                     }
                 },
                 {
-                    "name": "FittableColumns",
-                    "kind": "enyo.FittableColumns",
+                    "name": "enyo.FittableColumns",
                     "description": "Horizontal stacked layout",
                     "config": {
-                        "kind": "FittableColumns"
+                        "kind": "enyo.FittableColumns"
                     }
                 }
             ]
         },
         {
-            "name": "imageview",
+            "name": "layout-imageview",
             "items": [
                 {
-                    "name": "ImageCarousel",
-                    "kind": "enyo.ImageCarousel",
+                    "name": "enyo.ImageCarousel",
                     "description": "A carousel of images",
                     "config": {
-                        "kind": "ImageCarousel"
+                        "kind": "enyo.ImageCarousel"
                     }
                 },
                 {
-                    "name": "ImageView",
-                    "kind": "enyo.ImageView",
+                    "name": "enyo.ImageView",
                     "description": "A scalable Image View",
                     "config": {
-                        "kind": "ImageView"
+                        "kind": "enyo.ImageView"
                     }
                 },
                 {
-                    "name": "ImageViewPin",
-                    "kind": "enyo.ImageViewPin",
+                    "name": "enyo.ImageViewPin",
                     "description": "An unscaled item inside an ImageView",
                     "config": {
-                        "kind": "ImageViewPin"
+                        "kind": "enyo.ImageViewPin"
                     }
                 }
             ]
         },
         {
-            "name": "List",
+            "name": "layout-list",
             "items": [
                 {
-                    "name": "AroundList",
-                    "kind": "enyo.AroundList",
+                    "name": "enyo.AroundList",
                     "description": "List with elements above the list",
                     "config": {
-                        "kind": "AroundList",
+                        "kind": "enyo.AroundList",
                         "options": {
                             "isRepeater": true
                         }
                     }
                 },
                 {
-                    "name": "List",
-                    "kind": "enyo.List",
+                    "name": "enyo.List",
                     "description": "Infinite scrolling list",
                     "config": {
-                        "kind": "List",
+                        "kind": "enyo.List",
                         "fit": true,
                         "options": {
                             "isRepeater": true
@@ -77,126 +97,41 @@
                     }
                 },
                 {
-                    "name": "PulldownList",
-                    "kind": "enyo.PulldownList",
+                    "name": "enyo.PulldownList",
                     "description": "List with pull-to-refresh",
                     "config": {
-                        "kind": "PulldownList",
+                        "kind": "enyo.PulldownList",
                         "options": {
                             "isRepeater": true
                         }
                     }
                 }
             ]
-        },
+        }
+    ],
+    "inspector": [
         {
-            "name": "Panels",
-            "items": [
-                {
-                    "name": "CardArranger",
-                    "kind": "enyo.Panels",
-                    "description": "Selectable sub-view",
-                    "config": {
-                        "kind": "Panels",
-                        "arrangerKind": "CardArranger",
-                        "classes": "enyo-fit"
-                    }
-                },
-                {
-                    "name": "CardSlideInArranger",
-                    "kind": "enyo.Panels",
-                    "description": "Selectable sub-view",
-                    "config": {
-                        "kind": "Panels",
-                        "arrangerKind": "CardSlideInArranger"
-                    }
-                },
-                {
-                    "name": "CarouselArranger",
-                    "kind": "enyo.Panels",
-                    "description": "Selectable sub-view",
-                    "config": {
-                        "kind": "Panels",
-                        "arrangerKind": "CarouselArranger"
-                    }
-                },
-                {
-                    "name": "CollapsingArranger",
-                    "kind": "enyo.Panels",
-                    "description": "Selectable sub-view",
-                    "config": {
-                        "kind": "Panels",
-                        "arrangerKind": "CollapsingArranger",
-                        "components": [
-                            {
-                                "content": "Placeholder"
-                            }
+            "type": "kind",
+            "name": "enyo.Panels",
+            "properties": {
+                "arrangerKind": {
+                    "filterLevel": "useful",
+                    "inputKind": {
+                        "kind": "Inspector.Config.Select",
+                        "values": [
+                            "CardArranger",
+                            "CardSlideInArranger",
+                            "CarouselArranger",
+                            "CollapsingArranger",
+                            "DockRightArranger",
+                            "GridArranger",
+                            "LeftRightArranger",
+                            "SpiralArranger",
+                            "TopBottomArranger"
                         ]
                     }
-                },
-                {
-                    "name": "DockRightArranger",
-                    "kind": "enyo.Panels",
-                    "description": "Selectable sub-view",
-                    "config": {
-                        "kind": "Panels",
-                        "arrangerKind": "DockRightArranger"
-                    }
-                },
-                {
-                    "name": "GridArranger",
-                    "kind": "enyo.Panels",
-                    "description": "Selectable sub-view",
-                    "config": {
-                        "kind": "Panels",
-                        "arrangerKind": "GridArranger"
-                    }
-                },
-                {
-                    "name": "LeftRightArranger",
-                    "kind": "enyo.Panels",
-                    "description": "Selectable sub-view",
-                    "config": {
-                        "kind": "Panels",
-                        "arrangerKind": "LeftRightArranger"
-                    }
-                },
-                {
-                    "name": "UpDownArranger",
-                    "kind": "enyo.Panels",
-                    "description": "Selectable sub-view",
-                    "config": {
-                        "kind": "Panels",
-                        "arrangerKind": "UpDownArranger"
-                    }
                 }
-            ]
-        },
-        {
-            "name": "Slideable",
-            "items": [
-                {
-                    "name": "Slideable",
-                    "kind": "enyo.Slideable",
-                    "description": "Slideable sub-view",
-                    "config": {
-                        "kind": "Slideable"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Tree",
-            "items": [
-                {
-                    "name": "Node",
-                    "kind": "enyo.Node",
-                    "description": "A tree node",
-                    "config": {
-                        "kind": "Node"
-                    }
-                }
-            ]
+            }
         }
     ]
 }
