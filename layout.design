@@ -4,14 +4,26 @@
             "name": "layout",
             "items": [
                 {
-                    "name": "enyo.Node",
+                    "name": "Node",
                     "description": "A tree node",
                     "config": {
-                        "kind": "enyo.Node"
+                        "kind": "enyo.Node",
+                        "content": "root node",
+                        "components": [
+                            {"content" : "leaf node"},
+                            {
+                                "content" : "branch node",
+                                "components": [
+                                    {"content" : "leaf node"},
+                                    {"content" : "leaf node"}
+                                ]
+                            },
+                            {"content" : "leaf node"}
+                        ]
                     }
                 },
                 {
-                    "name": "enyo.Panels",
+                    "name": "Panels",
                     "description": "Selectable sub-view",
                     "config": {
                         "kind": "enyo.Panels",
@@ -19,7 +31,7 @@
                     }
                 },
                 {
-                    "name": "enyo.Slideable",
+                    "name": "Slideable",
                     "description": "Slideable sub-view",
                     "config": {
                         "kind": "enyo.Slideable"
@@ -31,17 +43,27 @@
             "name": "layout-fittable",
             "items": [
                 {
-                    "name": "enyo.FittableRows",
+                    "name": "FittableRows",
                     "description": "Vertical stacked layout",
                     "config": {
-                        "kind": "enyo.FittableRows"
+                        "kind": "enyo.FittableRows",
+                        "components": [
+                            {"content" : "Row"},
+                            {"content" : "Row"},
+                            {"content" : "Row"}
+                        ]
                     }
                 },
                 {
-                    "name": "enyo.FittableColumns",
+                    "name": "FittableColumns",
                     "description": "Horizontal stacked layout",
                     "config": {
-                        "kind": "enyo.FittableColumns"
+                        "kind": "enyo.FittableColumns",
+                        "components": [
+                            {"content" : "Column"},
+                            {"content" : "Column"},
+                            {"content" : "Column"}
+                        ]
                     }
                 }
             ]
@@ -50,25 +72,52 @@
             "name": "layout-imageview",
             "items": [
                 {
-                    "name": "enyo.ImageCarousel",
+                    "name": "ImageCarousel",
                     "description": "A carousel of images",
                     "config": {
-                        "kind": "enyo.ImageCarousel"
+                        "kind": "enyo.ImageCarousel",
+                        "images": [
+                            "http://enyojs.com/img/splash.png",
+                            "http://enyojs.com/img/sampler.png",
+                            "http://enyojs.com/img/source.png",
+                            "http://enyojs.com/img/events.png"
+                        ], 
+                        "defaultScale": "auto",
+                        "style": "width:600px; height:300px;"
                     }
                 },
                 {
-                    "name": "enyo.ImageView",
+                    "name": "ImageView",
                     "description": "A scalable Image View",
                     "config": {
-                        "kind": "enyo.ImageView"
+                        "kind": "enyo.ImageView",
+                        "src": "http://enyojs.com/img/splash.png",
+                        "scale": "auto",
+                        "style": "width:600px; height:300px;"
                     }
                 },
                 {
-                    "name": "enyo.ImageViewPin",
+                    "name": "ImageViewPin",
                     "description": "An unscaled item inside an ImageView",
                     "config": {
-                        "kind": "enyo.ImageViewPin"
+                        "kind": "enyo.ImageViewPin",
+                        "content": "ImageViewPin",
+                        "style": "width: 100px; height: 30px;"
                     }
+                },
+                {
+                    "name": "PanZoomView",
+                    "description": "A panzoom view",
+                    "config": {
+                        "kind": "enyo.PanZoomView",
+                        "scale": "auto", 
+                        "contentWidth": 500, 
+                        "contentHeight": 500,
+                        "style": "width:500px; height:400px;",
+                        "components": [
+                            {"content": "Hello World"}
+                        ]
+                    }                    
                 }
             ]
         },
@@ -76,34 +125,61 @@
             "name": "layout-list",
             "items": [
                 {
-                    "name": "enyo.AroundList",
+                    "name": "AroundList",
                     "description": "List with elements above the list",
                     "config": {
-                        "kind": "enyo.AroundList",
-                        "options": {
-                            "isRepeater": true
-                        }
+                        "kind": "enyo.AroundList"
+                    },
+                    "options": {
+                        "isRepeater": true
                     }
                 },
                 {
-                    "name": "enyo.List",
+                    "name": "GridFlyWeightRepeater",
+                    "description": "A grid flyweight repeater",
+                    "config": {
+                        "kind": "enyo.GridFlyWeightRepeater"
+                    }
+                },
+                {
+                    "name": "GridList",
+                    "description": "A grid list",
+                    "config": {
+                        "kind": "enyo.GridList",
+                        "components": [
+                            {"name": "img", "kind": "enyo.Image", "src": "http://enyojs.com/img/splash.png"}
+                        ]
+                    }
+                },
+                {
+                    "name": "GridListImageItem",
+                    "description": "A gridlist image item",
+                    "config": {
+                        "kind": "enyo.GridListImageItem",
+                        "source": "http://enyojs.com/gallery/images/enyo-logo.png",
+                        "caption": "Enyo logo",
+                        "subCaption": "logo found on Enyo web site"
+                    }
+                },
+                {
+                    "name": "List",
                     "description": "Infinite scrolling list",
                     "config": {
                         "kind": "enyo.List",
-                        "fit": true,
-                        "options": {
-                            "isRepeater": true
-                        }
+                        "fit": true
+                    },
+                    "options": {
+                        "isRepeater": true
                     }
                 },
                 {
-                    "name": "enyo.PulldownList",
+                    "name": "PulldownList",
                     "description": "List with pull-to-refresh",
                     "config": {
-                        "kind": "enyo.PulldownList",
-                        "options": {
-                            "isRepeater": true
-                        }
+                        "kind": "enyo.PulldownList"
+                    },
+                    "options": {
+                        "isRepeater": true
                     }
                 }
             ]
