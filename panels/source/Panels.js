@@ -65,8 +65,7 @@ enyo.kind({
 		ondragstart: "dragstart",
 		ondrag: "drag",
 		ondragfinish: "dragfinish",
-		onscroll: "domScroll",
-		onDisableTranslation: "disableTranslation"
+		onscroll: "domScroll"
 	},
 	tools: [
 		{kind: "Animator", onStep: "step", onEnd: "completed"}
@@ -152,34 +151,6 @@ enyo.kind({
 			this.arrangements = [];
 			sup.apply(this, arguments);
 			this.refresh();
-		};
-	}),
-
-	// Disable translation for a given panel when requested by a component
-	// within the panel, via the "onDisableTranslation" event.
-	//
-	// TODO: Currently needed to work around video rendering issues on webOS,
-	// this mechanism will most likely be removed when the root causes of
-	// those issues are addressed. Note that the mechanism is currently
-	// "one-way." If we end up keeping it for the longer term, we should
-	// probably extend it to allow translation to be re-enabled as needed.
-
-	disableTranslation: function() {
-		if (this.generated) {
-			this.layout.flowArrangement();
-		}
-	},
-	adjustComponentProps: enyo.inherit(function(sup) {
-		return function(inProps) {
-			if (!inProps.isChrome) {
-				inProps.handlers = {
-					onDisableTranslation: "disableTranslation"
-				};
-				inProps.disableTranslation = function() {
-					this.preventTransform = true;
-				};
-			}
-			sup.apply(this, arguments);
 		};
 	}),
 
