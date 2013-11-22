@@ -194,15 +194,13 @@ enyo.kind({
 			this.orientV = this.orient == "v";
 			this.vertical = this.orientV ? "default" : "hidden";
 			sup.apply(this, arguments);
-			if (this.rtl && !this.orientV) { this.setBottomUp(!this.bottomUp); }
 			this.$.generator.orient = this.orient;
 			this.getStrategy().translateOptimized = true;
-			this.pageBound = this.orientV ? "top" : "left";
 			this.$.port.addRemoveClass("horizontal",!this.orientV);
 			this.$.port.addRemoveClass("vertical",this.orientV);
 			this.$.page0.addRemoveClass("vertical",this.orientV);
 			this.$.page1.addRemoveClass("vertical",this.orientV);
-			this.bottomUpChanged();
+			this.bottomUpChanged();  // Initializes pageBound also
 			this.noSelectChanged();
 			this.multiSelectChanged();
 			this.toggleSelectedChanged();
@@ -261,7 +259,16 @@ enyo.kind({
 		this.$.generator.bottomUp = this.bottomUp;
 		this.$.page0.applyStyle(this.pageBound, null);
 		this.$.page1.applyStyle(this.pageBound, null);
-		this.pageBound = this.orientV ? (this.bottomUp ? "bottom" : "top") : (this.bottomUp ? "right" : "left");
+
+		if (this.orientV) {
+			this.pageBound = this.bottomUp ? "bottom" : "top";
+		} else {
+			if (this.rtl) {
+				this.pageBound = this.bottomUp ? "left" : "right";
+			} else {
+				this.pageBound = this.bottomUp ? "right" : "left";
+			}
+		}
 
 		if (!this.orientV && this.bottomUp){
 			this.$.page0.applyStyle("left", "auto");
