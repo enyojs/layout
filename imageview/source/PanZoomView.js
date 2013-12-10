@@ -119,7 +119,8 @@ enyo.kind({
 			this.$.content.applyStyle("height", this.contentHeight + "px");
 
 			if(this.unscaledComponents){
-				this.createComponents(this.unscaledComponents);
+				var owner = this.hasOwnProperty("unscaledComponents") ? this.getInstanceOwner() : this;
+				this.createComponents(this.unscaledComponents, {owner: owner});
 			}
 
 			// Change controlParentName so PanZoomView instance components are created into viewport
