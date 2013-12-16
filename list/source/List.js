@@ -1521,7 +1521,10 @@ enyo.kind({
 				this.doSwipeComplete({index: this.swipeIndex, xDirection: this.swipeDirection});
 			}
 		} else {
-			this.persistentItemVisible = true;
+			// persistent item will only be visible if the swipe was completed
+			if (this.swipeComplete) {
+				this.persistentItemVisible = true;
+			}
 		}
 		this.swipeIndex = null;
 		this.swipeDirection = null;
