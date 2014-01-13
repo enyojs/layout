@@ -104,7 +104,7 @@ enyo.kind({
 		this.setLayoutKind(this.arrangerKind);
 	},
 	narrowFitChanged: function() {
-		this.addRemoveClass("enyo-panels-fit-narrow", this.narrowFit);
+		this.addRemoveClass("enyo-panels-fit-narrow", this.narrowFit && enyo.Panels.isScreenNarrow());
 	},
 	destroy: enyo.inherit(function(sup) {
 		return function() {
@@ -458,12 +458,18 @@ enyo.kind({
 	statics: {
 		//* @public
 		/**
-			Returns true when window width is 800px or less. This value must be
-			the same as the "max-width" media query used for panel sizing in
-			_Panels.css_.
+			Returns true depending on detection of iOS and Android phone form factors,
+			or when window width is 800px or less.
 		*/
 		isScreenNarrow: function() {
-			return enyo.dom.getWindowWidth() <= 800;
+			var ua = navigator.userAgent, w = enyo.dom.getWindowWidth();
+			switch (enyo.platform.platformName) {
+				case "ios":
+					return (/iP(?:hone|od;(?: U;)? CPU) OS (\d+)/).test(ua);
+				case "android":
+					return (/Mobile/).test(ua) && (enyo.platform.android > 2 ? true : w <= 800);
+			}
+			return w <= 800;
 		},
 		//* @protected
 		lerp: function(inA0, inA1, inFrac) {
