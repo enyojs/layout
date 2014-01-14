@@ -305,7 +305,6 @@ enyo.kind({
 	dragfinish: function(inSender, inEvent) {
 		if (this.dragging) {
 			this.dragging = false;
-			inEvent.preventTap();
 			this.dragfinishTransition(inEvent);
 		}
 	},
