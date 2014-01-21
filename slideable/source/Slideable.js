@@ -267,6 +267,7 @@ enyo.kind({
 		if (this.dragging) {
 			this.dragging = false;
 			this.completeDrag(inEvent);
+			inEvent.preventTap();
 			return this.preventDragPropagation;
 		}
 	},
