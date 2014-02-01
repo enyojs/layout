@@ -81,3 +81,7 @@
 	direction: rtl;
 	text-align: right;
 }
+.enyo-locale-right-to-left .enyo-fittable-columns-layout.force-left-to-right {
+	direction: ltr;
+	text-align: left;
+}
