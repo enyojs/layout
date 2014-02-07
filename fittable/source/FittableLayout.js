@@ -19,6 +19,14 @@ enyo.kind({
 	kind: 'Layout',
 
 	//* @protected
+	constructor: enyo.inherit(function (sup) {
+		return function () {
+			sup.apply(this, arguments);
+			
+			// Add the force-ltr class if we're in RTL mode, but this control is set explicitly to NOT be in RTL mode.
+			this.container.addRemoveClass("force-left-to-right", (enyo.Control.prototype.rtl && !this.container.get("rtl")) );
+		};
+	}),
 	calcFitIndex: function() {
 		var aChildren = this.container.children,
 			oChild,
