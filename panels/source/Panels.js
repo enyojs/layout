@@ -242,13 +242,14 @@ enyo.kind({
 	},
 	//* @protected
 	clamp: function(inValue) {
-		var l = this.getPanels().length-1;
+		var l = this.getPanels().length;
 		if (this.wrap) {
 			// FIXME: dragging makes assumptions about direction and from->start indexes.
 			//return inValue < 0 ? l : (inValue > l ? 0 : inValue);
-			return inValue;
+			inValue %= l;
+			return (inValue < 0) ? inValue + l : inValue;
 		} else {
-			return Math.max(0, Math.min(inValue, l));
+			return Math.max(0, Math.min(inValue, l - 1));
 		}
 	},
 	indexChanged: function(inOld) {
