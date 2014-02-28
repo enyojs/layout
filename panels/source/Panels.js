@@ -192,9 +192,8 @@ enyo.kind({
 		// override setIndex so that indexChanged is called
 		// whether this.index has actually changed or not. Also, do
 		// index clamping here.
-		var prev = this.get("index"),
-			next = this.clamp(inIndex);
-		this.index = next;
+		var prev = this.get("index");
+		this.index = this.clamp(inIndex);
 		this.notifyObservers("index", prev, inIndex);
 	},
 	/**
