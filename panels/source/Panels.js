@@ -469,6 +469,8 @@ enyo.kind({
 					return (/iP(?:hone|od;(?: U;)? CPU) OS (\d+)/).test(ua);
 				case "android":
 					return (/Mobile/).test(ua) && (enyo.platform.android > 2 ? true : w <= 800);
+				case "androidChrome":
+					return (/Mobile/).test(ua);
 			}
 			return w <= 800;
 		},
