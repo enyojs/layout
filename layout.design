@@ -81,7 +81,7 @@
                             "http://enyojs.com/img/sampler.png",
                             "http://enyojs.com/img/source.png",
                             "http://enyojs.com/img/events.png"
-                        ], 
+                        ],
                         "defaultScale": "auto",
                         "style": "width:600px; height:300px;"
                     }
@@ -110,14 +110,14 @@
                     "description": "A panzoom view",
                     "config": {
                         "kind": "enyo.PanZoomView",
-                        "scale": "auto", 
-                        "contentWidth": 500, 
+                        "scale": "auto",
+                        "contentWidth": 500,
                         "contentHeight": 500,
                         "style": "width:500px; height:400px;",
                         "components": [
                             {"content": "Hello World"}
                         ]
-                    }                    
+                    }
                 }
             ]
         },
@@ -139,16 +139,6 @@
                     "description": "A grid flyweight repeater",
                     "config": {
                         "kind": "enyo.GridFlyWeightRepeater"
-                    }
-                },
-                {
-                    "name": "GridList",
-                    "description": "A grid list",
-                    "config": {
-                        "kind": "enyo.GridList",
-                        "components": [
-                            {"name": "img", "kind": "enyo.Image", "src": "http://enyojs.com/img/splash.png"}
-                        ]
                     }
                 },
                 {
