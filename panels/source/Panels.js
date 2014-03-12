@@ -192,9 +192,10 @@ enyo.kind({
 		// override setIndex so that indexChanged is called
 		// whether this.index has actually changed or not. Also, do
 		// index clamping here.
-		var prev = this.get("index");
-		this.index = this.clamp(inIndex);
-		this.notifyObservers("index", prev, inIndex);
+		var prevIndex = this.get("index"),
+			newIndex = this.clamp(inIndex);
+		this.index = newIndex;
+		this.notifyObservers("index", prevIndex, newIndex);
 	},
 	/**
 		Sets the active panel to the panel specified by the given index.
