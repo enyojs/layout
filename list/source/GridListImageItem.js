@@ -42,14 +42,10 @@ enyo.kind({
 		*/
 		useCaption: true,
 		/**
-			When using an _imageSizing_ option, set to false if the caption space
+			When using an _imageSizing_ option, set to false if the subcaption space
 			should not be reserved.  Has no effect when imageSizing is default.
 		*/
 		useSubCaption: true
-		/**
-			When using an _imageSizing_ option, set to false if the caption space
-			should not be reserved.  Has no effect when imageSizing is default.
-		*/
 	},
 	bindings: [
 		{from: ".source", to: ".$.image.src"},
