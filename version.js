@@ -1,3 +1,3 @@
 if (enyo && enyo.version) {
-	enyo.version.layout = "2.3.0-rc.11";
+	enyo.version.layout = "2.3.0-rc.12";
 }
