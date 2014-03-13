@@ -16,7 +16,5 @@ enyo.depends(
 	"PersistentSwipeableItemSample.css",
 	"PersistentSwipeableItemSample.js",
 	"ListHorizontalFlickrSample.css",
-	"ListHorizontalFlickrSample.js",
-	"GridListSample.css",
-	"GridListSample.js"
+	"ListHorizontalFlickrSample.js"
 );

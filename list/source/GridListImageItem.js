@@ -1,7 +1,7 @@
 /**
-	_enyo.GridList.ImageItem_ is a convenience component that may be used inside
-	an <a href="#enyo.GridList">enyo.GridList</a> or <a href="#enyo.DataGridList">enyo.DataGridList</a>
-	to display an image grid with an optional caption and sub-caption.
+	_enyo.GridList.ImageItem_ is a convenience component that may be used
+	inside an <a href="#enyo.DataGridList">enyo.DataGridList</a> to display an
+	image grid with an optional caption and sub-caption.
 */
 
 enyo.kind({
