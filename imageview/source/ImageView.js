@@ -84,9 +84,7 @@ enyo.kind({
 			var n = this.$.image.hasNode()
 				, src = this.bufferImage.src;
 			if (n) {
-				enyo.asyncMethod(function () {
-					n.src = src;
-				});
+				setTimeout(function () { n.src = src; }, 100);
 			}
 		}
 
