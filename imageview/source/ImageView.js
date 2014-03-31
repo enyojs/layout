@@ -77,6 +77,16 @@ enyo.kind({
 		//scale to fit before setting src, so unscaled image isn't visible
 		this.scaleChanged();
 		this.$.image.setSrc(this.bufferImage.src);
+		
+		// There appears to be a bug in Safari where due to the translation of these elements it
+		// doesn't correctly render unless prodded
+		if (enyo.platform.safari) {
+			var n = this.$.image.hasNode()
+				, src = this.bufferImage.src;
+			if (n) {
+				setTimeout(function () { n.src = src; }, 100);
+			}
+		}
 
 		//Needed to ensure scroller contents height/width is calculated correctly when contents use enyo-fit
 		enyo.dom.transformValue(this.getStrategy().$.client, "translate3d", "0px, 0px, 0");
