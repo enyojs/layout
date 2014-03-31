@@ -12,4 +12,5 @@ a:link, a:visited {
 	/**/
 	font-size: 14px;
 	color: white;
+	overflow: hidden;
 }
