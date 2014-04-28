@@ -123,12 +123,14 @@ enyo.kind({
 enyo.kind({
 	name: "enyo.TopBottomArranger",
 	kind: "LeftRightArranger",
-	//* Property of the drag event used to calculate the amount a drag moves
-	//* the layout
+	/**
+		Property of the drag event, used to calculate the amount that a drag will
+		move the layout
+	*/
 	dragProp: "ddy",
-	//* Property of the drag event used to calculate the direction of a drag
+	//* Property of the drag event, used to calculate the direction of a drag
 	dragDirectionProp: "yDirection",
-	//* Property of the drag event used to calculate whether a drag should occur
+	//* Property of the drag event, used to calculate whether a drag should occur
 	canDragProp: "vertical",
 	//* @protected
 	axisSize: "height",
@@ -151,7 +153,10 @@ enyo.kind({
 enyo.kind({
 	name: "enyo.SpiralArranger",
 	kind: "Arranger",
-	//* Always go through incremental arrangements when transitioning
+	/**
+		If true, the arranger will always go through incremental arrangements when
+		transitioning
+	*/
 	incrementalPoints: true,
 	//* The amount of space between successive controls
 	inc: 20,

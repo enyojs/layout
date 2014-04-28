@@ -59,11 +59,11 @@ enyo.kind({
 			be resolved to a value dynamically):
 
 			* "auto": Fits the content to the size of the PanZoomView
-			* "width": Fits the content the width of the PanZoomView
+			* "width": Fits the content to the width of the PanZoomView
 			* "height": Fits the content to the height of the PanZoomView
-			* "fit": Fits the content to the height and width of the PanZoomView.
-				Overflow of the larger dimension is cropped and the content is centered
-				on this axis
+			* "fit": Fits the content to the height and width of the PanZoomView; the
+				overflow of the larger dimension is cropped and the content is centered
+				on that axis
 		*/
 		scale: "auto",
 		//* If true, disables the zoom functionality

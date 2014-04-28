@@ -1,5 +1,5 @@
 /**
-	_enyo.Slideable_ is a control that can be dragged either horizontally or
+	_enyo.Slideable_ is a control that may be dragged either horizontally or
 	vertically between a minimum and a maximum value. When released from
 	dragging, a	Slideable will animate to its minimum or maximum position,
 	depending on the direction of the drag.
@@ -17,7 +17,7 @@
 	("h") or up-and-down ("v").
 
 	The following control is placed 90% off the screen to the right, and slides
-	to its natural position.
+	to its natural position:
 
 		{kind: "enyo.Slideable", value: -90, min: -90, unit: "%",
 			classes: "enyo-fit", style: "width: 300px;",
@@ -30,21 +30,27 @@ enyo.kind({
 	name: "enyo.Slideable",
 	kind: "Control",
 	published: {
-		//* Direction of sliding; can be "h" or "v"
+		/**
+			Direction of sliding; valid values are "h" for horizonal or "v" for vertical
+		*/
 		axis: "h",
 		//* Current position of the Slideable (a value between _min_ and _max_)
 		value: 0,
-		//* Unit for _min_, _max_, and _value_; can be "px" or "%"
+		//* Unit for _min_, _max_, and _value_; valid values are "px" or "%"
 		unit: "px",
 		//* A minimum value to slide to
 		min: 0,
 		//* A maximum value to slide to
 		max: 0,
-		//* When truthy, apply CSS styles to allow GPU compositing of slideable content
-		//* if the platform allows.
+		/**
+			When truthy, applies CSS styles to allow GPU compositing of slideable
+			content, if allowed by the platform
+		*/
 		accelerated: "auto",
-		//* Set to false to prevent the Slideable from dragging with elasticity
-		//* past its _min_ or _max_ value
+		/**
+			Set to false to prevent the Slideable from dragging with elasticity past
+			its _min_ or _max_ value
+		*/
 		overMoving: true,
 		//* Set to false to disable dragging
 		draggable: true
