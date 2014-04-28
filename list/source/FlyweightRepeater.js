@@ -35,25 +35,25 @@ enyo.kind({
 		//* If true, the selected item will toggle
 		toggleSelected: false,
 		/**
-			Used to specify CSS classes for the repeater's wrapper component
-			(client). Input is identical to enyo.Control.setClasses()
+			Used to specify CSS classes for the repeater's wrapper component (client).
+			Input is identical to that of _enyo.Control.setClasses()_.
 		*/
 		clientClasses: '',
 		/**
 			Used to specify custom styling for the repeater's wrapper component
-			(client). Input is identical to enyo.Control.setStyle()
+			(client). Input is identical to that of _enyo.Control.setStyle()_.
 		*/
 		clientStyle: '',
 		/**
-			Offset applied to row number during generation. Used to allow a
-			items to use a natural index instead of being forced to be
-			0-based.  Must be positive, as row -1 is used for undefined rows
-			in the event system.
+			Numerical offset applied to row number during row generation. Allows items
+			to have natural indices instead of 0-based ones. This value must be
+			positive, as row number -1 is used to represent undefined rows in the
+			event system.
 		*/
 		rowOffset: 0,
 		/**
-			Direction items will be laid out--either "v" for vertical
-			or "h" for horizontal
+			Direction in which items will be laid out. Valid values are "v" for
+			vertical or "h" for horizontal.
 		*/
 		orient: "v"
 	},
@@ -70,8 +70,8 @@ enyo.kind({
 		//* Fires after an individual row has been rendered from a call to _renderRow()_.
 		onRenderRow: ""
 	},
-	//* design-time attribute, indicates if row indices run
-	//* from [0.._count_-1] (false) or [_count_-1..0] (true)
+	//* Design-time attribute indicating whether row indices run
+	//* from [0 to _count_-1] (false) or [_count_-1 to 0] (true)
 	bottomUp: false,
 	//* @protected
 	components: [

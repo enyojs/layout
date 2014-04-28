@@ -19,15 +19,19 @@ enyo.kind({
 	kind: "Layout",
 	layoutClass: "enyo-arranger",
 	/**
-		Sets controls being laid out to use CSS compositing. A setting of "auto"
-		will mark controls for compositing if the platform supports it.
+		Flag indicating whether the Arranger should lay out controls using CSS
+		compositing. The default setting ("auto") will mark controls for compositing
+		if the platform supports it.
 	*/
 	accelerated: "auto",
-	//* Property of the drag event used to calculate the amount a drag moves the layout
+	/**
+		Property of the drag event, used to calculate the amount that a drag will
+		move the layout
+	*/
 	dragProp: "ddx",
-	//* Property of the drag event used to calculate the direction of a drag
+	//* Property of the drag event, used to calculate the direction of the drag
 	dragDirectionProp: "xDirection",
-	//* Property of the drag event used to calculate whether a drag should occur
+	//* Property of the drag event, used to calculate whether a drag should occur
 	canDragProp: "horizontal",
 	/**
 		If set to true, transitions between non-adjacent arrangements will go
@@ -36,11 +40,11 @@ enyo.kind({
 	*/
 	incrementalPoints: false,
 	/**
-		Called when removing an arranger (for example, when switching a Panels
-		control to a different arrangerKind). Subclasses should implement this
-		function to reset whatever properties they've changed on child controls.
-		You *must* call the superclass implementation in your subclass's
-		_destroy_ function.
+		Called when removing an arranger (e.g., when switching a Panels control to a
+		different _arrangerKind_). Subclasses should implement this function to
+		reset whatever properties they've changed on child controls. Note that you
+		_must_ call the superclass implementation in your subclass's _destroy()_
+		function.
 	*/
 	destroy: enyo.inherit(function(sup) {
 		return function() {
@@ -54,17 +58,16 @@ enyo.kind({
 	/**
 		Arranges the given array of controls (_inC_) in the layout specified by
 		_inName_. When implementing this method, rather than apply styling
-		directly to controls, call _arrangeControl(inControl, inArrangement)_
-		with an _inArrangement_	object with styling settings. These will then be
-		applied via the	_flowControl(inControl, inArrangement)_ method.
+		directly to controls, call _arrangeControl(inControl, inArrangement)_ and
+		pass in an object (_inArrangement_) with styling settings. The styles will
+		then be applied via _flowControl(inControl, inArrangement)_.
 	*/
 	arrange: function(inC, inName) {
 	},
 	/**
-		Sizes the controls in the layout. This method is called only at reflow
-		time. Note that sizing is separated from other layout done in the
-		_arrange_ method because it is expensive and not suitable for dynamic
-		layout.
+		Sizes the controls in the layout. This method is called only at reflow time.
+		Note that the sizing operation has been separated from the layout done in
+		_arrange()_ because it is expensive and not suitable for dynamic layout.
 	*/
 	size: function() {
 	},
@@ -169,10 +172,10 @@ enyo.kind({
 	},
 	//* @public
 	/**
-		Lays out the control (_inControl_) according to the settings stored in
-		the	_inArrangment_ object. By default, _flowControl_ will apply settings
-		of left, top, and opacity. This method should only be implemented to
-		apply other settings made via _arrangeControl_.
+		Lays out the control (_inControl_) according to the settings stored in the
+		_inArrangment_ object. By default, _flowControl()_ will apply settings for
+		left, top, and opacity. This method should only be implemented to apply
+		other settings made via _arrangeControl()_.
 	*/
 	flowControl: function(inControl, inArrangement) {
 		enyo.Arranger.positionControl(inControl, inArrangement);

@@ -147,8 +147,8 @@ enyo.kind({
 
 	//* @public
 	/**
-		Updates the layout to reflect any changes to contained components or the
-		layout container.
+		Updates the layout to reflect any changes made to the layout container or
+		the contained components.
 	*/
 	reflow: function() {
 		if (this.orient == 'h') {

@@ -22,9 +22,9 @@ enyo.kind({
 	//* If true, the base panel (index 0) will fill the width of the container,
 	//* while newer controls will slide in and collapse on top of it
 	basePanel: false,
-	//* How many px should panels overlap
+	//* Panels will overlap by this number of pixels
 	overlap: 0,
-	//* Column width
+	//* Column width in pixels
 	layoutWidth: 0,
 	//* @protected
 	constructor: enyo.inherit(function(sup) {

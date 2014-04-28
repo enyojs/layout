@@ -218,12 +218,15 @@ enyo.kind({
 enyo.kind({
 	name: "enyo.GridArranger",
 	kind: "Arranger",
-	//* Always go through incremental arrangements when transitioning
+	/**
+		If true, the arranger will always go through incremental arrangements when
+		transitioning
+	*/
 	incrementalPoints: true,
 	//* @public
-	//* Column width
+	//* Column width in pixels
 	colWidth: 100,
-	//* Column height
+	//* Column height in pixels
 	colHeight: 100,
 	//* @protected
 	size: function() {
