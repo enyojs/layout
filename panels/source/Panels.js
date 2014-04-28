@@ -20,29 +20,35 @@ enyo.kind({
 	published: {
 		/**
 			The index of the active panel. The layout of panels is controlled by
-			the layoutKind, but as a rule, the active panel is displayed in the
+			the _layoutKind_, but as a rule, the active panel is displayed in the
 			most prominent position. For example, in the (default) CardArranger
 			layout, the active panel is shown and the other panels are hidden.
 		*/
 		index: 0,
-		//* Controls whether the user can drag between panels.
+		//* Controls whether the user can drag between panels
 		draggable: true,
-		//* Controls whether the panels animate when transitioning; for example,
-		//* when _setIndex_ is called.
+		/**
+			Controls whether the panels animate when transitioning; e.g., when
+			_setIndex()_ is called
+		*/
 		animate: true,
-		//* Controls whether panels "wrap around" when moving past the end.
-		//* The actual effect depends upon the arranger in use.
+		/**
+			Controls whether panels "wrap around" when moving past the end.
+			The actual effect depends upon the arranger in use.
+		*/
 		wrap: false,
-		//* Sets the arranger kind to be used for dynamic layout.
+		//* Sets the arranger kind to be used for dynamic layout
 		arrangerKind: "CardArranger",
-		//* By default, each panel will be sized to fit the Panels' width when
-		//* the screen size is narrow enough (less than 800px). Set to false
-		//* to avoid this behavior.
+		/**
+			By default, each panel will be sized to fit the Panels' width when the
+			screen size is sufficiently narrow (less than 800px). Set to false to
+			avoid this behavior.
+		*/
 		narrowFit: true
 	},
 	events: {
 		/**
-			Fires at the start of a panel transition, when _setIndex_ is called
+			Fires at the start of a panel transition, when _setIndex()_ is called,
 			and also during dragging.
 
 			_inEvent.fromIndex_ contains the index of the old panel.
@@ -51,7 +57,7 @@ enyo.kind({
 		*/
 		onTransitionStart: "",
 		/**
-			Fires at the end of a panel transition, when _setIndex_ is called
+			Fires at the end of a panel transition, when _setIndex()_ is called,
 			and also during dragging.
 
 			_inEvent.fromIndex_ contains the index of the old panel.
@@ -156,14 +162,17 @@ enyo.kind({
 
 	//* @public
 	/**
-		Returns an array of contained panels.
-		Subclasses can override this if they don't want the arranger to layout all of their children
+		Returns an array of contained panels. Subclasses may override this if they
+		don't want the arranger to lay out all of their children.
 	*/
 	getPanels: function() {
 		var p = this.controlParent || this;
 		return p.children;
 	},
-	//* Returns a reference to the active panel--i.e., the panel at the specified index.
+	/**
+		Returns a reference to the active panel--i.e., the panel at the specified
+		index.
+	*/
 	getActive: function() {
 		var p$ = this.getPanels();
 		//Constrain the index within the array of panels, needed if wrapping is enabled
@@ -174,9 +183,9 @@ enyo.kind({
 		return p$[index];
 	},
 	/**
-		Returns a reference to the <a href="#enyo.Animator">enyo.Animator</a>
-		instance used to animate panel transitions. The Panels' animator can be used
-		to set the duration of panel transitions, e.g.:
+		Returns a reference to the [enyo.Animator](#enyo.Animator) instance used to
+		animate panel transitions. The Panels' animator may be used to set the
+		duration of panel transitions, e.g.:
 
 			this.getAnimator().setDuration(1000);
 	*/
@@ -223,8 +232,10 @@ enyo.kind({
 			}
 		}
 	},
-	//* Transitions to the previous panel--i.e., the panel whose index value is
-	//* one less than that of the current active panel.
+	/**
+		Transitions to the previous panel--i.e., the panel whose index value is one
+		less than that of the current active panel.
+	*/
 	previous: function() {
 		var prevIndex = this.index - 1;
 		if (this.wrap && prevIndex < 0) {
@@ -232,8 +243,10 @@ enyo.kind({
 		}
 		this.setIndex(prevIndex);
 	},
-	//* Transitions to the next panel--i.e., the panel whose index value is one
-	//* greater than that of the current active panel.
+	/**
+		Transitions to the next panel--i.e., the panel whose index value is one
+		greater than that of the current active panel.
+	*/
 	next: function() {
 		var nextIndex = this.index+1;
 		if (this.wrap && nextIndex >= this.getPanels().length) {

@@ -28,25 +28,25 @@ enyo.kind({
 	published: {
 		/**
 			The number of rows contained in the list. Note that as the amount of
-			list data changes, _setRows_ can be called to adjust the number of
+			list data changes, _setRows()_ may be called to adjust the number of
 			rows. To re-render the list at the current position when the count
-			has changed, call the _refresh_ method.  If the whole data model of
-			the list has changed and you want to redisplay from the top, call
-			the _reset_ method instead.
+			has changed, call the _refresh()_ method.  If the whole data model of
+			the list has changed and you want to redisplay it from the top, call
+			_reset()_ instead.
 		*/
 		count: 0,
 		/**
-			The number of rows to be shown on a given list page segment.
-			There is generally no need to adjust this value.
+			The number of rows to be shown in a given list page segment. There is
+			generally no need to adjust this value.
 		*/
 		rowsPerPage: 50,
 		/**
-			Direction list will be rendered & scrollable--either "v" for vertical
-			or "h" for horizontal
+			Direction in which the list will be rendered and in which it will be
+			scrollable. Valid values are "v" for vertical or "h" for horizontal.
 		*/
 		orient: "v",
 		/**
-			If true, renders the list such that row 0 is at the bottom of the
+			If true, the list is rendered such that row 0 is at the bottom of the
 			viewport and the beginning position of the list is scrolled to the
 			bottom
 		*/
@@ -64,24 +64,33 @@ enyo.kind({
 		fixedSize: false,
 		//* If true, the list will allow the user to reorder list items
 		reorderable: false,
-		//* If true and _reorderable_ is true, reorderable item will be centered on finger
-		//* when created. When false, it will be created over old item and will then track finger.
+		/**
+			If true and _reorderable_ is true, a reorderable item will be centered on
+			finger when created. If false, it will be created over the old item and
+			will then track finger.
+		*/
 		centerReorderContainer: true,
-		//* Array containing components shown as the placeholder when reordering list items.
+		/**
+			Array containing components to be shown as placeholder when reordering
+			list items
+		*/
 		reorderComponents: [],
-		//* Array containing components for the pinned version of a row. If not provided, reordering
-		//* will not support pinned mode.
+		/**
+			Array containing components for the pinned version of a row. If not
+			specified, reordering will not support pinned mode.
+		*/
 		pinnedReorderComponents: [],
 		//* Array containing any swipeable components that will be used
 		swipeableComponents: [],
 		//* If true, swipe functionality is enabled
 		enableSwipe: false,
-		//* If true, tells list to persist the current swipeable item
+		//* If true, list will persist the current swipeable item
 		persistSwipeableItem: false
 	},
 	events: {
 		/**
 			Fires once per row at render time.
+
 			_inEvent.index_ contains the current row index.
 		*/
 		onSetupItem: "",
@@ -641,9 +650,9 @@ enyo.kind({
 		Sets the selection state for the given row index.
 		_inData_ is an optional data value stored in the selection object.
 
-		Modifying selection will not automatically rerender the row,
-		so use [renderRow](#enyo.List::renderRow) or [refresh](#enyo.List::refresh)
-		to update the view.
+		Modifying selection will not automatically re-render the row, so use
+		[renderRow()](#enyo.List::renderRow) or [refresh()](#enyo.List::refresh) to
+		update the view.
 	*/
 	select: function(inIndex, inData) {
 		return this.getSelection().select(inIndex, inData);
@@ -651,9 +660,9 @@ enyo.kind({
 	/**
 		Clears the selection state for the given row index.
 
-		Modifying selection will not automatically re-render the row,
-		so use [renderRow](#enyo.List::renderRow) or [refresh](#enyo.List::refresh)
-		to update the view.
+		Modifying selection will not automatically re-render the row, so use
+		[renderRow()](#enyo.List::renderRow) or [refresh()](#enyo.List::refresh) to
+		update the view.
 	*/
 	deselect: function(inIndex) {
 		return this.getSelection().deselect(inIndex);

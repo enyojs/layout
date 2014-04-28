@@ -23,7 +23,7 @@ enyo.kind({
 			* top: distance from the parent's top edge
 			* bottom: distance from the parent's bottom edge (overrides top)
 			* left: distance from the parent's left edge
-			* right: distance from the parennt's right edge (overrides left)
+			* right: distance from the parent's right edge (overrides left)
 		*/
 		anchor: {
 			top: 0,

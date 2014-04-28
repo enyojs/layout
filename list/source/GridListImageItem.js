@@ -1,7 +1,7 @@
 /**
-	_enyo.GridList.ImageItem_ is a convenience component that may be used
-	inside an <a href="#enyo.DataGridList">enyo.DataGridList</a> to display an
-	image grid with an optional caption and sub-caption.
+	_enyo.GridList.ImageItem_ is a convenience component that may be used inside
+	an [enyo.DataGridList](#enyo.DataGridList) to display an image grid with an
+	optional caption and subcaption.
 */
 
 enyo.kind({
@@ -20,30 +20,35 @@ enyo.kind({
 		//* The second caption line to be displayed with the image
 		subCaption: "",
 		/**
-            Set to true to add the _selected_ class to the image tile; set to
-            false to remove the _selected_ class
-        */
+			Set to true to add the _selected_ CSS class to the image tile; set to
+			false to remove the _selected_ class
+		*/
 		selected: false,
-		//* When true, caption & subCaption are centered; otherwise left-aligned
+		/**
+			When true, the caption and subcaption are centered; otherwise, they are
+			left-aligned
+		*/
 		centered: true,
-		/** 
-			By default, the image width fits the width of the item, and the height
-			is sized naturally, based on the aspect ratio of the image.  Set this 
+		/**
+			By default, the width of the image fits the width of the item, and the
+			height is sized naturally, based on the image's aspect ratio.  Set this 
 			property to _constrain_ to letterbox the image in the available space,
 			or _cover_ to cover the available space with the image (cropping the
-			larger dimension).  Note, when _imageSizing_ is set, you must indicate
-			whether the caption and subCaption are used, based on the _useCaption_
-			and _useSubCaption_ flags, for proper sizing.
+			larger dimension).  Note that, when _imageSizing_ is explicitly specified,
+			you must indicate whether the caption and subcaption are used (by setting
+			the _useCaption_ and _useSubCaption_ flags) to ensure proper sizing.
 		*/
 		imageSizing: "",
 		/**
-			When using an _imageSizing_ option, set to false if the caption space
-			should not be reserved.  Has no effect when imageSizing is default.
+			When explicitly specifying an _imageSizing_ option, set to false if the
+			caption space should not be reserved. This property has no effect when
+			_imageSizing_ retains its default value.
 		*/
 		useCaption: true,
 		/**
-			When using an _imageSizing_ option, set to false if the subcaption space
-			should not be reserved.  Has no effect when imageSizing is default.
+			When explicitly specifying an _imageSizing_ option, set to false if the
+			subcaption space should not be reserved. This property has no effect when
+			_imageSizing_ retains its default value.
 		*/
 		useSubCaption: true
 	},
