@@ -11,9 +11,9 @@ enyo.kind({
 			]}
 		]},
 		{kind: "FittableColumns", fit: true, components: [
-			{style: "width: 30%;"},
+			{classes:"fittable-sample-column"},
 			{kind: "FittableRows", fit: true, classes: "fittable-sample-shadow", components: [
-				{classes: "fittable-sample-shadow2", style: "height: 30%; position: relative; z-index: 1;"},
+				{classes:"fittable-sample-row fittable-sample-shadow2"},
 				{fit: true, classes: "fittable-sample-fitting-color"}
 			]}
 		]}
