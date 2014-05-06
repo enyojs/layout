@@ -202,7 +202,6 @@ enyo.kind({
 	*/
 	reflow: function() {
 		if (!this.useFlex) {
-			this.container.addClass(this.fitLayoutClass);
 			if (this.orient == 'h') {
 				this._reflow('width', 'clientWidth', 'left', 'right');
 			} else {
