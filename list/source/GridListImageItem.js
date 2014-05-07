@@ -74,11 +74,13 @@ enyo.kind({
 		this.addRemoveClass("disabled", this.disabled);
 	},
 	imageSizingChanged: function() {
-		this.$.image.setSizing(this.imageSizing);
-		this.addRemoveClass("sized-image", !!this.imageSizing);
-		if (this.imageSizing) {
-			this.useCaptionChanged();
-			this.useSubCaptionChanged();
+		if(this.$.image) {
+			this.$.image.setSizing(this.imageSizing);
+			this.addRemoveClass("sized-image", !!this.imageSizing);
+			if (this.imageSizing) {
+				this.useCaptionChanged();
+				this.useSubCaptionChanged();
+			}
 		}
 	},
 	useCaptionChanged: function() {
