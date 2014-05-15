@@ -784,8 +784,9 @@ enyo.kind({
 	//* Centers the floating reorder container on the user's pointer.
 	centerReorderContainerOnPointer: function(e) {
 		var containerPosition = enyo.dom.calcNodePosition(this.hasNode());
-		var x = e.pageX - containerPosition.left - parseInt(this.$.reorderContainer.domStyles.width, 10)/2;
-		var y = e.pageY - containerPosition.top + this.getScrollTop() - parseInt(this.$.reorderContainer.domStyles.height, 10)/2;
+		var bounds = this.$.reorderContainer.getBounds();
+		var x = e.pageX - containerPosition.left - parseInt(bounds.width, 10)/2;
+		var y = e.pageY - containerPosition.top + this.getScrollTop() - parseInt(bounds.height, 10)/2;
 		if (this.getStrategyKind() != "ScrollStrategy") {
 			x -= this.getScrollLeft();
 			y -= this.getScrollTop();
@@ -1541,7 +1542,7 @@ enyo.kind({
 	animateSwipe: function(targetX,totalTimeMS) {
 		var t0 = enyo.now();
 		var $item = this.$.swipeableComponents;
-		var origX = parseInt($item.domStyles.left,10);
+		var origX = parseInt($item.getBounds().left,10);
 		var xDelta = targetX - origX;
 
 		this.stopAnimateSwipe();
