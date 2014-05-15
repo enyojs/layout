@@ -7,5 +7,6 @@ enyo.depends(
 	"panels",
 	"tree",
 	"imageview",
+	"grid",
 	"layout.design"
 );
