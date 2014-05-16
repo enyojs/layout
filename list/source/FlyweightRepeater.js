@@ -105,25 +105,29 @@ enyo.kind({
 		this.doSetupItem({index: inIndex, selected: this.isSelected(inIndex)});
 	},
 	//* Renders the list.
-	generateChildHtml: enyo.inherit(function(sup) {
-		return function() {
-			var h = "";
-			this.index = null;
-			// note: can supply a rowOffset
-			// and indicate if rows should be rendered top down or bottomUp
-			for (var i=0, r=0; i<this.count; i++) {
-				r = this.rowOffset + (this.bottomUp ? this.count - i-1 : i);
-				this.setupItem(r);
-				this.$.client.setAttribute("data-enyo-index", r);
-				if (this.orient == "h") {
-					this.$.client.setStyle("display:inline-block;");
-				}
-				h += sup.apply(this, arguments);
-				this.$.client.teardownRender();
+	generateChildHtml: function () {
+		// because this code (here and related) is so tightly tied to the previous
+		// api this is a hack to keep it working for now
+		
+		// we know it's only ever going to work, for now, with the HtmlStringDelegate
+		var delegate = enyo.HTMLStringDelegate;
+		
+		var h = "";
+		this.index = null;
+		// note: can supply a rowOffset
+		// and indicate if rows should be rendered top down or bottomUp
+		for (var i=0, r=0; i<this.count; i++) {
+			r = this.rowOffset + (this.bottomUp ? this.count - i-1 : i);
+			this.setupItem(r);
+			this.$.client.setAttribute("data-enyo-index", r);
+			if (this.orient == "h") {
+				this.$.client.setStyle("display:inline-block;");
 			}
-			return h;
-		};
-	}),
+			h += delegate.generateChildHtml(this);
+			this.$.client.teardownRender();
+		}
+		return h;
+	},
 	previewDomEvent: function(inEvent) {
 		var i = this.index = this.rowForEvent(inEvent);
 		inEvent.rowIndex = inEvent.index = i;
@@ -174,7 +178,10 @@ enyo.kind({
 		this.setupItem(inIndex);
 		var node = this.fetchRowNode(inIndex);
 		if (node) {
-			enyo.dom.setInnerHtml(node, this.$.client.generateChildHtml());
+			// hack to keep this working...
+			var delegate = enyo.HTMLStringDelegate;
+			
+			enyo.dom.setInnerHtml(node, delegate.generateChildHtml(this.$.client));
 			this.$.client.teardownChildren();
 			this.doRenderRow({rowIndex: inIndex});
 		}
