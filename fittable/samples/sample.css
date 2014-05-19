@@ -46,6 +46,7 @@
 	box-shadow: 6px 0px 6px rgba(0,0,0,0.3);
 	-moz-box-shadow: 6px 0px 6px rgba(0,0,0,0.3);
 	-webkit-box-shadow: 6px 0px 6px rgba(0,0,0,0.3);
+	z-index: 1;
 }
 
 .fittable-sample-boxable {
@@ -73,4 +74,22 @@
 .fittable-sample-section {
 	padding: 30px 10px 10px;
 	font-weight: bold;
+}
+
+@media only screen and (min-width: 768px) {
+	.fittable-sample-row {
+		height: 300px;
+	}
+	.fittable-sample-column {
+		width: 300px;
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.fittable-sample-row {
+		height: 120px;
+	}
+	.fittable-sample-column {
+		width: 120px;
+	}
 }

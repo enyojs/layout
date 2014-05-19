@@ -3,13 +3,13 @@ enyo.kind({
 	kind: "FittableColumns",
 	classes: "enyo-fit",
 	components: [
-		{kind: "FittableRows", style: "width: 20%;", components: [
+		{kind: "FittableRows", classes: "fittable-sample-column", components: [
 			{fit: true},
 			{kind: "onyx.Toolbar", components: [
 				{kind: "onyx.Button", content: "1"}
 			]}
 		]},
-		{kind: "FittableRows", style: "width: 20%;", classes: "fittable-sample-shadow", components: [
+		{kind: "FittableRows", classes: "fittable-sample-column fittable-sample-shadow", components: [
 			{fit: true, style: ""},
 			{kind: "onyx.Toolbar", components: [
 				{kind: "onyx.Button", content: "2"}
