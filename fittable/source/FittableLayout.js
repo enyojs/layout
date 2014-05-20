@@ -49,7 +49,7 @@ enyo.kind({
 			// Add the force-ltr class if we're in RTL mode, but this control is set explicitly to NOT be in RTL mode.
 			this.container.addRemoveClass("force-left-to-right", (enyo.Control.prototype.rtl && !this.container.get("rtl")) );
 
-			// Flexbox optimization is determined by global flexAvailable and per-instance opt-out useFlex flag
+			// Flexbox optimization is determined by global flexAvailable and per-instance opt-in useFlex flag
 			this.useFlex = enyo.FittableLayout.flexAvailable && (this.container.useFlex === true);
 			if (this.useFlex) {
 				this.container.addClass(this.flexLayoutClass);
