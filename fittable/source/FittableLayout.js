@@ -10,8 +10,8 @@
 	are used for layout rather than _enyo.FittableLayout_ because they specify
 	properties that the framework expects to be available when laying items out.
 
-	When available on the platform, _enyo.FittableLayout_ will use CSS flexible
-	box (flexbox) to implement fitting behavior on the platform for better 
+	When available on the platform, you can opt-in to have _enyo.FittableLayout_ use CSS
+	flexible box (flexbox) to implement fitting behavior on the platform for better 
 	performance, and will fall back to JS-based layout on older platforms.
 	There are three subtle differences between the flexbox and JS implementations
 	that should be noted:
@@ -28,10 +28,9 @@
 		on if deploying to platforms without flexbox support.
 
 	The flexbox implementation was added to Enyo 2.5.0 as a performance optimization;
-	to opt-out of this optimization (and avoid the subtle differences between the
-	flexbox and JS implementations listed above), set `useFlex: false` on the
-	Fittable container, which will result in the legacy JS implementation for all
-	platforms.
+	to opt-in to this optimization set `useFlex: true` on the
+	Fittable container, which will result in the use of flexbox when possible - noting the
+	subtle differences between the JS fittables implementation and flexbox.
 
 	For more information, see the documentation on
 	[Fittables](building-apps/layout/fittables.html) in the Enyo Developer Guide.
@@ -51,7 +50,7 @@ enyo.kind({
 			this.container.addRemoveClass("force-left-to-right", (enyo.Control.prototype.rtl && !this.container.get("rtl")) );
 
 			// Flexbox optimization is determined by global flexAvailable and per-instance opt-out useFlex flag
-			this.useFlex = enyo.FittableLayout.flexAvailable && (this.container.useFlex !== false);
+			this.useFlex = enyo.FittableLayout.flexAvailable && (this.container.useFlex === true);
 			if (this.useFlex) {
 				this.container.addClass(this.flexLayoutClass);
 			} else {
