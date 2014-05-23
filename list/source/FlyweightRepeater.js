@@ -3,7 +3,7 @@
 	var HTMLStringDelegate = enyo.HTMLStringDelegate,
 		FlyweightRepeaterDelegate = Object.create(HTMLStringDelegate);
 
-	FlyweightRepeaterDelegate.generateChildHtml = function (control) {
+	FlyweightRepeaterDelegate.generateInnerHtml = function (control) {
 		var h = "";
 		control.index = null;
 		// note: can supply a rowOffset
@@ -130,11 +130,7 @@
 		},
 		//* Renders the list.
 		generateChildHtml: function () {
-			// because this code (here and related) is so tightly tied to the previous
-			// api this is a hack to keep it working for now
-			
-			// we know it's only ever going to work, for now, with the HtmlStringDelegate
-			return this.delegate.generateChildHtml(this);
+			return this.renderDelegate.generateInnerHtml(this);
 		},
 		previewDomEvent: function(inEvent) {
 			var i = this.index = this.rowForEvent(inEvent);
