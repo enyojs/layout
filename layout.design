@@ -135,13 +135,6 @@
                     }
                 },
                 {
-                    "name": "GridFlyWeightRepeater",
-                    "description": "A grid flyweight repeater",
-                    "config": {
-                        "kind": "enyo.GridFlyWeightRepeater"
-                    }
-                },
-                {
                     "name": "GridListImageItem",
                     "description": "A gridlist image item",
                     "config": {
