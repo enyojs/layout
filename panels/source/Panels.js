@@ -110,7 +110,7 @@ enyo.kind({
 		this.setLayoutKind(this.arrangerKind);
 	},
 	narrowFitChanged: function() {
-		this.addRemoveClass("enyo-panels-fit-narrow", this.narrowFit && enyo.Panels.isScreenNarrow());
+		this.addRemoveClass(enyo.Panels.getNarrowClass(), this.narrowFit);
 	},
 	destroy: enyo.inherit(function(sup) {
 		return function() {
@@ -474,7 +474,8 @@ enyo.kind({
 		//* @public
 		/**
 			Returns true depending on detection of iOS and Android phone form factors,
-			or when window width is 800px or less.
+			or when window width is 800px or less. Approximates work done using media
+			queries in Panels.css.
 		*/
 		isScreenNarrow: function() {
 			var ua = navigator.userAgent, w = enyo.dom.getWindowWidth();
@@ -487,6 +488,28 @@ enyo.kind({
 					return (/Mobile/).test(ua);
 			}
 			return w <= 800;
+		},
+		/***
+			Returns the class name to apply for narrow fitting. See media queries
+			in Panels.css
+		*/
+		getNarrowClass: function() {
+			var ua = navigator.userAgent, w = enyo.dom.getWindowWidth();
+			switch (enyo.platform.platformName) {
+				case "ios":
+					if((/iP(?:hone|od;(?: U;)? CPU) OS (\d+)/).test(ua))
+						return "enyo-panels-force-narrow";
+					break;
+				case "android":
+					if((/Mobile/).test(ua) && (enyo.platform.android > 2))
+						  return "enyo-panels-force-narrow";
+					break;
+				case "androidChrome":
+					if((/Mobile/).test(ua))
+						return "enyo-panels-force-narrow";
+					break;
+			}
+			return "enyo-panels-fit-narrow";
 		},
 		//* @protected
 		lerp: function(inA0, inA1, inFrac) {
