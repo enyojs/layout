@@ -478,12 +478,10 @@ enyo.kind({
 			queries in Panels.css.
 		*/
 		isScreenNarrow: function() {
-			var w;
 			if(enyo.Panels.shouldBeNarrowFit()) {
 				return true;
 			} else {
-				w = enyo.dom.getWindowWidth();
-				return w <= 800;
+				return enyo.dom.getWindowWidth() <= 800;
 			}
 		},
 		/***
