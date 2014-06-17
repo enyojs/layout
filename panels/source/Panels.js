@@ -525,7 +525,7 @@ enyo.kind({
 				case "ios":
 					return (/iP(?:hone|od;(?: U;)? CPU) OS (\d+)/).test(ua);
 				case "android":
-					return (/Mobile/).test(ua) && (enyo.platform.android > 2)
+					return (/Mobile/).test(ua) && (enyo.platform.android > 2);
 				case "androidChrome":
 					return (/Mobile/).test(ua);
 			}
