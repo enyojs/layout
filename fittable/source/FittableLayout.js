@@ -10,6 +10,28 @@
 	are used for layout rather than _enyo.FittableLayout_ because they specify
 	properties that the framework expects to be available when laying items out.
 
+	When available on the platform, you can opt-in to have _enyo.FittableLayout_ use CSS
+	flexible box (flexbox) to implement fitting behavior on the platform for better 
+	performance, and will fall back to JS-based layout on older platforms.
+	There are three subtle differences between the flexbox and JS implementations
+	that should be noted:
+
+	* When using flexbox, vertical margins (`margin-top`, `margin-bottom`) will
+		not collapse; when using JS layout, vertical margin will collapse according
+		to static layout rules.
+	* When using flexbox, non-fitting children of the Fittable must not be sized
+		using percentages of the container (even if set to `position: relative`);
+		this is explicitly not supported by the flexbox 2013 spec.
+	* The flexbox-based Fittable implementation will respect multiple children
+		with `fit: true` (the fitting space will be divided equally between them).
+		This is NOT supported by the JS implementation, and should not be relied
+		on if deploying to platforms without flexbox support.
+
+	The flexbox implementation was added to Enyo 2.5.0 as a performance optimization;
+	to opt-in to this optimization set `useFlex: true` on the
+	Fittable container, which will result in the use of flexbox when possible - noting the
+	subtle differences between the JS fittables implementation and flexbox.
+
 	For more information, see the documentation on
 	[Fittables](building-apps/layout/fittables.html) in the Enyo Developer Guide.
 */
@@ -17,6 +39,7 @@
 enyo.kind({
 	name: 'enyo.FittableLayout',
 	kind: 'Layout',
+	noDefer: true,
 
 	//* @protected
 	constructor: enyo.inherit(function (sup) {
@@ -25,6 +48,14 @@ enyo.kind({
 			
 			// Add the force-ltr class if we're in RTL mode, but this control is set explicitly to NOT be in RTL mode.
 			this.container.addRemoveClass("force-left-to-right", (enyo.Control.prototype.rtl && !this.container.get("rtl")) );
+
+			// Flexbox optimization is determined by global flexAvailable and per-instance opt-in useFlex flag
+			this.useFlex = enyo.FittableLayout.flexAvailable && (this.container.useFlex === true);
+			if (this.useFlex) {
+				this.container.addClass(this.flexLayoutClass);
+			} else {
+				this.container.addClass(this.fitLayoutClass);
+			}
 		};
 	}),
 	calcFitIndex: function() {
@@ -147,15 +178,38 @@ enyo.kind({
 
 	//* @public
 	/**
+		Assigns any static layout properties not dependent on changes to the
+		rendered component or contaner sizes, etc.
+	*/
+	flow: function() {
+		if (this.useFlex) {
+			var i,
+				children = this.container.children,
+				child;
+			this.container.addClass(this.flexLayoutClass);
+			this.container.addRemoveClass("nostretch", this.container.noStretch);
+			for (i=0; i<children.length; i++) {
+				child = children[i];
+				child.addClass("enyo-flex-item");
+				child.addRemoveClass("flex", child.fit);
+			}
+		}
+	},
+	/**
 		Updates the layout to reflect any changes made to the layout container or
 		the contained components.
 	*/
 	reflow: function() {
-		if (this.orient == 'h') {
-			this._reflow('width', 'clientWidth', 'left', 'right');
-		} else {
-			this._reflow('height', 'clientHeight', 'top', 'bottom');
+		if (!this.useFlex) {
+			if (this.orient == 'h') {
+				this._reflow('width', 'clientWidth', 'left', 'right');
+			} else {
+				this._reflow('height', 'clientHeight', 'top', 'bottom');
+			}
 		}
+	},
+	statics: {
+		flexAvailable: false
 	}
 });
 
@@ -177,7 +231,8 @@ enyo.kind({
 	name        : 'enyo.FittableColumnsLayout',
 	kind        : 'FittableLayout',
 	orient      : 'h',
-	layoutClass : 'enyo-fittable-columns-layout'
+	fitLayoutClass : 'enyo-fittable-columns-layout',
+	flexLayoutClass: 'enyo-flex-container columns'
 });
 
 
@@ -198,6 +253,17 @@ enyo.kind({
 enyo.kind({
 	name        : 'enyo.FittableRowsLayout',
 	kind        : 'FittableLayout',
-	layoutClass : 'enyo-fittable-rows-layout',
-	orient      : 'v'
+	fitLayoutClass : 'enyo-fittable-rows-layout',
+	orient      : 'v',
+	flexLayoutClass: 'enyo-flex-container rows'
 });
+
+// One-time flexbox feature-detection
+(function() {
+	var detector = document.createElement("div");
+	enyo.FittableLayout.flexAvailable = 
+		(detector.style.flexBasis !== undefined) ||
+		(detector.style.webkitFlexBasis !== undefined) ||
+		(detector.style.mozFlexBasis !== undefined) ||
+		(detector.style.msFlexBasis !== undefined);
+})();
