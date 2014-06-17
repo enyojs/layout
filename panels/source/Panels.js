@@ -478,7 +478,7 @@ enyo.kind({
 			queries in Panels.css.
 		*/
 		isScreenNarrow: function() {
-			if(enyo.Panels.shouldBeNarrowFit()) {
+			if(enyo.Panels.isNarrowDevice()) {
 				return true;
 			} else {
 				return enyo.dom.getWindowWidth() <= 800;
@@ -489,7 +489,7 @@ enyo.kind({
 			in Panels.css
 		*/
 		getNarrowClass: function() {
-			if(enyo.Panels.shouldBeNarrowFit()) {
+			if(enyo.Panels.isNarrowDevice()) {
 				return "enyo-panels-force-narrow";
 			} else {
 				return "enyo-panels-fit-narrow";
@@ -517,7 +517,7 @@ enyo.kind({
 			}
 			return b;
 		},
-		shouldBeNarrowFit: function() {
+		isNarrowDevice: function() {
 			var ua = navigator.userAgent;
 			switch (enyo.platform.platformName) {
 				case "ios":
