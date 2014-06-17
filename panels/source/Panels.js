@@ -478,38 +478,24 @@ enyo.kind({
 			queries in Panels.css.
 		*/
 		isScreenNarrow: function() {
-			var ua = navigator.userAgent, w = enyo.dom.getWindowWidth();
-			switch (enyo.platform.platformName) {
-				case "ios":
-					return (/iP(?:hone|od;(?: U;)? CPU) OS (\d+)/).test(ua);
-				case "android":
-					return (/Mobile/).test(ua) && (enyo.platform.android > 2 ? true : w <= 800);
-				case "androidChrome":
-					return (/Mobile/).test(ua);
+			var w;
+			if(enyo.Panels.shouldBeNarrowFit()) {
+				return true;
+			} else {
+				w = enyo.dom.getWindowWidth();
+				return w <= 800;
 			}
-			return w <= 800;
 		},
 		/***
 			Returns the class name to apply for narrow fitting. See media queries
 			in Panels.css
 		*/
 		getNarrowClass: function() {
-			var ua = navigator.userAgent, w = enyo.dom.getWindowWidth();
-			switch (enyo.platform.platformName) {
-				case "ios":
-					if((/iP(?:hone|od;(?: U;)? CPU) OS (\d+)/).test(ua))
-						return "enyo-panels-force-narrow";
-					break;
-				case "android":
-					if((/Mobile/).test(ua) && (enyo.platform.android > 2))
-						  return "enyo-panels-force-narrow";
-					break;
-				case "androidChrome":
-					if((/Mobile/).test(ua))
-						return "enyo-panels-force-narrow";
-					break;
+			if(enyo.Panels.shouldBeNarrowFit()) {
+				return "enyo-panels-force-narrow";
+			} else {
+				return "enyo-panels-fit-narrow";
 			}
-			return "enyo-panels-fit-narrow";
 		},
 		//* @protected
 		lerp: function(inA0, inA1, inFrac) {
@@ -532,6 +518,18 @@ enyo.kind({
 				}
 			}
 			return b;
+		},
+		shouldBeNarrowFit: function() {
+			var ua = navigator.userAgent;
+			switch (enyo.platform.platformName) {
+				case "ios":
+					return (/iP(?:hone|od;(?: U;)? CPU) OS (\d+)/).test(ua);
+				case "android":
+					return (/Mobile/).test(ua) && (enyo.platform.android > 2)
+				case "androidChrome":
+					return (/Mobile/).test(ua);
+			}
+			return false;
 		}
 	}
 });
