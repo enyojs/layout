@@ -4,7 +4,14 @@
 .enyo-panels-fit-narrow {
 }
 
-.enyo-panels-fit-narrow > * {
+@media all and (max-width: 800px) {
+	.enyo-panels-fit-narrow > * {
+		min-width: 100%;
+		max-width: 100%;
+	}
+}
+
+.enyo-panels-force-narrow > * {
 	min-width: 100%;
 	max-width: 100%;
 }
