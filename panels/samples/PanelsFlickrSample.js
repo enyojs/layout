@@ -46,7 +46,7 @@ enyo.kind({
 			var backShowing = this.$.backToolbar.showing;
 			this.$.backToolbar.setShowing(enyo.Panels.isScreenNarrow());
 			if (this.$.backToolbar.showing != backShowing) {
-				this.$.pictureView.resized();
+				this.$.pictureView.resize();
 			}
 		};
 	}),

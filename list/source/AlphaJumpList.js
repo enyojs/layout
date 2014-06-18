@@ -30,7 +30,7 @@ enyo.kind({
 			this.centerJumper();
 		};
 	}),
-	resizeHandler: enyo.inherit(function(sup) {
+	handleResize: enyo.inherit(function(sup) {
 		return function() {
 			sup.apply(this, arguments);
 			this.centerJumper();

@@ -1,8 +1,5 @@
 enyo.kind({
 	name: "enyo.sample.PanZoomViewSample",
-	handlers:{
-		onresize: "resized"
-	},
 	components: [
 		{kind:"PanZoomView", contentWidth: 600, contentHeight: 600, classes:"panzoomview-demo", onZoom:"zoom", components: [
 			{kind: "FittableColumns", components: [
@@ -41,7 +38,8 @@ enyo.kind({
 			this.scale = "auto";
 		};
 	}),
-	resized: function(inSender, inEvent) {
+	handleResize: function(inSender, inEvent) {
+		this.inherited(arguments);
 		this.$.panZoomView.setScale(this.scale);
 	},
 	autoScale: function(inSender, inEvent) {

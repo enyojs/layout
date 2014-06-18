@@ -102,6 +102,6 @@ enyo.kind({
 	fitControl: function(inControl, inOffset) {
 		inControl._fit = true;
 		inControl.applyStyle("width", (this.containerBounds.width - inOffset) + "px");
-		inControl.resized();
+		inControl.resize();
 	}
 });
