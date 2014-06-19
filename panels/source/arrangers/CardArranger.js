@@ -29,7 +29,7 @@ enyo.kind({
 				var wasShowing=c.showing;
 				c.setShowing(i == this.container.fromIndex || i == (this.container.toIndex));
 				if (c.showing && !wasShowing) {
-					c.resized();
+					c.resize();
 				}
 			}
 		};
