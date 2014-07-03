@@ -54,7 +54,7 @@ enyo.kind({
 			text: inSearchText,
 			sort: 'date-posted-desc',
 			extras: 'url_m'
-		}, url = "http://api.flickr.com/services/rest/";
+		}, url = "https://api.flickr.com/services/rest/";
 		if (window.location.protocol === "ms-appx:") {
 			params.nojsoncallback = 1;
 			// Use ajax for platforms with no jsonp support (Windows 8)
