@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: list/source/FlyweightRepeater.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: list/source/FlyweightRepeater.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>(function (enyo, scope) {
+	
+	var HTMLStringDelegate = enyo.HTMLStringDelegate,
+		FlyweightRepeaterDelegate = Object.create(HTMLStringDelegate);
+
+	FlyweightRepeaterDelegate.generateInnerHtml = function (control) {
+		var h = "";
+		control.index = null;
+		// note: can supply a rowOffset
+		// and indicate if rows should be rendered top down or bottomUp
+		for (var i=0, r=0; i&lt;control.count; i++) {
+			r = control.rowOffset + (this.bottomUp ? control.count - i-1 : i);
+			control.setupItem(r);
+			control.$.client.setAttribute("data-enyo-index", r);
+			if (control.orient == "h") {
+				control.$.client.setStyle("display:inline-block;");
+			}
+			h += HTMLStringDelegate.generateChildHtml(control);
+			control.$.client.teardownRender();
+		}
+		return h;
+	};
+
+	/**
+		_enyo.FlyweightRepeater_ is a control that displays a repeating list of
+		rows, suitable for displaying medium-sized lists (up to ~100 items). A
+		flyweight strategy is employed to render one set of row controls, as needed,
+		for as many rows as are contained in the repeater.
+
+		The FlyweightRepeater's _components_ block contains the controls to be used
+		for a single row. This set of controls will be rendered for each row. You
+		may customize row rendering by handling the _onSetupItem_ event.
+
+		The controls inside a FlyweightRepeater are non-interactive. This means that
+		calling methods that would normally cause rendering to occur (e.g.,
+		_set("content", value)_) will not do so. However, you may force a row to
+		render by calling _renderRow(inRow)_.
+
+		In addition, you may force a row to be temporarily interactive by calling
+		_prepareRow(inRow)_. Call the _lockRow()_ method when the	interaction is
+		complete.
+
+		For more information, see the documentation on
+		[Lists](building-apps/layout/lists.html) in the Enyo Developer Guide.
+	*/
+	enyo.kind({
+		name: "enyo.FlyweightRepeater",
+		published: {
+			//* Number of rows to render
+			count: 0,
+			/**
+				If true, the selection mechanism is disabled. Tap events are still
+				sent, but items won't be automatically re-rendered when tapped.
+			*/
+			noSelect: false,
+			//* If true, multiple selections are allowed
+			multiSelect: false,
+			//* If true, the selected item will toggle
+			toggleSelected: false,
+			/**
+				Used to specify CSS classes for the repeater's wrapper component (client).
+				Input is identical to that of _enyo.Control.setClasses()_.
+			*/
+			clientClasses: '',
+			/**
+				Used to specify custom styling for the repeater's wrapper component
+				(client). Input is identical to that of _enyo.Control.setStyle()_.
+			*/
+			clientStyle: '',
+			/**
+				Numerical offset applied to row number during row generation. Allows items
+				to have natural indices instead of 0-based ones. This value must be
+				positive, as row number -1 is used to represent undefined rows in the
+				event system.
+			*/
+			rowOffset: 0,
+			/**
+				Direction in which items will be laid out. Valid values are "v" for
+				vertical or "h" for horizontal.
+			*/
+			orient: "v"
+		},
+		events: {
+			/**
+				Fires once per row at render time.
+
+				_inEvent.index_ contains the current row index.
+
+				_inEvent.selected_ is a boolean indicating whether the current row
+				is selected.
+			*/
+			onSetupItem: "",
+			//* Fires after an individual row has been rendered from a call to _renderRow()_.
+			onRenderRow: ""
+		},
+		//* Design-time attribute indicating whether row indices run
+		//* from [0 to _count_-1] (false) or [_count_-1 to 0] (true)
+		bottomUp: false,
+		//* @protected
+		renderDelegate: FlyweightRepeaterDelegate,
+		components: [
+			{kind: "Selection", onSelect: "selectDeselect", onDeselect: "selectDeselect"},
+			{name: "client"}
+		],
+		create: enyo.inherit(function(sup) {
+			return function() {
+				sup.apply(this, arguments);
+				this.noSelectChanged();
+				this.multiSelectChanged();
+				this.clientClassesChanged();
+				this.clientStyleChanged();
+			};
+		}),
+		noSelectChanged: function() {
+			if (this.noSelect) {
+				this.$.selection.clear();
+			}
+		},
+		multiSelectChanged: function() {
+			this.$.selection.setMulti(this.multiSelect);
+		},
+		clientClassesChanged: function() {
+			this.$.client.setClasses(this.clientClasses);
+		},
+		clientStyleChanged: function() {
+			this.$.client.setStyle(this.clientStyle);
+		},
+		setupItem: function(inIndex) {
+			this.doSetupItem({index: inIndex, selected: this.isSelected(inIndex)});
+		},
+		//* Renders the list.
+		generateChildHtml: function () {
+			return this.renderDelegate.generateInnerHtml(this);
+		},
+		previewDomEvent: function(inEvent) {
+			var i = this.index = this.rowForEvent(inEvent);
+			inEvent.rowIndex = inEvent.index = i;
+			inEvent.flyweight = this;
+		},
+		decorateEvent: enyo.inherit(function(sup) {
+			return function(inEventName, inEvent, inSender) {
+				// decorate event with index found via dom iff event does not already contain an index.
+				var i = (inEvent &amp;&amp; inEvent.index != null) ? inEvent.index : this.index;
+				if (inEvent &amp;&amp; i != null) {
+					inEvent.index = i;
+					inEvent.flyweight = this;
+				}
+				sup.apply(this, arguments);
+			};
+		}),
+		tap: function(inSender, inEvent) {
+			// ignore taps if selecting is disabled or if they don't target a row
+			if (this.noSelect || inEvent.index === -1) {
+				return;
+			}
+			if (this.toggleSelected) {
+				this.$.selection.toggle(inEvent.index);
+			} else {
+				this.$.selection.select(inEvent.index);
+			}
+		},
+		selectDeselect: function(inSender, inEvent) {
+			this.renderRow(inEvent.key);
+		},
+		//* @public
+		//* Returns the repeater's _selection_ component.
+		getSelection: function() {
+			return this.$.selection;
+		},
+		//* Gets the selection state for the given row index.
+		isSelected: function(inIndex) {
+			return this.getSelection().isSelected(inIndex);
+		},
+		//* Renders the row specified by _inIndex_.
+		renderRow: function(inIndex) {
+			// do nothing if index is out-of-range
+			if (inIndex &lt; this.rowOffset || inIndex >= this.count + this.rowOffset) {
+				return;
+			}
+			//this.index = null;
+			// always call the setupItem callback, as we may rely on the post-render state
+			this.setupItem(inIndex);
+			var node = this.fetchRowNode(inIndex);
+			if (node) {
+				// hack to keep this working...
+				var delegate = enyo.HTMLStringDelegate;
+				
+				enyo.dom.setInnerHtml(node, delegate.generateChildHtml(this.$.client));
+				this.$.client.teardownChildren();
+				this.doRenderRow({rowIndex: inIndex});
+			}
+		},
+		//* Fetches the DOM node for the given row index.
+		fetchRowNode: function(inIndex) {
+			if (this.hasNode()) {
+				return this.node.querySelector('[data-enyo-index="' + inIndex + '"]');
+			}
+		},
+		//* Fetches the row number corresponding with the target of a given event.
+		rowForEvent: function(inEvent) {
+			if (!this.hasNode()) {
+				return -1;
+			}
+			var n = inEvent.target;
+			while (n &amp;&amp; n !== this.node) {
+				var i = n.getAttribute &amp;&amp; n.getAttribute("data-enyo-index");
+				if (i !== null) {
+					return Number(i);
+				}
+				n = n.parentNode;
+			}
+			return -1;
+		},
+		//* Prepares the row specified by _inIndex_ such that changes made to the
+		//* controls inside the repeater will be rendered for the given row.
+		prepareRow: function(inIndex) {
+			// do nothing if index is out-of-range
+			if (inIndex &lt; this.rowOffset || inIndex >= this.count + this.rowOffset) {
+				return;
+			}
+			// update row internals to match model
+			this.setupItem(inIndex);
+			var n = this.fetchRowNode(inIndex);
+			enyo.FlyweightRepeater.claimNode(this.$.client, n);
+		},
+		//* Prevents rendering of changes made to controls inside the repeater.
+		lockRow: function() {
+			this.$.client.teardownChildren();
+		},
+		//* Prepares the row specified by _inIndex_ such that changes made to the
+		//* controls in the row will be rendered in the given row; then performs the
+		//* function _inFunc_, and, finally, locks the row.
+		performOnRow: function(inIndex, inFunc, inContext) {
+			// do nothing if index is out-of-range
+			if (inIndex &lt; this.rowOffset || inIndex >= this.count + this.rowOffset) {
+				return;
+			}
+			if (inFunc) {
+				this.prepareRow(inIndex);
+				enyo.call(inContext || null, inFunc);
+				this.lockRow();
+			}
+		},
+		statics: {
+			//* Associates a flyweight rendered control (_inControl_) with a
+			//* rendering context specified by _inNode_.
+			claimNode: function(inControl, inNode) {
+				var n;
+				if (inNode) {
+					if (inNode.id !== inControl.id) {
+						n = inNode.querySelector("#" + inControl.id);
+					}
+					else {
+						// inNode is already the right node, so just use it
+						n = inNode;
+					}
+				}
+				// FIXME: consider controls generated if we found a node or tag: null, the later so can teardown render
+				inControl.generated = Boolean(n || !inControl.tag);
+				inControl.node = n;
+				if (inControl.node) {
+					inControl.rendered();
+				} else {
+					//enyo.log("Failed to find node for",  inControl.id, inControl.generated);
+				}
+				// update control's class cache based on the node contents
+				for (var i=0, c$=inControl.children, c; (c=c$[i]); i++) {
+					this.claimNode(c, inNode);
+				}
+			}
+		}
+	});
+})(enyo, this);</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Global</h3><ul><li><a href="global.html#accelerated">accelerated</a></li><li><a href="global.html#animate">animate</a></li><li><a href="global.html#arrange">arrange</a></li><li><a href="global.html#buildReorderContainer">buildReorderContainer</a></li><li><a href="global.html#calcArrangementDifference">calcArrangementDifference</a></li><li><a href="global.html#calcNewDragPosition">calcNewDragPosition</a></li><li><a href="global.html#checkForAutoScroll">checkForAutoScroll</a></li><li><a href="global.html#cleanupMemory">cleanupMemory</a></li><li><a href="global.html#completeFinishReordering">completeFinishReordering</a></li><li><a href="global.html#createPlaceholderNode">createPlaceholderNode</a></li><li><a href="global.html#defaultScale">defaultScale</a></li><li><a href="global.html#deselect">deselect</a></li><li><a href="global.html#destroy">destroy</a></li><li><a href="global.html#dragProp">dragProp</a></li><li><a href="global.html#finish">finish</a></li><li><a href="global.html#finishReordering">finishReordering</a></li><li><a href="global.html#flow">flow</a></li><li><a href="global.html#flowControl">flowControl</a></li><li><a href="global.html#getActive">getActive</a></li><li><a href="global.html#getAnimator">getAnimator</a></li><li><a href="global.html#getPanels">getPanels</a></li><li><a href="global.html#getSelection">getSelection</a></li><li><a href="global.html#horizontalDragPropagation">horizontalDragPropagation</a></li><li><a href="global.html#incrementalPoints">incrementalPoints</a></li><li><a href="global.html#isSwiping">isSwiping</a></li><li><a href="global.html#lowMemory">lowMemory</a></li><li><a href="global.html#movePlaceholderToIndex">movePlaceholderToIndex</a></li><li><a href="global.html#next">next</a></li><li><a href="global.html#noStretch">noStretch</a></li><li><a href="global.html#peekWidth">peekWidth</a></li><li><a href="global.html#performOnRow">performOnRow</a></li><li><a href="global.html#positionReorderContainer">positionReorderContainer</a></li><li><a href="global.html#previous">previous</a></li><li><a href="global.html#reflow">reflow</a></li><li><a href="global.html#renderRow">renderRow</a></li><li><a href="global.html#reorderScroll">reorderScroll</a></li><li><a href="global.html#reset">reset</a></li><li><a href="global.html#select">select</a></li><li><a href="global.html#selectPanelByName">selectPanelByName</a></li><li><a href="global.html#setIndex">setIndex</a></li><li><a href="global.html#setIndexDirect">setIndexDirect</a></li><li><a href="global.html#shouldStartReordering">shouldStartReordering</a></li><li><a href="global.html#size">size</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#startSwipe">startSwipe</a></li><li><a href="global.html#swipeDrag">swipeDrag</a></li><li><a href="global.html#swipeDragStart">swipeDragStart</a></li><li><a href="global.html#thumb">thumb</a></li><li><a href="global.html#touchOverscroll">touchOverscroll</a></li><li><a href="global.html#updatePagePositions">updatePagePositions</a></li><li><a href="global.html#updatePageSize">updatePageSize</a></li><li><a href="global.html#verticalDragPropagation">verticalDragPropagation</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha8</a> on Tue Jul 08 2014 09:36:26 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: panels/source/arrangers/CollapsingArranger.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: panels/source/arrangers/CollapsingArranger.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>﻿/**
+	_enyo.CollapsingArranger_ is an [enyo.Arranger](#enyo.Arranger) that
+	displays the active control, along with some number of inactive	controls to
+	fill the available space. The active control is positioned on the left side
+	of the container and the rest of the views are laid out to the right. The
+	last control, if visible, will expand to fill whatever space is not taken
+	up by the previous controls.
+
+	For best results with CollapsingArranger, you should set a minimum width
+	for each control via a CSS style, e.g., _min-width: 25%_ or
+	_min-width: 250px_.
+
+	Transitions between arrangements are handled by sliding the new control	in
+	from the right and collapsing the old control to the left.
+
+	For more information, see the documentation on
+	[Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
+*/
+enyo.kind({
+	name: "enyo.CollapsingArranger",
+	kind: "CarouselArranger",
+	/**
+		The distance (in pixels) that each panel should be offset from the left
+		when it is selected. This allows controls on the underlying panel to the
+		left of the selected one to be partially revealed.
+	*/
+	peekWidth: 0,
+	//* @protected
+	size: enyo.inherit(function(sup) {
+		return function() {
+			this.clearLastSize();
+			sup.apply(this, arguments);
+		};
+	}),
+	// clear size from last if it's not actually the last
+	// (required for adding another control)
+	clearLastSize: function() {
+		for (var i=0, c$=this.container.getPanels(), c; (c=c$[i]); i++) {
+			if (c._fit &amp;&amp; i != c$.length-1) {
+				c.applyStyle("width", null);
+				c._fit = null;
+			}
+		}
+	},
+	constructor: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.peekWidth = this.container.peekWidth != null ? this.container.peekWidth : this.peekWidth;
+		};
+	}),
+	arrange: function(inC, inIndex) {
+		var c$ = this.container.getPanels();
+		for (var i=0, e=this.containerPadding.left, c, n=0; (c=c$[i]); i++) {
+			if(c.getShowing()){
+				this.arrangeControl(c, {left: e + n * this.peekWidth});
+				if (i >= inIndex) {
+					e += c.width + c.marginWidth - this.peekWidth;
+				}
+				n++;
+			} else {
+				this.arrangeControl(c, {left: e});
+				if (i >= inIndex) {
+					e += c.width + c.marginWidth;
+				}
+			}
+			// FIXME: overdragging-ish
+			if (i == c$.length - 1 &amp;&amp; inIndex &lt; 0) {
+				this.arrangeControl(c, {left: e - inIndex});
+			}
+		}
+	},
+	calcArrangementDifference: function(inI0, inA0, inI1, inA1) {
+		var i = this.container.getPanels().length-1;
+		return Math.abs(inA1[i].left - inA0[i].left);
+	},
+	flowControl: enyo.inherit(function(sup) {
+		return function(inControl, inA) {
+			sup.apply(this, arguments);
+			if (this.container.realtimeFit) {
+				var c$ = this.container.getPanels();
+				var l = c$.length-1;
+				var last = c$[l];
+				if (inControl == last) {
+					this.fitControl(inControl, inA.left);
+				}
+			}
+
+		};
+	}),
+	finish: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			if (!this.container.realtimeFit &amp;&amp; this.containerBounds) {
+				var c$ = this.container.getPanels();
+				var a$ = this.container.arrangement;
+				var l = c$.length-1;
+				var c = c$[l];
+				this.fitControl(c, a$[l].left);
+			}
+		};
+	}),
+	fitControl: function(inControl, inOffset) {
+		inControl._fit = true;
+		inControl.applyStyle("width", (this.containerBounds.width - inOffset) + "px");
+		inControl.resize();
+	}
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Global</h3><ul><li><a href="global.html#accelerated">accelerated</a></li><li><a href="global.html#animate">animate</a></li><li><a href="global.html#arrange">arrange</a></li><li><a href="global.html#buildReorderContainer">buildReorderContainer</a></li><li><a href="global.html#calcArrangementDifference">calcArrangementDifference</a></li><li><a href="global.html#calcNewDragPosition">calcNewDragPosition</a></li><li><a href="global.html#checkForAutoScroll">checkForAutoScroll</a></li><li><a href="global.html#cleanupMemory">cleanupMemory</a></li><li><a href="global.html#completeFinishReordering">completeFinishReordering</a></li><li><a href="global.html#createPlaceholderNode">createPlaceholderNode</a></li><li><a href="global.html#defaultScale">defaultScale</a></li><li><a href="global.html#deselect">deselect</a></li><li><a href="global.html#destroy">destroy</a></li><li><a href="global.html#dragProp">dragProp</a></li><li><a href="global.html#finish">finish</a></li><li><a href="global.html#finishReordering">finishReordering</a></li><li><a href="global.html#flow">flow</a></li><li><a href="global.html#flowControl">flowControl</a></li><li><a href="global.html#getActive">getActive</a></li><li><a href="global.html#getAnimator">getAnimator</a></li><li><a href="global.html#getPanels">getPanels</a></li><li><a href="global.html#getSelection">getSelection</a></li><li><a href="global.html#horizontalDragPropagation">horizontalDragPropagation</a></li><li><a href="global.html#incrementalPoints">incrementalPoints</a></li><li><a href="global.html#isSwiping">isSwiping</a></li><li><a href="global.html#lowMemory">lowMemory</a></li><li><a href="global.html#movePlaceholderToIndex">movePlaceholderToIndex</a></li><li><a href="global.html#next">next</a></li><li><a href="global.html#noStretch">noStretch</a></li><li><a href="global.html#peekWidth">peekWidth</a></li><li><a href="global.html#performOnRow">performOnRow</a></li><li><a href="global.html#positionReorderContainer">positionReorderContainer</a></li><li><a href="global.html#previous">previous</a></li><li><a href="global.html#reflow">reflow</a></li><li><a href="global.html#renderRow">renderRow</a></li><li><a href="global.html#reorderScroll">reorderScroll</a></li><li><a href="global.html#reset">reset</a></li><li><a href="global.html#select">select</a></li><li><a href="global.html#selectPanelByName">selectPanelByName</a></li><li><a href="global.html#setIndex">setIndex</a></li><li><a href="global.html#setIndexDirect">setIndexDirect</a></li><li><a href="global.html#shouldStartReordering">shouldStartReordering</a></li><li><a href="global.html#size">size</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#startSwipe">startSwipe</a></li><li><a href="global.html#swipeDrag">swipeDrag</a></li><li><a href="global.html#swipeDragStart">swipeDragStart</a></li><li><a href="global.html#thumb">thumb</a></li><li><a href="global.html#touchOverscroll">touchOverscroll</a></li><li><a href="global.html#updatePagePositions">updatePagePositions</a></li><li><a href="global.html#updatePageSize">updatePageSize</a></li><li><a href="global.html#verticalDragPropagation">verticalDragPropagation</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha8</a> on Tue Jul 08 2014 09:36:26 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

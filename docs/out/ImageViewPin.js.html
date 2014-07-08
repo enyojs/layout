@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: imageview/source/ImageViewPin.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: imageview/source/ImageViewPin.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+    _enyo.ImageViewPin_ is a control that can be used to display non-zooming
+    content inside of a zoomable _enyo.ImageView_ control. The _anchor_ and
+    _position_ properties can be used to position both the ImageViewPin and	its
+    content in a specific location inside of the ImageView.
+*/
+enyo.kind({
+	name: "enyo.ImageViewPin",
+	kind: "enyo.Control",
+	published: {
+		/**
+			If true, the anchor point for this pin will be highlighted in yellow,
+			which can be useful for debugging. Defaults to false.
+		*/
+		highlightAnchorPoint: false,
+		/**
+			The coordinates at which this control should be anchored inside
+			of the parent ImageView control. This position is relative to the
+			ImageView control's original size. Works like standard CSS positioning,
+			and accepts both px and percentage values. Defaults to _{top: 0px,
+			left: 0px}_.
+
+			* top: distance from the parent's top edge
+			* bottom: distance from the parent's bottom edge (overrides top)
+			* left: distance from the parent's left edge
+			* right: distance from the parent's right edge (overrides left)
+		*/
+		anchor: {
+			top: 0,
+			left: 0
+		},
+		/**
+			The coordinates at which the contents of this control should be
+			positioned relative to the ImageViewPin itself. Works like standard
+			CSS positioning. Only accepts px values. Defaults to _{top: 0px,
+			left: 0px}_.
+
+			* top: distance from the ImageViewPin's top edge
+			* bottom: distance from the ImageViewPin's bottom edge
+			* left: distance from the ImageViewPin's left edge
+			* right: distance from the ImageViewPin's right edge
+		*/
+		position: {
+			top: 0,
+			left: 0
+		}
+	},
+	//* @protected
+	style: "position:absolute;z-index:1000;width:0px;height:0px;",
+	handlers: {
+		onPositionPin: "reAnchor"
+	},
+	create: enyo.inherit(function(sup) {
+		return function() {
+			sup.apply(this, arguments);
+			this.styleClientControls();
+			this.positionClientControls();
+			this.highlightAnchorPointChanged();
+			this.anchorChanged();
+		};
+	}),
+	// Absolutely position to client controls
+	styleClientControls: function() {
+		var controls = this.getClientControls();
+		for (var i=0;i&lt;controls.length;i++) {
+			controls[i].applyStyle("position","absolute");
+		}
+	},
+	// Apply specified positioning to client controls
+	positionClientControls: function() {
+		var controls = this.getClientControls();
+		for (var i=0;i&lt;controls.length;i++) {
+			for (var p in this.position) {
+				controls[i].applyStyle(p, this.position[p]+"px");
+			}
+		}
+	},
+	// Update styling on anchor point
+	highlightAnchorPointChanged: function() {
+		this.addRemoveClass("pinDebug", this.highlightAnchorPoint);
+	},
+	// Create coords{} object for each anchor containing value and units
+	anchorChanged: function() {
+		var coords = null, a = null;
+		for (a in this.anchor) {
+			coords = this.anchor[a].toString().match(/^(\d+(?:\.\d+)?)(.*)$/);
+			if (!coords) {
+				continue;
+			}
+			this.anchor[a+"Coords"] = {
+				value: coords[1],
+				units: coords[2] || "px"
+			};
+		}
+	},
+	/*
+		Apply positioning to ImageViewPin specified in this.anchor{}.
+		Called anytime the parent ImageView is rescaled. If right/bottom
+		are specified, they override top/left.
+	*/
+	reAnchor: function(inSender, inEvent) {
+		var scale = inEvent.scale;
+		var bounds = inEvent.bounds;
+		var left = (this.anchor.right)
+			// Right
+			? (this.anchor.rightCoords.units == "px")
+				? (bounds.width + bounds.x - this.anchor.rightCoords.value*scale)
+				: (bounds.width*(100-this.anchor.rightCoords.value)/100 + bounds.x)
+			// Left
+			: (this.anchor.leftCoords.units == "px")
+				? (this.anchor.leftCoords.value*scale + bounds.x)
+				: (bounds.width*this.anchor.leftCoords.value/100 + bounds.x);
+		var top = (this.anchor.bottom)
+			// Bottom
+			? (this.anchor.bottomCoords.units == "px")
+				? (bounds.height + bounds.y - this.anchor.bottomCoords.value*scale)
+				: (bounds.height*(100-this.anchor.bottomCoords.value)/100 + bounds.y)
+			// Top
+			: (this.anchor.topCoords.units == "px")
+				? (this.anchor.topCoords.value*scale + bounds.y)
+				: (bounds.height*this.anchor.topCoords.value/100 + bounds.y);
+		this.applyStyle("left", left+"px");
+		this.applyStyle("top", top+"px");
+	}
+});</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Global</h3><ul><li><a href="global.html#accelerated">accelerated</a></li><li><a href="global.html#animate">animate</a></li><li><a href="global.html#arrange">arrange</a></li><li><a href="global.html#buildReorderContainer">buildReorderContainer</a></li><li><a href="global.html#calcArrangementDifference">calcArrangementDifference</a></li><li><a href="global.html#calcNewDragPosition">calcNewDragPosition</a></li><li><a href="global.html#checkForAutoScroll">checkForAutoScroll</a></li><li><a href="global.html#cleanupMemory">cleanupMemory</a></li><li><a href="global.html#completeFinishReordering">completeFinishReordering</a></li><li><a href="global.html#createPlaceholderNode">createPlaceholderNode</a></li><li><a href="global.html#defaultScale">defaultScale</a></li><li><a href="global.html#deselect">deselect</a></li><li><a href="global.html#destroy">destroy</a></li><li><a href="global.html#dragProp">dragProp</a></li><li><a href="global.html#finish">finish</a></li><li><a href="global.html#finishReordering">finishReordering</a></li><li><a href="global.html#flow">flow</a></li><li><a href="global.html#flowControl">flowControl</a></li><li><a href="global.html#getActive">getActive</a></li><li><a href="global.html#getAnimator">getAnimator</a></li><li><a href="global.html#getPanels">getPanels</a></li><li><a href="global.html#getSelection">getSelection</a></li><li><a href="global.html#horizontalDragPropagation">horizontalDragPropagation</a></li><li><a href="global.html#incrementalPoints">incrementalPoints</a></li><li><a href="global.html#isSwiping">isSwiping</a></li><li><a href="global.html#lowMemory">lowMemory</a></li><li><a href="global.html#movePlaceholderToIndex">movePlaceholderToIndex</a></li><li><a href="global.html#next">next</a></li><li><a href="global.html#noStretch">noStretch</a></li><li><a href="global.html#peekWidth">peekWidth</a></li><li><a href="global.html#performOnRow">performOnRow</a></li><li><a href="global.html#positionReorderContainer">positionReorderContainer</a></li><li><a href="global.html#previous">previous</a></li><li><a href="global.html#reflow">reflow</a></li><li><a href="global.html#renderRow">renderRow</a></li><li><a href="global.html#reorderScroll">reorderScroll</a></li><li><a href="global.html#reset">reset</a></li><li><a href="global.html#select">select</a></li><li><a href="global.html#selectPanelByName">selectPanelByName</a></li><li><a href="global.html#setIndex">setIndex</a></li><li><a href="global.html#setIndexDirect">setIndexDirect</a></li><li><a href="global.html#shouldStartReordering">shouldStartReordering</a></li><li><a href="global.html#size">size</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#startSwipe">startSwipe</a></li><li><a href="global.html#swipeDrag">swipeDrag</a></li><li><a href="global.html#swipeDragStart">swipeDragStart</a></li><li><a href="global.html#thumb">thumb</a></li><li><a href="global.html#touchOverscroll">touchOverscroll</a></li><li><a href="global.html#updatePagePositions">updatePagePositions</a></li><li><a href="global.html#updatePageSize">updatePageSize</a></li><li><a href="global.html#verticalDragPropagation">verticalDragPropagation</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha8</a> on Tue Jul 08 2014 09:36:26 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
