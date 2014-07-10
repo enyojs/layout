@@ -1,69 +1,69 @@
 enyo.kind({
-	name: "enyo.sample.ListContactsSample",
-	kind: "FittableRows",
-	classes: "list-sample-contacts enyo-fit",
+	name: 'enyo.sample.ListContactsSample',
+	kind: 'FittableRows',
+	classes: 'list-sample-contacts enyo-fit',
 	components: [
 		{
-			kind: "onyx.MoreToolbar",
-			layoutKind: "FittableColumnsLayout",
-			style: "height: 55px;",
+			kind: 'onyx.MoreToolbar',
+			layoutKind: 'FittableColumnsLayout',
+			style: 'height: 55px;',
 			components: [
-				{kind: "onyx.Button", content: "setup", ontap: "showSetupPopup"},
-				{kind: "onyx.InputDecorator", components: [
-					{name: "newContactInput", kind: "onyx.Input", value: "Frankie Fu"}
+				{kind: 'onyx.Button', content: 'setup', ontap: 'showSetupPopup'},
+				{kind: 'onyx.InputDecorator', components: [
+					{name: 'newContactInput', kind: 'onyx.Input', value: 'Frankie Fu'}
 				]},
-				{kind: "onyx.Button", content: "new contact", ontap: "addItem"},
+				{kind: 'onyx.Button', content: 'new contact', ontap: 'addItem'},
 				{fit: true},
-				{kind: "onyx.InputDecorator", components: [
-					{kind: "onyx.Input", placeholder: "Search...", style: "width: 140px;", oninput: "searchInputChange"},
-					{kind: "Image", src: "assets/search-input-search.png", style: "width: 20px;"}
+				{kind: 'onyx.InputDecorator', components: [
+					{kind: 'onyx.Input', placeholder: 'Search...', style: 'width: 140px;', oninput: 'searchInputChange'},
+					{kind: 'Image', src: 'assets/search-input-search.png', style: 'width: 20px;'}
 				]},
-				{kind: "onyx.Button", content: "remove selected", ontap: "removeSelected"}
+				{kind: 'onyx.Button', content: 'remove selected', ontap: 'removeSelected'}
 			]
 		},
 		{
-			kind: "List",
-			classes: "list-sample-contacts-list enyo-unselectable",
+			kind: 'List',
+			classes: 'list-sample-contacts-list enyo-unselectable',
 			fit: true,
 			multiSelect: true,
-			onSetupItem: "setupItem",
+			onSetupItem: 'setupItem',
 			components: [
-				{name: "divider", classes: "list-sample-contacts-divider"},
-				{name: "item", kind: "ContactItem", classes: "list-sample-contacts-item enyo-border-box", onRemove: "removeTap"}
+				{name: 'divider', classes: 'list-sample-contacts-divider'},
+				{name: 'item', kind: 'ContactItem', classes: 'list-sample-contacts-item enyo-border-box', onRemove: 'removeTap'}
 			]
 		},
 		{
-			name: "popup",
-			kind: "onyx.Popup",
+			name: 'popup',
+			kind: 'onyx.Popup',
 			modal: true,
 			centered: true,
-			classes: "list-sample-contacts-popup",
+			classes: 'list-sample-contacts-popup',
 			components: [
 				{
 					components: [
-						{style: "display:inline-block", components:[
-							{content: "count:", classes: "list-sample-contacts-label"},
-							{name: "countOutput", style: "display:inline-block;", content: "200"}
+						{style: 'display:inline-block', components:[
+							{content: 'count:', classes: 'list-sample-contacts-label'},
+							{name: 'countOutput', style: 'display:inline-block;', content: '200'}
 						]},
-						{kind: "onyx.Slider", value: 4, onChanging: "countSliderChanging", onChange: "countSliderChanging"}
+						{kind: 'onyx.Slider', value: 4, onChanging: 'countSliderChanging', onChange: 'countSliderChanging'}
 					]
 				},
 				{
 					components: [
-						{content: "rowsPerPage:", classes: "list-sample-contacts-label"},
-						{name: "rowsPerPageOutput", style: "display:inline-block;", content: "50"},
-						{kind: "onyx.Slider", value: 10, onChanging: "rowsSliderChanging", onChange: "rowsSliderChanging"}
+						{content: 'rowsPerPage:', classes: 'list-sample-contacts-label'},
+						{name: 'rowsPerPageOutput', style: 'display:inline-block;', content: '50'},
+						{kind: 'onyx.Slider', value: 10, onChanging: 'rowsSliderChanging', onChange: 'rowsSliderChanging'}
 					]
 				},
 				{
 					components: [
-						{content: "hide divider:", classes: "list-sample-contacts-label"},
-						{name: "hideDividerCheckbox", kind: "onyx.Checkbox"}
+						{content: 'hide divider:', classes: 'list-sample-contacts-label'},
+						{name: 'hideDividerCheckbox', kind: 'onyx.Checkbox'}
 					]
 				},
 				{
 					components: [
-						{kind: "onyx.Button", content: "populate list", classes: "list-sample-contacts-populate-button", ontap: "populateList"}
+						{kind: 'onyx.Button', content: 'populate list', classes: 'list-sample-contacts-populate-button', ontap: 'populateList'}
 					]
 				}
 			]
@@ -90,7 +90,7 @@ enyo.kind({
 			var showd = d != (prev && prev.name[0]);
 			this.$.divider.setContent(d);
 			this.$.divider.canGenerate = showd;
-			this.$.item.applyStyle("border-top", showd ? "none" : null);
+			this.$.item.applyStyle('border-top', showd ? 'none' : null);
 		}
 		return true;
 	},
@@ -160,14 +160,14 @@ enyo.kind({
 		/* global makeName */
 		this.db = [];
 		for (var i=0; i<inCount; i++) {
-			this.db.push(this.generateItem(makeName(4, 6) + " " + makeName(5, 10)));
+			this.db.push(this.generateItem(makeName(4, 6) + ' ' + makeName(5, 10)));
 		}
 		this.sortDb();
 	},
 	generateItem: function(inName) {
 		return {
 			name: inName,
-			avatar: "assets/avatars/" + avatars[enyo.irand(avatars.length)],
+			avatar: 'assets/avatars/' + avatars[enyo.irand(avatars.length)],
 			title: titles[enyo.irand(titles.length)],
 			importance: 0
 		};
@@ -189,7 +189,7 @@ enyo.kind({
 		this.$.popup.show();
 	},
 	searchInputChange: function(inSender) {
-		enyo.job(this.id + ":search", this.bindSafely("filterList", inSender.getValue()), 200);
+		enyo.job(this.id + ':search', this.bindSafely('filterList', inSender.getValue()), 200);
 	},
 	filterList: function(inFilter) {
 		if (inFilter != this.filter) {
@@ -200,7 +200,7 @@ enyo.kind({
 		}
 	},
 	generateFilteredData: function(inFilter) {
-		var re = new RegExp("^" + inFilter, "i");
+		var re = new RegExp('^' + inFilter, 'i');
 		var r = [];
 		for (var i=0, d; (d=this.db[i]); i++) {
 			if (d.name.match(re)) {
@@ -219,50 +219,50 @@ enyo.kind({
 });
 
 var avatars = [
-	"angel.png",
-	"astrologer.png",
-	"athlete.png",
-	"baby.png",
-	"clown.png",
-	"devil.png",
-	"doctor.png",
-	"dude.png",
-	"dude2.png",
-	"dude3.png",
-	"dude4.png",
-	"dude5.png",
-	"dude6.png"
+	'angel.png',
+	'astrologer.png',
+	'athlete.png',
+	'baby.png',
+	'clown.png',
+	'devil.png',
+	'doctor.png',
+	'dude.png',
+	'dude2.png',
+	'dude3.png',
+	'dude4.png',
+	'dude5.png',
+	'dude6.png'
 ];
 var titles = [
-	"Regional Data Producer",
-	"Internal Markets Administrator",
-	"Central Solutions Producer",
-	"Dynamic Program Executive",
-	"Direct Configuration Executive",
-	"International Marketing Assistant",
-	"District Research Consultant",
-	"Lead Intranet Coordinator",
-	"Central Accountability Director",
-	"Product Web Assistant"
+	'Regional Data Producer',
+	'Internal Markets Administrator',
+	'Central Solutions Producer',
+	'Dynamic Program Executive',
+	'Direct Configuration Executive',
+	'International Marketing Assistant',
+	'District Research Consultant',
+	'Lead Intranet Coordinator',
+	'Central Accountability Director',
+	'Product Web Assistant'
 ];
 
 // It's convenient to create a kind for the item we'll render in the contacts list.
 enyo.kind({
-	name: "ContactItem",
+	name: 'ContactItem',
 	events: {
-		onRemove: ""
+		onRemove: ''
 	},
 	published: {
 		importance: 0
 	},
 	components: [
-		{name: "avatar", kind: "Image", classes: "list-sample-contacts-avatar"},
+		{name: 'avatar', kind: 'Image', classes: 'list-sample-contacts-avatar'},
 		{components: [
-			{name: "name"},
-			{name: "title", classes: "list-sample-contacts-description"},
-			{content: "(415) 711-1234", classes: "list-sample-contacts-description"}
+			{name: 'name'},
+			{name: 'title', classes: 'list-sample-contacts-description'},
+			{content: '(415) 711-1234', classes: 'list-sample-contacts-description'}
 		]},
-		{name: "remove", kind: "onyx.IconButton", classes: "list-sample-contacts-remove-button", src: "assets/remove-icon.png", ontap: "removeTap"}
+		{name: 'remove', kind: 'onyx.IconButton', classes: 'list-sample-contacts-remove-button', src: 'assets/remove-icon.png', ontap: 'removeTap'}
 	],
 	setContact: function(inContact) {
 		this.$.name.setContent(inContact.name);
@@ -270,22 +270,22 @@ enyo.kind({
 		this.$.title.setContent(inContact.title);
 	},
 	setSelected: function(inSelected) {
-		this.addRemoveClass("list-sample-contacts-item-selected", inSelected);
-		this.$.remove.applyStyle("display", inSelected ? "inline-block" : "gne");
+		this.addRemoveClass('list-sample-contacts-item-selected', inSelected);
+		this.$.remove.applyStyle('display', inSelected ? 'inline-block' : 'gne');
 	},
 	renderImportance: function() {
 		switch(this.importance) {
 		case 0:
-			this.$.importance.setContent("not important");
+			this.$.importance.setContent('not important');
 			break;
 		case -1:
-			this.$.importance.setContent("important");
+			this.$.importance.setContent('important');
 			break;
 		case -2:
-			this.$.importance.setContent("very important");
+			this.$.importance.setContent('very important');
 			break;
 		default:
-			window.alert(this.importance+" - wowzer");
+			window.alert(this.importance+' - wowzer');
 			break;
 		}
 	},

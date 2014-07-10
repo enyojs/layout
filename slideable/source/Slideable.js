@@ -1,330 +1,668 @@
-/**
-	_enyo.Slideable_ is a control that may be dragged either horizontally or
-	vertically between a minimum and a maximum value. When released from
-	dragging, a	Slideable will animate to its minimum or maximum position,
-	depending on the direction of the drag.
+(function (enyo, scope) {
 
-	The _min_ value specifies a position to the left of, or above, the initial
-	position, to which the Slideable may be dragged.
-	The _max_ value specifies a position to the right of, or below, the initial
-	position, to which the Slideable may be dragged.
-	The _value_ property specifies the current position of the Slideable,
-	between the minimum and maximum positions.
+	/**
+	* Fires when the Slideable finishes animating.
+	*
+	* @event enyo.Slideable#event:onAnimateFinish
+	* @type {enyo.Animator}
+	* @public
+	*/
 
-	_min_, _max_, and _value_ may be specified in units of "px" or "%".
+	/**
+	* Fires when the position (i.e., {@link enyo.Slideable#value}) of the Slideable changes.
+	*
+	* @event enyo.Slideable#event:onChange
+	* @type {Object}
+	* @public
+	*/
 
-	The _axis_ property determines whether the Slideable slides left-to-right
-	("h") or up-and-down ("v").
+	/**
+	* _enyo.Slideable_ is a control that may be dragged either horizontally or
+	* vertically between a minimum and a maximum value. When released from
+	* dragging, a Slideable will animate to its minimum or maximum position,
+	* depending on the direction of the drag.
+	*
+	* The {@link enyo.Slideable#min} value specifies a position to the left of, or above, the initial
+	* position, to which the Slideable may be dragged.
+	* The {@link enyo.Slideable#max} value specifies a position to the right of, or below, the initial
+	* position, to which the Slideable may be dragged.
+	* The {@link enyo.Slideable#value} property specifies the current position of the Slideable,
+	* between the minimum and maximum positions.
+	*
+	* `min`, `max`, and `value` may be specified in units of 'px' or '%'.
+	*
+	* The {@link enyo.Slideable#axis} property determines whether the Slideable slides left-to-right
+	* ('h') or up-and-down ('v').
+	*
+	* The following control is placed 90% off the screen to the right, and slides
+	* to its natural position:
+	*
+	* ```
+	* {kind: 'enyo.Slideable', value: -90, min: -90, unit: '%',
+	* 	classes: 'enyo-fit', style: 'width: 300px;',
+	* 	components: [
+	* 		{content: 'stuff'}
+	* 	]
+	* }
+	* ```
+	*
+	* @ui
+	* @class  enyo.Slideable
+	* @extends enyo.Control
+	* @public
+	*/
+	enyo.kind(
+		/** @lends  enyo.Slideable.prototype */ {
 
-	The following control is placed 90% off the screen to the right, and slides
-	to its natural position:
-
-		{kind: "enyo.Slideable", value: -90, min: -90, unit: "%",
-			classes: "enyo-fit", style: "width: 300px;",
-			components: [
-				{content: "stuff"}
-			]
-		}
-*/
-enyo.kind({
-	name: "enyo.Slideable",
-	kind: "Control",
-	published: {
 		/**
-			Direction of sliding; valid values are "h" for horizonal or "v" for vertical
+		* @private
 		*/
-		axis: "h",
-		//* Current position of the Slideable (a value between _min_ and _max_)
-		value: 0,
-		//* Unit for _min_, _max_, and _value_; valid values are "px" or "%"
-		unit: "px",
-		//* A minimum value to slide to
-		min: 0,
-		//* A maximum value to slide to
-		max: 0,
-		/**
-			When truthy, applies CSS styles to allow GPU compositing of slideable
-			content, if allowed by the platform
-		*/
-		accelerated: "auto",
-		/**
-			Set to false to prevent the Slideable from dragging with elasticity past
-			its _min_ or _max_ value
-		*/
-		overMoving: true,
-		//* Set to false to disable dragging
-		draggable: true
-	},
-	events: {
-		//* Fires when the Slideable finishes animating.
-		onAnimateFinish: "",
-		//* Fires when the position (i.e., _value_) of the Slideable changes.
-		onChange: ""
-	},
-	//* Set to true to prevent a drag from bubbling beyond the Slideable
-	preventDragPropagation: false,
-	//* @protected
-	tools: [
-		{kind: "Animator", onStep: "animatorStep", onEnd: "animatorComplete"}
-	],
-	handlers: {
-		ondragstart: "dragstart",
-		ondrag: "drag",
-		ondragfinish: "dragfinish"
-	},
-	kDragScalar: 1,
-	dragEventProp: "dx",
-	unitModifier: false,
-	canTransform: false,
-	//* @protected
-	create: enyo.inherit(function(sup) {
-		return function() {
-			sup.apply(this, arguments);
-			this.acceleratedChanged();
-			this.transformChanged();
-			this.axisChanged();
-			this.valueChanged();
-			this.addClass("enyo-slideable");
-		};
-	}),
-	initComponents: enyo.inherit(function(sup) {
-		return function() {
-			this.createComponents(this.tools);
-			sup.apply(this, arguments);
-		};
-	}),
-	rendered: enyo.inherit(function(sup) {
-		return function() {
-			sup.apply(this, arguments);
-			this.canModifyUnit();
-			this.updateDragScalar();
-		};
-	}),
-	handleResize: enyo.inherit(function(sup) {
-		return function() {
-			sup.apply(this, arguments);
-			this.updateDragScalar();
-		};
-	}),
-	canModifyUnit: function() {
-		if (!this.canTransform) {
-			var b = this.getInitialStyleValue(this.hasNode(), this.boundary);
-			// If inline style of "px" exists, while unit is "%"
-			if (b.match(/px/i) && (this.unit === "%")) {
-				// Set unitModifier - used to over-ride "%"
-				this.unitModifier = this.getBounds()[this.dimension];
-			}
-		}
-	},
-	getInitialStyleValue: function(inNode, inBoundary) {
-		var s = enyo.dom.getComputedStyle(inNode);
-		if (s) {
-			return s.getPropertyValue(inBoundary);
-		} else if (inNode && inNode.currentStyle) {
-			return inNode.currentStyle[inBoundary];
-		}
-		return "0";
-	},
-	updateBounds: function(inValue, inDimensions) {
-		var inBounds = {};
-		inBounds[this.boundary] = inValue;
-		this.setBounds(inBounds, this.unit);
+		name: 'enyo.Slideable',
 
-		this.setInlineStyles(inValue, inDimensions);
-	},
-	updateDragScalar: function() {
-		if (this.unit == "%") {
-			var d = this.getBounds()[this.dimension];
-			this.kDragScalar = d ? 100 / d : 1;
+		/**
+		* @private
+		*/
+		kind: 'Control',
 
+		/**
+		* @lends enyo.Slideable.prototype
+		* @private
+		*/
+		published: {
+			/**
+			* Direction of sliding; valid values are 'h' for horizonal or 'v' for vertical
+			*
+			* @type {String}
+			* @default 'h'
+			* @public
+			*/
+			axis: 'h',
+
+			/**
+			* Current position of the Slideable (a value between _min_ and _max_)
+			*
+			* @type {Number}
+			* @default  0
+			* @public
+			*/
+			value: 0,
+
+			/**
+			* Unit for _min_, _max_, and _value_; valid values are 'px' or '%'
+			*
+			* @type {String}
+			* @default  'px'
+			* @public
+			*/
+			unit: 'px',
+
+			/**
+			* A minimum value to slide to
+			*
+			* @type {Number}
+			* @default 0
+			* @public
+			*/
+			min: 0,
+
+			/**
+			* A maximum value to slide to
+			*
+			* @type {Number}
+			* @default  0
+			* @public
+			*/
+			max: 0,
+
+			/**
+			* When truthy, applies CSS styles to allow GPU compositing of slideable
+			* content, if allowed by the platform
+			*
+			* @type {String}
+			* @default  'auto'
+			* @public
+			*/
+			accelerated: 'auto',
+
+			/**
+			* Set to false to prevent the Slideable from dragging with elasticity past
+			* its _min_ or _max_ value
+			*
+			* @type {Boolean}
+			* @default  true
+			* @public
+			*/
+			overMoving: true,
+
+			/**
+			* Set to false to disable dragging
+			*
+			* @type {Boolean}
+			* @default  true
+			* @public
+			*/
+			draggable: true
+		},
+
+		/**
+		* @private
+		*/
+		events: {
+			onAnimateFinish: '',
+			onChange: ''
+		},
+
+		/**
+		* Set to true to prevent a drag from bubbling beyond the Slideable
+		*
+		* @private
+		*/
+		preventDragPropagation: false,
+
+		/**
+		* @private
+		*/
+		tools: [
+			{kind: 'Animator', onStep: 'animatorStep', onEnd: 'animatorComplete'}
+		],
+
+		/**
+		* @private
+		*/
+		handlers: {
+			ondragstart: 'dragstart',
+			ondrag: 'drag',
+			ondragfinish: 'dragfinish'
+		},
+
+		/**
+		* @private
+		*/
+		kDragScalar: 1,
+
+		/**
+		* @private
+		*/
+		dragEventProp: 'dx',
+
+		/**
+		* @private
+		*/
+		unitModifier: false,
+
+		/**
+		* @private
+		*/
+		canTransform: false,
+
+		/**
+		* Determines which property of the drag event is used to position the control
+		*
+		* @private
+		*/
+		dragMoveProp: 'dx',
+
+		/**
+		* Determines which property of the drag event is used to allow dragging
+		*
+		* @private
+		*/
+		shouldDragProp: 'horizontal',
+
+		/**
+		* If {@link enyo.Slideable#canTransform}, the transform property to modify
+		*
+		* @private
+		*/
+		transform: 'translateX',
+
+		/**
+		* The dimension attribute to modify, either height or width
+		*
+		* @private
+		*/
+		dimension: 'width',
+
+		/**
+		* The position attribute to modify, either top or left
+		*
+		* @private
+		*/
+		boundary: 'left',
+
+		/**
+		* @method
+		* @private
+		*/
+		create: enyo.inherit(function (sup) {
+			return function () {
+				sup.apply(this, arguments);
+				this.acceleratedChanged();
+				this.transformChanged();
+				this.axisChanged();
+				this.valueChanged();
+				this.addClass('enyo-slideable');
+			};
+		}),
+
+		/**
+		* @method
+		* @private
+		*/
+		initComponents: enyo.inherit(function (sup) {
+			return function () {
+				this.createComponents(this.tools);
+				sup.apply(this, arguments);
+			};
+		}),
+
+		/**
+		* @method
+		* @private
+		*/
+		rendered: enyo.inherit(function (sup) {
+			return function () {
+				sup.apply(this, arguments);
+				this.canModifyUnit();
+				this.updateDragScalar();
+			};
+		}),
+
+		/**
+		* @method
+		* @private
+		*/
+		handleResize: enyo.inherit(function (sup) {
+			return function () {
+				sup.apply(this, arguments);
+				this.updateDragScalar();
+			};
+		}),
+
+		/**
+		* If transforms can't be used and inline style is using 'px' while
+		* {@link enyo.Slideable#unit} is '%', {@link enyo.Slideable#unitModifier} is set to the
+		* current value of {@link enyo.Slideable#dimension}
+		*
+		* @private
+		*/
+		canModifyUnit: function () {
 			if (!this.canTransform) {
-				this.updateBounds(this.value, 100);
-			}
-		}
-	},
-	transformChanged: function() {
-		this.canTransform = enyo.dom.canTransform();
-	},
-	acceleratedChanged: function() {
-		if (!enyo.platform.android || enyo.platform.android <= 2) {
-			enyo.dom.accelerate(this, this.accelerated);
-		}
-	},
-	axisChanged: function() {
-		var h = this.axis == "h";
-		this.dragMoveProp = h ? "dx" : "dy";
-		this.shouldDragProp = h ? "horizontal" : "vertical";
-		this.transform = h ? "translateX" : "translateY";
-		this.dimension = h ? "width" : "height";
-		this.boundary = h ? "left" : "top";
-	},
-	setInlineStyles: function(inValue, inDimensions) {
-		var inBounds = {};
-
-		if (this.unitModifier) {
-			inBounds[this.boundary] = this.percentToPixels(inValue, this.unitModifier);
-			inBounds[this.dimension] = this.unitModifier;
-			this.setBounds(inBounds);
-		} else {
-			if (inDimensions) {
-				inBounds[this.dimension] = inDimensions;
-			} else {
-				inBounds[this.boundary] = inValue;
-			}
-			this.setBounds(inBounds, this.unit);
-		}
-	},
-	valueChanged: function(inLast) {
-		var v = this.value;
-		if (this.isOob(v) && !this.isAnimating()) {
-			this.value = this.overMoving ? this.dampValue(v) : this.clampValue(v);
-		}
-		// FIXME: android cannot handle nested compositing well so apply acceleration only if needed
-		// desktop chrome doesn't like this code path so avoid...
-		if (enyo.platform.android > 2) {
-			if (this.value) {
-				if (inLast === 0 || inLast === undefined) {
-					enyo.dom.accelerate(this, this.accelerated);
+				var b = this.getInitialStyleValue(this.hasNode(), this.boundary);
+				// If inline style of 'px' exists, while unit is '%'
+				if (b.match(/px/i) && (this.unit === '%')) {
+					// Set unitModifier - used to over-ride '%'
+					this.unitModifier = this.getBounds()[this.dimension];
 				}
-			} else {
-				enyo.dom.accelerate(this, false);
 			}
-		}
+		},
 
-		// If platform supports transforms
-		if (this.canTransform) {
-			enyo.dom.transformValue(this, this.transform, this.value + this.unit);
-		// else update inline styles
-		} else {
-			this.setInlineStyles(this.value, false);
-		}
-		this.doChange();
-	},
-	getAnimator: function() {
-		return this.$.animator;
-	},
-	isAtMin: function() {
-		return this.value <= this.calcMin();
-	},
-	isAtMax: function() {
-		return this.value >= this.calcMax();
-	},
-	calcMin: function() {
-		return this.min;
-	},
-	calcMax: function() {
-		return this.max;
-	},
-	clampValue: function(inValue) {
-		var min = this.calcMin();
-		var max = this.calcMax();
-		return Math.max(min, Math.min(inValue, max));
-	},
-	dampValue: function(inValue) {
-		return this.dampBound(this.dampBound(inValue, this.min, 1), this.max, -1);
-	},
-	dampBound: function(inValue, inBoundary, inSign) {
-		var v = inValue;
-		if (v * inSign < inBoundary * inSign) {
-			v = inBoundary + (v - inBoundary) / 4;
-		}
-		return v;
-	},
-	percentToPixels: function(value, dimension) {
-		return Math.floor((dimension / 100) * value);
-	},
-	pixelsToPercent: function(value) {
-		var boundary = this.unitModifier ? this.getBounds()[this.dimension] : this.container.getBounds()[this.dimension];
-		return (value / boundary) * 100;
-	},
-	// dragging
-	shouldDrag: function(inEvent) {
-		return this.draggable && inEvent[this.shouldDragProp];
-	},
-	isOob: function(inValue) {
-		return inValue > this.calcMax() || inValue < this.calcMin();
-	},
-	dragstart: function(inSender, inEvent) {
-		if (this.shouldDrag(inEvent)) {
-			inEvent.preventDefault();
-			this.$.animator.stop();
-			inEvent.dragInfo = {};
-			this.dragging = true;
-			this.drag0 = this.value;
-			this.dragd0 = 0;
-			return this.preventDragPropagation;
-		}
-	},
-	drag: function(inSender, inEvent) {
-		if (this.dragging) {
-			inEvent.preventDefault();
-			var d = this.canTransform ? inEvent[this.dragMoveProp] * this.kDragScalar : this.pixelsToPercent(inEvent[this.dragMoveProp]);
-			var v = this.drag0 + d;
-			var dd = d - this.dragd0;
-			this.dragd0 = d;
-			if (dd) {
-				inEvent.dragInfo.minimizing = dd < 0;
+		/**
+		* @private
+		*/
+		getInitialStyleValue: function (node, boundary) {
+			var s = enyo.dom.getComputedStyle(node);
+			if (s) {
+				return s.getPropertyValue(boundary);
+			} else if (node && node.currentStyle) {
+				return node.currentStyle[boundary];
 			}
-			this.setValue(v);
-			return this.preventDragPropagation;
+			return '0';
+		},
+
+		/**
+		* @private
+		*/
+		updateBounds: function (inValue, inDimensions) {
+			var inBounds = {};
+			inBounds[this.boundary] = inValue;
+			this.setBounds(inBounds, this.unit);
+
+			this.setInlineStyles(inValue, inDimensions);
+		},
+
+		/**
+		* @private
+		*/
+		updateDragScalar: function () {
+			if (this.unit == '%') {
+				var d = this.getBounds()[this.dimension];
+				this.kDragScalar = d ? 100 / d : 1;
+
+				if (!this.canTransform) {
+					this.updateBounds(this.value, 100);
+				}
+			}
+		},
+
+		/**
+		* @private
+		*/
+		transformChanged: function () {
+			this.canTransform = enyo.dom.canTransform();
+		},
+
+		/**
+		* @private
+		*/
+		acceleratedChanged: function () {
+			if (!enyo.platform.android || enyo.platform.android <= 2) {
+				enyo.dom.accelerate(this, this.accelerated);
+			}
+		},
+
+		/**
+		* @private
+		*/
+		axisChanged: function () {
+			var h = this.axis == 'h';
+			this.dragMoveProp = h ? 'dx' : 'dy';
+			this.shouldDragProp = h ? 'horizontal' : 'vertical';
+			this.transform = h ? 'translateX' : 'translateY';
+			this.dimension = h ? 'width' : 'height';
+			this.boundary = h ? 'left' : 'top';
+		},
+
+		/**
+		* @private
+		*/
+		setInlineStyles: function (value, dimensions) {
+			var inBounds = {};
+
+			if (this.unitModifier) {
+				inBounds[this.boundary] = this.percentToPixels(value, this.unitModifier);
+				inBounds[this.dimension] = this.unitModifier;
+				this.setBounds(inBounds);
+			} else {
+				if (dimensions) {
+					inBounds[this.dimension] = dimensions;
+				} else {
+					inBounds[this.boundary] = value;
+				}
+				this.setBounds(inBounds, this.unit);
+			}
+		},
+
+		/**
+		* @fires enyo.Slideable#event:onChange
+		* @private
+		*/
+		valueChanged: function (inLast) {
+			var v = this.value;
+			if (this.isOob(v) && !this.isAnimating()) {
+				this.value = this.overMoving ? this.dampValue(v) : this.clampValue(v);
+			}
+			// FIXME: android cannot handle nested compositing well so apply acceleration only if needed
+			// desktop chrome doesn't like this code path so avoid...
+			if (enyo.platform.android > 2) {
+				if (this.value) {
+					if (inLast === 0 || inLast === undefined) {
+						enyo.dom.accelerate(this, this.accelerated);
+					}
+				} else {
+					enyo.dom.accelerate(this, false);
+				}
+			}
+
+			// If platform supports transforms
+			if (this.canTransform) {
+				enyo.dom.transformValue(this, this.transform, this.value + this.unit);
+			// else update inline styles
+			} else {
+				this.setInlineStyles(this.value, false);
+			}
+			this.doChange();
+		},
+
+		/**
+		* @private
+		*/
+		getAnimator: function () {
+			return this.$.animator;
+		},
+
+		/**
+		* @private
+		*/
+		isAtMin: function () {
+			return this.value <= this.calcMin();
+		},
+
+		/**
+		* @private
+		*/
+		isAtMax: function () {
+			return this.value >= this.calcMax();
+		},
+
+		/**
+		* @private
+		*/
+		calcMin: function () {
+			return this.min;
+		},
+
+		/**
+		* @private
+		*/
+		calcMax: function () {
+			return this.max;
+		},
+
+		/**
+		* @private
+		*/
+		clampValue: function (inValue) {
+			var min = this.calcMin();
+			var max = this.calcMax();
+			return Math.max(min, Math.min(inValue, max));
+		},
+
+		/**
+		* @private
+		*/
+		dampValue: function (inValue) {
+			return this.dampBound(this.dampBound(inValue, this.min, 1), this.max, -1);
+		},
+
+		/**
+		* @private
+		*/
+		dampBound: function (inValue, inBoundary, inSign) {
+			var v = inValue;
+			if (v * inSign < inBoundary * inSign) {
+				v = inBoundary + (v - inBoundary) / 4;
+			}
+			return v;
+		},
+
+		/**
+		* Calculates the pixel value for the `percent` of `dimension`
+		*
+		* @param  {Number} percent
+		* @param  {Number} dimension
+		*
+		* @return {Number}
+		* @private
+		*/
+		percentToPixels: function (percent, dimension) {
+			return Math.floor((dimension / 100) * percent);
+		},
+
+		/**
+		* @private
+		*/
+		pixelsToPercent: function (value) {
+			var boundary = this.unitModifier ? this.getBounds()[this.dimension] : this.container.getBounds()[this.dimension];
+			return (value / boundary) * 100;
+		},
+
+		/**
+		* @private
+		*/
+		shouldDrag: function (inEvent) {
+			return this.draggable && inEvent[this.shouldDragProp];
+		},
+
+		/**
+		* Determines if `value` is out of bounds (e.g. greater than {@link enyo.Slideable#max} or
+		* less than {@link enyo.Slideable#min})
+		*
+		* @private
+		*/
+		isOob: function (inValue) {
+			return inValue > this.calcMax() || inValue < this.calcMin();
+		},
+
+		/**
+		* @private
+		*/
+		dragstart: function (inSender, inEvent) {
+			if (this.shouldDrag(inEvent)) {
+				inEvent.preventDefault();
+				this.$.animator.stop();
+				inEvent.dragInfo = {};
+				this.dragging = true;
+				this.drag0 = this.value;
+				this.dragd0 = 0;
+				return this.preventDragPropagation;
+			}
+		},
+
+		/**
+		* Updates {@link enyo.Slideable#value} during a drag and determines the direction of the
+		* drag
+		*
+		* @private
+		*/
+		drag: function (inSender, inEvent) {
+			if (this.dragging) {
+				inEvent.preventDefault();
+				var d = this.canTransform ? inEvent[this.dragMoveProp] * this.kDragScalar : this.pixelsToPercent(inEvent[this.dragMoveProp]);
+				var v = this.drag0 + d;
+				var dd = d - this.dragd0;
+				this.dragd0 = d;
+				if (dd) {
+					inEvent.dragInfo.minimizing = dd < 0;
+				}
+				this.setValue(v);
+				return this.preventDragPropagation;
+			}
+		},
+
+		/**
+		* @private
+		*/
+		dragfinish: function (sender, event) {
+			if (this.dragging) {
+				this.dragging = false;
+				this.completeDrag(event);
+				event.preventTap();
+				return this.preventDragPropagation;
+			}
+		},
+
+		/**
+		* Animates the control to either the min or max value when dragging completes based on the
+		* direction of the drag (determined in {@link enyo.Slideable#drag})
+		*
+		* @private
+		*/
+		completeDrag: function (event) {
+			if (this.value !== this.calcMax() && this.value != this.calcMin()) {
+				this.animateToMinMax(event.dragInfo.minimizing);
+			}
+		},
+
+		/**
+		* @private
+		*/
+		isAnimating: function () {
+			return this.$.animator.isAnimating();
+		},
+
+		/**
+		* @private
+		*/
+		play: function (start, end) {
+			this.$.animator.play({
+				startValue: start,
+				endValue: end,
+				node: this.hasNode()
+			});
+		},
+
+		/**
+		* Animates to the given value.
+		*
+		* @param   {Number} value - New {@link enyo.Slideable#value}
+		* @public
+		*/
+		animateTo: function (value) {
+			this.play(this.value, value);
+		},
+
+		/**
+		* Animates to the {@link enyo.Slideable#min} value.
+		*
+		* @public
+		*/
+		animateToMin: function () {
+			this.animateTo(this.calcMin());
+		},
+
+		/**
+		* Animates to the {@link enyo.Slideable#max} value.
+		*
+		* @public
+		*/
+		animateToMax: function () {
+			this.animateTo(this.calcMax());
+		},
+
+		/**
+		* Helper method to toggle animating to either the {@link enyo.Slideable#min} ≈
+		* {@link enyo.Slideable#max} value
+		*
+		* @param  {Boolean} min - Animate to the minimum value
+		* @private
+		*/
+		animateToMinMax: function (min) {
+			if (min) {
+				this.animateToMin();
+			} else {
+				this.animateToMax();
+			}
+		},
+
+		/**
+		* Updates {@link enyo.Slideable#value} during animation
+		*
+		* @private
+		*/
+		animatorStep: function (sender) {
+			this.setValue(sender.value);
+			return true;
+		},
+
+		/**
+		* @fires enyo.Slideable#event:onAnimateFinish
+		* @private
+		*/
+		animatorComplete: function (sender) {
+			this.doAnimateFinish(sender);
+			return true;
+		},
+
+		/**
+		* toggle animating to either the {@link enyo.Slideable#min} ≈
+		* {@link enyo.Slideable#max} value
+		*
+		* @public
+		*/
+		toggleMinMax: function () {
+			this.animateToMinMax(!this.isAtMin());
 		}
-	},
-	dragfinish: function(inSender, inEvent) {
-		if (this.dragging) {
-			this.dragging = false;
-			this.completeDrag(inEvent);
-			inEvent.preventTap();
-			return this.preventDragPropagation;
-		}
-	},
-	completeDrag: function(inEvent) {
-		if (this.value !== this.calcMax() && this.value != this.calcMin()) {
-			this.animateToMinMax(inEvent.dragInfo.minimizing);
-		}
-	},
-	// animation
-	isAnimating: function() {
-		return this.$.animator.isAnimating();
-	},
-	play: function(inStart, inEnd) {
-		this.$.animator.play({
-			startValue: inStart,
-			endValue: inEnd,
-			node: this.hasNode()
-		});
-	},
-	//* @public
-	//* Animates to the given value.
-	animateTo: function(inValue) {
-		this.play(this.value, inValue);
-	},
-	//* Animates to the minimum value.
-	animateToMin: function() {
-		this.animateTo(this.calcMin());
-	},
-	//* Animates to the maximum value.
-	animateToMax: function() {
-		this.animateTo(this.calcMax());
-	},
-	//* @protected
-	animateToMinMax: function(inMin) {
-		if (inMin) {
-			this.animateToMin();
-		} else {
-			this.animateToMax();
-		}
-	},
-	animatorStep: function(inSender) {
-		this.setValue(inSender.value);
-		return true;
-	},
-	animatorComplete: function(inSender) {
-		this.doAnimateFinish(inSender);
-		return true;
-	},
-	//* @public
-	//* Toggles between _min_ and _max_ values with animation.
-	toggleMinMax: function() {
-		this.animateToMinMax(!this.isAtMin());
-	}
-});
+	});
+
+})(enyo, this);

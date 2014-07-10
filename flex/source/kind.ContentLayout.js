@@ -1,149 +1,239 @@
-/**
- * Content Layout
- * Provides a container with fixed widht and/or height that resizes to reveal it's content
- * Supports Webkit, Mozilla, IE8
- * @author Lex Podgorny <lex.podgorny@lge.com>
- */
+(function (enyo, scope) {
+    /**
+    * Content Layout
+    * Provides a container with fixed width and/or height that resizes to reveal it's content
+    * Supports Webkit, Mozilla, IE8
+    *
+    * @ui
+    * @class enyo.ContentLayout
+    * @extends enyo.Layout
+    * @private
+    */
 
-enyo.kind({
-	name        : 'enyo.ContentLayout',
-	layoutClass : 'enyo-content-layout',
-	kind        : 'Layout',
+    enyo.kind(/** @lends  enyo.ContentLayout.prototype */ {
 
-	minWidth    : 0,
-	minHeigh    : 0,
-	maxWidth    : 0,
-	maxHeight   : 0,
+        /**
+        * @private
+        */
+        name        : 'enyo.ContentLayout',
 
-	/************** PRIVATE **************/
+        /**
+        * Determines CSS class used for layout
+        *
+        * @type {String}
+        * @default  'enyo-content-layout'
+        * @public
+        */
+        layoutClass : 'enyo-content-layout',
 
-	_width      : 0,
-	_height     : 0,
+        /**
+        * @private
+        */
+        kind        : 'Layout',
 
-	_updateBoundValues: function() {
-		if (this._isFlexChild()) {
-			if (this._isFlexColumn()) {
-				// console.log(this.container.name, 'updating max/min width');
-				this.minWidth  = this.container.minWidth;
-				this.maxWidth  = this.container.maxWidth;
-			} else {
-				// console.log(this.container.name, 'updating max/min height');
-				this.minHeight = this.container.minHeight;
-				this.maxHeight = this.container.maxHeight;
-			}
-		} else {
-			this.minWidth  = this.container.minWidth;
-			this.minHeight = this.container.minHeight;
-			this.maxWidth  = this.container.maxWidth;
-			this.maxHeight = this.container.maxHeight;
-		}
-	},
+        /**
+        * Determines minimum container width
+        *
+        * @type {Number}
+        * @default  'enyo-content-layout'
+        * @public
+        */
+        minWidth    : 0,
 
-	_isFlexChild: function() {
-		return this.container.parent.layoutKind == 'enyo.FlexLayout';
-	},
+        /**
+        * Determines minimum container height
+        *
+        * @type {Number}
+        * @default 0
+        * @public
+        */
+        minHeigh    : 0,
 
-	_isFlexColumn: function() {
-		return this.container.parent.layout._isColumn(this.container);
-	},
+        /**
+        * Determines maximum container width
+        *
+        * @type {Number}
+        * @default 0
+        * @public
+        */
+        maxWidth    : 0,
 
-	_setSize: function(nWidth, nHeight, oStyles) {
-		var bReflow = this._width != nWidth || this._height != nHeight;
+        /**
+        * Determines maximum container Height
+        *
+        * @type {Number}
+        * @default 0
+        * @public
+        */
+        maxHeight   : 0,
 
-		this._width  = nWidth;
-		this._height = nHeight;
+        /**
+        * @private
+        */
+        _width      : 0,
+        /**
+        * @private
+        */
+        _height     : 0,
 
-		if (this._isFlexChild()) {
-			if (this._isFlexColumn()) {	oStyles.setContentWidth(nWidth);   }
-			else                      { oStyles.setContentHeight(nHeight); }
-		} else {
-			oStyles.setContentWidth(nWidth);
-			oStyles.setContentHeight(nHeight);
-		}
+        /**
+        * @private
+        * @method
+        */
+        _updateBoundValues: function() {
+            if (this._isFlexChild()) {
+                if (this._isFlexColumn()) {
+                    // console.log(this.container.name, 'updating max/min width');
+                    this.minWidth  = this.container.minWidth;
+                    this.maxWidth  = this.container.maxWidth;
+                } else {
+                    // console.log(this.container.name, 'updating max/min height');
+                    this.minHeight = this.container.minHeight;
+                    this.maxHeight = this.container.maxHeight;
+                }
+            } else {
+                this.minWidth  = this.container.minWidth;
+                this.minHeight = this.container.minHeight;
+                this.maxWidth  = this.container.maxWidth;
+                this.maxHeight = this.container.maxHeight;
+            }
+        },
 
-		oStyles.set('overflow', 'auto');
-		oStyles.commit();
+        /**
+        * @private
+        * @method
+        */
+        _isFlexChild: function() {
+            return this.container.parent.layoutKind == 'enyo.FlexLayout';
+        },
 
-		if (bReflow) {
-			if (this._isFlexChild()) {
-				this.reflow();
-				this.container.parent.layout.reflow();
-			}
-		}
-	},
+        /**
+        * @private
+        * @method
+        */
+        _isFlexColumn: function() {
+            return this.container.parent.layout._isColumn(this.container);
+        },
 
-	_updateSize: function() {
-		this._updateBoundValues();
+        /**
+        * @private
+        * @method
+        */
+        _setSize: function(nWidth, nHeight, oStyles) {
+            var bReflow = this._width != nWidth || this._height != nHeight;
 
-		var oStyles = new enyo.Styles(this.container);
+            this._width  = nWidth;
+            this._height = nHeight;
 
-		// If empty container, return min sizes
-		/************************************************************************/
-		if (this.container.children.length === 0 && this.container.content.length === 0) {
-			this._setSize(this.minWidth, this.minHeight, oStyles);
-			return;
-		}
+            if (this._isFlexChild()) {
+                if (this._isFlexColumn()) {	oStyles.setContentWidth(nWidth);   }
+                else                      { oStyles.setContentHeight(nHeight); }
+            } else {
+                oStyles.setContentWidth(nWidth);
+                oStyles.setContentHeight(nHeight);
+            }
 
-		// If at max size, simply return max sizes
-		/************************************************************************/
-		if (oStyles.content.width >= this.maxWidth && oStyles.content.height >= this.maxHeight) {
-			this._setSize(this.maxWidth, this.maxHeight, oStyles);
-			return;
-		}
+            oStyles.set('overflow', 'auto');
+            oStyles.commit();
 
-		// Otherwise
-		/************************************************************************/
+            if (bReflow) {
+                if (this._isFlexChild()) {
+                    this.reflow();
+                    this.container.parent.layout.reflow();
+                }
+            }
+        },
 
-		var oElement = document.createElement(this.container.node.nodeName),
-			nWidth,
-			nHeight = this.minHeight;
+        /**
+        * @private
+        * @method
+        */
+        _updateSize: function() {
+            this._updateBoundValues();
 
-		// Get width
-		/************************************************************************/
+            var oStyles = new enyo.Styles(this.container);
 
-		this.container.node.parentNode.appendChild(oElement);
+            // If empty container, return min sizes
+            /************************************************************************/
+            if (this.container.children.length === 0 && this.container.content.length === 0) {
+                this._setSize(this.minWidth, this.minHeight, oStyles);
+                return;
+            }
 
-		oElement.innerHTML     = this.container.node.innerHTML;
-		oElement.className     = this.container.node.className;
-		oElement.id            = this.container.node.id;
-		oElement.style.display = 'inline';
-		nWidth                 = oElement.offsetWidth - oStyles.h.padding;
+            // If at max size, simply return max sizes
+            /************************************************************************/
+            if (oStyles.content.width >= this.maxWidth && oStyles.content.height >= this.maxHeight) {
+                this._setSize(this.maxWidth, this.maxHeight, oStyles);
+                return;
+            }
 
-		// Constrain to maxWidth
+            // Otherwise
+            /************************************************************************/
 
-		if (nWidth < this.minWidth)   { nWidth = this.minWidth; }
-		if (nWidth > this.maxWidth)   { nWidth = this.maxWidth; }
+            var oElement = document.createElement(this.container.node.nodeName),
+                nWidth,
+                nHeight = this.minHeight;
 
-		// Get height
-		/************************************************************************/
+            // Get width
+            /************************************************************************/
 
-		oElement.height       = 'auto';
-		oElement.style.width  = nWidth > 0 ? nWidth + 'px' : 'auto';
-		nHeight               = oElement.offsetHeight - oStyles.v.padding;
+            this.container.node.parentNode.appendChild(oElement);
 
-		this.container.node.parentNode.removeChild(oElement);
+            oElement.innerHTML     = this.container.node.innerHTML;
+            oElement.className     = this.container.node.className;
+            oElement.id            = this.container.node.id;
+            oElement.style.display = 'inline';
+            nWidth                 = oElement.offsetWidth - oStyles.h.padding;
 
-		// Constrain to maxHeight
+            // Constrain to maxWidth
 
-		if (nHeight < this.minHeight) { nHeight = this.minHeight; }
-		if (nHeight > this.maxHeight) { nHeight = this.maxHeight; }
+            if (nWidth < this.minWidth)   { nWidth = this.minWidth; }
+            if (nWidth > this.maxWidth)   { nWidth = this.maxWidth; }
 
-		/************************************************************************/
-		this._setSize(nWidth, nHeight, oStyles);
-	},
+            // Get height
+            /************************************************************************/
 
-	/************** PUBLIC **************/
+            oElement.height       = 'auto';
+            oElement.style.width  = nWidth > 0 ? nWidth + 'px' : 'auto';
+            nHeight               = oElement.offsetHeight - oStyles.v.padding;
 
-	flow: enyo.inherit(function(sup) {
-		return function() {
-			sup.apply(this, arguments);
-		};
-	}),
+            this.container.node.parentNode.removeChild(oElement);
 
-	reflow : enyo.inherit(function(sup) {
-		return function() {
-			sup.apply(this, arguments);
-			this._updateSize();
-		};
-	})
-});
+            // Constrain to maxHeight
+
+            if (nHeight < this.minHeight) { nHeight = this.minHeight; }
+            if (nHeight > this.maxHeight) { nHeight = this.maxHeight; }
+
+            /************************************************************************/
+            this._setSize(nWidth, nHeight, oStyles);
+        },
+
+        /**
+        * Assigns any static layout properties not dependent on changes to the
+        * rendered component or contaner sizes, etc.
+        *
+        * @method
+        * @public
+        */
+        flow: enyo.inherit(function(sup) {
+            return function() {
+                sup.apply(this, arguments);
+            };
+        }),
+
+        /**
+        * Updates the layout to reflect any changes made to the layout container or
+        * the contained components.
+        *
+        * @method
+        * @public
+        */
+        reflow : enyo.inherit(function(sup) {
+            return function() {
+                sup.apply(this, arguments);
+                this._updateSize();
+            };
+        })
+    });
+
+})(enyo, this);

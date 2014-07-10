@@ -1,3 +1,3 @@
 enyo.depends(
-	"Easing.js"
+	'Easing.js'
 );

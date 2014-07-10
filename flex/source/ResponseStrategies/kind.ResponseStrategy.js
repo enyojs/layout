@@ -1,46 +1,64 @@
-/**
- * enyo.FlexLayout.ResponseStrategy kind definition
- * @author: Lex Podgorny
- */
+(function (enyo, scope) {
 
-enyo.kind({
-	name: 'enyo.FlexLayout.ResponseStrategy',
+    /**
+    * @ui
+    * @class enyo.FlexLayout.ResponseStrategy
+    * @extends enyo.Control
+    * @private
+    */
 
-	setProperty: function(oControl, sProperty, mValue) {
-		if (sProperty == 'flexOrient') {
-			enyo.Styles.setStyles(oControl, {width: 'auto', height: 'auto'});
-		}
+    enyo.kind({
+        name: 'enyo.FlexLayout.ResponseStrategy',
 
-		oControl['__' + sProperty] = (typeof oControl[sProperty] == 'undefined'
-			? null
-			: oControl[sProperty]
-		);
-		oControl[sProperty] = mValue;
+        /**
+        * @private
+        * @method
+        */
+        setProperty: function(oControl, sProperty, mValue) {
+            if (sProperty == 'flexOrient') {
+                enyo.Styles.setStyles(oControl, {width: 'auto', height: 'auto'});
+            }
 
-		if (oControl.layout) {
-			oControl.layout.reflow();
-		}
-	},
+            oControl['__' + sProperty] = (typeof oControl[sProperty] == 'undefined'
+                ? null
+                : oControl[sProperty]
+            );
+            oControl[sProperty] = mValue;
 
-	reverseProperty: function(oControl, sProperty) {
-		if (sProperty == 'flexOrient') {
-			enyo.Styles.setStyles(oControl, {width: 'auto', height: 'auto'});
-		}
+            if (oControl.layout) {
+                oControl.layout.reflow();
+            }
+        },
 
-		var sTempProperty = '__' + sProperty;
-		if (typeof oControl[sTempProperty] != 'undefined') {
-			if (oControl[sTempProperty] !== null) {
-				oControl[sProperty] = oControl[sTempProperty];
-			} else {
-				delete oControl[sProperty];
-			}
-			delete oControl[sTempProperty];
-		}
+        /**
+        * @private
+        * @method
+        */
+        reverseProperty: function(oControl, sProperty) {
+            if (sProperty == 'flexOrient') {
+                enyo.Styles.setStyles(oControl, {width: 'auto', height: 'auto'});
+            }
 
-		if (oControl.layout) {
-			oControl.layout.reflow();
-		}
-	},
+            var sTempProperty = '__' + sProperty;
+            if (typeof oControl[sTempProperty] != 'undefined') {
+                if (oControl[sTempProperty] !== null) {
+                    oControl[sProperty] = oControl[sTempProperty];
+                } else {
+                    delete oControl[sProperty];
+                }
+                delete oControl[sTempProperty];
+            }
 
-	respond: function() {}
-});
+            if (oControl.layout) {
+                oControl.layout.reflow();
+            }
+        },
+
+        /**
+        * @private
+        * @method
+        */
+        respond: function() {}
+    });
+
+})(enyo, this);

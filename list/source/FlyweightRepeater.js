@@ -1,19 +1,19 @@
 (function (enyo, scope) {
-	
+
 	var HTMLStringDelegate = enyo.HTMLStringDelegate,
 		FlyweightRepeaterDelegate = Object.create(HTMLStringDelegate);
 
 	FlyweightRepeaterDelegate.generateInnerHtml = function (control) {
-		var h = "";
+		var h = '';
 		control.index = null;
 		// note: can supply a rowOffset
 		// and indicate if rows should be rendered top down or bottomUp
 		for (var i=0, r=0; i<control.count; i++) {
 			r = control.rowOffset + (this.bottomUp ? control.count - i-1 : i);
 			control.setupItem(r);
-			control.$.client.setAttribute("data-enyo-index", r);
-			if (control.orient == "h") {
-				control.$.client.setStyle("display:inline-block;");
+			control.$.client.setAttribute('data-enyo-index', r);
+			if (control.orient == 'h') {
+				control.$.client.setStyle('display:inline-block;');
 			}
 			h += HTMLStringDelegate.generateChildHtml(control);
 			control.$.client.teardownRender();
@@ -22,88 +22,188 @@
 	};
 
 	/**
-		_enyo.FlyweightRepeater_ is a control that displays a repeating list of
-		rows, suitable for displaying medium-sized lists (up to ~100 items). A
-		flyweight strategy is employed to render one set of row controls, as needed,
-		for as many rows as are contained in the repeater.
-
-		The FlyweightRepeater's _components_ block contains the controls to be used
-		for a single row. This set of controls will be rendered for each row. You
-		may customize row rendering by handling the _onSetupItem_ event.
-
-		The controls inside a FlyweightRepeater are non-interactive. This means that
-		calling methods that would normally cause rendering to occur (e.g.,
-		_set("content", value)_) will not do so. However, you may force a row to
-		render by calling _renderRow(inRow)_.
-
-		In addition, you may force a row to be temporarily interactive by calling
-		_prepareRow(inRow)_. Call the _lockRow()_ method when the	interaction is
-		complete.
-
-		For more information, see the documentation on
-		[Lists](building-apps/layout/lists.html) in the Enyo Developer Guide.
+	* Fires once per row at render time.
+	*
+	* @event enyo.FlyweightRepeater#event:onSetupItem
+	* @type {Object}
+	* @property {Number} index     - Index of row
+	* @property {Boolean} selected - `true` if row is selected
+	* @public
 	*/
-	enyo.kind({
-		name: "enyo.FlyweightRepeater",
+
+	/**
+	* Fires after an individual row has been rendered
+	*
+	* @event enyo.FlyweightRepeater#event:onRenderRow
+	* @type {Object}
+	* @property {Number} rowIndex - Index of row
+	* @public
+	*/
+
+	/**
+	* _enyo.FlyweightRepeater_ is a control that displays a repeating list of
+	* rows, suitable for displaying medium-sized lists (up to ~100 items). A
+	* flyweight strategy is employed to render one set of row controls, as needed,
+	* for as many rows as are contained in the repeater.
+	*
+	* The FlyweightRepeater's `components` block contains the controls to be used
+	* for a single row. This set of controls will be rendered for each row. You
+	* may customize row rendering by handling the _onSetupItem_ event.
+	*
+	* The controls inside a FlyweightRepeater are non-interactive. This means that
+	* calling methods that would normally cause rendering to occur (e.g.,
+	* `set('content', value)`) will not do so. However, you may force a row to
+	* render by calling `[renderRow(row)]{@link enyo.FlyweightRepeater#renderRow}`.
+	*
+	* In addition, you may force a row to be temporarily interactive by calling
+	* `[prepareRow(row)]{@link enyo.FlyweightRepeater#prepareRow}`. Call the
+	* `[lockRow(row)]{@link enyo.FlyweightRepeater#lockRow}` method when the interaction is
+	* complete.
+	*
+	* For more information, see the documentation on
+	* [Lists](building-apps/layout/lists.html) in the Enyo Developer Guide.
+	*
+	* @ui
+	* @class enyo.FlyweightRepeater
+	* @extends enyo.Control
+	* @public
+	*/
+	enyo.kind(
+		/** @lends enyo.FlyweightRepeater.prototype */ {
+
+		/**
+		* @private
+		*/
+		name: 'enyo.FlyweightRepeater',
+
+		/**
+		* @private
+		*/
+		kind: 'enyo.Control',
+
+		/**
+		* @lends enyo.FlyweightRepeater.prototype
+		* @private
+		*/
 		published: {
-			//* Number of rows to render
-			count: 0,
 			/**
-				If true, the selection mechanism is disabled. Tap events are still
-				sent, but items won't be automatically re-rendered when tapped.
+			 * Number of rows to render
+			 *
+			 * @type {Number}
+			 * @default 0
+			 * @public
+			 */
+			count: 0,
+
+			/**
+			* If true, the selection mechanism is disabled. Tap events are still
+			* sent, but items won't be automatically re-rendered when tapped.
+			*
+			* @type {Boolean}
+			* @default false
+			* @public
 			*/
 			noSelect: false,
-			//* If true, multiple selections are allowed
-			multiSelect: false,
-			//* If true, the selected item will toggle
-			toggleSelected: false,
+
 			/**
-				Used to specify CSS classes for the repeater's wrapper component (client).
-				Input is identical to that of _enyo.Control.setClasses()_.
+			 * If true, multiple selections are allowed
+			 *
+			 * @type {Boolean}
+			 * @default false
+			 * @public
+			 */
+			multiSelect: false,
+
+			/**
+			 * If true, the selected item will toggle
+			 *
+			 * @type {Boolean}
+			 * @default false
+			 * @public
+			 */
+			toggleSelected: false,
+
+			/**
+			* Used to specify CSS classes for the repeater's wrapper component (client).
+			* Input is identical to that of {@link enyo.Control#setClasses}.
+			*
+			* @type {String}
+			* @default ''
+			* @public
 			*/
 			clientClasses: '',
+
 			/**
-				Used to specify custom styling for the repeater's wrapper component
-				(client). Input is identical to that of _enyo.Control.setStyle()_.
+			* Used to specify custom styling for the repeater's wrapper component
+			* (client). Input is identical to that of {@link enyo.Control#setStyle}.
+			*
+			* @type {String}
+			* @default ''
+			* @public
 			*/
 			clientStyle: '',
+
 			/**
-				Numerical offset applied to row number during row generation. Allows items
-				to have natural indices instead of 0-based ones. This value must be
-				positive, as row number -1 is used to represent undefined rows in the
-				event system.
+			* Numerical offset applied to row number during row generation. Allows items
+			* to have natural indices instead of 0-based ones. This value must be
+			* positive, as row number -1 is used to represent undefined rows in the
+			* event system.
+			*
+			* @type {Number}
+			* @default 0
+			* @public
 			*/
 			rowOffset: 0,
+
 			/**
-				Direction in which items will be laid out. Valid values are "v" for
-				vertical or "h" for horizontal.
+			* Direction in which items will be laid out. Valid values are 'v' for
+			* vertical or 'h' for horizontal.
+			*
+			* @type {String}
+			* @default 'h'
+			* @public
 			*/
-			orient: "v"
+			orient: 'v'
 		},
+
+		/**
+		* @private
+		*/
 		events: {
-			/**
-				Fires once per row at render time.
-
-				_inEvent.index_ contains the current row index.
-
-				_inEvent.selected_ is a boolean indicating whether the current row
-				is selected.
-			*/
-			onSetupItem: "",
-			//* Fires after an individual row has been rendered from a call to _renderRow()_.
-			onRenderRow: ""
+			onSetupItem: '',
+			onRenderRow: ''
 		},
-		//* Design-time attribute indicating whether row indices run
-		//* from [0 to _count_-1] (false) or [_count_-1 to 0] (true)
+
+		/**
+		* Design-time attribute indicating whether row indices run
+		* from 0 to `[count]{@link enyo.FlyweightRepeater#count}-1 (`false`) or
+		* [count]{@link enyo.FlyweightRepeater#count}-1 to 0 (`true`)
+		*
+		* @type {Boolean}
+		* @default false
+		* @public
+		*/
 		bottomUp: false,
-		//* @protected
+
+		/**
+		* @private
+		*/
 		renderDelegate: FlyweightRepeaterDelegate,
+
+		/**
+		* @private
+		*/
 		components: [
-			{kind: "Selection", onSelect: "selectDeselect", onDeselect: "selectDeselect"},
-			{name: "client"}
+			{kind: 'Selection', onSelect: 'selectDeselect', onDeselect: 'selectDeselect'},
+			{name: 'client'}
 		],
-		create: enyo.inherit(function(sup) {
-			return function() {
+
+		/**
+		* @method
+		* @private
+		*/
+		create: enyo.inherit(function (sup) {
+			return function () {
 				sup.apply(this, arguments);
 				this.noSelectChanged();
 				this.multiSelectChanged();
@@ -111,99 +211,177 @@
 				this.clientStyleChanged();
 			};
 		}),
-		noSelectChanged: function() {
+
+		/**
+		* @private
+		*/
+		noSelectChanged: function () {
 			if (this.noSelect) {
 				this.$.selection.clear();
 			}
 		},
-		multiSelectChanged: function() {
+
+		/**
+		* @private
+		*/
+		multiSelectChanged: function () {
 			this.$.selection.setMulti(this.multiSelect);
 		},
-		clientClassesChanged: function() {
+
+		/**
+		* @private
+		*/
+		clientClassesChanged: function () {
 			this.$.client.setClasses(this.clientClasses);
 		},
-		clientStyleChanged: function() {
+
+		/**
+		* @private
+		*/
+		clientStyleChanged: function () {
 			this.$.client.setStyle(this.clientStyle);
 		},
-		setupItem: function(inIndex) {
-			this.doSetupItem({index: inIndex, selected: this.isSelected(inIndex)});
+
+		/**
+		* @fires enyo.FlyweightRepeater#event:onSetupItem
+		* @private
+		*/
+		setupItem: function (index) {
+			this.doSetupItem({index: index, selected: this.isSelected(index)});
 		},
-		//* Renders the list.
+
+		/**
+		* Renders the list
+		*
+		* @private
+		*/
 		generateChildHtml: function () {
 			return this.renderDelegate.generateInnerHtml(this);
 		},
-		previewDomEvent: function(inEvent) {
-			var i = this.index = this.rowForEvent(inEvent);
-			inEvent.rowIndex = inEvent.index = i;
-			inEvent.flyweight = this;
+
+		/**
+		* @todo add link to preview.js
+		* @private
+		*/
+		previewDomEvent: function (event) {
+			var i = this.index = this.rowForEvent(event);
+			event.rowIndex = event.index = i;
+			event.flyweight = this;
 		},
-		decorateEvent: enyo.inherit(function(sup) {
-			return function(inEventName, inEvent, inSender) {
+
+		/**
+		* @method
+		* @private
+		*/
+		decorateEvent: enyo.inherit(function (sup) {
+			return function (eventName, event, sender) {
 				// decorate event with index found via dom iff event does not already contain an index.
-				var i = (inEvent && inEvent.index != null) ? inEvent.index : this.index;
-				if (inEvent && i != null) {
-					inEvent.index = i;
-					inEvent.flyweight = this;
+				var i = (event && event.index != null) ? event.index : this.index;
+				if (event && i != null) {
+					event.index = i;
+					event.flyweight = this;
 				}
 				sup.apply(this, arguments);
 			};
 		}),
-		tap: function(inSender, inEvent) {
+
+		/**
+		* @private
+		*/
+		tap: function (sender, event) {
 			// ignore taps if selecting is disabled or if they don't target a row
-			if (this.noSelect || inEvent.index === -1) {
+			if (this.noSelect || event.index === -1) {
 				return;
 			}
 			if (this.toggleSelected) {
-				this.$.selection.toggle(inEvent.index);
+				this.$.selection.toggle(event.index);
 			} else {
-				this.$.selection.select(inEvent.index);
+				this.$.selection.select(event.index);
 			}
 		},
-		selectDeselect: function(inSender, inEvent) {
-			this.renderRow(inEvent.key);
+
+		/**
+		* Handler for selection and deselection
+		*
+		* @private
+		*/
+		selectDeselect: function (sender, event) {
+			this.renderRow(event.key);
 		},
-		//* @public
-		//* Returns the repeater's _selection_ component.
-		getSelection: function() {
+
+		/**
+		* Returns the repeater's [selection]{@link enyo.Selection} component.
+		*
+		* @return {enyo.Selection}
+		* @public
+		*/
+		getSelection: function () {
 			return this.$.selection;
 		},
-		//* Gets the selection state for the given row index.
-		isSelected: function(inIndex) {
-			return this.getSelection().isSelected(inIndex);
+
+		/**
+		* Gets the selection state for the given row index.
+		*
+		* @return {Boolean} - `true` if the row is selected
+		* @public
+		*/
+		isSelected: function (index) {
+			return this.getSelection().isSelected(index);
 		},
-		//* Renders the row specified by _inIndex_.
-		renderRow: function(inIndex) {
+
+		/**
+		* Renders the a row
+		*
+		* @param {Number} index - Index of row
+		* @fires enyo.FlyweightRepeater#event:onRenderRow
+		* @public
+		*/
+		renderRow: function (index) {
 			// do nothing if index is out-of-range
-			if (inIndex < this.rowOffset || inIndex >= this.count + this.rowOffset) {
+			if (index < this.rowOffset || index >= this.count + this.rowOffset) {
 				return;
 			}
 			//this.index = null;
 			// always call the setupItem callback, as we may rely on the post-render state
-			this.setupItem(inIndex);
-			var node = this.fetchRowNode(inIndex);
+			this.setupItem(index);
+			var node = this.fetchRowNode(index);
 			if (node) {
 				// hack to keep this working...
 				var delegate = enyo.HTMLStringDelegate;
-				
+
 				enyo.dom.setInnerHtml(node, delegate.generateChildHtml(this.$.client));
 				this.$.client.teardownChildren();
-				this.doRenderRow({rowIndex: inIndex});
+				this.doRenderRow({rowIndex: index});
 			}
 		},
-		//* Fetches the DOM node for the given row index.
-		fetchRowNode: function(inIndex) {
+
+		/**
+		* Fetches the DOM node for the given row index.
+		*
+		* @param {Number} index - Index of row
+		* @return {Node}
+		* @public
+		*/
+		fetchRowNode: function (index) {
 			if (this.hasNode()) {
-				return this.node.querySelector('[data-enyo-index="' + inIndex + '"]');
+				return this.node.querySelector('[data-enyo-index="' + index + '"]');
 			}
 		},
-		//* Fetches the row number corresponding with the target of a given event.
-		rowForEvent: function(inEvent) {
+
+		/**
+		* Fetches the row number corresponding with the target of a given event.
+		*
+		* @param {Object} event - Event object
+		* @return {Number}      - Index of row
+		* @public
+		*/
+		rowForEvent: function (event) {
 			if (!this.hasNode()) {
 				return -1;
 			}
-			var n = inEvent.target;
+			var n = event.target;
 			while (n && n !== this.node) {
-				var i = n.getAttribute && n.getAttribute("data-enyo-index");
+				var i = n.getAttribute && n.getAttribute('data-enyo-index');
 				if (i !== null) {
 					return Number(i);
 				}
@@ -211,61 +389,90 @@
 			}
 			return -1;
 		},
-		//* Prepares the row specified by _inIndex_ such that changes made to the
-		//* controls inside the repeater will be rendered for the given row.
-		prepareRow: function(inIndex) {
+
+		/**
+		* Prepares the row specified by `index` such that changes made to the
+		* controls inside the repeater will be rendered for the given row.
+		*
+		* @param {Number} index - Index of row
+		* @public
+		*/
+		prepareRow: function (index) {
 			// do nothing if index is out-of-range
-			if (inIndex < this.rowOffset || inIndex >= this.count + this.rowOffset) {
+			if (index < this.rowOffset || index >= this.count + this.rowOffset) {
 				return;
 			}
 			// update row internals to match model
-			this.setupItem(inIndex);
-			var n = this.fetchRowNode(inIndex);
+			this.setupItem(index);
+			var n = this.fetchRowNode(index);
 			enyo.FlyweightRepeater.claimNode(this.$.client, n);
 		},
-		//* Prevents rendering of changes made to controls inside the repeater.
-		lockRow: function() {
+
+		/**
+		* Prevents rendering of changes made to controls inside the repeater.
+		*
+		* @public
+		*/
+		lockRow: function () {
 			this.$.client.teardownChildren();
 		},
-		//* Prepares the row specified by _inIndex_ such that changes made to the
-		//* controls in the row will be rendered in the given row; then performs the
-		//* function _inFunc_, and, finally, locks the row.
-		performOnRow: function(inIndex, inFunc, inContext) {
+
+		/**
+		* Prepares the row specified by `index` such that changes made to the
+		* controls in the row will be rendered in the given row; then performs the
+		* function `func`, and, finally, locks the row.
+		*
+		* @param {Number} index   - Index of row
+		* @param {Function} func  - Function to perform
+		* @param {Object} context - Context on which `func` is bound
+		* @private
+		*/
+		performOnRow: function (index, func, context) {
 			// do nothing if index is out-of-range
-			if (inIndex < this.rowOffset || inIndex >= this.count + this.rowOffset) {
+			if (index < this.rowOffset || index >= this.count + this.rowOffset) {
 				return;
 			}
-			if (inFunc) {
-				this.prepareRow(inIndex);
-				enyo.call(inContext || null, inFunc);
+			if (func) {
+				this.prepareRow(index);
+				enyo.call(context || null, func);
 				this.lockRow();
 			}
 		},
+
+		/**
+		* @lends enyo.FlyweightRepeater
+		* @private
+		*/
 		statics: {
-			//* Associates a flyweight rendered control (_inControl_) with a
-			//* rendering context specified by _inNode_.
-			claimNode: function(inControl, inNode) {
+			/**
+			* Associates a flyweight rendered control (`control`) with a
+			* rendering context specified by `node`.
+			*
+			* @param {enyo.Control} control - Flyweight-rendered control
+			* @param {Node} node - DOM Node to associate with `control`
+			* @public
+			*/
+			claimNode: function (control, node) {
 				var n;
-				if (inNode) {
-					if (inNode.id !== inControl.id) {
-						n = inNode.querySelector("#" + inControl.id);
-					}
-					else {
-						// inNode is already the right node, so just use it
-						n = inNode;
+				if (node) {
+					if (node.id !== control.id) {
+						n = node.querySelector('#' + control.id);
+					} else {
+						// node is already the right node, so just use it
+						n = node;
 					}
 				}
 				// FIXME: consider controls generated if we found a node or tag: null, the later so can teardown render
-				inControl.generated = Boolean(n || !inControl.tag);
-				inControl.node = n;
-				if (inControl.node) {
-					inControl.rendered();
+				control.generated = Boolean(n || !control.tag);
+				control.node = n;
+				if (control.node) {
+					control.rendered();
 				} else {
-					//enyo.log("Failed to find node for",  inControl.id, inControl.generated);
+					//enyo.log('Failed to find node for',  control.id, control.generated);
 				}
 				// update control's class cache based on the node contents
-				for (var i=0, c$=inControl.children, c; (c=c$[i]); i++) {
-					this.claimNode(c, inNode);
+				for (var i=0, c$=control.children, c; (c=c$[i]); i++) {
+					this.claimNode(c, node);
 				}
 			}
 		}

@@ -1,533 +1,830 @@
-/**
-The _enyo.Panels_ kind is designed to satisfy a variety of common use cases
-for application layout. Using _enyo.Panels_, controls may be arranged as
-(among other things) a carousel, a set of collapsing panels, a card stack
-that fades between panels, or a grid.
+(function (enyo, scope) {
 
-Any Enyo control may be placed inside an _enyo.Panels_, but by convention we
-refer to each of these controls as a "panel". From the set of panels in an
-_enyo.Panels_, one is considered to be active. The active panel is set by
-index using the _setIndex()_ method. The actual layout of the panels
-typically changes each time the active panel is set, such that the new
-active panel has the most prominent position.
+	/**
+	* Fires at the start of a panel transition, when {@link enyo.Panels#setIndex} is called,
+	* and also during dragging.
+	*
+	* @event enyo.Panels#event:onTransitionStart
+	* @type {Object}
+	* @property {Number} fromIndex - Index of the old panel
+	* @property {Number} toIndex   - Index of the new panel
+	* @public
+	*/
 
-For more information, see the documentation on
-[Panels](building-apps/layout/panels.html) in the Enyo Developer Guide.
-*/
-enyo.kind({
-	name: "enyo.Panels",
-	classes: "enyo-panels",
-	published: {
+	/**
+	* Fires at the end of a panel transition, when {@link enyo.Panels#setIndex} is called,
+	* and also during dragging.
+	*
+	* @event enyo.Panels#event:onTransitionFinish
+	* @type {Object}
+	* @property {Number} fromIndex - Index of the old panel
+	* @property {Number} toIndex   - Index of the new panel
+	* @public
+	*/
+
+	/**
+	* The _enyo.Panels_ kind is designed to satisfy a variety of common use cases
+	* for application layout. Using _enyo.Panels_, controls may be arranged as
+	* (among other things) a carousel, a set of collapsing panels, a card stack
+	* that fades between panels, or a grid.
+	*
+	* Any Enyo control may be placed inside an _enyo.Panels_, but by convention we
+	* refer to each of these controls as a 'panel'. From the set of panels in an
+	* _enyo.Panels_, one is considered to be active. The active panel is set by
+	* index using the {@link enyo.Panels#setIndex} method. The actual layout of the panels
+	* typically changes each time the active panel is set, such that the new
+	* active panel has the most prominent position.
+	*
+	* For more information, see the documentation on
+	* [Panels](building-apps/layout/panels.html) in the Enyo Developer Guide.
+	*
+	* @ui
+	* @class enyo.Panels
+	* @extends enyo.Control
+	* @public
+	*/
+	enyo.kind(
+		/** @lends  enyo.Panels.prototype */ {
+
 		/**
-			The index of the active panel. The layout of panels is controlled by
-			the _layoutKind_, but as a rule, the active panel is displayed in the
-			most prominent position. For example, in the (default) CardArranger
-			layout, the active panel is shown and the other panels are hidden.
+		* @private
 		*/
-		index: 0,
-		//* Controls whether the user can drag between panels
-		draggable: true,
+		name: 'enyo.Panels',
+
 		/**
-			Controls whether the panels animate when transitioning; e.g., when
-			_setIndex()_ is called
+		* @private
 		*/
-		animate: true,
+		classes: 'enyo-panels',
+
 		/**
-			Controls whether panels "wrap around" when moving past the end.
-			The actual effect depends upon the arranger in use.
+		* @lends enyo.Panels.prototype
+		* @private
 		*/
-		wrap: false,
-		//* Sets the arranger kind to be used for dynamic layout
-		arrangerKind: "CardArranger",
+		published: {
+			/**
+			* The index of the active panel. The layout of panels is controlled by
+			* the {@link enyo.Panels#layoutKind}, but as a rule, the active panel is displayed
+			* in the most prominent position. For example, in the (default)
+			* {@link enyo.CardArranger} layout, the active panel is shown and the other panels
+			* are hidden.
+			*
+			* @type {Number}
+			* @default  0
+			* @public
+			*/
+			index: 0,
+
+			/**
+			* Controls whether the user can drag between panels
+			*
+			* @type {Boolean}
+			* @default  true
+			* @public
+			*/
+			draggable: true,
+
+			/**
+			* Controls whether the panels animate when transitioning; e.g., when
+			* {@link enyo.Panels#setIndex} is called
+			*
+			* @type {Boolean}
+			* @default  true
+			* @public
+			*/
+			animate: true,
+
+			/**
+			* Controls whether panels 'wrap around' when moving past the end.
+			* The actual effect depends upon the arranger in use.
+			*
+			* @type {Boolean}
+			* @default  false
+			* @public
+			*/
+			wrap: false,
+
+			/**
+			* Sets the arranger kind to be used for dynamic layout
+			*
+			* @type {String}
+			* @default  'CardArranger'
+			* @public
+			*/
+			arrangerKind: 'CardArranger',
+
+			/**
+			* By default, each panel will be sized to fit the Panels' width when the
+			* screen size is sufficiently narrow (less than 800px). Set to false to
+			* avoid this behavior.
+			*
+			* @type {Boolean}
+			* @default  true
+			* @public
+			*/
+			narrowFit: true
+		},
+
 		/**
-			By default, each panel will be sized to fit the Panels' width when the
-			screen size is sufficiently narrow (less than 800px). Set to false to
-			avoid this behavior.
+		* @private
 		*/
-		narrowFit: true
-	},
-	events: {
+		events: {
+			onTransitionStart: '',
+			onTransitionFinish: ''
+		},
+
 		/**
-			Fires at the start of a panel transition, when _setIndex()_ is called,
-			and also during dragging.
-
-			_inEvent.fromIndex_ contains the index of the old panel.
-
-			_inEvent.toIndex_ contains the index of the new panel.
+		* @private
 		*/
-		onTransitionStart: "",
+		handlers: {
+			ondragstart: 'dragstart',
+			ondrag: 'drag',
+			ondragfinish: 'dragfinish',
+			onscroll: 'domScroll'
+		},
+
 		/**
-			Fires at the end of a panel transition, when _setIndex()_ is called,
-			and also during dragging.
-
-			_inEvent.fromIndex_ contains the index of the old panel.
-
-			_inEvent.toIndex_ contains the index of the new panel.
+		* @private
 		*/
-		onTransitionFinish: ""
-	},
-	//* @protected
-	handlers: {
-		ondragstart: "dragstart",
-		ondrag: "drag",
-		ondragfinish: "dragfinish",
-		onscroll: "domScroll"
-	},
-	tools: [
-		{kind: "Animator", onStep: "step", onEnd: "completed"}
-	],
-	fraction: 0,
-	create: enyo.inherit(function(sup) {
-		return function() {
-			this.transitionPoints = [];
-			sup.apply(this, arguments);
-			this.arrangerKindChanged();
-			this.narrowFitChanged();
-			this.indexChanged();
-		};
-	}),
-	rendered: enyo.inherit(function(sup) {
-		return function() {
-			sup.apply(this, arguments);
-			enyo.makeBubble(this, "scroll");
-		};
-	}),
-	domScroll: function(inSender, inEvent) {
-		if (this.hasNode()) {
-			if (this.node.scrollLeft > 0) {
-				// Reset scrollLeft position
-				this.node.scrollLeft = 0;
-			}
-		}
-	},
-	initComponents: enyo.inherit(function(sup) {
-		return function() {
-			this.createChrome(this.tools);
-			sup.apply(this, arguments);
-		};
-	}),
-	arrangerKindChanged: function() {
-		this.setLayoutKind(this.arrangerKind);
-	},
-	narrowFitChanged: function() {
-		this.addRemoveClass(enyo.Panels.getNarrowClass(), this.narrowFit);
-	},
-	destroy: enyo.inherit(function(sup) {
-		return function() {
-			// When the entire panels is going away, take note so we don't try and do single-panel
-			// remove logic such as changing the index and reflowing when each panel is destroyed
-			this.destroying = true;
-			sup.apply(this, arguments);
-		};
-	}),
-	removeControl: enyo.inherit(function(sup) {
-		return function(inControl) {
-			// Skip extra work during panel destruction.
-			if (this.destroying) {
-				return sup.apply(this, arguments);
-			}
-			// adjust index if the current panel is being removed
-			// so it's either the previous panel or the first one.
-			var newIndex = -1;
-			var controlIndex = enyo.indexOf(inControl, this.controls);
-			if (controlIndex === this.index) {
-				newIndex = Math.max(controlIndex - 1, 0);
-			}
-			sup.apply(this, arguments);
-			if (newIndex !== -1 && this.controls.length > 0) {
-				this.setIndex(newIndex);
-				this.flow();
-				this.reflow();
-			}
-		};
-	}),
-	isPanel: function() {
-		// designed to be overridden in kinds derived from Panels that have
-		// non-panel client controls
-		return true;
-	},
-	flow: enyo.inherit(function(sup) {
-		return function() {
-			this.arrangements = [];
-			sup.apply(this, arguments);
-		};
-	}),
-	reflow: enyo.inherit(function(sup) {
-		return function() {
-			this.arrangements = [];
-			sup.apply(this, arguments);
-			this.refresh();
-		};
-	}),
+		tools: [
+			{kind: 'Animator', onStep: 'step', onEnd: 'completed'}
+		],
 
-	//* @public
-	/**
-		Returns an array of contained panels. Subclasses may override this if they
-		don't want the arranger to lay out all of their children.
-	*/
-	getPanels: function() {
-		var p = this.controlParent || this;
-		return p.children;
-	},
-	/**
-		Returns a reference to the active panel--i.e., the panel at the specified
-		index.
-	*/
-	getActive: function() {
-		var p$ = this.getPanels();
-		//Constrain the index within the array of panels, needed if wrapping is enabled
-		var index = this.index % p$.length;
-		if (index < 0) {
-			index += p$.length;
-		}
-		return p$[index];
-	},
-	/**
-		Returns a reference to the [enyo.Animator](#enyo.Animator) instance used to
-		animate panel transitions. The Panels' animator may be used to set the
-		duration of panel transitions, e.g.:
+		/**
+		* Tracks the percent complete transition between 2 panels
+		*
+		* @private
+		*/
+		fraction: 0,
 
-			this.getAnimator().setDuration(1000);
-	*/
-	getAnimator: function() {
-		return this.$.animator;
-	},
-	/**
-		Sets the active panel to the panel specified by the given index.
-		Note that if the _animate_ property is set to true, the active panel
-		will animate into view.
-	*/
-	setIndex: function(inIndex) {
-		// override setIndex so that indexChanged is called
-		// whether this.index has actually changed or not. Also, do
-		// index clamping here.
-		var prevIndex = this.get("index"),
-			newIndex = this.clamp(inIndex);
-		this.index = newIndex;
-		this.notifyObservers("index", prevIndex, newIndex);
-	},
-	/**
-		Sets the active panel to the panel specified by the given index.
-		Regardless of the value of the _animate_ property, the transition to the
-		next panel will not animate and will be immediate.
-	*/
-	setIndexDirect: function(inIndex) {
-		this.setIndex(inIndex);
-		this.completed();
-	},
-	/**
-		Selects the named component owned by the Panels and returns its index.
-	*/
-	selectPanelByName: function(name) {
-		if (!name) {
-			return;
-		}
-		var idx = 0;
-		var panels = this.getPanels();
-		var len = panels.length;
-		for (; idx < len; ++idx) {
-			if (name === panels[idx].name) {
-				this.setIndex(idx);
-				return idx;
-			}
-		}
-	},
-	/**
-		Transitions to the previous panel--i.e., the panel whose index value is one
-		less than that of the current active panel.
-	*/
-	previous: function() {
-		var prevIndex = this.index - 1;
-		if (this.wrap && prevIndex < 0) {
-			prevIndex = this.getPanels().length - 1;
-		}
-		this.setIndex(prevIndex);
-	},
-	/**
-		Transitions to the next panel--i.e., the panel whose index value is one
-		greater than that of the current active panel.
-	*/
-	next: function() {
-		var nextIndex = this.index+1;
-		if (this.wrap && nextIndex >= this.getPanels().length) {
-			nextIndex = 0;
-		}
-		this.setIndex(nextIndex);
-	},
-	//* @protected
-	clamp: function(inValue) {
-		var l = this.getPanels().length;
-		if (this.wrap) {
-			// FIXME: dragging makes assumptions about direction and from->start indexes.
-			//return inValue < 0 ? l : (inValue > l ? 0 : inValue);
-			inValue %= l;
-			return (inValue < 0) ? inValue + l : inValue;
-		} else {
-			return Math.max(0, Math.min(inValue, l - 1));
-		}
-	},
-	indexChanged: function(inOld) {
-		this.lastIndex = inOld;
-		if (!this.dragging && this.$.animator) {
-			if (this.$.animator.isAnimating()) {
-				if (this.finishTransitionInfo) {
-					this.finishTransitionInfo.animating = true;
-				}
-				this.completed();
-			}
-			this.$.animator.stop();
+		/**
+		* @method
+		* @private
+		*/
+		create: enyo.inherit(function (sup) {
+			return function () {
+				this.transitionPoints = [];
+				sup.apply(this, arguments);
+				this.arrangerKindChanged();
+				this.narrowFitChanged();
+				this.indexChanged();
+			};
+		}),
+
+		/**
+		* @method
+		* @private
+		*/
+		rendered: enyo.inherit(function (sup) {
+			return function () {
+				sup.apply(this, arguments);
+				enyo.makeBubble(this, 'scroll');
+			};
+		}),
+
+		/**
+		* @private
+		*/
+		domScroll: function (sender, event) {
 			if (this.hasNode()) {
-				if (this.animate) {
-					this.startTransition(true);
-					this.$.animator.play({
-						startValue: this.fraction
-					});
-				} else {
-					this.refresh();
+				if (this.node.scrollLeft > 0) {
+					// Reset scrollLeft position
+					this.node.scrollLeft = 0;
 				}
 			}
-		}
-	},
-	step: function(inSender) {
-		this.fraction = inSender.value;
-		this.stepTransition();
-		return true;
-	},
-	completed: function() {
-		if (this.$.animator.isAnimating()) {
-			this.$.animator.stop();
-		}
-		this.fraction = 1;
-		this.stepTransition();
-		this.finishTransition(true);
-		return true;
-	},
-	dragstart: function(inSender, inEvent) {
-		if (this.draggable && this.layout && this.layout.canDragEvent(inEvent)) {
-			inEvent.preventDefault();
-			this.dragstartTransition(inEvent);
-			this.dragging = true;
-			this.$.animator.stop();
-			return true;
-		}
-	},
-	drag: function(inSender, inEvent) {
-		if (this.dragging) {
-			inEvent.preventDefault();
-			this.dragTransition(inEvent);
-		}
-	},
-	dragfinish: function(inSender, inEvent) {
-		if (this.dragging) {
-			this.dragging = false;
-			inEvent.preventTap();
-			this.dragfinishTransition(inEvent);
-		}
-	},
-	dragstartTransition: function(inEvent) {
-		if (!this.$.animator.isAnimating()) {
-			var f = this.fromIndex = this.index;
-			this.toIndex = f - (this.layout ? this.layout.calcDragDirection(inEvent) : 0);
-		} else {
-			this.verifyDragTransition(inEvent);
-		}
-		this.fromIndex = this.clamp(this.fromIndex);
-		this.toIndex = this.clamp(this.toIndex);
-		//this.log(this.fromIndex, this.toIndex);
-		this.fireTransitionStart();
-		if (this.layout) {
-			this.layout.start();
-		}
-	},
-	dragTransition: function(inEvent) {
-		// note: for simplicity we choose to calculate the distance directly between
-		// the first and last transition point.
-		var d = this.layout ? this.layout.calcDrag(inEvent) : 0;
-		var t$ = this.transitionPoints, s = t$[0], f = t$[t$.length-1];
-		var as = this.fetchArrangement(s);
-		var af = this.fetchArrangement(f);
-		var dx = this.layout ? this.layout.drag(d, s, as, f, af) : 0;
-		var dragFail = d && !dx;
-		if (dragFail) {
-			//this.log(dx, s, as, f, af);
-		}
-		this.fraction += dx;
-		var fr = this.fraction;
-		if (fr > 1 || fr < 0 || dragFail) {
-			if (fr > 0 || dragFail) {
-				this.dragfinishTransition(inEvent);
-			}
-			this.dragstartTransition(inEvent);
-			this.fraction = 0;
-			// FIXME: account for lost fraction
-			//this.dragTransition(inEvent);
-		}
-		this.stepTransition();
-	},
-	dragfinishTransition: function(inEvent) {
-		this.verifyDragTransition(inEvent);
-		this.setIndex(this.toIndex);
-		// note: if we're still dragging, then we're at a transition boundary
-		// and should fire the finish event
-		if (this.dragging) {
-			this.fireTransitionFinish();
-		}
-	},
-	verifyDragTransition: function(inEvent) {
-		var d = this.layout ? this.layout.calcDragDirection(inEvent) : 0;
-		var f = Math.min(this.fromIndex, this.toIndex);
-		var t = Math.max(this.fromIndex, this.toIndex);
-		if (d > 0) {
-			var s = f;
-			f = t;
-			t = s;
-		}
-		if (f != this.fromIndex) {
-			this.fraction = 1 - this.fraction;
-		}
-		//this.log("old", this.fromIndex, this.toIndex, "new", f, t);
-		this.fromIndex = f;
-		this.toIndex = t;
-	},
-	refresh: function() {
-		if (this.$.animator && this.$.animator.isAnimating()) {
-			this.$.animator.stop();
-		}
-		this.startTransition(false);
-		this.fraction = 1;
-		this.stepTransition();
-		this.finishTransition(false);
-	},
-	startTransition: function(sendEvents) {
-		this.fromIndex = this.fromIndex != null ? this.fromIndex : this.lastIndex || 0;
-		this.toIndex = this.toIndex != null ? this.toIndex : this.index;
-		//this.log(this.id, this.fromIndex, this.toIndex);
-		if (this.layout) {
-			this.layout.start();
-		}
-		if (sendEvents) {
-			this.fireTransitionStart();
-		}
-	},
-	finishTransition: function(sendEvents) {
-		if (this.layout) {
-			this.layout.finish();
-		}
-		this.transitionPoints = [];
-		this.fraction = 0;
-		this.fromIndex = this.toIndex = null;
-		if (sendEvents) {
-			this.fireTransitionFinish();
-		}
-	},
-	fireTransitionStart: function() {
-		var t = this.startTransitionInfo;
-		if (this.hasNode() && (!t || (t.fromIndex != this.fromIndex || t.toIndex != this.toIndex))) {
-			this.startTransitionInfo = {fromIndex: this.fromIndex, toIndex: this.toIndex};
-			this.doTransitionStart(enyo.clone(this.startTransitionInfo));
-		}
-	},
-	fireTransitionFinish: function() {
-		var t = this.finishTransitionInfo;
-		if (this.hasNode() && (!t || (t.fromIndex != this.lastIndex || t.toIndex != this.index))) {
-			if (t && t.animating) {
-				this.finishTransitionInfo = {fromIndex: t.toIndex, toIndex: this.lastIndex};
-			} else {
-				this.finishTransitionInfo = {fromIndex: this.lastIndex, toIndex: this.index};
-			}
-			this.doTransitionFinish(enyo.clone(this.finishTransitionInfo));
-		}
-	},
-	// gambit: we interpolate between arrangements as needed.
-	stepTransition: function() {
-		if (this.hasNode()) {
-			// select correct transition points and normalize fraction.
-			var t$ = this.transitionPoints;
-			var r = (this.fraction || 0) * (t$.length-1);
-			var i = Math.floor(r);
-			r = r - i;
-			var s = t$[i], f = t$[i+1];
-			// get arrangements and lerp between them
-			var s0 = this.fetchArrangement(s);
-			var s1 = this.fetchArrangement(f);
-			this.arrangement = s0 && s1 ? enyo.Panels.lerp(s0, s1, r) : (s0 || s1);
-			if (this.arrangement && this.layout) {
-				this.layout.flowArrangement();
-			}
-		}
-	},
-	fetchArrangement: function(inName) {
-		if ((inName != null) && !this.arrangements[inName] && this.layout) {
-			this.layout._arrange(inName);
-			this.arrangements[inName] = this.readArrangement(this.getPanels());
-		}
-		return this.arrangements[inName];
-	},
-	readArrangement: function(inC) {
-		var r = [];
-		for (var i=0, c$=inC, c; (c=c$[i]); i++) {
-			r.push(enyo.clone(c._arranger));
-		}
-		return r;
-	},
-	statics: {
-		//* @public
+		},
+
 		/**
-			Returns true depending on detection of iOS and Android phone form factors,
-			or when window width is 800px or less. Approximates work done using media
-			queries in Panels.css.
+		* @method
+		* @private
 		*/
-		isScreenNarrow: function() {
-			if(enyo.Panels.isNarrowDevice()) {
-				return true;
-			} else {
-				return enyo.dom.getWindowWidth() <= 800;
-			}
-		},
-		/***
-			Returns the class name to apply for narrow fitting. See media queries
-			in Panels.css
+		initComponents: enyo.inherit(function (sup) {
+			return function () {
+				this.createChrome(this.tools);
+				sup.apply(this, arguments);
+			};
+		}),
+
+		/**
+		* @private
 		*/
-		getNarrowClass: function() {
-			if(enyo.Panels.isNarrowDevice()) {
-				return "enyo-panels-force-narrow";
+		arrangerKindChanged: function () {
+			this.setLayoutKind(this.arrangerKind);
+		},
+
+		/**
+		* @private
+		*/
+		narrowFitChanged: function () {
+			this.addRemoveClass(enyo.Panels.getNarrowClass(), this.narrowFit);
+		},
+
+		/**
+		* @method
+		* @private
+		*/
+		destroy: enyo.inherit(function (sup) {
+			return function () {
+				// When the entire panels is going away, take note so we don't try and do single-panel
+				// remove logic such as changing the index and reflowing when each panel is destroyed
+				this.destroying = true;
+				sup.apply(this, arguments);
+			};
+		}),
+
+		/**
+		* Adjusts the index if the removed control is the active panel and reflows the layout
+		*
+		* @method
+		* @private
+		*/
+		removeControl: enyo.inherit(function (sup) {
+			return function (control) {
+				// Skip extra work during panel destruction.
+				if (this.destroying) {
+					return sup.apply(this, arguments);
+				}
+				// adjust index if the current panel is being removed
+				// so it's either the previous panel or the first one.
+				var newIndex = -1;
+				var controlIndex = enyo.indexOf(control, this.controls);
+				if (controlIndex === this.index) {
+					newIndex = Math.max(controlIndex - 1, 0);
+				}
+				sup.apply(this, arguments);
+				if (newIndex !== -1 && this.controls.length > 0) {
+					this.setIndex(newIndex);
+					this.flow();
+					this.reflow();
+				}
+			};
+		}),
+
+		/**
+		* Designed to be overridden in kinds derived from Panels that have
+		* non-panel client controls
+		*
+		* @return {Boolean} [description]
+		* @protected
+		* @todo  Assume that this should take a control as a parameter.
+		*/
+		isPanel: function () {
+			return true;
+		},
+
+		/**
+		* @method
+		* @private
+		*/
+		flow: enyo.inherit(function (sup) {
+			return function () {
+				this.arrangements = [];
+				sup.apply(this, arguments);
+			};
+		}),
+
+		/**
+		* @method
+		* @private
+		*/
+		reflow: enyo.inherit(function (sup) {
+			return function () {
+				this.arrangements = [];
+				sup.apply(this, arguments);
+				this.refresh();
+			};
+		}),
+
+		/**
+		* Returns an array of contained panels. Subclasses may override this if they
+		* don't want the arranger to lay out all of their children.
+		*
+		* @return {enyo.Control[]} - Contained panels
+		*/
+		getPanels: function () {
+			var p = this.controlParent || this;
+			return p.children;
+		},
+
+		/**
+		* Returns a reference to the active panel--i.e., the panel at the specified index.
+		*
+		* @return {enyo.Control} - Active panel
+		*/
+		getActive: function () {
+			var p$ = this.getPanels();
+			//Constrain the index within the array of panels, needed if wrapping is enabled
+			var index = this.index % p$.length;
+			if (index < 0) {
+				index += p$.length;
+			}
+			return p$[index];
+		},
+
+		/**
+		* Returns a reference to the {@link enyo.Animator} instance used to
+		* animate panel transitions. The Panels' animator may be used to set the
+		* duration of panel transitions, e.g.:
+		*
+		* ```
+		* this.getAnimator().setDuration(1000);
+		* ```
+		*
+		* @return {enyo.Animator}
+		* @public
+		*/
+		getAnimator: function () {
+			return this.$.animator;
+		},
+
+		/**
+		* Sets the active panel to the panel specified by the given index.
+		* Note that if the {@link enyo.Panels#animate} property is set to true, the active panel
+		* will animate into view.
+		*
+		* @param {Number} index - Index of panel to activate
+		* @public
+		*/
+		setIndex: function (index) {
+			// override setIndex so that indexChanged is called
+			// whether this.index has actually changed or not. Also, do
+			// index clamping here.
+			var prevIndex = this.get('index'),
+				newIndex = this.clamp(index);
+			this.index = newIndex;
+			this.notifyObservers('index', prevIndex, newIndex);
+		},
+		/**
+		* Sets the active panel to the panel specified by the given index.
+		* Regardless of the value of the {@link enyo.Panels#animate} property, the transition
+		* to the next panel will not animate and will be immediate.
+		*
+		* @param {Number} index - Index of panel to activate
+		* @public
+		*/
+		setIndexDirect: function (index) {
+			this.setIndex(index);
+			this.completed();
+		},
+
+		/**
+		* Selects the named component owned by the Panels and returns its index.
+		*
+		* @param  {String} name - Name of panel to activate
+		* @public
+		*/
+		selectPanelByName: function (name) {
+			if (!name) {
+				return;
+			}
+			var idx = 0;
+			var panels = this.getPanels();
+			var len = panels.length;
+			for (; idx < len; ++idx) {
+				if (name === panels[idx].name) {
+					this.setIndex(idx);
+					return idx;
+				}
+			}
+		},
+
+		/**
+		* Transitions to the previous panel--i.e., the panel whose index value is one
+		* less than that of the current active panel.
+		*
+		* @public
+		*/
+		previous: function () {
+			var prevIndex = this.index - 1;
+			if (this.wrap && prevIndex < 0) {
+				prevIndex = this.getPanels().length - 1;
+			}
+			this.setIndex(prevIndex);
+		},
+
+		/**
+		* Transitions to the next panel--i.e., the panel whose index value is one
+		* greater than that of the current active panel.
+		*
+		* @public
+		*/
+		next: function () {
+			var nextIndex = this.index+1;
+			if (this.wrap && nextIndex >= this.getPanels().length) {
+				nextIndex = 0;
+			}
+			this.setIndex(nextIndex);
+		},
+
+		/**
+		* Ensures that `value` references a valid panel accounting for {@link enyo.Panels#wrap}
+		*
+		* @param  {Number} value - Index of a panel
+		* @return {Number}       - Valid index of a panel
+		* @private
+		*/
+		clamp: function (value) {
+			var l = this.getPanels().length;
+			if (this.wrap) {
+				// FIXME: dragging makes assumptions about direction and from->start indexes.
+				//return value < 0 ? l : (value > l ? 0 : value);
+				value %= l;
+				return (value < 0) ? value + l : value;
 			} else {
-				return "enyo-panels-fit-narrow";
+				return Math.max(0, Math.min(value, l - 1));
 			}
 		},
-		//* @protected
-		lerp: function(inA0, inA1, inFrac) {
-			var r = [];
-			for (var i=0, k$=enyo.keys(inA0), k; (k=k$[i]); i++) {
-				r.push(this.lerpObject(inA0[k], inA1[k], inFrac));
-			}
-			return r;
-		},
-		lerpObject: function(inNew, inOld, inFrac) {
-			var b = enyo.clone(inNew), n, o;
-			// inOld might be undefined when deleting panels
-			if (inOld) {
-				for (var i in inNew) {
-					n = inNew[i];
-					o = inOld[i];
-					if (n != o) {
-						b[i] = n - (n - o) * inFrac;
+
+		/**
+		* @private
+		*/
+		indexChanged: function (old) {
+			this.lastIndex = old;
+			if (!this.dragging && this.$.animator) {
+				if (this.$.animator.isAnimating()) {
+					if (this.finishTransitionInfo) {
+						this.finishTransitionInfo.animating = true;
+					}
+					this.completed();
+				}
+				this.$.animator.stop();
+				if (this.hasNode()) {
+					if (this.animate) {
+						this.startTransition(true);
+						this.$.animator.play({
+							startValue: this.fraction
+						});
+					} else {
+						this.refresh();
 					}
 				}
 			}
-			return b;
 		},
-		isNarrowDevice: function() {
-			var ua = navigator.userAgent;
-			switch (enyo.platform.platformName) {
-				case "ios":
-					return (/iP(?:hone|od;(?: U;)? CPU) OS (\d+)/).test(ua);
-				case "android":
-					return (/Mobile/).test(ua) && (enyo.platform.android > 2);
-				case "androidChrome":
-					return (/Mobile/).test(ua);
+
+		/**
+		* @private
+		*/
+		step: function (sender) {
+			this.fraction = sender.value;
+			this.stepTransition();
+			return true;
+		},
+
+		/**
+		* @private
+		*/
+		completed: function () {
+			if (this.$.animator.isAnimating()) {
+				this.$.animator.stop();
 			}
-			return false;
+			this.fraction = 1;
+			this.stepTransition();
+			this.finishTransition(true);
+			return true;
+		},
+
+		/**
+		* @private
+		*/
+		dragstart: function (sender, event) {
+			if (this.draggable && this.layout && this.layout.canDragEvent(event)) {
+				event.preventDefault();
+				this.dragstartTransition(event);
+				this.dragging = true;
+				this.$.animator.stop();
+				return true;
+			}
+		},
+
+		/**
+		* @private
+		*/
+		drag: function (sender, event) {
+			if (this.dragging) {
+				event.preventDefault();
+				this.dragTransition(event);
+			}
+		},
+
+		/**
+		* @private
+		*/
+		dragfinish: function (sender, event) {
+			if (this.dragging) {
+				this.dragging = false;
+				event.preventTap();
+				this.dragfinishTransition(event);
+			}
+		},
+
+		/**
+		* @private
+		*/
+		dragstartTransition: function (event) {
+			if (!this.$.animator.isAnimating()) {
+				var f = this.fromIndex = this.index;
+				this.toIndex = f - (this.layout ? this.layout.calcDragDirection(event) : 0);
+			} else {
+				this.verifyDragTransition(event);
+			}
+			this.fromIndex = this.clamp(this.fromIndex);
+			this.toIndex = this.clamp(this.toIndex);
+			//this.log(this.fromIndex, this.toIndex);
+			this.fireTransitionStart();
+			if (this.layout) {
+				this.layout.start();
+			}
+		},
+
+		/**
+		* @private
+		*/
+		dragTransition: function (event) {
+			// note: for simplicity we choose to calculate the distance directly between
+			// the first and last transition point.
+			var d = this.layout ? this.layout.calcDrag(event) : 0;
+			var t$ = this.transitionPoints, s = t$[0], f = t$[t$.length-1];
+			var as = this.fetchArrangement(s);
+			var af = this.fetchArrangement(f);
+			var dx = this.layout ? this.layout.drag(d, s, as, f, af) : 0;
+			var dragFail = d && !dx;
+			if (dragFail) {
+				//this.log(dx, s, as, f, af);
+			}
+			this.fraction += dx;
+			var fr = this.fraction;
+			if (fr > 1 || fr < 0 || dragFail) {
+				if (fr > 0 || dragFail) {
+					this.dragfinishTransition(event);
+				}
+				this.dragstartTransition(event);
+				this.fraction = 0;
+				// FIXME: account for lost fraction
+				//this.dragTransition(event);
+			}
+			this.stepTransition();
+		},
+
+		/**
+		* @private
+		*/
+		dragfinishTransition: function (event) {
+			this.verifyDragTransition(event);
+			this.setIndex(this.toIndex);
+			// note: if we're still dragging, then we're at a transition boundary
+			// and should fire the finish event
+			if (this.dragging) {
+				this.fireTransitionFinish();
+			}
+		},
+
+		/**
+		* @private
+		*/
+		verifyDragTransition: function (event) {
+			var d = this.layout ? this.layout.calcDragDirection(event) : 0;
+			var f = Math.min(this.fromIndex, this.toIndex);
+			var t = Math.max(this.fromIndex, this.toIndex);
+			if (d > 0) {
+				var s = f;
+				f = t;
+				t = s;
+			}
+			if (f != this.fromIndex) {
+				this.fraction = 1 - this.fraction;
+			}
+			//this.log('old', this.fromIndex, this.toIndex, 'new', f, t);
+			this.fromIndex = f;
+			this.toIndex = t;
+		},
+
+		/**
+		* Resets the panels without sending any events
+		*
+		* @private
+		*/
+		refresh: function () {
+			if (this.$.animator && this.$.animator.isAnimating()) {
+				this.$.animator.stop();
+			}
+			this.startTransition(false);
+			this.fraction = 1;
+			this.stepTransition();
+			this.finishTransition(false);
+		},
+
+		/**
+		* Starts the transition between two panels
+		*
+		* @param  {Boolean} sendEvents - Fire {@link enyo.Panels#event:onTransitionStart}
+		* @private
+		*/
+		startTransition: function (sendEvents) {
+			this.fromIndex = this.fromIndex != null ? this.fromIndex : this.lastIndex || 0;
+			this.toIndex = this.toIndex != null ? this.toIndex : this.index;
+			//this.log(this.id, this.fromIndex, this.toIndex);
+			if (this.layout) {
+				this.layout.start();
+			}
+			if (sendEvents) {
+				this.fireTransitionStart();
+			}
+		},
+
+		/**
+		* Complete the transition between two panels
+		*
+		* @param  {Boolean} sendEvents - Fire {@link enyo.Panels#event:onTransitionFinish}
+		* @private
+		*/
+		finishTransition: function (sendEvents) {
+			if (this.layout) {
+				this.layout.finish();
+			}
+			this.transitionPoints = [];
+			this.fraction = 0;
+			this.fromIndex = this.toIndex = null;
+			if (sendEvents) {
+				this.fireTransitionFinish();
+			}
+		},
+
+		/**
+		* @fires enyo.Panels#event:onTransitionStart
+		* @private
+		*/
+		fireTransitionStart: function () {
+			var t = this.startTransitionInfo;
+			if (this.hasNode() && (!t || (t.fromIndex != this.fromIndex || t.toIndex != this.toIndex))) {
+				this.startTransitionInfo = {fromIndex: this.fromIndex, toIndex: this.toIndex};
+				this.doTransitionStart(enyo.clone(this.startTransitionInfo));
+			}
+		},
+
+		/**
+		* @fires enyo.Panels#event:onTransitionFinish
+		* @private
+		*/
+		fireTransitionFinish: function () {
+			var t = this.finishTransitionInfo;
+			if (this.hasNode() && (!t || (t.fromIndex != this.lastIndex || t.toIndex != this.index))) {
+				if (t && t.animating) {
+					this.finishTransitionInfo = {fromIndex: t.toIndex, toIndex: this.lastIndex};
+				} else {
+					this.finishTransitionInfo = {fromIndex: this.lastIndex, toIndex: this.index};
+				}
+				this.doTransitionFinish(enyo.clone(this.finishTransitionInfo));
+			}
+		},
+
+		/**
+		* Interpolate between arrangements as needed.
+		*
+		* @private
+		*/
+		stepTransition: function () {
+			if (this.hasNode()) {
+				// select correct transition points and normalize fraction.
+				var t$ = this.transitionPoints;
+				var r = (this.fraction || 0) * (t$.length-1);
+				var i = Math.floor(r);
+				r = r - i;
+				var s = t$[i], f = t$[i+1];
+				// get arrangements and lerp between them
+				var s0 = this.fetchArrangement(s);
+				var s1 = this.fetchArrangement(f);
+				this.arrangement = s0 && s1 ? enyo.Panels.lerp(s0, s1, r) : (s0 || s1);
+				if (this.arrangement && this.layout) {
+					this.layout.flowArrangement();
+				}
+			}
+		},
+
+
+		/**
+		* Fetches the arrangement for `index`, initializing it if necessary
+		*
+		* @param  {Number} index - Index from `transitionPoints`
+		* @return {Object[]}     - Array of arrangement objects
+		* @private
+		*/
+		fetchArrangement: function (index) {
+			if ((index != null) && !this.arrangements[index] && this.layout) {
+				this.layout._arrange(index);
+				this.arrangements[index] = this.readArrangement(this.getPanels());
+			}
+			return this.arrangements[index];
+		},
+
+		/**
+		* Iterates over `panels` and retrieves a copy of each panel's `_arranger`
+		*
+		* @param  {enyo.Control[]} panels - Array of panels
+		* @return {Object[]}              - Array of arrangement objects
+		*/
+		readArrangement: function (panels) {
+			var r = [];
+			for (var i=0, c$=panels, c; (c=c$[i]); i++) {
+				r.push(enyo.clone(c._arranger));
+			}
+			return r;
+		},
+
+		/**
+		* @lends  enyo.Panels
+		* @private
+		*/
+		statics: {
+			/**
+			* Returns true depending on detection of iOS and Android phone form factors,
+			* or when window width is 800px or less. Approximates work done using media
+			* queries in Panels.css.
+			*
+			* @return {Boolean} `true` for narrow devices or viewports
+			* @public
+			*/
+			isScreenNarrow: function () {
+				if(enyo.Panels.isNarrowDevice()) {
+					return true;
+				} else {
+					return enyo.dom.getWindowWidth() <= 800;
+				}
+			},
+
+			/**
+			* Returns the class name to apply for narrow fitting. See media queries
+			* in Panels.css
+			*
+			* @return {String} CSS class name
+			*/
+			getNarrowClass: function () {
+				if(enyo.Panels.isNarrowDevice()) {
+					return 'enyo-panels-force-narrow';
+				} else {
+					return 'enyo-panels-fit-narrow';
+				}
+			},
+
+			/**
+			* Lerps between arrangements
+			*
+			* @param  {Object[]} a0     - Array of current arrangement objects
+			* @param  {Object[]} a1     - Array of target arrangement object
+			* @param  {Number} fraction - Fraction (between 0 and 1) with which to lerp
+			* @return {Object[]}        - Array of arrangements that is `fraction` between
+			* 	`a0` and `a1`
+			* @private
+			*/
+			lerp: function (a0, a1, fraction) {
+				var r = [];
+				for (var i=0, k$=enyo.keys(a0), k; (k=k$[i]); i++) {
+					r.push(this.lerpObject(a0[k], a1[k], fraction));
+				}
+				return r;
+			},
+
+			/**
+			* Lerps between the values of arrangement objects
+			*
+			* @param  {Object} a0       - Source arragement
+			* @param  {Object} a1       - Destination arragement
+			* @param  {Number} fraction - Fraction (between 0 and 1) witch which to lerp
+			*
+			* @return {Object}          - Lerped arrangement
+			* @private
+			*/
+			lerpObject: function (a0, a1, fraction) {
+				var b = enyo.clone(a0), n, o;
+				// a1 might be undefined when deleting panels
+				if (a1) {
+					for (var i in a0) {
+						n = a0[i];
+						o = a1[i];
+						if (n != o) {
+							b[i] = n - (n - o) * fraction;
+						}
+					}
+				}
+				return b;
+			},
+
+			/**
+			* Tests User Agent strings to identify narrow devices
+			*
+			* @return {Boolean} `true` if the current device is a narrow device
+			*/
+			isNarrowDevice: function () {
+				var ua = navigator.userAgent;
+				switch (enyo.platform.platformName) {
+					case 'ios':
+						return (/iP(?:hone|od;(?: U;)? CPU) OS (\d+)/).test(ua);
+					case 'android':
+						return (/Mobile/).test(ua) && (enyo.platform.android > 2);
+					case 'androidChrome':
+						return (/Mobile/).test(ua);
+				}
+				return false;
+			}
 		}
-	}
-});
+	});
+
+})(enyo, this);
