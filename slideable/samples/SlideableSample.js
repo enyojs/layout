@@ -26,8 +26,8 @@ enyo.kind({
 	}),
 	populate: function(inSlideables) {
 		var slideable;
-		for (var s in inSlideables) {
-			slideable = inSlideables[s];
+		for (var i = 0; i < inSlideables.length; i++) {
+			slideable = inSlideables[i];
 			slideable.createComponents([
 				{style: slideable.axis === 'h' ? 'height: 38%;' : ''}, // cheating here for the horizontal Slideables to make everything nice and (almost) centered vertically
 				{
