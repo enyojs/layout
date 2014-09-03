@@ -1,3 +1,3 @@
 enyo.depends(
-	"Slideable.js"
+	'Slideable.js'
 );

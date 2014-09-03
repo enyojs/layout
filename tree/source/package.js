@@ -1,4 +1,4 @@
-﻿enyo.depends(
-	"Node.css",
-	"Node.js"
+enyo.depends(
+	'Node.css',
+	'Node.js'
 );

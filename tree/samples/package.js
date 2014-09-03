@@ -1,3 +1,3 @@
 enyo.depends(
-	"TreeSample.js"
+	'TreeSample.js'
 );

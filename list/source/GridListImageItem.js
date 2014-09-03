@@ -1,93 +1,197 @@
-/**
-	_enyo.GridList.ImageItem_ is a convenience component that may be used inside
-	an [enyo.DataGridList](#enyo.DataGridList) to display an image grid with an
-	optional caption and subcaption.
-*/
+(function (enyo, scope) {
+	/**
+	* _enyo.GridListImageItem_ is a convenience component that may be used inside
+	* an {@link enyo.DataGridList} to display an image grid with an
+	* optional caption and subcaption.
+	*
+	* @ui
+	* @class enyo.GridListImageItem
+	* @extends enyo.Control
+	* @public
+	*/
+	enyo.kind(
+		/** @lends enyo.GridListImageItem.prototype */ {
 
-enyo.kind({
-	name: "enyo.GridListImageItem",
-	classes: "enyo-gridlist-imageitem",
-	components: [
-		{name: "image", kind: "enyo.Image", classes:"image"},
-		{name: "caption", classes: "caption"},
-		{name: "subCaption", classes: "sub-caption"}
-	],
-	published: {
-		//* The absolute URL path to the image
-		source: "",
-		//* The primary caption to be displayed with the image
-		caption: "",
-		//* The second caption line to be displayed with the image
-		subCaption: "",
 		/**
-			Set to true to add the _selected_ CSS class to the image tile; set to
-			false to remove the _selected_ class
+		* @private
 		*/
-		selected: false,
+		name: 'enyo.GridListImageItem',
+
 		/**
-			When true, the caption and subcaption are centered; otherwise, they are
-			left-aligned
+		* @private
 		*/
-		centered: true,
+		classes: 'enyo-gridlist-imageitem',
+
 		/**
-			By default, the width of the image fits the width of the item, and the
-			height is sized naturally, based on the image's aspect ratio.  Set this 
-			property to _constrain_ to letterbox the image in the available space,
-			or _cover_ to cover the available space with the image (cropping the
-			larger dimension).  Note that, when _imageSizing_ is explicitly specified,
-			you must indicate whether the caption and subcaption are used (by setting
-			the _useCaption_ and _useSubCaption_ flags) to ensure proper sizing.
+		* @private
 		*/
-		imageSizing: "",
+		components: [
+			{name: 'image', kind: 'enyo.Image', classes:'image'},
+			{name: 'caption', classes: 'caption'},
+			{name: 'subCaption', classes: 'sub-caption'}
+		],
+
 		/**
-			When explicitly specifying an _imageSizing_ option, set to false if the
-			caption space should not be reserved. This property has no effect when
-			_imageSizing_ retains its default value.
+		* @lends enyo.GridListImageItem.prototype
+		* @private
 		*/
-		useCaption: true,
+		published: {
+			/**
+			* The absolute URL path to the image
+			*
+			* @type {String}
+			* @default ''
+			* @public
+			*/
+			source: '',
+
+			/**
+			* The primary caption to be displayed with the image
+			*
+			* @type {String}
+			* @default ''
+			* @public
+			*/
+			caption: '',
+
+			/**
+			* The second caption line to be displayed with the image
+			*
+			* @type {String}
+			* @default ''
+			* @public
+			*/
+			subCaption: '',
+
+			/**
+			* Set to true to add the `selected` CSS class to the image tile; set to
+			* false to remove the `selected` class
+			*
+			* @type {Boolean}
+			* @default false
+			* @public
+			*/
+			selected: false,
+
+			/**
+			* When true, the caption and subcaption are centered; otherwise, they are
+			* left-aligned
+			*
+			* @type {Boolean}
+			* @default true
+			* @public
+			*/
+			centered: true,
+
+			/**
+			* By default, the width of the image fits the width of the item, and the
+			* height is sized naturally, based on the image's aspect ratio.  Set this
+			* property to `'constrain'` to letterbox the image in the available space,
+			* or `'cover'` to cover the available space with the image (cropping the
+			* larger dimension).  Note that, when _imageSizing_ is explicitly specified,
+			* you must indicate whether the caption and subcaption are used (by setting
+			* the {@link enyo.GridListImageItem#useCaption} and
+			* {@link enyo.GridListImageItem#useSubCaption} flags) to ensure proper sizing.
+			*
+			* @type {String}
+			* @default ''
+			* @public
+			*/
+			imageSizing: '',
+
+			/**
+			* When explicitly specifying an {@link enyo.GridListImageItem#imageSizing} option, set
+			* to false if the caption space should not be reserved. This property has no effect
+			* when `imageSizing` retains its default value.
+			*
+			* @type {Boolean}
+			* @default true
+			* @public
+			*/
+			useCaption: true,
+
+			/**
+			* When explicitly specifying an {@link enyo.GridListImageItem#imageSizing} option, set
+			* to false if the subcaption space should not be reserved. This property has no effect
+			* when `imageSizing` retains its default value.
+			*
+			* @type {Boolean}
+			* @default true
+			* @public
+			*/
+			useSubCaption: true
+		},
+
 		/**
-			When explicitly specifying an _imageSizing_ option, set to false if the
-			subcaption space should not be reserved. This property has no effect when
-			_imageSizing_ retains its default value.
+		* @private
 		*/
-		useSubCaption: true
-	},
-	bindings: [
-		{from: ".source", to: ".$.image.src"},
-		{from: ".caption", to: ".$.caption.content"},
-		{from: ".caption", to: ".$.caption.showing", kind: "enyo.EmptyBinding"},
-		{from: ".subCaption", to: ".$.subCaption.content"},
-		{from: ".subCaption", to: ".$.subCaption.showing", kind: "enyo.EmptyBinding"}
-	],
-	create: enyo.inherit(function(sup) {
-		return function() {
-			sup.apply(this, arguments);
-			this.selectedChanged();
-			this.imageSizingChanged();
-			this.centeredChanged();
-		};
-	}),
-	selectedChanged: function() {
-		this.addRemoveClass("selected", this.selected);
-	},
-	disabledChanged: function() {
-		this.addRemoveClass("disabled", this.disabled);
-	},
-	imageSizingChanged: function() {
-		this.$.image.setSizing(this.imageSizing);
-		this.addRemoveClass("sized-image", !!this.imageSizing);
-		if (this.imageSizing) {
-			this.useCaptionChanged();
-			this.useSubCaptionChanged();
+		bindings: [
+			{from: '.source', to: '.$.image.src'},
+			{from: '.caption', to: '.$.caption.content'},
+			{from: '.caption', to: '.$.caption.showing', kind: 'enyo.EmptyBinding'},
+			{from: '.subCaption', to: '.$.subCaption.content'},
+			{from: '.subCaption', to: '.$.subCaption.showing', kind: 'enyo.EmptyBinding'}
+		],
+
+		/**
+		* @method
+		* @private
+		*/
+		create: enyo.inherit(function (sup) {
+			return function () {
+				sup.apply(this, arguments);
+				this.selectedChanged();
+				this.imageSizingChanged();
+				this.centeredChanged();
+			};
+		}),
+
+		/**
+		* @private
+		*/
+		selectedChanged: function () {
+			this.addRemoveClass('selected', this.selected);
+		},
+
+		/**
+		* @private
+		*/
+		disabledChanged: function () {
+			this.addRemoveClass('disabled', this.disabled);
+		},
+
+		/**
+		* @private
+		*/
+		imageSizingChanged: function () {
+			this.$.image.setSizing(this.imageSizing);
+			this.addRemoveClass('sized-image', !!this.imageSizing);
+			if (this.imageSizing) {
+				this.useCaptionChanged();
+				this.useSubCaptionChanged();
+			}
+		},
+
+		/**
+		* @private
+		*/
+		useCaptionChanged: function () {
+			this.addRemoveClass('use-caption', this.useCaption);
+		},
+
+		/**
+		* @private
+		*/
+		useSubCaptionChanged: function () {
+			this.addRemoveClass('use-subcaption', this.useSubCaption);
+		},
+
+		/**
+		* @private
+		*/
+		centeredChanged: function () {
+			this.addRemoveClass('centered', this.centered);
 		}
-	},
-	useCaptionChanged: function() {
-		this.addRemoveClass("use-caption", this.useCaption);
-	},
-	useSubCaptionChanged: function() {
-		this.addRemoveClass("use-subcaption", this.useSubCaption);
-	},
-	centeredChanged: function() {
-		this.addRemoveClass("centered", this.centered);
-	}
-});
+	});
+
+})(enyo, this);

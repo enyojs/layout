@@ -1,14 +1,14 @@
 enyo.kind({
-	name: "enyo.sample.PanZoomViewSample3",
-	classes: "enyo-unselectable",
-	style:"width: 600px; border: 1px solid #ccc; margin: auto;",
+	name: 'enyo.sample.PanZoomViewSample3',
+	classes: 'enyo-unselectable',
+	style:'width: 600px; border: 1px solid #ccc; margin: auto;',
 	components: [
-		{kind:"PanZoomView", style: "width: 100%; height: 400px;", scale: "fit", components: [
-			{kind: "ImagesView", src:"assets/globe.jpg"}
+		{kind:'PanZoomView', style: 'width: 100%; height: 400px;', scale: 'fit', components: [
+			{kind: 'ImagesView', src:'assets/globe.jpg'}
 		]},
-		{kind:"Button", content:"change image", ontap: "changeImage"}
+		{kind:'Button', content:'change image', ontap: 'changeImage'}
 	],
-	planets: ["assets/globe.jpg", "assets/earth.jpg", "assets/jupiter.jpg", "assets/mars.jpg", "assets/mercury.jpg", "assets/neptune.jpg", "assets/saturn.jpg", "assets/uranus.jpg", "assets/venus.jpg"],
+	planets: ['assets/globe.jpg', 'assets/earth.jpg', 'assets/jupiter.jpg', 'assets/mars.jpg', 'assets/mercury.jpg', 'assets/neptune.jpg', 'assets/saturn.jpg', 'assets/uranus.jpg', 'assets/venus.jpg'],
 	changeImage: function(){
 		var imageview = this.$.panZoomView.$.imagesView;
 		imageview.setSrc( this.planets[ (enyo.indexOf(imageview.src, this.planets)+1)%this.planets.length ] );
@@ -16,15 +16,15 @@ enyo.kind({
 });
 
 enyo.kind({
-	name: "ImagesView",
+	name: 'ImagesView',
 	width: 0,
 	height: 0,
 	published: {
-		src : ""
+		src : ''
 	},
 	components:[
-		{kind: "Image", onload: "load", ondown: "down"},
-		{kind: "Image", onload: "load", ondown: "down"}
+		{kind: 'Image', onload: 'load', ondown: 'down'},
+		{kind: 'Image', onload: 'load', ondown: 'down'}
 	],
 	create: enyo.inherit(function(sup) {
 		return function(){
@@ -40,7 +40,7 @@ enyo.kind({
 	load: function(inSender, inEvent){
 		this.width += inEvent.originator.node.clientWidth;
 		this.height = Math.max(this.height, inEvent.originator.node.clientHeight);
-		this.bubble("onSetDimensions", { width: this.width, height: this.height });
+		this.bubble('onSetDimensions', { width: this.width, height: this.height });
 	},
 	down: function(inSender, inEvent) {
 		// Fix to prevent image drag in Firefox

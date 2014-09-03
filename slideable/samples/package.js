@@ -1,4 +1,4 @@
 enyo.depends(
-	"SlideableSample.css",
-	"SlideableSample.js"
+	'SlideableSample.css',
+	'SlideableSample.js'
 );

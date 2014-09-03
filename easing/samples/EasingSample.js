@@ -1,17 +1,17 @@
 enyo.kind({
-	name: "moon.sample.EasingSample",
-	classes: "onyx enyo-unselectable easing-sample",
+	name: 'moon.sample.EasingSample',
+	classes: 'onyx enyo-unselectable easing-sample',
 	components: [
-		{kind: "enyo.Animator", name: "animator", onStep: "animatorStep", onEnd: "animatorComplete", easingFunction: enyo.easing.linear},
-		{name: "container", classes: "easing-sample-ball-container", components: [
-			{name: "box", classes: "easing-sample-ball"}
+		{kind: 'enyo.Animator', name: 'animator', onStep: 'animatorStep', onEnd: 'animatorComplete', easingFunction: enyo.easing.linear},
+		{name: 'container', classes: 'easing-sample-ball-container', components: [
+			{name: 'box', classes: 'easing-sample-ball'}
 		]},
-		{classes: "easing-sample-control-container", style: "display:inline-block;", components: [
-			{content: "Easing Type", classes:"easing-sample-divider"},
-			{kind: "onyx.MenuDecorator", onSelect: "itemSelected", components: [
-				{name: "menuButton", content: "Scrolling Popup menu"},
-				{kind: "onyx.Menu", components: [
-					{name: "menuScroller", kind: "enyo.Scroller", defaultKind: "onyx.MenuItem", vertical: "auto", classes: "enyo-unselectable", maxHeight: "200px", strategyKind: "TouchScrollStrategy"}
+		{classes: 'easing-sample-control-container', style: 'display:inline-block;', components: [
+			{content: 'Easing Type', classes:'easing-sample-divider'},
+			{kind: 'onyx.MenuDecorator', onSelect: 'itemSelected', components: [
+				{name: 'menuButton', content: 'Scrolling Popup menu'},
+				{kind: 'onyx.Menu', components: [
+					{name: 'menuScroller', kind: 'enyo.Scroller', defaultKind: 'onyx.MenuItem', vertical: 'auto', classes: 'enyo-unselectable', maxHeight: '200px', strategyKind: 'TouchScrollStrategy'}
 				]}
 			]}
 		]}
@@ -32,7 +32,7 @@ enyo.kind({
 		});
 	},
 	animatorStep: function(inSender) {
-		this.$.box.applyStyle("top", inSender.value + "px");
+		this.$.box.applyStyle('top', inSender.value + 'px');
 		return true;
 	},
 	animatorComplete: function(inSender) {

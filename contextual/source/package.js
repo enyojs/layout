@@ -1,4 +1,4 @@
 enyo.depends(
-	"ContextualLayout.css",
-	"ContextualLayout.js"
+	'ContextualLayout.css',
+	'ContextualLayout.js'
 );
