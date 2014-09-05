@@ -972,7 +972,7 @@
 		* @private
 		*/
 		updateRowBoundsAtIndex: function (index, rows, page) {
-			var rowDiv = page.hasNode().querySelector('div[data-enyo-index=' + index + ']');
+			var rowDiv = page.hasNode().querySelector('div[data-enyo-index="' + index + '"]');
 			var bounds = enyo.dom.getBounds(rowDiv);
 			rows[index].height = bounds.height;
 			rows[index].width = bounds.width;
