@@ -1,9 +1,9 @@
 (function (enyo, scope) {
     /**
-    * provides the base positioning logic for a contextual
+    * {@link enyo.ContextualLayout} provides the base positioning logic for a contextual
     * layout strategy. This layout strategy is intended for use with a popup in a
-    * decorator/activator scenario, where the popup will be positioned relative to
-    * the activator. e.g.:
+    * decorator/activator scenario, in which the popup is positioned relative to
+    * the activator, e.g.:
     *
     * ```
     * {kind: 'onyx.ContextualPopupDecorator', components: [
@@ -23,26 +23,26 @@
     *
     * The decorator contains the popup and activator, with the activator being the
     * first child component (i.e., the "Show Popup" button). The contextual layout
-    * strategy is applied because, in the definition of _onyx.ContextualPopup_,
-    * its _layoutKind_ property is set to _enyo.ContextualLayout_.
+    * strategy is applied because, in the definition of `onyx.ContextualPopup`,
+    * its `layoutKind` property is set to `enyo.ContextualLayout`.
     *
-    * Note that a popup using ContextualLayout as its _layoutKind_ is expected to
+    * Note that a popup using ContextualLayout as its `layoutKind` is expected to
     * declare several specific properties:
     *
-    * - _vertFlushMargin_: The vertical flush layout margin, i.e., how close the
+    * - `vertFlushMargin` - The vertical flush layout margin, i.e., how close the
     * popup's edge may come to the vertical screen edge (in pixels) before
-    * being laid out "flush" style
-    * - _horizFlushMargin_: The horizontal flush layout margin, i.e., how close
+    * being laid out "flush" style.
+    * - `horizFlushMargin` - The horizontal flush layout margin, i.e., how close
     * the popup's edge may come to the horizontal screen edge (in pixels)
-    * before being laid out "flush" style
-    * - _widePopup_: A popup wider than this value (in pixels) is considered wide
-    * (for layout calculation purposes)
-    * - _longPopup_: A popup longer than this value (in pixels) is considered long
-    * (for layout calculation purposes)
-    * - _horizBuffer_: Horizontal flush popups are not allowed within this buffer
-    * area (in pixels) on the left or right screen edge
-    * - _activatorOffset_: The popup activator's offset on the page (in pixels);
-    * this should be calculated whenever the popup is to be shown
+    * before being laid out "flush" style.
+    * - `widePopup` - A popup wider than this value (in pixels) is considered wide
+    * for layout calculation purposes.
+    * - `longPopup` - A popup longer than this value (in pixels) is considered long
+    * for layout calculation purposes.
+    * - `horizBuffer` - Horizontal flush popups are not allowed within this buffer
+    * area (in pixels) on the left or right screen edge.
+    * - `activatorOffset` - The popup activator's offset on the page (in pixels);
+    * this should be calculated whenever the popup is to be shown.
     *
     * @typedef {Object} enyo.ContextualLayout
     *
@@ -66,10 +66,8 @@
         kind: 'Layout',
 
         /**
-        * Adjusts the popup position, as well as the nub location and direction.
+        * Adjusts the popup's position, as well as the nub location and direction.
         *
-        * @type {Boolean}
-        * @default  true
         * @public
         */
         adjustPosition: function() {
@@ -172,10 +170,9 @@
         //
 
         /**
-        * Move the popup below or above the activator & verify that it fits on screen
+        * Determines whether the popup will fit onscreen if moved below or above the activator.
         *
-        * @type {Boolean}
-        * @default  true
+        * @return {Boolean} `true` if popup will fit onscreen; otherwise, `false`.
         * @public
         */
         initVerticalPositioning: function() {
@@ -212,8 +209,10 @@
         },
 
         /**
-        * @type {Boolean}
-        * @default  true
+        * Moves the popup below or above the activating control.
+        *
+        * @return {Boolean} `false` if popup was not moved because it would not fit onscreen
+        * in the new position; otherwise, `true`.
         * @public
         */
         applyVerticalPositioning: function() {
@@ -255,10 +254,12 @@
         },
 
         /**
-        * @type {Boolean}
-        * @default  false
-        * @param  {String} leftFlushPt - Left side cut off
-        * @param  {String} rightFlushPt - Right side cut off
+        * Positions the popup vertically flush with the activating control.
+        *
+        * @param {Number} leftFlushPt - Left side cutoff.
+        * @param {Number} rightFlushPt - Right side cutoff.
+        * @return {Boolean} `false` if popup will not fit onscreen in new position;
+        * otherwise, `true`.
         * @public
         */
         applyVerticalFlushPositioning: function(leftFlushPt, rightFlushPt) {
@@ -299,10 +300,10 @@
         },
 
         /**
-        * Move the popup left or right of the activator & verify that it fits on screen
+        * Determines whether popup will fit onscreen if moved to the left or right of the
+        * activator.
         *
-        * @type {Boolean}
-        * @default  true
+        * @return {Boolean} `true` if the popup will fit onscreen; otherwise, `false`.
         * @public
         */
         initHorizontalPositioning: function() {
@@ -341,8 +342,10 @@
         },
 
         /**
-        * @type {Boolean}
-        * @default  true
+        * Moves the popup to the left or right of the activating control.
+        *
+        * @return {Boolean} `false` if popup was not moved because it would not fit onscreen
+        * in the new position; otherwise, `true`.
         * @public
         */
         applyHorizontalPositioning: function() {
@@ -383,14 +386,16 @@
 
 
         /**
-        * @type {Boolean}
-        * @default  false
-        * @param  {String} leftFlushPt - Left side cut off
-        * @param  {String} rightFlushPt - Right side cut off
+        * Positions the popup horizontally flush with the activating control.
+        *
+        * @param {Number} leftFlushPt - Left side cutoff.
+        * @param {Number} rightFlushPt - Right side cutoff.
+        * @return {Boolean} `false` if popup will not fit onscreen in new position;
+        * otherwise, `true`.
         * @public
         */
         applyHorizontalFlushPositioning: function(leftFlushPt, rightFlushPt) {
-            //if we can't fit the popup left or right of the activator then forget vertical positioning
+            //if we can't fit the popup left or right of the activator then forget horizontal positioning
             if (!this.initHorizontalPositioning()) {
                 return false;
             }
@@ -434,8 +439,11 @@
         },
 
         /**
-        * @type {Number}
-        * @param  {String} inNode - DOM Node to retrieve bounding rectangle
+        * Retrieves an object with properties describing the bounding rectangle for the
+        * passed-in DOM node.
+        *
+        * @param  {String} inNode - DOM node for which to retrieve the bounding rectangle.
+        * @return {Object} Object with properties describing the DOM node's bounding rectangle.
         * @private
         */
         getBoundingRect:  function(inNode){
@@ -455,7 +463,6 @@
         },
 
         /**
-        * @type {Number}
         * @private
         */
         getViewHeight: function() {
@@ -463,7 +470,6 @@
         },
 
         /**
-        * @type {Number}
         * @private
         */
         getViewWidth: function() {
@@ -471,7 +477,6 @@
         },
 
         /**
-        * @param  {String} inRect - DOM Node to retrieve bounding rectangle
         * @private
         */
         applyPosition: function(inRect) {
@@ -500,7 +505,7 @@
             this.applyPosition({top: 'auto'});
         },
 
-        /**s
+        /**
         * @private
         */
         reflow: function() {
