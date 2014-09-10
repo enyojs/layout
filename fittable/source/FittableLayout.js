@@ -1,37 +1,38 @@
 (function (enyo, scope) {
     /**
-    * _enyo.FittableLayout_ provides the base positioning and boundary logic for
+    * {@link enyo.FittableLayout} provides the base positioning and boundary logic for
     * the fittable layout strategy. The fittable layout strategy is based on
     * laying out items in either a set of rows or a set of columns, with most of
     * the items having natural size, but one item expanding to fill the remaining
-    * space. The item that expands is labeled with the attribute _fit: true_.
+    * space. The item that expands is labeled with the attribute `fit: true`.
     *
-    * The subkinds [enyo.FittableColumnsLayout](#enyo.FittableColumnsLayout) and
-    * [enyo.FittableRowsLayout](#enyo.FittableRowsLayout) (or _their_ subkinds)
-    * are used for layout rather than _enyo.FittableLayout_ because they specify
-    * properties that the framework expects to be available when laying items out.
+    * The subkinds {@link enyo.FittableColumnsLayout} and {@link enyo.FittableRowsLayout}
+    * (or _their_ subkinds) are used for layout rather than `enyo.FittableLayout` because
+    * they specify properties that the framework expects to be available when laying items
+    * out.
     *
-    * When available on the platform, you can opt-in to have _enyo.FittableLayout_ use CSS
+    * When available on the platform, you can opt-in to have `enyo.FittableLayout` use CSS
     * flexible box (flexbox) to implement fitting behavior on the platform for better
-    * performance, and will fall back to JS-based layout on older platforms.
-    * There are three subtle differences between the flexbox and JS implementations
-    * that should be noted:
+    * performance; Enyo will fall back to JavaScript-based layout on older platforms.
+    * Three subtle differences between the flexbox and JavaScript implementations
+    * should be noted:
 
-    * - When using flexbox, vertical margins (`margin-top`, `margin-bottom`) will
-    * not collapse; when using JS layout, vertical margin will collapse according
+    * - When using flexbox, vertical margins (i.e., `margin-top`, `margin-bottom`) will
+    * not collapse; when using JavaScript layout, vertical margins will collapse according
     * to static layout rules.
+    *
     * - When using flexbox, non-fitting children of the Fittable must not be sized
     * using percentages of the container (even if set to `position: relative`);
     * this is explicitly not supported by the flexbox 2013 spec.
+    *
     * - The flexbox-based Fittable implementation will respect multiple children
     * with `fit: true` (the fitting space will be divided equally between them).
-    * This is NOT supported by the JS implementation, and should not be relied
-    * on if deploying to platforms without flexbox support.
+    * This is NOT supported by the JavaScript implementation, and you should not rely
+    * upon this behavior if you are deploying to platforms without flexbox support.
     *
-    * The flexbox implementation was added to Enyo 2.5.0 as a performance optimization;
-    * to opt-in to this optimization set `useFlex: true` on the
-    * Fittable container, which will result in the use of flexbox when possible - noting the
-    * subtle differences between the JS fittables implementation and flexbox.
+    * The flexbox implementation was added to Enyo 2.5.0 as an optional performance
+    * optimization; to use the optimization, set `useFlex: true` on the Fittable
+    * container.  This will cause flexbox to be used when possible.
     *
     * @ui
     * @class  enyo.FittableLayout
@@ -213,7 +214,7 @@
 
         /**
         * Assigns any static layout properties not dependent on changes to the
-        * rendered component or contaner sizes, etc.
+        * rendered component or container sizes, etc.
         * 
         * @public
         */
@@ -254,7 +255,7 @@
 		*/
         statics: {
             /**
-			* Controls if a Flex box optimization can be used.
+			* Indicates whether flexbox optimization can be used.
 			*
 			* @type {Boolean}
 			* @default  false
@@ -265,18 +266,19 @@
     });
 
     /**
-    * _enyo.FittableColumnsLayout_ provides a container in which items are laid
+    * {@link enyo.FittableColumnsLayout} provides a container in which items are laid
     * out in a set of vertical columns, with most of the items having natural
     * size, but one expanding to fill the remaining space. The one that expands is
-    * labeled with the attribute _fit: true_.
+    * labeled with the attribute `fit: true`.
     *
-    * _enyo.FittableColumnsLayout_ is meant to be used as a value for the
-    * _layoutKind_ property of other kinds. _layoutKind_ provides a way to add
+    * `enyo.FittableColumnsLayout` is meant to be used as a value for the
+    * `layoutKind` property of other kinds. `layoutKind` provides a way to add
     * layout behavior in a pluggable fashion while retaining the ability to use a
     * specific base kind.
-
+    *
     * For more information, see the documentation on
-    * [Fittables](building-apps/layout/fittables.html) in the Enyo Developer Guide.
+    * [Fittables]{@link building-apps/layout/fittables.html} in the
+    * Enyo Developer Guide.
     *
     * @ui
     * @class  enyo.FittableColumnsLayout
@@ -293,18 +295,19 @@
 
 
     /**
-    * _enyo.FittableRowsLayout_ provides a container in which items are laid out
+    * {@link enyo.FittableRowsLayout} provides a container in which items are laid out
     * in a set of horizontal rows, with most of the items having natural size, but
     * one expanding to fill the remaining space. The one that expands is labeled
-    * with the attribute _fit: true_.
+    * with the attribute `fit: true`.
     *
-    * _enyo.FittableRowsLayout_ is meant to be used as a value for the
-    * _layoutKind_ property of other kinds. _layoutKind_ provides a way to add
+    * `enyo.FittableRowsLayout` is meant to be used as a value for the
+    * `layoutKind` property of other kinds. `layoutKind` provides a way to add
     * layout behavior in a pluggable fashion while retaining the ability to use a
     * specific base kind.
     *
     * For more information, see the documentation on
-    * [Fittables](building-apps/layout/fittables.html) in the Enyo Developer Guide.
+    * [Fittables]{@link building-apps/layout/fittables.html} in the
+    * Enyo Developer Guide.
     *
     * @ui
     * @class  enyo.FittableRowsLayout
@@ -325,19 +328,20 @@
         kind        : 'FittableLayout',
 
         /**
-        * Layout CSS class used to fit rows
+        * Layout CSS class used to fit rows.
         *
-        * @public
         * @type {String}
         * @default 'enyo-fittable-rows-layout'
+        * @public
         */
         fitLayoutClass : 'enyo-fittable-rows-layout',
 
         /**
-        * Sets the orientation of the layout
+        * The orientation of the layout.
         *
-        * @public
+        * @type {String}
         * @default 'v'
+        * @public
         */
         orient      : 'v',
 

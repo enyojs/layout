@@ -1,14 +1,14 @@
 (function (enyo, scope) {
 
     /**
-    * _enyo.FittableHeaderLayout_ extends
-    * [enyo.FittableColumnsLayout](#enyo.FittableColumnsLayout), providing a
-    * container in which items are laid out in a set of vertical columns, with most
-    * items having natural size, but one expanding to fill the remaining space. The
-    * one that expands is labeled with the attribute _fit: true_.
+    * {@link enyo.FittableHeaderLayout} extends {@link enyo.FittableColumnsLayout},
+    * providing a container in which items are laid out in a set of vertical columns,
+    * with most items having natural size, but one expanding to fill the remaining
+    * space. The one that expands is labeled with the attribute `fit: true`.
     *
     * For more information, see the documentation on
-    * [Fittables](building-apps/layout/fittables.html) in the Enyo Developer Guide.
+    * [Fittables]{@link building-apps/layout/fittables.html} in the
+    * Enyo Developer Guide.
     *
     * @ui
     * @class  enyo.FittableHeaderLayout
