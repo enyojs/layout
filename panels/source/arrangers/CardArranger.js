@@ -1,12 +1,13 @@
 (function (enyo, scope) {
 	/**
-	* _enyo.CardArranger_ is an {@link enyo.Arranger} that displays only
+	* {@link enyo.CardArranger} is an {@link enyo.Arranger} that displays only
 	* one active control. The non-active controls are hidden with
 	* `setShowing(false)`. Transitions between arrangements are handled by fading
 	* from one control to the next.
 	*
 	* For more information, see the documentation on
-	* [Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
+	* [Arrangers]{@link building-apps/layout/arrangers.html} in the
+	* Enyo Developer Guide.
 	*
 	* @class  enyo.CardArranger
 	* @extends enyo.Arranger
@@ -39,8 +40,9 @@
 		},
 
 		/**
-		* Opacifies the activating and deactivating panels. Expects the be passed ordered controls
-		* such that the first control in the array is the active panel.
+		* Applies opacity to the activation and deactivation of panels. Expects the passed-in
+		* array of controls to be ordered such that the first control in the array is the active
+		* panel.
 		*
 		* @see {@link enyo.Arranger#arrange}
 		* @protected
@@ -54,7 +56,7 @@
 
 		/**
 		* Shows the active panel at the start of transition. Also triggers a resize on
-		* the active panel if it wasn't previously showing
+		* the active panel if it wasn't previously showing.
 		*
 		* @see {@link enyo.Arrange#start}
 		* @method
@@ -75,7 +77,7 @@
 		}),
 
 		/**
-		* Hides all non-active panels when the transition completes
+		* Hides all non-active panels when the transition completes.
 		*
 		* @see {@link enyo.Arranger#finish}
 		* @method
@@ -92,7 +94,7 @@
 		}),
 
 		/**
-		* Ensures all panels are showing and visible when the arranger is destroyed
+		* Ensures all panels are showing and visible when the arranger is destroyed.
 		*
 		* @method
 		* @private

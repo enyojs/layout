@@ -1,6 +1,6 @@
 (function (enyo, scope) {
 	/**
-	* _enyo.CarouselArranger_ is an {@link enyo.Arranger} that displays
+	* {@link enyo.CarouselArranger} is an {@link enyo.Arranger} that displays
 	* the active control, along with some number of inactive controls to fill the
 	* available space. The active control is positioned on the left side of the
 	* container, and the rest of the views are laid out to the right.
@@ -15,7 +15,8 @@
 	* from the right and sliding the old controls off to the left.
 	*
 	* For more information, see the documentation on
-	* [Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
+	* [Arrangers]{@link building-apps/layout/arrangers.html} in the
+	* Enyo Developer Guide.
 	*
 	* @class  enyo.CarouselArranger
 	* @extends enyo.Arranger
@@ -39,8 +40,8 @@
 		* {@link enyo.dom#calcPaddingExtents} and control margin by calling
 		* {@link enyo.dom#calcMarginExtents}. If the container is larger than the combined sizes of
 		* the controls, one control may be set to fill the remaining space by setting its `fit`
-		* property to `true`. If multiple controls are set to `fit`, the last control will take
-		* precedence.
+		* property to `true`. If multiple controls have `fit: true` set, the last control to be so
+		* marked will have precedence.
 		*
 		* @protected
 		*/
@@ -84,9 +85,9 @@
 		},
 
 		/**
-		* Non-wrapping carousel arranges the controls from left to right without regard to the
+		* A non-wrapping carousel arranges the controls from left to right without regard to the
 		* ordered array passed via `controls`. `arrangement` will contain the index of the active
-		* panel
+		* panel.
 		*
 		* @private
 		*/
@@ -130,7 +131,7 @@
 
 		/**
 		* Arranges `controls` from left to right such that the active panel is always the
-		* left-most with each subsequent panel to its right.
+		* leftmost, with subsequent panels positioned to its right.
 		*
 		* @private
 		*/
@@ -142,7 +143,7 @@
 		},
 
 		/**
-		* Calculates the change in `left` position of the two arrangements `a0` and `a1`
+		* Calculates the change in `left` position between the two arrangements `a0` and `a1`.
 		* @protected
 		*/
 		calcArrangementDifference: function (i0, a0, i1, a1) {
@@ -151,7 +152,7 @@
 		},
 
 		/**
-		* Resets the size and position of all the panels
+		* Resets the size and position of all panels.
 		*
 		* @method
 		* @private

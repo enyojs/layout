@@ -1,20 +1,21 @@
 (function (enyo, scope) {
 
 	/**
-	* _enyo.Arranger_ is an {@link enyo.Layout} that considers one of the
+	* {@link enyo.Arranger} is an {@link enyo.Layout} that considers one of the
 	* controls it lays out as active. The other controls are placed relative to
 	* the active control as makes sense for the layout.
 	*
-	* Arranger supports dynamic layouts, meaning it's possible to transition
-	* between its layouts	via animation. Typically, arrangers should lay out
+	* `enyo.Arranger` supports dynamic layouts, meaning it's possible to transition
+	* between an arranger's layouts	via animation. Typically, arrangers should lay out
 	* controls using CSS transforms, since these are optimized for animation. To
-	* support this, the controls in an Arranger are absolutely positioned, and
-	* the Arranger kind has an {@link enyo.Arranger#accelerated} property, which marks controls for
-	* CSS compositing. The default setting of `'auto'` ensures that this will
-	* occur if enabled by the platform.
+	* support this, the controls in an arranger are absolutely positioned, and
+	* the Arranger kind has an [accelerated]{@link enyo.Arranger#accelerated} property,
+	* which marks controls for CSS compositing. The default setting of `'auto'` ensures
+	* that this will occur if enabled by the platform.
 	*
 	* For more information, see the documentation on
-	* [Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
+	* [Arrangers]{@link building-apps/layout/arrangers.html} in the
+	* Enyo Developer Guide.
 	*
 	* @class  enyo.Arranger
 	* @extends enyo.Layout
@@ -40,7 +41,7 @@
 
 		/**
 		* Flag indicating whether the Arranger should lay out controls using CSS
-		* compositing. The default setting ('auto') will mark controls for compositing
+		* compositing. The default setting `('auto')` will mark controls for compositing
 		* if the platform supports it.
 		*
 		* @type {String|Boolean}
@@ -50,8 +51,8 @@
 		accelerated: 'auto',
 
 		/**
-		* Property of the drag event, used to calculate the amount that a drag will
-		* move the layout
+		* A property of the drag event, used to calculate the amount that a drag will
+		* move the layout.
 		*
 		* @type {String}
 		* @default 'ddx'
@@ -60,7 +61,7 @@
 		dragProp: 'ddx',
 
 		/**
-		* Property of the drag event, used to calculate the direction of the drag
+		* A property of the drag event, used to calculate the direction of the drag.
 		*
 		* @type {String}
 		* @default 'xDirection'
@@ -69,7 +70,7 @@
 		dragDirectionProp: 'xDirection',
 
 		/**
-		* Property of the drag event, used to calculate whether a drag should occur
+		* A property of the drag event, used to calculate whether a drag should occur.
 		*
 		* @type {String}
 		* @default 'horizontal'
@@ -78,7 +79,7 @@
 		canDragProp: 'horizontal',
 
 		/**
-		* If set to true, transitions between non-adjacent arrangements will go
+		* If set to `true`, transitions between non-adjacent arrangements will go
 		* through the intermediate arrangements. This is useful when direct
 		* transitions between arrangements would be visually jarring.
 		*
@@ -90,10 +91,9 @@
 
 		/**
 		* Called when removing an arranger (e.g., when switching a Panels control to a
-		* different _arrangerKind_). Subclasses should implement this function to
-		* reset whatever properties they've changed on child controls. Note that you
-		* _must_ call the superclass implementation in your subclass's _destroy()_
-		* function.
+		* different `arrangerKind`). Subkinds should implement this function to reset
+		* whatever properties they've changed on child controls. Note that you **must**
+		* call the superkind implementation in your subkind's `destroy()` function.
 		*
 		* @method
 		* @private
@@ -109,11 +109,11 @@
 		}),
 
 		/**
-		* Arranges the given array of `controls` in the layout specified by
-		* `index`. When implementing this method, rather than apply styling
-		* directly to controls, call {@link enyo.Arranger#arrangeControl} and
-		* pass in an arrangement object with styling settings. The styles will
-		* then be applied via {@link enyo.Arranger#flowControl}.
+		* Arranges the given array of `controls` in the layout specified by `index`. When
+		* implementing this method, rather than applying styling directly to controls, call
+		* [arrangeControl()]{@link enyo.Arranger#arrangeControl} and pass in an arrangement
+		* object with styling settings. The styles will then be applied via
+		* [flowControl()]{@link enyo.Arranger#flowControl}.
 		*
 		* @param {enyo.Control[]} controls
 		* @param {Number} index
@@ -126,7 +126,8 @@
 		/**
 		* Sizes the controls in the layout. This method is called only at reflow time.
 		* Note that the sizing operation has been separated from the layout done in
-		* {@link enyo.Arranger#arrange} because it is expensive and not suitable for dynamic layout.
+		* [arrange()]{@link enyo.Arranger#arrange} because it is expensive and not suitable
+		* for dynamic layout.
 		*
 		* @virtual
 		* @protected
@@ -137,8 +138,8 @@
 		/**
 		* Called when a layout transition begins. Implement this method to perform
 		* tasks that should only occur when a transition starts; for example, some
-		* controls could be shown or hidden. In addition, the `transitionPoints`
-		* array may be set on the container to dictate the named arrangments
+		* controls might be shown or hidden. In addition, the `transitionPoints`
+		* array may be set on the container to dictate the named arrangements
 		* between which the transition occurs.
 		*
 		* @protected
@@ -162,7 +163,7 @@
 		/**
 		* Called when a layout transition completes. Implement this method to
 		* perform tasks that should only occur when a transition ends; for
-		* example, some controls could be shown or hidden.
+		* example, some controls might be shown or hidden.
 		*
 		* @virtual
 		* @protected
@@ -176,10 +177,10 @@
 		* arrangement `a1` for layout setting `i1`. This data is used to calculate
 		* the percentage that a drag should move the layout between two active states.
 		*
-		* @param {Number} i0 - Initial layout setting
-		* @param {Object} a0 - Initial arrangement
-		* @param {Number} i1 - Target layout setting
-		* @param {Object} a1 - Target arrangement
+		* @param {Number} i0 - The initial layout setting.
+		* @param {Object} a0 - The initial arrangement.
+		* @param {Number} i1 - The target layout setting.
+		* @param {Object} a1 - The target arrangement.
 		* @virtual
 		* @protected
 		*/
@@ -226,9 +227,9 @@
 		},
 
 		/**
-		* Arranges the panels with the panel at `index` as active
+		* Arranges the panels, with the panel at `index` being designated as active.
 		*
-		* @param  {Number} index - Index of active panel
+		* @param  {Number} index - The index of the active panel.
 		* @private
 		*/
 		_arrange: function (index) {
@@ -241,10 +242,11 @@
 		},
 
 		/**
-		* Arrange `control` according to a particular `arrangement`.
+		* Arranges `control` according to the specified `arrangement`.
 		*
-		* Note that this method doesn't actually modify `control` but rather sets the arragement
-		* on a private member of the control to be retrieved by {@link enyo.Panels}
+		* Note that this method doesn't actually modify `control` but rather sets the
+		* arrangement on a private member of the control to be retrieved by
+		* {@link enyo.Panels}.
 		*
 		* @param  {enyo.Control} control
 		* @param  {Object} arrangement
@@ -256,7 +258,7 @@
 
 		/**
 		* Called before HTML is rendered. Applies CSS to panels to ensure GPU acceleration if
-		* {@link enyo.Arranger#accelerated} is `true`
+		* [accelerated]{@link enyo.Arranger#accelerated} is `true`.
 		*
 		* @private
 		*/
@@ -277,7 +279,7 @@
 		},
 
 		/**
-		* Called during 'rendered' phase to {@link enyo.Arranger#size} the controls
+		* Called during "rendered" phase to [size]{@link enyo.Arranger#size} the controls.
 		*
 		* @private
 		*/
@@ -289,7 +291,7 @@
 
 		/**
 		* If the {@link enyo.Panels} has an arrangement, flows each control according to that
-		* arragement
+		* arrangement.
 		*
 		* @private
 		*/
@@ -302,13 +304,13 @@
 			}
 		},
 		/**
-		* Lays out the `control` according to the settings stored in the
-		* `arragement` object. By default, `flowControl()` will apply settings for
-		* left, top, and opacity. This method should only be implemented to apply
-		* other settings made via {@link enyo.Arranger#arrangeControl}.
+		* Lays out the given `control` according to the settings stored in the
+		* `arrangement` object. By default, `flowControl()` will apply settings for
+		* `left`, `top`, and `opacity`. This method should only be implemented to apply
+		* other settings made via [arrangeControl()]{@link enyo.Arranger#arrangeControl}.
 		*
-		* @param {enyo.Control} control
-		* @param {Object} arrangement
+		* @param {enyo.Control} control - The control to be laid out.
+		* @param {Object} arrangement - An object whose members specify the layout settings.
 		* @protected
 		*/
 		flowControl: function (control, arrangement) {
@@ -323,8 +325,8 @@
 		* Gets an array of controls arranged in state order.
 		* note: optimization, dial around a single array.
 		*
-		* @param  {Number} index     - Index of active panel
-		* @return {enyo.Control[]}   - Ordered array of controls
+		* @param  {Number} index     - The index of the active panel.
+		* @return {enyo.Control[]}   - Ordered array of controls.
 		* @private
 		*/
 		getOrderedControls: function (index) {
@@ -349,11 +351,12 @@
 		*/
 		statics: {
 			/**
-			* Positions a control via transform: translateX/Y if supported and falls back to left/top if not.
+			* Positions a control via transform--`translateX/translateY` if supported,
+			* falling back to `left/top` if not.
 			*
-			* @param  {enyo.Control} control - Control to position
-			* @param  {Object} bounds        - New bounds for `control`
-			* @param  {String} unit          - Unit of `bounds` members
+			* @param  {enyo.Control} control - The control to position.
+			* @param  {Object} bounds        - The new bounds for `control`.
+			* @param  {String} unit          - The unit for `bounds` members.
 			* @public
 			*/
 			positionControl: function (control, bounds, unit) {
@@ -377,10 +380,10 @@
 			},
 
 			/**
-			* Sets the `opacity` of a `control`
+			* Sets the opacity value for a given control.
 			*
-			* @param  {enyo.Control} inControl
-			* @param  {Number} inOpacity
+			* @param  {enyo.Control} inControl - The control whose opacity is to be set.
+			* @param  {Number} inOpacity - The new opacity value for the control.
 			* @public
 			*/
 			opacifyControl: function (inControl, inOpacity) {

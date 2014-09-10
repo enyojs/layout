@@ -1,11 +1,11 @@
 (function (enyo, scope) {
 	/**
-	* _enyo.CollapsingArranger_ is an {@link enyo.Arranger} that
-	* displays the active control, along with some number of inactive	controls to
-	* fill the available space. The active control is positioned on the left side
-	* of the container and the rest of the views are laid out to the right. The
-	* last control, if visible, will expand to fill whatever space is not taken
-	* up by the previous controls.
+	* {@link enyo.CollapsingArranger} is an {@link enyo.Arranger} that displays the
+	* active control, along with some number of inactive	controls to fill the
+	* available space. The active control is positioned on the left side of the
+	* container and the rest of the views are laid out to the right. The last
+	* control, if visible, will expand to fill whatever space is not taken up by
+	* the previous controls.
 	*
 	* For best results with CollapsingArranger, you should set a minimum width
 	* for each control via a CSS style, e.g., `min-width: 25%` or
@@ -15,7 +15,8 @@
 	* from the right and collapsing the old control to the left.
 	*
 	* For more information, see the documentation on
-	* [Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
+	* [Arrangers]{@link building-apps/layout/arrangers.html} in the
+	* Enyo Developer Guide.
 	*
 	* @class enyo.CollapsingArranger
 	* @extends enyo.CarouselArranger
@@ -38,15 +39,15 @@
 		* when it is selected. This allows controls on the underlying panel to the
 		* left of the selected one to be partially revealed.
 		*
-		* *Note:* Imported from container at construction-time.
+		* Note that this is imported from the container at construction time.
 		*
 		* @public
 		*/
 		peekWidth: 0,
 
 		/**
-		* If a panel is added or removed after construction, ensure that any control marked to fill
-		* remaining space (by `_fit` member on control) is reset.
+		* If a panel is added or removed after construction, ensures that any control
+		* marked to fill remaining space (via its `_fit` member) is reset.
 		*
 		* @see {@link enyo.Arranger#size}
 		* @method
@@ -60,7 +61,7 @@
 		}),
 
 		/**
-		* Resets any panel marked to fill remaining space that isn't, in fact, the last panel
+		* Resets any panel marked to fill remaining space that isn't, in fact, the last panel.
 		*
 		* @private
 		*/
@@ -86,9 +87,9 @@
 
 		/**
 		* Arranges controls from left to right starting with first panel. If
-		* {@link enyo.CollapsingArranger#peekWidth} is set, any visible control whose index is
-		* less than `arrangement` (the active panel's index) will be revealed by `peekWidth`
-		* pixels.
+		* [peekWidth]{@link enyo.CollapsingArranger#peekWidth} is set, any visible control
+		* whose index is less than `arrangement` (the active panel's index) will be revealed
+		* by `peekWidth` pixels.
 		*
 		* @see {@link enyo.Arranger#arrange}
 		* @protected
@@ -116,8 +117,8 @@
 		},
 
 		/**
-		* Calculates the change in `left` position of the last panel for the two arrangements
-		* `a0` and `a1`
+		* Calculates the change in `left` position of the last panel between the two
+		* arrangements `a0` and `a1`.
 		*
 		* @see {@link enyo.Arranger#calcArrangementDifference}
 		* @private
@@ -128,10 +129,11 @@
 		},
 
 		/**
-		* If the container's `realtimeFit` is `true`, resizes the last panel to fill the space.
-		* This ensures that will dragging or animating to the last index, there is never blank
-		* space to the right of the last panel. If `realtimeFit` is falsey, the last panel is not
-		* resized until {@link enyo.CollapsingArranger#finish}.
+		* If the container's `realtimeFit` property is `true`, resizes the last panel to
+		* fill the space. This ensures that when dragging or animating to the last index,
+		* there is never blank space to the right of the last panel. If `realtimeFit` is
+		* falsy, the last panel is not resized until the
+		* [finish()]{@link enyo.CollapsingArranger#finish} method is called.
 		*
 		* @see {@link enyo.Arranger#flowControls}
 		* @method
@@ -153,7 +155,7 @@
 		}),
 
 		/**
-		* Ensures the last panel fills the remaining space when a transition completes
+		* Ensures that the last panel fills the remaining space when a transition completes.
 		*
 		* @see {@link enyo.Arranger#finish}
 		* @method
@@ -173,10 +175,12 @@
 		}),
 
 		/**
-		* Resizes `control` to match the width of the container minus the given `offset`
+		* Resizes the given `control` to match the width of the container minus the
+		* given `offset`.
 		*
-		* @param {enyo.Control} control - Control that should `_fit` in the remaining space
-		* @param {Number} offset        - Left offset of the control with respect to the container
+		* @param {enyo.Control} control - The control that should fit in the remaining space.
+		* @param {Number} offset        - The left offset of the control with respect to the
+		* container.
 		* @private
 		*/
 		fitControl: function (control, offset) {

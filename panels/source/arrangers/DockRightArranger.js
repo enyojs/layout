@@ -1,9 +1,9 @@
 (function (enyo, scope) {
 	/**
-	* _enyo.DockRightArranger_ is an {@link enyo.Arranger} that
-	* displays the active control, along with some number of inactive controls to
-	* fill the available space. The active control is positioned on the right
-	* side of the container and the rest of the views are laid out to the right.
+	* {@link enyo.DockRightArranger} is an {@link enyo.Arranger} that displays the
+	* active control, along with some number of inactive controls to fill the
+	* available space. The active control is positioned on the right side of the
+	* container and the rest of the views are laid out to the right.
 	*
 	* For best results with DockRightArranger, you should set a minimum width
 	* for each control via a CSS style, e.g., `min-width: 25%` or
@@ -11,11 +11,11 @@
 	*
 	* Transitions between arrangements are handled by sliding the new control	in
 	* from the right. If the width of the old control(s) can fit within the
-	* container, they will slide to the left. If not, the old control(s) will
-	* collapse to the left.
+	* container, they will slide to the left. If not, they will collapse to the left.
 	*
 	* For more information, see the documentation on
-	* [Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
+	* [Arrangers]{@link building-apps/layout/arrangers.html} in the
+	* Enyo Developer Guide.
 	*
 	* @class  enyo.DockRightArranger
 	* @extends enyo.Arranger
@@ -35,8 +35,8 @@
 		kind: 'Arranger',
 
 		/**
-		* If `true`, the base panel (index 0) will fill the width of the container,
-		* while newer controls will slide in and collapse on top of it.
+		* If `true`, the base panel (i.e., the panel at index `0`) will fill the width
+		* of the container, while newer controls will slide in and collapse on top of it.
 		*
 		* @type {Boolean}
 		* @default  false
@@ -45,9 +45,9 @@
 		basePanel: false,
 
 		/**
-		* Panels will overlap by this number of pixels
+		* Panels will overlap by this number of pixels.
 		*
-		* *Note:* Imported from container at construction-time
+		* Note that this is imported from the container at construction time.
 		*
 		* @type {Number}
 		* @default  0
@@ -56,9 +56,9 @@
 		overlap: 0,
 
 		/**
-		* Column width in pixels
+		* The column width in pixels.
 		*
-		* *Note:* Imported from container at construction-time
+		* Note that this is imported from the container at construction time.
 		*
 		* @type {Number}
 		* @default  0
@@ -156,7 +156,7 @@
 		},
 
 		/**
-		* Sets the `left` position each panel according to the `arrangement`
+		* Sets the `left` position for each panel according to the `arrangement`.
 		*
 		* @see {@link enyo.Arranger#arrange}
 		* @protected
@@ -173,7 +173,7 @@
 		},
 
 		/**
-		* Calculates the difference in width between the panels at `i0` and `i1`
+		* Calculates the difference in width between the panels at `i0` and `i1`.
 		*
 		* @see {@link enyo.Arranger#calcArrangementDifference}
 		* @protected
@@ -185,7 +185,7 @@
 		},
 
 		/**
-		* Resets the position of the panels
+		* Resets the position of the panels.
 		*
 		* @method
 		* @private

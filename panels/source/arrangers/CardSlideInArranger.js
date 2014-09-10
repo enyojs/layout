@@ -1,8 +1,8 @@
 (function (enyo, scope) {
 	/**
-	* _enyo.CardSlideInArranger_ is an {@link enyo.Arranger} that
+	* {@link enyo.CardSlideInArranger} is an {@link enyo.Arranger} that
 	* displays only one active control. The non-active controls are hidden with
-	* _setShowing(false)_. Transitions between arrangements are handled by
+	* `setShowing(false)`. Transitions between arrangements are handled by
 	* sliding the new control	over the current one.
 	*
 	* Note that CardSlideInArranger always slides controls in from the right. If
@@ -10,7 +10,8 @@
 	* {@link enyo.LeftRightArranger}.
 	*
 	* For more information, see the documentation on
-	* [Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
+	* [Arrangers]{@link building-apps/layout/arrangers.html} in the
+	* Enyo Developer Guide.
 	*
 	* @class enyo.CardSlideInArranger
 	* @extends enyo.CardArranger
@@ -31,7 +32,7 @@
 
 		/**
 		* Shows the active panel at the start of transition. Also triggers a resize on
-		* the active panel if it wasn't previously showing
+		* the active panel if it wasn't previously showing.
 		*
 		* @todo Seems like poor variable reuse of `i`
 		* @todo Should inherit from super and omit the `for` block
@@ -57,7 +58,7 @@
 
 		/**
 		* @todo  This method is an exact copy of CardArranger. Since it's calling the super,
-		* 	the work is being done twice. Remove this method
+		* 	the work is being done twice, so this method should be removed.
 		* @see {@link enyo.Arranger#finish}
 		* @method
 		* @protected
@@ -73,7 +74,7 @@
 		}),
 
 		/**
-		* Parses the transition point value to position the panels to slide in from the right
+		* Parses the transition point value to position the panels to slide in from the right.
 		*
 		* @see {@link enyo.Arranger#arrange}
 		* @protected
@@ -101,7 +102,7 @@
 		},
 
 		/**
-		* Resets the `left` position of all panels
+		* Resets the `left` position of all panels.
 		*
 		* @method
 		* @private

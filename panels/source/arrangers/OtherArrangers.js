@@ -1,6 +1,6 @@
 (function (enyo, scope) {
 	/**
-	* _enyo.LeftRightArranger_ is an {@link enyo.Arranger} that displays
+	* {@link enyo.LeftRightArranger} is an {@link enyo.Arranger} that displays
 	* the active control and some of the previous and next controls. The active
 	* control is centered horizontally in the container, and the previous and next
 	* controls are laid out to the left and right, respectively.
@@ -9,7 +9,8 @@
 	* from the right and sliding the active control out to the left.
 	*
 	* For more information, see the documentation on
-	* [Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
+	* [Arrangers]{@link building-apps/layout/arrangers.html} in the
+	* Enyo Developer Guide.
 	*
 	* @class  enyo.LeftRightArranger
 	* @extends enyo.Arranger
@@ -32,7 +33,7 @@
 		 * The margin width (i.e., how much of the previous and next controls
 		 * are visible) in pixels.
 		 *
-		 * *Note:* Imported from container at construction-time
+		 * Note that this is imported from the container at construction time.
 		 *
 		 * @type {Number}
 		 * @default 40
@@ -41,28 +42,31 @@
 		margin: 40,
 
 		/**
-		 * Axis dimension on which the panels will animate
+		 * The axis along which the panels will animate.
 		 *
 		 * @type {String}
 		 * @readOnly
+		 * @default 'width'
 		 * @protected
 		 */
 		axisSize: 'width',
 
 		/**
-		 * Axis dimension on which the panels will *not* animate
+		 * The axis along which the panels will **not** animate.
 		 *
 		 * @type {String}
 		 * @readOnly
+		 * @default 'height'
 		 * @protected
 		 */
 		offAxisSize: 'height',
 
 		/**
-		 * Axis position on which the panel will animate
+		 * The axis position at which the panel will animate.
 		 *
 		 * @type {String}
 		 * @readOnly
+		 * @default 'left'
 		 * @protected
 		 */
 		axisPosition: 'left',
@@ -79,9 +83,9 @@
 		}),
 
 		/**
-		* Sizes the panels such that they fill {@link enyo.LeftRightArranger#offAxisSize} and yield
-		* {@link enyo.LeftRightArranger#margin} pixels on each side of
-		* {@link enyo.LeftRightArranger#axisSize}
+		* Sizes the panels such that they fill [offAxisSize]{@link enyo.LeftRightArranger#offAxisSize}
+		* and yield [margin]{@link enyo.LeftRightArranger#margin} pixels on each side of
+		* [axisSize]{@link enyo.LeftRightArranger#axisSize}.
 		*
 		* @see {@link enyo.Arranger#size}
 		* @protected
@@ -99,9 +103,9 @@
 		},
 
 		/**
-		* To prevent a panel that is switching sides (to maintain the balance) from overlapping the
-		* active panel during the animation, `size` updates the `z-index` of the switching panel
-		* to ensure it stays behind the other panels.
+		* To prevent a panel that is switching sides (to maintain the balance) from overlapping
+		* the active panel during the animation, updates the `z-index` of the switching panel
+		* to ensure that it stays behind the other panels.
 		*
 		* @todo Could use some optimization in its `for` loop (e.g. .length lookup and calc)
 		* @see {@link enyo.Arranger#start}
@@ -137,7 +141,7 @@
 
 		/**
 		* Balances the panels laid out to each side of the active panel
-		* such that for a set of `n` panels, `floor(n/2)` are before and `ceil(n/2)` are after
+		* such that, for a set of `n` panels, `floor(n/2)` are before and `ceil(n/2)` are after
 		* the active panel.
 		*
 		* @protected
@@ -163,9 +167,13 @@
 		},
 
 		/**
-		* Calculates the difference along the {@link enyo.LeftRightArranger#axisPosition}
-		* (e.g. left)
+		* Calculates the difference along the
+		* [axisPosition]{@link enyo.LeftRightArranger#axisPosition} (e.g., `'left'`).
 		*
+		* @param {Number} inI0 - The initial layout setting.
+		* @param {Object} inA0 - The initial arrangement.
+		* @param {Number} inI1 - The target layout setting.
+		* @param {Object} inA1 - The target arrangement.
 		* @protected
 		*/
 		calcArrangementDifference: function (inI0, inA0, inI1, inA1) {
@@ -179,7 +187,7 @@
 		},
 
 		/**
-		* Resets positioning and opacity of panels
+		* Resets the positioning and opacity of panels.
 		*
 		* @method
 		* @private
@@ -202,7 +210,7 @@
 
 	//* @public
 	/**
-	* _enyo.TopBottomArranger_ is an {@link enyo.Arranger} that displays
+	* {@link enyo.TopBottomArranger} is an {@link enyo.Arranger} that displays
 	* the active control and some of the previous and next controls. The active
 	* control is centered vertically in the container, and the previous and next
 	* controls are laid out above and below, respectively.
@@ -211,9 +219,10 @@
 	* from the bottom and sliding the active control out the top.
 	*
 	* For more information, see the documentation on
-	* [Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
+	* [Arrangers]{@link building-apps/layout/arrangers.html} in the
+	* Enyo Developer Guide.
 	*
-	* @class enyo.TopButtonArranger
+	* @class enyo.TopBottomArranger
 	* @extends enyo.LeftRightArranger
 	* @public
 	*/
@@ -268,15 +277,16 @@
 	});
 
 	/**
-	* _enyo.SpiralArranger_ is an {@link enyo.Arranger} that arranges
+	* {@link enyo.SpiralArranger} is an {@link enyo.Arranger} that arranges
 	* controls in a spiral. The active control is positioned on top and the other
 	* controls are laid out in a spiral pattern below.
 	*
 	* Transitions between arrangements are handled by rotating the new control up
 	* from below and rotating the active control down to the end of the spiral.
-`	*
+	*
 	* For more information, see the documentation on
-	* [Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
+	* [Arrangers]{@link building-apps/layout/arrangers.html} in the
+	* Enyo Developer Guide.
 	*
 	* @class  enyo.SpiralArranger
 	* @extends enyo.Arranger
@@ -309,7 +319,7 @@
 		inc: 20,
 
 		/**
-		* Each panel is sized to one third of the container
+		* Sizes each panel to one third of the container.
 		*
 		* @see  {@link enyo.Arranger#size}
 		* @protected
@@ -325,7 +335,7 @@
 		},
 
 		/**
-		* Panels are arranged in a spiral with the active panel at center
+		* Arranges panels in a spiral with the active panel at the center.
 		*
 		* @see {@link enyo.Arranger#arrange}
 		* @protected
@@ -340,7 +350,7 @@
 		},
 
 		/**
-		* Applies descending `z-indez` for each panel starting with the active panel
+		* Applies descending `z-index` values to each panel, starting with the active panel.
 		*
 		* @see {@link enyo.Arranger#start}
 		* @method
@@ -365,7 +375,7 @@
 		},
 
 		/**
-		* Resets position and z-index of panels
+		* Resets position and z-index of all panels.
 		*
 		* @method
 		* @private
@@ -387,7 +397,7 @@
 	});
 
 	/**
-	* _enyo.GridArranger_ is an {@link enyo.Arranger} that arranges
+	* {@link enyo.GridArranger} is an {@link enyo.Arranger} that arranges
 	* controls in a grid. The active control is positioned at the top-left of the
 	* grid and the other controls are laid out from left to right and then from
 	* top to bottom.
@@ -397,7 +407,8 @@
 	* moving it up to the previous row, to fill the space.
 	*
 	* For more information, see the documentation on
-	* [Arrangers](building-apps/layout/arrangers.html) in the Enyo Developer Guide.
+	* [Arrangers]{@link building-apps/layout/arrangers.html} in the
+	* Enyo Developer Guide.
 	*/
 	enyo.kind(
 		/** @lends enyo.GridArranger.prototype */ {
@@ -419,7 +430,7 @@
 		incrementalPoints: true,
 
 		/**
-		 * Column width in pixels
+		 * The column width in pixels.
 		 *
 		 * @type {Number}
 		 * @default 100
@@ -428,7 +439,7 @@
 		colWidth: 100,
 
 		/**
-		 * Column height in pixels
+		 * The column height in pixels.
 		 *
 		 * @type {Number}
 		 * @default 100
@@ -437,8 +448,8 @@
 		colHeight: 100,
 
 		/**
-		* Sizes each panel to be {@link enyo.GridArranger#colWidth} pixels wide and
-		* {@link enyo.GridArranger#colHeight} pixels high.
+		* Sizes each panel to be [colWidth]{@link enyo.GridArranger#colWidth} pixels wide
+		* and [colHeight]{@link enyo.GridArranger#colHeight} pixels high.
 		*
 		* @see {@link enyo.Arranger#size}
 		* @protected
@@ -452,9 +463,9 @@
 		},
 
 		/**
-		* Calculates the number of columns based on the containers width and
-		* {@link enyo.GridArranger#colWidth} and positions each by row starting at the top left of
-		* the container.
+		* Calculates the number of columns based on the container's width and
+		* [colWidth]{@link enyo.GridArranger#colWidth}. Each row is positioned
+		* starting at the top-left of the container.
 		*
 		* @see {@link enyo.Arranger#arrange}
 		* @protected
@@ -471,7 +482,7 @@
 		},
 
 		/**
-		* If the control is moving between rows, adjust its opacity during the transition
+		* If the control is moving between rows, adjusts its opacity during the transition.
 		*
 		* @see {@link enyo.Arranger#flowControl}
 		* @method
@@ -493,7 +504,7 @@
 		},
 
 		/**
-		* Resets position of panels
+		* Resets position of panels.
 		*
 		* @method
 		* @private
