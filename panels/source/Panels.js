@@ -1,42 +1,43 @@
 (function (enyo, scope) {
 
 	/**
-	* Fires at the start of a panel transition, when {@link enyo.Panels#setIndex} is called,
-	* and also during dragging.
+	* Fires at the start of a panel transition, when [setIndex()]{@link enyo.Panels#setIndex}
+	* is called, and also during dragging.
 	*
 	* @event enyo.Panels#event:onTransitionStart
 	* @type {Object}
-	* @property {Number} fromIndex - Index of the old panel
-	* @property {Number} toIndex   - Index of the new panel
+	* @property {Number} fromIndex - The index of the old panel.
+	* @property {Number} toIndex   - The index of the new panel.
 	* @public
 	*/
 
 	/**
-	* Fires at the end of a panel transition, when {@link enyo.Panels#setIndex} is called,
-	* and also during dragging.
+	* Fires at the end of a panel transition, when [setIndex()]{@link enyo.Panels#setIndex}
+	* is called, and also during dragging.
 	*
 	* @event enyo.Panels#event:onTransitionFinish
 	* @type {Object}
-	* @property {Number} fromIndex - Index of the old panel
-	* @property {Number} toIndex   - Index of the new panel
+	* @property {Number} fromIndex - The index of the old panel.
+	* @property {Number} toIndex   - The index of the new panel.
 	* @public
 	*/
 
 	/**
-	* The _enyo.Panels_ kind is designed to satisfy a variety of common use cases
-	* for application layout. Using _enyo.Panels_, controls may be arranged as
-	* (among other things) a carousel, a set of collapsing panels, a card stack
-	* that fades between panels, or a grid.
+	* The {@link enyo.Panels} kind is designed to satisfy a variety of common use cases
+	* for application layout. Using `enyo.Panels`, controls may be arranged as (among
+	* other things) a carousel, a set of collapsing panels, a card stack that fades
+	* between panels, or a grid.
 	*
-	* Any Enyo control may be placed inside an _enyo.Panels_, but by convention we
-	* refer to each of these controls as a 'panel'. From the set of panels in an
-	* _enyo.Panels_, one is considered to be active. The active panel is set by
-	* index using the {@link enyo.Panels#setIndex} method. The actual layout of the panels
-	* typically changes each time the active panel is set, such that the new
+	* Any Enyo control may be placed inside an `enyo.Panels`, but by convention we
+	* refer to each of these controls as a "panel". From the set of panels in an
+	* `enyo.Panels`, one is considered to be active. The active panel is set by index
+	* using the [setIndex()]{@link enyo.Panels#setIndex} method. The actual layout of
+	* the panels typically changes each time the active panel is set, such that the new
 	* active panel has the most prominent position.
 	*
 	* For more information, see the documentation on
-	* [Panels](building-apps/layout/panels.html) in the Enyo Developer Guide.
+	* [Panels]{@link building-apps/layout/panels.html} in the
+	* Enyo Developer Guide.
 	*
 	* @ui
 	* @class enyo.Panels
@@ -62,11 +63,11 @@
 		*/
 		published: {
 			/**
-			* The index of the active panel. The layout of panels is controlled by
-			* the {@link enyo.Panels#layoutKind}, but as a rule, the active panel is displayed
-			* in the most prominent position. For example, in the (default)
-			* {@link enyo.CardArranger} layout, the active panel is shown and the other panels
-			* are hidden.
+			* The index of the active panel. The layout of panels is controlled by the
+			* [layoutKind]{@link enyo.Panels#layoutKind}, but as a rule, the active panel
+			* is displayed in the most prominent position. For example, in the (default)
+			* {@link enyo.CardArranger} layout, the active panel is shown and the other
+			* panels are hidden.
 			*
 			* @type {Number}
 			* @default  0
@@ -75,7 +76,7 @@
 			index: 0,
 
 			/**
-			* Controls whether the user can drag between panels
+			* Indicates whether the user may drag between panels.
 			*
 			* @type {Boolean}
 			* @default  true
@@ -84,8 +85,8 @@
 			draggable: true,
 
 			/**
-			* Controls whether the panels animate when transitioning; e.g., when
-			* {@link enyo.Panels#setIndex} is called
+			* Indicates whether the panels animate when transitioning, e.g., when
+			* [setIndex()]{@link enyo.Panels#setIndex} is called.
 			*
 			* @type {Boolean}
 			* @default  true
@@ -94,7 +95,7 @@
 			animate: true,
 
 			/**
-			* Controls whether panels 'wrap around' when moving past the end.
+			* Indicates whether panels "wrap around" when moving past the end.
 			* The actual effect depends upon the arranger in use.
 			*
 			* @type {Boolean}
@@ -104,7 +105,7 @@
 			wrap: false,
 
 			/**
-			* Sets the arranger kind to be used for dynamic layout
+			* The arranger kind to be used for dynamic layout.
 			*
 			* @type {String}
 			* @default  'CardArranger'
@@ -114,7 +115,7 @@
 
 			/**
 			* By default, each panel will be sized to fit the Panels' width when the
-			* screen size is sufficiently narrow (less than 800px). Set to false to
+			* screen size is sufficiently narrow (less than 800px). Set to `false` to
 			* avoid this behavior.
 			*
 			* @type {Boolean}
@@ -150,7 +151,7 @@
 		],
 
 		/**
-		* Tracks the percent complete transition between 2 panels
+		* Tracks completion percentage for a transition between two panels.
 		*
 		* @private
 		*/
@@ -261,7 +262,7 @@
 
 		/**
 		* Designed to be overridden in kinds derived from Panels that have
-		* non-panel client controls
+		* non-panel client controls.
 		*
 		* @return {Boolean} [description]
 		* @protected
@@ -295,10 +296,10 @@
 		}),
 
 		/**
-		* Returns an array of contained panels. Subclasses may override this if they
+		* Returns the array of contained panels. Subclasses may override this if they
 		* don't want the arranger to lay out all of their children.
 		*
-		* @return {enyo.Control[]} - Contained panels
+		* @return {enyo.Control[]} - The array of contained panels.
 		*/
 		getPanels: function () {
 			var p = this.controlParent || this;
@@ -308,7 +309,7 @@
 		/**
 		* Returns a reference to the active panel--i.e., the panel at the specified index.
 		*
-		* @return {enyo.Control} - Active panel
+		* @return {enyo.Control} - The active panel.
 		*/
 		getActive: function () {
 			var p$ = this.getPanels();
@@ -329,7 +330,8 @@
 		* this.getAnimator().setDuration(1000);
 		* ```
 		*
-		* @return {enyo.Animator}
+		* @return {enyo.Animator} - The {@link enyo.Animator} instance used to animate
+		* panel transitions.
 		* @public
 		*/
 		getAnimator: function () {
@@ -338,10 +340,10 @@
 
 		/**
 		* Sets the active panel to the panel specified by the given index.
-		* Note that if the {@link enyo.Panels#animate} property is set to true, the active panel
-		* will animate into view.
+		* Note that if the [animate]{@link enyo.Panels#animate} property is set to
+		* `true`, the active panel will animate into view.
 		*
-		* @param {Number} index - Index of panel to activate
+		* @param {Number} index - The index of the panel to activate.
 		* @public
 		*/
 		setIndex: function (index) {
@@ -355,10 +357,10 @@
 		},
 		/**
 		* Sets the active panel to the panel specified by the given index.
-		* Regardless of the value of the {@link enyo.Panels#animate} property, the transition
-		* to the next panel will not animate and will be immediate.
+		* The transition to the next panel will be immediate and will not be animated,
+		* regardless of the value of the [animate]{@link enyo.Panels#animate} property. 
 		*
-		* @param {Number} index - Index of panel to activate
+		* @param {Number} index - The index of the panel to activate.
 		* @public
 		*/
 		setIndexDirect: function (index) {
@@ -369,7 +371,8 @@
 		/**
 		* Selects the named component owned by the Panels and returns its index.
 		*
-		* @param  {String} name - Name of panel to activate
+		* @param  {String} name - The name of the panel to activate.
+		* @return {Number} The index of the newly activated panel.
 		* @public
 		*/
 		selectPanelByName: function (name) {
@@ -416,10 +419,11 @@
 		},
 
 		/**
-		* Ensures that `value` references a valid panel accounting for {@link enyo.Panels#wrap}
+		* Ensures that `value` references a valid panel, accounting for
+		* [wrapping]{@link enyo.Panels#wrap}.
 		*
-		* @param  {Number} value - Index of a panel
-		* @return {Number}       - Valid index of a panel
+		* @param  {Number} value - The index of a panel.
+		* @return {Number}       - The valid index of a panel.
 		* @private
 		*/
 		clamp: function (value) {
@@ -598,7 +602,7 @@
 		},
 
 		/**
-		* Resets the panels without sending any events
+		* Resets the panels without sending any events.
 		*
 		* @private
 		*/
@@ -613,9 +617,10 @@
 		},
 
 		/**
-		* Starts the transition between two panels
+		* Starts the transition between two panels.
 		*
-		* @param  {Boolean} sendEvents - Fire {@link enyo.Panels#event:onTransitionStart}
+		* @param  {Boolean} sendEvents - Whether to fire an
+		* [onTransitionStart]{@link enyo.Panels#event:onTransitionStart} event.
 		* @private
 		*/
 		startTransition: function (sendEvents) {
@@ -631,9 +636,10 @@
 		},
 
 		/**
-		* Complete the transition between two panels
+		* Completes the transition between two panels.
 		*
-		* @param  {Boolean} sendEvents - Fire {@link enyo.Panels#event:onTransitionFinish}
+		* @param  {Boolean} sendEvents - Whether to fire an
+		* [onTransitionFinish]{@link enyo.Panels#event:onTransitionFinish} event.
 		* @private
 		*/
 		finishTransition: function (sendEvents) {
@@ -677,7 +683,7 @@
 		},
 
 		/**
-		* Interpolate between arrangements as needed.
+		* Interpolates between arrangements as needed.
 		*
 		* @private
 		*/
@@ -701,10 +707,10 @@
 
 
 		/**
-		* Fetches the arrangement for `index`, initializing it if necessary
+		* Fetches the arrangement at a specified index, initializing it if necessary.
 		*
-		* @param  {Number} index - Index from `transitionPoints`
-		* @return {Object[]}     - Array of arrangement objects
+		* @param  {Number} index - The index of the desired arrangement from `transitionPoints`.
+		* @return {Object} The desired arrangement object.
 		* @private
 		*/
 		fetchArrangement: function (index) {
@@ -716,10 +722,10 @@
 		},
 
 		/**
-		* Iterates over `panels` and retrieves a copy of each panel's `_arranger`
+		* Iterates over `panels` and retrieves a copy of each panel's `_arranger`.
 		*
-		* @param  {enyo.Control[]} panels - Array of panels
-		* @return {Object[]}              - Array of arrangement objects
+		* @param  {enyo.Control[]} panels - The array of panels.
+		* @return {Object[]}              - The array of arrangement objects.
 		*/
 		readArrangement: function (panels) {
 			var r = [];
@@ -735,11 +741,10 @@
 		*/
 		statics: {
 			/**
-			* Returns true depending on detection of iOS and Android phone form factors,
-			* or when window width is 800px or less. Approximates work done using media
-			* queries in Panels.css.
+			* Returns `true` for iOS and Android phone form factors, or when window width
+			* is 800px or less. Approximates work done using media queries in `Panels.css`.
 			*
-			* @return {Boolean} `true` for narrow devices or viewports
+			* @return {Boolean} `true` for narrow devices or viewports; otherwise, `false`.
 			* @public
 			*/
 			isScreenNarrow: function () {
@@ -752,9 +757,9 @@
 
 			/**
 			* Returns the class name to apply for narrow fitting. See media queries
-			* in Panels.css
+			* in `Panels.css`.
 			*
-			* @return {String} CSS class name
+			* @return {String} The CSS class name to apply.
 			*/
 			getNarrowClass: function () {
 				if(enyo.Panels.isNarrowDevice()) {
@@ -765,13 +770,13 @@
 			},
 
 			/**
-			* Lerps between arrangements
+			* Lerps between arrangements.
 			*
-			* @param  {Object[]} a0     - Array of current arrangement objects
-			* @param  {Object[]} a1     - Array of target arrangement object
-			* @param  {Number} fraction - Fraction (between 0 and 1) with which to lerp
+			* @param  {Object[]} a0     - Array of current arrangement objects.
+			* @param  {Object[]} a1     - Array of target arrangement object.
+			* @param  {Number} fraction - The fraction (between 0 and 1) with which to lerp.
 			* @return {Object[]}        - Array of arrangements that is `fraction` between
-			* 	`a0` and `a1`
+			* 	`a0` and `a1`.
 			* @private
 			*/
 			lerp: function (a0, a1, fraction) {
@@ -783,13 +788,13 @@
 			},
 
 			/**
-			* Lerps between the values of arrangement objects
+			* Lerps between the values of arrangement objects.
 			*
-			* @param  {Object} a0       - Source arragement
-			* @param  {Object} a1       - Destination arragement
-			* @param  {Number} fraction - Fraction (between 0 and 1) witch which to lerp
+			* @param  {Object} a0       - The source arragement.
+			* @param  {Object} a1       - The destination arragement.
+			* @param  {Number} fraction - The fraction (between 0 and 1) with which to lerp.
 			*
-			* @return {Object}          - Lerped arrangement
+			* @return {Object}          - The lerped arrangement.
 			* @private
 			*/
 			lerpObject: function (a0, a1, fraction) {
@@ -808,9 +813,10 @@
 			},
 
 			/**
-			* Tests User Agent strings to identify narrow devices
+			* Tests User Agent strings to identify narrow devices.
 			*
-			* @return {Boolean} `true` if the current device is a narrow device
+			* @return {Boolean} `true` if the current device is a narrow device;
+			* otherwise, `false`.
 			*/
 			isNarrowDevice: function () {
 				var ua = navigator.userAgent;
