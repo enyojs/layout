@@ -1,20 +1,21 @@
 (function (enyo, scope) {
 
 	/**
-	* _enyo.ImageView_ is a control that displays an image at a given scaling
+	* {@link enyo.ImageView} is a control that displays an image at a given scaling
 	* factor, with enhanced support for double-tap/double-click to zoom, panning,
 	* mousewheel zooming and pinch-zoom (on touchscreen devices that support it).
 	*
+	* ```
 	* {kind: 'ImageView', src: 'assets/globe.jpg', scale: 'auto', style: 'width:500px; height:400px;'}
+	* ```
 	*
 	* The `onload` and `onerror` events bubble up from the underlying image
-	* element and an `[onZoom]{@link enyo.PanZoomView#event:onZoom}` event is triggered when the
-	* user changes the zoom level of the image.
+	* element and an [onZoom]{@link enyo.ImageView#event:onZoom} event is
+	* triggered when the user changes the zoom level of the image.
 	*
-	* If you wish, you may add {@link enyo.ScrollThumb}
-	* indicators, disable zoom animation, allow panning overscroll (with a
-	* bounce-back effect), and control the propagation of drag events, all via
-	* boolean properties.
+	* If you wish, you may add {@link enyo.ScrollThumb} indicators, disable zoom
+	* animation, allow panning overscroll (with a bounce-back effect), and control
+	* the propagation of drag events, all using this kind's Boolean properties.
 	*
 	* Note that it's best to specify a size for the ImageView in order to avoid
 	* complications.
@@ -108,7 +109,8 @@
 		},
 
 		/**
-		* Handles `onload` events bubbled up from children to reset the scale when the image changes
+		* Handles `onload` events bubbled up from children to reset the scale when
+		* the image changes.
 		*
 		* @private
 		*/

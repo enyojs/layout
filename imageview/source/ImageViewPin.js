@@ -1,10 +1,12 @@
 (function (enyo, scope) {
 
 	/**
-	* _enyo.ImageViewPin_ is a control that can be used to display non-zooming
-	* content inside of a zoomable {@link enyo.ImageView} control. The _anchor_ and
-	* _position_ properties can be used to position both the ImageViewPin and	its
-	* content in a specific location inside of the ImageView.
+	* {@link enyo.ImageViewPin} is a control that can be used to display
+	* non-zooming content inside of a zoomable {@link enyo.ImageView} control. The
+	* [anchor]{@link enyo.ImageViewPin#anchor} and
+	* [position]{@link enyo.ImageViewPin#position} properties may be used to
+	* position both the ImageViewPin and its content in a specific location within
+	* the ImageView.
 	*
 	* @ui
 	* @class enyo.ImageViewPin
@@ -30,8 +32,8 @@
 		*/
 		published: {
 			/**
-			* If true, the anchor point for this pin will be highlighted in yellow,
-			* which can be useful for debugging. Defaults to false.
+			* If `true`, the anchor point for this pin will be highlighted in yellow,
+			* which can be useful for debugging. Defaults to `false`.
 			*
 			* @type {Boolean}
 			* @default false
@@ -45,13 +47,13 @@
 			* ImageView control's original size. Works like standard CSS positioning,
 			* and accepts both px and percentage values.
 			*
-			* * top: distance from the parent's top edge
-			* * bottom: distance from the parent's bottom edge (overrides top)
-			* * left: distance from the parent's left edge
-			* * right: distance from the parent's right edge (overrides left)
+			* * `top`: Distance from the parent's top edge.
+			* * `bottom`: Distance from the parent's bottom edge (overrides `top`).
+			* * `left`: Distance from the parent's left edge.
+			* * `right`: Distance from the parent's right edge (overrides `left`).
 			*
 			* @type {Object}
-			* @default `{top: 0px, left: 0px}`
+			* @default {top: 0px, left: 0px}
 			* @public
 			*/
 			anchor: {
@@ -62,16 +64,16 @@
 			/**
 			* The coordinates at which the contents of this control should be
 			* positioned relative to the ImageViewPin itself. Works like standard
-			* CSS positioning. Only accepts px values. Defaults to _{top: 0px,
-			* left: 0px}_.
+			* CSS positioning. Only accepts px values. Defaults to
+			* `{top: 0px, left: 0px}`.
 			*
-			* * top: distance from the ImageViewPin's top edge
-			* * bottom: distance from the ImageViewPin's bottom edge
-			* * left: distance from the ImageViewPin's left edge
-			* * right: distance from the ImageViewPin's right edge
+			* * `top`: Distance from the ImageViewPin's top edge.
+			* * `bottom`: Distance from the ImageViewPin's bottom edge.
+			* * `left`: Distance from the ImageViewPin's left edge.
+			* * `right`: Distance from the ImageViewPin's right edge.
 			*
 			* @type {Object}
-			* @default `{top: 0px, left: 0px}`
+			* @default {top: 0px, left: 0px}
 			* @public
 			*/
 			position: {
@@ -107,7 +109,7 @@
 		}),
 
 		/**
-		* Absolutely position to client controls
+		* Absolutely positions client controls.
 		*
 		* @private
 		*/
@@ -119,7 +121,7 @@
 		},
 
 		/**
-		* Apply specified positioning to client controls
+		* Applies specified positioning to client controls.
 		*
 		* @private
 		*/
@@ -133,7 +135,7 @@
 		},
 
 		/**
-		* Update styling on anchor point
+		* Updates styling of anchor point.
 		*
 		* @private
 		*/
@@ -142,7 +144,7 @@
 		},
 
 		/**
-		* Create coords{} object for each anchor containing value and units
+		* Creates `coords` object for each anchor, containing value and units.
 		*
 		* @private
 		*/
@@ -161,9 +163,9 @@
 		},
 
 		/*
-		* Apply positioning to ImageViewPin specified in this.anchor{}.
-		* Called anytime the parent ImageView is rescaled. If right/bottom
-		* are specified, they override top/left.
+		* Applies positioning to ImageViewPin specified in `this.anchor`.
+		* Called anytime the parent ImageView is rescaled. If `right/bottom`
+		* are specified, they override `top/left`.
 		*
 		* @private
 		*/

@@ -6,44 +6,43 @@
 	*
 	* @event enyo.PanZoomView#event:onZoom
 	* @type {Object}
-	* @property {Number} scale - New scaling factor
+	* @property {Number} scale - The new scaling factor.
 	* @public
 	*/
 
 	/**
-	* Fires after a zoom to notify children to position non-zooming controls
+	* Fires after a zoom to notify children to position non-zooming controls.
 	*
 	* @event enyo.PanZoomView#event:onPositionPin
 	* @type {Object}
-	* @property {Numer} scale   - New scaling factor
-	* @property {Object} bounds - Current viewport bounds
+	* @property {Numer} scale   - The new scaling factor.
+	* @property {Object} bounds - An object containing the current viewport bounds.
 	* @public
 	*/
 
 	/**
-	* _enyo.PanZoomView_ is a control that displays arbitrary content at a given
+	* {@link enyo.PanZoomView} is a control that displays arbitrary content at a given
 	* scaling factor, with enhanced support for double-tap/double-click to zoom,
 	* panning, mousewheel zooming and pinch-zoom (on touchscreen devices that
 	* support it).
 	*
 	* ```
 	* {kind: 'PanZoomView', scale: 'auto', contentWidth: 500, contentHeight: 500,
-	* 	style: 'width:500px; height:400px;',
+	* 	style: 'width: 500px; height: 400px;',
 	* 	components: [{content: 'Hello World'}]
 	* }
 	* ```
 	*
-	* An [onZoom]{@link enyo.PanZoomView#event:onZoom} event is triggered when the user changes
-	* the zoom level.
+	* An [onZoom]{@link enyo.PanZoomView#event:onZoom} event is triggered when the
+	* user changes the zoom level.
 	*
-	* If you wish, you may add {@link enyo.ScrollThumb}
-	* indicators, disable zoom animation, allow panning overscroll (with a
-	* bounce-back effect), and control the propagation of drag events, all via
-	* boolean properties.
+	* If you wish, you may add {@link enyo.ScrollThumb} indicators, disable zoom
+	* animation, allow panning overscroll (with a bounce-back effect), and control
+	* the propagation of drag events, all via Boolean properties.
 	*
 	* For the PanZoomView to work, you must either specify the width and height of
-	* the scaled content (via the _contentWidth_ and _contentHeight_ properties) or
-	* bubble an _onSetDimensions_ event from one of the underlying components.
+	* the scaled content (via the `contentWidth` and `contentHeight` properties) or
+	* bubble an `onSetDimensions` event from one of the underlying components.
 	*
 	* Note that it's best to specify a size for the PanZoomView in order to avoid
 	* complications.
@@ -67,44 +66,53 @@
 		kind: 'enyo.Scroller',
 
 		/**
-		* If true, allows for overscrolling during panning, with a bounce-back
-		* effect.
+		* If `true`, allows overscrolling during panning, with a bounce-back effect.
 		*
+		* @type {Boolean}
+		* @default false
 		* @see {@link enyo.Scroller#touchOverscroll}
 		* @public
 		*/
 		touchOverscroll: false,
 
 		/**
-		* If true, a ScrollThumb is used to indicate scroll position/bounds.
+		* If `true`, a ScrollThumb is used to indicate scroll position/bounds.
 		*
+		* @type {Boolean}
+		* @default false
 		* @see {@link enyo.Scroller#thumb}
 		* @public
 		*/
 		thumb: false,
 
 		/**
-		* If true (the default), animates the zoom action triggered by a double-tap
-		* (or double-click)
+		* If `true` (the default), animates the zoom action triggered by a double-tap
+		* (or double-click).
 		*
+		* @type {Boolean}
+		* @default true
 		* @see {@link enyo.Scroller#animate}
 		* @public
 		*/
 		animate: true,
 
 		/**
-		* If true (the default), allows propagation of vertical drag events when
-		* already at the top or bottom of the pannable area
+		* If `true` (the default), allows propagation of vertical drag events when
+		* already at the top or bottom of the pannable area.
 		*
+		* @type {Boolean}
+		* @default true
 		* @see {@link enyo.Scroller#verticalDragPropagation}
 		* @public
 		*/
 		verticalDragPropagation: true,
 
 		/**
-		* If true (the default), allows propagation of horizontal drag events when
-		* already at the left or right edge of the pannable area
+		* If `true` (the default), allows propagation of horizontal drag events when
+		* already at the left or right edge of the pannable area.
 		*
+		* @type {Boolean}
+		* @default true
 		* @see {@link enyo.Scroller#horizontalDragPropagation}
 		* @public
 		*/
@@ -120,12 +128,12 @@
 			* positive numeric value or one of the following key words (which will
 			* be resolved to a value dynamically):
 			*
-			* * 'auto': Fits the content to the size of the PanZoomView
-			* * 'width': Fits the content to the width of the PanZoomView
-			* * 'height': Fits the content to the height of the PanZoomView
-			* * 'fit': Fits the content to the height and width of the PanZoomView; the
+			* * `'auto'`: Fits the content to the size of the PanZoomView.
+			* * `'width'`: Fits the content to the width of the PanZoomView.
+			* * `'height'`: Fits the content to the height of the PanZoomView.
+			* * `'fit'`: Fits the content to the height and width of the PanZoomView; the
 			* 	overflow of the larger dimension is cropped and the content is centered
-			* 	on that axis
+			* 	along that axis.
 			*
 			* @type {String}
 			* @default 'auto'
@@ -134,7 +142,7 @@
 			scale: 'auto',
 
 			/**
-			* If true, disables the zoom functionality
+			* If `true`, zoom functionality is disabled.
 			*
 			* @type {Boolean}
 			* @default false
@@ -143,7 +151,7 @@
 			disableZoom: false,
 
 			/**
-			* Width of the scaled content
+			* Width of the scaled content.
 			*
 			* @type {Number}
 			* @default null
@@ -152,7 +160,7 @@
 			contentWidth: null,
 
 			/**
-			* Height of the scaled content
+			* Height of the scaled content.
 			*
 			* @type {Number}
 			* @default null
@@ -305,8 +313,8 @@
 		},
 
 		/**
-		* Caches the initial height and width of the component at render-time in `originalHeight`
-		* and `originalWidth`, respectively.
+		* Caches the initial height and width of the component (in `originalHeight`
+		* and `originalWidth`, respectively) at render time.
 		*
 		* @private
 		*/
@@ -321,7 +329,7 @@
 
 		/**
 		* Calculates the `minScale` and `maxScale` and zooms the content according to the
-		* clamped scale value
+		* clamped scale value.
 		*
 		* @private
 		*/
@@ -359,7 +367,7 @@
 		},
 
 		/**
-		* Centers the content in the scroller
+		* Centers the content in the scroller.
 		*
 		* @private
 		*/
@@ -380,7 +388,7 @@
 		},
 
 		/**
-		* Determine the target coordinates on the panzoomview from an event
+		* Determines the target coordinates on the PanZoomView from an event.
 		*
 		* @private
 		*/
@@ -397,9 +405,9 @@
 		},
 
 		/**
-		* Scales the content
+		* Scales the content.
 		*
-		* @param {Number} scale - Scaling factor
+		* @param {Number} scale - The scaling factor.
 		* @private
 		*/
 		transform: function (scale) {
@@ -463,7 +471,7 @@
 		},
 
 		/**
-		* Clamps the scaling factor between `minScale` and `maxScale`
+		* Clamps the scaling factor between `minScale` and `maxScale`.
 		*
 		* @private
 		*/
@@ -479,10 +487,11 @@
 		},
 
 		/**
-		* Calculates the offsets for the content for the given scaling factor
+		* Calculates the offsets for the content for the given scaling factor.
 		*
-		* @param {Number} scale - Scaling Factor
-		* @return {Object}      - Offsets of content (left, top, width, height, x, and y)
+		* @param {Number} scale - The scaling factor.
+		* @return {Object}      - Object containing offsets for content (in its `left`, `top`,
+		* `width`, `height`, `x`, and `y` properties).
 		* @private
 		*/
 		innerBounds: function (scale) {
@@ -503,7 +512,7 @@
 		},
 
 		/**
-		* Persists the scale factor when a gesture finishes
+		* Persists the scaling factor when a gesture finishes.
 		*
 		* @fires enyo.PanZoomView#event:onZoom
 		* @private
@@ -519,7 +528,8 @@
 		},
 
 		/**
-		* Normalizes the event and forwards to {@link enyo.PanZoomView#singleTap}
+		* Normalizes the event and forwards it to
+		* [singleTap()]{@link enyo.PanZoomView#singleTap}.
 		*
 		* IE 8 Only
 		*
@@ -538,7 +548,7 @@
 		},
 
 		/**
-		* Simulates double-tap by watching for 2 taps within 300ms of each other
+		* Simulates double-tap by watching for two taps within 300ms of each other.
 		*
 		* @private
 		*/
@@ -555,7 +565,7 @@
 		},
 
 		/**
-		* Zooms at the event location
+		* Zooms at the event location.
 		*
 		* @private
 		*/

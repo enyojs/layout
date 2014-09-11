@@ -1,6 +1,6 @@
 (function (enyo, scope) {
 	/**
-	* _enyo.ImageCarousel_ is an {@link enyo.Panels} that uses {@link enyo.CarouselArranger}
+	* {@link enyo.ImageCarousel} is an {@link enyo.Panels} that uses {@link enyo.CarouselArranger}
 	* as its arrangerKind. An ImageCarousel dynamically creates and loads instances of
 	* {@link enyo.ImageView} as needed, creating a gallery of images.
 	*
@@ -19,13 +19,15 @@
 	*
 	* All of the events (`onload`, `onerror`, and `onZoom`) from the contained
 	* ImageView objects are bubbled up to the ImageCarousel, which also inherits
-	* the `onTransitionStart` and `onTransitionFinish` events from {@link enyo.Panels}.
+	* the [onTransitionStart]{@link enyo.Panels#event:onTransitionStart}
+	* and [onTransitionFinish]{@link enyo.Panels#event:onTransitionFinish}
+	* events from {@link enyo.Panels}.
 	*
-	* The {@link enyo.ImageCarousel#images} property is an array containing the file paths of
-	* the images in the gallery.  The `images` array may be altered and updated at any time, and
-	* the current index may be manipulated at runtime via the inherited
-	* [getIndex()]{@link enyo.Panels#getIndex} and [setIndex()]{@link enyo.Panels#setIndex}
-	* functions.
+	* The [images]{@link enyo.ImageCarousel#images} property is an array containing the
+	* file paths of the images in the gallery.  The `images` array may be altered and
+	* updated at any time, and the current index may be manipulated at runtime via the
+	* inherited functions [getIndex()]{@link enyo.Panels#getIndex} and
+	* [setIndex()]{@link enyo.Panels#setIndex}.
 	*
 	* Note that it's best to specify a size for the ImageCarousel in order to
 	* avoid complications.
@@ -54,8 +56,8 @@
 		arrangerKind: 'enyo.CarouselArranger',
 
 		/**
-		* The default scale value to be applied to each ImageView. Can be 'auto',
-		* 'width', 'height', or any positive numeric value.
+		* The default scaling to be applied to each ImageView. Can be `'auto'`,
+		* `'width'`, `'height'`, or any positive numeric value.
 		*
 		* @type {String|Number}
 		* @default 'auto'
@@ -64,7 +66,7 @@
 		defaultScale: 'auto',
 
 		/**
-		* If true, ImageView instances are created with zooming disabled.
+		* If `true`, ImageView instances are created with zooming disabled.
 		*
 		* @type {Boolean}
 		* @default false
@@ -73,13 +75,13 @@
 		disableZoom:  false,
 
 		/**
-		* If true, any ImageViews that are not in the immediate viewing area
-		* (i.e., the currently active image and the first image on either
-		* side of it) will be destroyed to free up memory. This has the benefit of
-		* using minimal memory (which is good for mobile devices), but has the
-		* downside that, if you want to view the images again, the ImageViews will
-		* have to be re-created and the images re-fetched (thus increasing the
-		* number of image-related GET calls). Defaults to false.
+		* If `true`, any ImageViews that are not in the immediate viewing area
+		* (i.e., any images other than the currently active image and the first image
+		* on either side of it) will be destroyed to free up memory. This has the
+		* benefit of minimizing memory usage (which is good for mobile devices), but
+		* also has the downside that, if you want to view the images again, you'll need
+		* to recreate the ImageViews refetch the images (thus increasing the number of
+		* image-related GET calls). Defaults to `false`.
 		*
 		* @type {Boolean}
 		* @default false
@@ -94,7 +96,7 @@
 		published: {
 
 			/**
-			* Array of image source file paths
+			* Array of paths to image files.
 			*
 			* @type {String[]}
 			* @default `[]`
@@ -127,7 +129,7 @@
 		}),
 
 		/**
-		* Builds containers for each image and destroys any extra containers and images
+		* Builds a container for each image and destroys any extra containers and images.
 		*
 		* @private
 		*/
@@ -151,7 +153,7 @@
 		},
 
 		/**
-		* Loads images that are in view or may come into view soon
+		* Loads images that are in view or may come into view soon.
 		*
 		* @private
 		*/
@@ -163,7 +165,7 @@
 		},
 
 		/**
-		* Determines which images indices are 'near' the active image
+		* Determines which image indices are `'near'` the active image.
 		*
 		* @private
 		*/
@@ -209,9 +211,10 @@
 		}),
 
 		/**
-		* Loads the image from {@link enyo.ImageCarousel#images} at `index`
+		* Loads the image whose path is found at the specified index in the
+		* [images]{@link enyo.ImageCarousel#images} array.
 		*
-		* @param {Number} index - Index of image
+		* @param {Number} index - The index of the image to load.
 		* @private
 		*/
 		loadImageView: function (index) {
@@ -245,10 +248,10 @@
 		},
 
 		/**
-		* Updates the array of images
+		* Updates the array of images.
 		*
-		* @todo Probably a defect here. Simply calling set() won't force the observer to fire
-		* 	if `images` is a ref to the same array. Need to add the `force` parameter.
+		* @todo Probably a defect here. Simply calling `set()` won't force the observer to fire
+		* if `images` is a ref to the same array. Need to add the `force` parameter.
 		* @public
 		*/
 		setImages: function (images) {
@@ -301,7 +304,7 @@
 		/**
 		* Returns the currently displayed ImageView.
 		*
-		* @return {enyo.Control} - Active image control
+		* @return {enyo.Control} - The active image control.
 		* @public
 		*/
 		getActiveImage: function () {
@@ -309,10 +312,10 @@
 		},
 
 		/**
-		* Returns the ImageView with the specified `index`.
+		* Returns the ImageView with the specified index.
 		*
-		* @param {Number} index  - Index of image
-		* @return {enyo.Control} - Image control at `index`
+		* @param {Number} index  - The index of the image to be retrieved.
+		* @return {enyo.Control} - The image control at `index`.
 		* @public
 		*/
 		getImageByIndex: function (index) {
@@ -320,11 +323,11 @@
 		},
 
 		/**
-		* Destroys any ImageView objects that are not in the immediate viewing
-		* area (i.e., the currently active image and the first image on either
-		* side of it) to free up memory. If you set the Image Carousel's
-		* {@link enyo.ImageCarousel#lowMemory} property to `true`, this function
-		* will be called automatically as needed.
+		* Destroys any ImageView objects that are not in the immediate viewing area
+		* (i.e., any images other than the currently active image and the first
+		* image on either side of it) to free up memory. If you set the ImageCarousel's
+		* [lowMemory]{@link enyo.ImageCarousel#lowMemory} property to `true`, this
+		* function will be called automatically as needed.
 		*
 		* @public
 		*/

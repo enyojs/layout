@@ -9,7 +9,8 @@
 	*/
 
 	/**
-	* Fires when the position (i.e., {@link enyo.Slideable#value}) of the Slideable changes.
+	* Fires when the position (i.e., [value]{@link enyo.Slideable#value}) of the
+	* Slideable changes.
 	*
 	* @event enyo.Slideable#event:onChange
 	* @type {Object}
@@ -17,22 +18,22 @@
 	*/
 
 	/**
-	* _enyo.Slideable_ is a control that may be dragged either horizontally or
-	* vertically between a minimum and a maximum value. When released from
+	* {@link enyo.Slideable} is a control that may be dragged either horizontally
+	* or vertically between a minimum and a maximum value. When released from
 	* dragging, a Slideable will animate to its minimum or maximum position,
 	* depending on the direction of the drag.
 	*
-	* The {@link enyo.Slideable#min} value specifies a position to the left of, or above, the initial
-	* position, to which the Slideable may be dragged.
-	* The {@link enyo.Slideable#max} value specifies a position to the right of, or below, the initial
-	* position, to which the Slideable may be dragged.
-	* The {@link enyo.Slideable#value} property specifies the current position of the Slideable,
-	* between the minimum and maximum positions.
+	* The [min]{@link enyo.Slideable#min} value specifies a position to the left of,
+	* or above, the initial position, to which the Slideable may be dragged.
+	* The [max]{@link enyo.Slideable#max} value specifies a position to the right of,
+	* or below, the initial position, to which the Slideable may be dragged.
+	* The [value]{@link enyo.Slideable#value} property specifies the current position
+	* of the Slideable, between the minimum and maximum positions.
 	*
 	* `min`, `max`, and `value` may be specified in units of 'px' or '%'.
 	*
-	* The {@link enyo.Slideable#axis} property determines whether the Slideable slides left-to-right
-	* ('h') or up-and-down ('v').
+	* The [axis]{@link enyo.Slideable#axis} property determines whether the Slideable
+	* slides left-to-right ('h') or up-and-down ('v').
 	*
 	* The following control is placed 90% off the screen to the right, and slides
 	* to its natural position:
@@ -70,7 +71,7 @@
 		*/
 		published: {
 			/**
-			* Direction of sliding; valid values are 'h' for horizonal or 'v' for vertical
+			* Direction of sliding; valid values are `'h'` for horizonal or `'v'` for vertical.
 			*
 			* @type {String}
 			* @default 'h'
@@ -79,7 +80,8 @@
 			axis: 'h',
 
 			/**
-			* Current position of the Slideable (a value between _min_ and _max_)
+			* Current position of the Slideable (a value between
+			* [min]{@link enyo.Slideable#min} and [max]{@link enyo.Slideable#max}).
 			*
 			* @type {Number}
 			* @default  0
@@ -88,7 +90,8 @@
 			value: 0,
 
 			/**
-			* Unit for _min_, _max_, and _value_; valid values are 'px' or '%'
+			* Unit for [min]{@link enyo.Slideable#min}, [max]{@link enyo.Slideable#max},
+			* and [value]{@link enyo.Slideable#value}; valid values are `'px'` or `'%'`.
 			*
 			* @type {String}
 			* @default  'px'
@@ -97,7 +100,7 @@
 			unit: 'px',
 
 			/**
-			* A minimum value to slide to
+			* The minimum value to slide to.
 			*
 			* @type {Number}
 			* @default 0
@@ -106,7 +109,7 @@
 			min: 0,
 
 			/**
-			* A maximum value to slide to
+			* The maximum value to slide to.
 			*
 			* @type {Number}
 			* @default  0
@@ -116,7 +119,7 @@
 
 			/**
 			* When truthy, applies CSS styles to allow GPU compositing of slideable
-			* content, if allowed by the platform
+			* content, if allowed by the platform.
 			*
 			* @type {String}
 			* @default  'auto'
@@ -125,8 +128,9 @@
 			accelerated: 'auto',
 
 			/**
-			* Set to false to prevent the Slideable from dragging with elasticity past
-			* its _min_ or _max_ value
+			* Set to `false` to prevent the Slideable from dragging with elasticity
+			* past its [min]{@link enyo.Slideable#min} or [max]{@link enyo.Slideable#max}
+			* value.
 			*
 			* @type {Boolean}
 			* @default  true
@@ -135,7 +139,7 @@
 			overMoving: true,
 
 			/**
-			* Set to false to disable dragging
+			* Indicates whether dragging is allowed. Set to `false` to disable dragging.
 			*
 			* @type {Boolean}
 			* @default  true
@@ -153,7 +157,7 @@
 		},
 
 		/**
-		* Set to true to prevent a drag from bubbling beyond the Slideable
+		* Set to `true` to prevent drag events from bubbling beyond the Slideable.
 		*
 		* @private
 		*/
@@ -196,35 +200,36 @@
 		canTransform: false,
 
 		/**
-		* Determines which property of the drag event is used to position the control
+		* Indicates which property of the drag event is used to position the control.
 		*
 		* @private
 		*/
 		dragMoveProp: 'dx',
 
 		/**
-		* Determines which property of the drag event is used to allow dragging
+		* Indicates which property of the drag event is used to allow dragging.
 		*
 		* @private
 		*/
 		shouldDragProp: 'horizontal',
 
 		/**
-		* If {@link enyo.Slideable#canTransform}, the transform property to modify
+		* The transform property to modify, provided that
+		* [canTransform]{@link enyo.Slideable#canTransform} is `true`.
 		*
 		* @private
 		*/
 		transform: 'translateX',
 
 		/**
-		* The dimension attribute to modify, either height or width
+		* The dimension attribute to modify; will be either `'height'` or `'width'`.
 		*
 		* @private
 		*/
 		dimension: 'width',
 
 		/**
-		* The position attribute to modify, either top or left
+		* The position attribute to modify; will be either `'top'` or `'left'`.
 		*
 		* @private
 		*/
@@ -281,8 +286,9 @@
 
 		/**
 		* If transforms can't be used and inline style is using 'px' while
-		* {@link enyo.Slideable#unit} is '%', {@link enyo.Slideable#unitModifier} is set to the
-		* current value of {@link enyo.Slideable#dimension}
+		* [unit]{@link enyo.Slideable#unit} is `'%'`, this sets the
+		* [unitModifier]{@link enyo.Slideable#unitModifier} property to the current
+		* value of [dimension]{@link enyo.Slideable#dimension}.
 		*
 		* @private
 		*/
@@ -477,7 +483,8 @@
 		},
 
 		/**
-		* Calculates the pixel value for the `percent` of `dimension`
+		* Calculates the pixel value corresponding to the specified `percent` and
+		* `dimension`.
 		*
 		* @param  {Number} percent
 		* @param  {Number} dimension
@@ -505,9 +512,11 @@
 		},
 
 		/**
-		* Determines if `value` is out of bounds (e.g. greater than {@link enyo.Slideable#max} or
-		* less than {@link enyo.Slideable#min})
+		* Determines whether the specified value is out of bounds (i.e., greater than
+		* [max]{@link enyo.Slideable#max} or less than [min]{@link enyo.Slideable#min}).
 		*
+		* @param {Number} inValue - The value to check.
+		* @return {Boolean} `true` if `inValue` is out of bounds; otherwise, `false`.
 		* @private
 		*/
 		isOob: function (inValue) {
@@ -530,8 +539,8 @@
 		},
 
 		/**
-		* Updates {@link enyo.Slideable#value} during a drag and determines the direction of the
-		* drag
+		* Updates [value]{@link enyo.Slideable#value} during a drag and determines the
+		* direction of the drag.
 		*
 		* @private
 		*/
@@ -563,8 +572,9 @@
 		},
 
 		/**
-		* Animates the control to either the min or max value when dragging completes based on the
-		* direction of the drag (determined in {@link enyo.Slideable#drag})
+		* Animates the control to either the [min]{@link enyo.Slideable#min} or
+		* [max]{@link enyo.Slideable#max} value when dragging completes, based on the
+		* direction of the drag (determined in [drag()]{@link enyo.Slideable#drag}).
 		*
 		* @private
 		*/
@@ -595,7 +605,7 @@
 		/**
 		* Animates to the given value.
 		*
-		* @param   {Number} value - New {@link enyo.Slideable#value}
+		* @param   {Number} value - The value to animate to.
 		* @public
 		*/
 		animateTo: function (value) {
@@ -603,7 +613,7 @@
 		},
 
 		/**
-		* Animates to the {@link enyo.Slideable#min} value.
+		* Animates to the [minimum]{@link enyo.Slideable#min} value.
 		*
 		* @public
 		*/
@@ -612,7 +622,7 @@
 		},
 
 		/**
-		* Animates to the {@link enyo.Slideable#max} value.
+		* Animates to the [maximum]{@link enyo.Slideable#max} value.
 		*
 		* @public
 		*/
@@ -621,10 +631,10 @@
 		},
 
 		/**
-		* Helper method to toggle animating to either the {@link enyo.Slideable#min} ≈
-		* {@link enyo.Slideable#max} value
+		* Helper method to toggle animation to either the [min]{@link enyo.Slideable#min}
+		* or [max]{@link enyo.Slideable#max} value.
 		*
-		* @param  {Boolean} min - Animate to the minimum value
+		* @param  {Boolean} min - Whether to animate to the minimum value.
 		* @private
 		*/
 		animateToMinMax: function (min) {
@@ -636,7 +646,7 @@
 		},
 
 		/**
-		* Updates {@link enyo.Slideable#value} during animation
+		* Updates the [value]{@link enyo.Slideable#value} property during animation.
 		*
 		* @private
 		*/
@@ -655,8 +665,8 @@
 		},
 
 		/**
-		* toggle animating to either the {@link enyo.Slideable#min} ≈
-		* {@link enyo.Slideable#max} value
+		* Toggles animation to either the [min]{@link enyo.Slideable#min} or
+		* [max]{@link enyo.Slideable#max} value.
 		*
 		* @public
 		*/
