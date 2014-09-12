@@ -1,14 +1,14 @@
 (function (enyo, scope) {
 
 	/**
-	* Collection of useful metrics about a page
+	* A collection of useful metrics about a page.
 	*
 	* @typedef enyo.List~PageInfo
-	* @property {Number} no       - Page number
-	* @property {Number} size     - Page size
-	* @property {Number} pos      - Page position
-	* @property {Number} startRow - Index of first row of page
-	* @property {Number} endRow   - Index of last row of page
+	* @property {Number} no       - The page number.
+	* @property {Number} size     - The page size.
+	* @property {Number} pos      - The page position.
+	* @property {Number} startRow - The index of the page's first row.
+	* @property {Number} endRow   - The index of the page's last row.
 	*/
 
 	/**
@@ -16,12 +16,13 @@
 	*
 	* @event enyo.List#event:onSetupItem
 	* @type {Object}
-	* @property {Number} index - Current row index
+	* @property {Number} index - The current row index.
 	* @public
 	*/
 
 	/**
-	* Fires when reordering starts to setup reordering components
+	* Fires when reordering starts, to setup reordering components. No additional
+	* data is included with this event.
 	*
 	* @event enyo.List#event:onSetupReorderComponents
 	* @type {Object}
@@ -29,17 +30,18 @@
 	*/
 
 	/**
-	* Fires when reordering completes
+	* Fires when reordering completes.
 	*
 	* @event enyo.List#event:onReorder
 	* @type {Object}
-	* @property {Number} reorderTo   - Index of destination row
-	* @property {Number} reorderFrom - Index of source row
+	* @property {Number} reorderTo   - The index of the destination row.
+	* @property {Number} reorderFrom - The index of the source row.
 	* @public
 	*/
 
 	/**
-	* Fires when pinned reordering starts
+	* Fires when pinned reordering starts. No additional data is included with
+	* this event.
 	*
 	* @event enyo.List#event:onSetupPinnedReorderComponents
 	* @type {Object}
@@ -47,7 +49,8 @@
 	*/
 
 	/**
-	* Fires when swiping starts to setup swipeable components
+	* Fires when swiping starts, to set up swipeable components. No additional
+	* data is included with this event.
 	*
 	* @event enyo.List#event:onSetupSwipeItem
 	* @type {Object}
@@ -69,37 +72,39 @@
 	*/
 
 	/**
-	* Fires when a swipe completes
+	* Fires when a swipe completes.
 	*
 	* @event enyo.List#event:onSwipeComplete
 	* @type {Object}
-	* @property {Number} index      - Index of row swiped
-	* @property {Number} xDirection - Direction of swipe
+	* @property {Number} index      - The index of the row that was swiped.
+	* @property {Number} xDirection - The direction of the swipe.
 	* @public
 	*/
 
 	/**
-	* _enyo.List_ is a control that displays a scrolling list of rows, suitable
-	* for displaying very large lists. It is optimized such that only a small
-	* portion of the list is rendered at a given time. A flyweight pattern is
-	* employed, in which controls placed inside the list are created once, but
+	* {@link enyo.List} is a control that displays a scrolling list of rows,
+	* suitable for displaying very large lists. It is optimized such that only a
+	* small portion of the list is rendered at a given time. A flyweight pattern
+	* is employed, in which controls placed inside the list are created once, but
 	* rendered for each list item. For this reason, it's best to use only simple
-	* controls in	a List, such as {@link enyo.Control} and
-	* {@link enyo.Image}.
+	* controls in	a List, such as {@link enyo.Control} and {@link enyo.Image}.
 	*
 	* A List's `components` block contains the controls to be used for a single
 	* row. This set of controls will be rendered for each row. You may customize
-	* row rendering by handling the {@link enyo.List#event:onSetupItem} event.
+	* row rendering by handling the [onSetupItem]{@link enyo.List#event:onSetupItem}
+	* event.
 	*
 	* Events fired from within list rows contain the `index` property, which may
 	* be used to identify the row from which the event originated.
 	*
 	* Beginning with Enyo 2.2, lists have built-in support for swipeable and
 	* reorderable list items.  Individual list items are swipeable by default; to
-	* enable reorderability, set the {@link enyo.List#reorderable} property to `true`.
+	* enable reorderability, set the [reorderable]{@link enyo.List#reorderable}
+	* property to `true`.
 	*
 	* For more information, see the documentation on
-	* [Lists](building-apps/layout/lists.html) in the Enyo Developer Guide.
+	* [Lists]{@link building-apps/layout/lists.html} in the
+	* Enyo Developer Guide.
 	*
 	* @ui
 	* @class enyo.List
@@ -131,11 +136,11 @@
 		published: {
 			/**
 			* The number of rows contained in the list. Note that as the amount of
-			* list data changes, _setRows()_ may be called to adjust the number of
-			* rows. To re-render the list at the current position when the count
-			* has changed, call the _refresh()_ method.  If the whole data model of
-			* the list has changed and you want to redisplay it from the top, call
-			* _reset()_ instead.
+			* list data changes, `setRows()` may be called to adjust the number of
+			* rows. To re-render the list at the current position when the count has
+			* changed, call the [refresh()]{@link enyo.List#refresh} method.  If the
+			* whole data model of the list has changed and you want to redisplay it
+			* from the top, call [reset()]{@link enyo.List#reset}.
 			*
 			* @type {Number}
 			* @default 0
@@ -153,7 +158,7 @@
 			rowsPerPage: 50,
 			/**
 			* Direction in which the list will be rendered and in which it will be
-			* scrollable. Valid values are 'v' for vertical or 'h' for horizontal.
+			* scrollable. Valid values are `'v'` for vertical or `'h'` for horizontal.
 			*
 			* @type {String}
 			* @default 'v'
@@ -161,9 +166,9 @@
 			*/
 			orient: 'v',
 			/**
-			* If true, the list is rendered such that row 0 is at the bottom of the
-			* viewport and the beginning position of the list is scrolled to the
-			* bottom
+			* If `true`, the list is rendered such that row `0` is at the bottom of
+			* the viewport and the beginning position of the list is scrolled to the
+			* bottom.
 			*
 			* @type {Boolean}
 			* @default false
@@ -171,7 +176,7 @@
 			*/
 			bottomUp: false,
 			/**
-			* If true, the selection mechanism is disabled. Tap events are still
+			* If `true`, the selection mechanism is disabled. Tap events are still
 			* sent, but items won't be automatically re-rendered when tapped.
 			*
 			* @type {Boolean}
@@ -181,7 +186,7 @@
 			noSelect: false,
 
 			/**
-			 * If true, multiple selections are allowed
+			 * If `true`, multiple selection is allowed.
 			 *
 			 * @type {Boolean}
 			 * @default false
@@ -190,7 +195,7 @@
 			multiSelect: false,
 
 			/**
-			* If true, the selected item will toggle
+			* If `true`, the selected item will toggle.
 			*
 			* @type {Boolean}
 			* @default false
@@ -199,7 +204,8 @@
 			toggleSelected: false,
 
 			/**
-			* If true, the list will assume all rows have the same size for optimization
+			* If `true`, the list will assume that all rows have the same size to
+			* optimize performance.
 			*
 			* @type {Boolean}
 			* @default false
@@ -208,7 +214,7 @@
 			fixedSize: false,
 
 			/**
-			* If true, the list will allow the user to reorder list items
+			* If `true`, the list will allow the user to reorder list items.
 			*
 			* @type {Boolean}
 			* @default false
@@ -217,9 +223,9 @@
 			reorderable: false,
 
 			/**
-			* If true and _reorderable_ is true, a reorderable item will be centered on
-			* finger when created. If false, it will be created over the old item and
-			* will then track finger.
+			* If `true` and `reorderable` is true, a reorderable item will be centered
+			* on finger when created. If `false`, it will be created over the old item
+			* and will then track finger.
 			*
 			* @type {Boolean}
 			* @default true
@@ -228,8 +234,8 @@
 			centerReorderContainer: true,
 
 			/**
-			* Array containing components to be shown as placeholder when reordering
-			* list items
+			* An array containing components to be shown as a placeholder when
+			* reordering list items.
 			*
 			* @type {enyo.Control[]}
 			* @public
@@ -237,7 +243,7 @@
 			reorderComponents: [],
 
 			/**
-			* Array containing components for the pinned version of a row. If not
+			* An array containing components for the pinned version of a row. If not
 			* specified, reordering will not support pinned mode.
 			*
 			* @type {enyo.Control[]}
@@ -246,7 +252,7 @@
 			pinnedReorderComponents: [],
 
 			/**
-			* Array containing any swipeable components that will be used
+			* An array containing any swipeable components that will be used.
 			*
 			* @type {enyo.Control[]}
 			* @public
@@ -254,7 +260,7 @@
 			swipeableComponents: [],
 
 			/**
-			* If true, swipe functionality is enabled
+			* If `true`, swipe functionality is enabled.
 			*
 			* @type {Boolean}
 			* @default false
@@ -263,7 +269,7 @@
 			enableSwipe: false,
 
 			/**
-			* If true, list will persist the current swipeable item
+			* If `true`, the list will persist the current swipeable item.
 			*
 			* @type {Boolean}
 			* @default false
@@ -301,7 +307,7 @@
 		},
 
 		/**
-		* Average row size (in pixels) as calculated by the page size / number of rows per page
+		* Average row size (in pixels), calculated as `(page size / number of rows per page)`.
 		*
 		* @private
 		*/
@@ -326,7 +332,7 @@
 		//* Reorder vars
 
 		/**
-		* How long, in ms, to wait for to active reordering
+		* Length of time, in milliseconds, to wait for to active reordering.
 		*
 		* @type {Number}
 		* @default 600
@@ -335,7 +341,7 @@
 		reorderHoldTimeMS: 600,
 
 		/**
-		* Index of the row that we're moving
+		* Index of the row that we're moving.
 		*
 		* @type {Number}
 		* @default -1
@@ -344,33 +350,34 @@
 		draggingRowIndex: -1,
 
 		/**
-		* @todo Seems to be cruft ... can't find any references to it in layout
+		* @todo Seems to be cruft ... can't find any references to it in layout.
 		* @private
 		*/
 		initHoldCounter: 3,
 
 		/**
-		* @todo Seems to be cruft ... can't find any references to it in layout
+		* @todo Seems to be cruft ... can't find any references to it in layout.
 		* @private
 		*/
 		holdCounter: 3,
 
 		/**
-		* @todo Seems to be cruft ... can't find any references to it in layout
+		* @todo Seems to be cruft ... can't find any references to it in layout.
 		* @private
 		*/
 		holding: false,
 
 		/**
-		* Node of the dragged row, used to keep touch events alive
+		* Node of the dragged row, used to keep touch events alive.
 		* @type {Node}
 		* @private
 		*/
 		draggingRowNode: null,
 
 		/**
-		* Index of the row before which we'll show the placeholder item.  If the placeholder
-		* is at the end of the list, this will be one larger than the row count.
+		* Index of the row before which the placeholder item will be shown. If the
+		* placeholder is at the end of the list, this value will be one larger than
+		* the row count.
 		*
 		* @type {Number}
 		* @private
@@ -378,7 +385,7 @@
 		placeholderRowIndex: -1,
 
 		/**
-		* Determines scroll height at top/bottom of list where dragging will cause scroll
+		* Determines scroll height at top/bottom of list where dragging will cause scroll.
 		*
 		* @type {Number}
 		* @default 0.1
@@ -387,7 +394,7 @@
 		dragToScrollThreshold: 0.1,
 
 		/**
-		 * Amount to scrolling during autoscroll
+		 * Amount to scroll during autoscroll.
 		 *
 		 * @type {Number}
 		 * @default 0
@@ -396,14 +403,14 @@
 		scrollDistance: 0,
 
 		/**
-		* Used to determine direction of scrolling during reordering
+		* Used to determine direction of scrolling during reordering.
 		*
 		* @private
 		*/
 		prevScrollTop: 0,
 
 		/**
-		* How many MS between scroll events when autoscrolling
+		* Number of milliseconds between scroll events when autoscrolling.
 		*
 		* @type {Number}
 		* @default 20
@@ -412,14 +419,14 @@
 		autoScrollTimeoutMS: 20,
 
 		/**
-		* Holds timeout ID for autoscroll
+		* Holds timeout ID for autoscroll.
 		*
 		* @private
 		*/
 		autoScrollTimeout: null,
 
 		/**
-		* Keep last event Y coordinate to update placeholder position during autoscroll
+		* Keep last event Y coordinate to update placeholder position during autoscroll.
 		*
 		* @type {Number}
 		* @private
@@ -427,7 +434,7 @@
 		autoscrollPageY: 0,
 
 		/**
-		* Set to true to indicate that we're in pinned reordering mode
+		* Set to `true` to indicate that we're in pinned reordering mode.
 		*
 		* @type {Boolean}
 		* @default false
@@ -436,7 +443,7 @@
 		pinnedReorderMode: false,
 
 		/**
-		* y-coordinate of the original location of the pinned row
+		* y-coordinate of the original location of the pinned row.
 		*
 		* @type {Number}
 		* @private
@@ -444,8 +451,8 @@
 		initialPinPosition: -1,
 
 		/**
-		* Set to true after drag-and-drop has moved the reordering item at least one space
-		* used to activate pin mode if item is dropped immediately
+		* Set to `true` after drag-and-drop has moved the item to reorder at least
+		* one space. Used to activate pin mode if item is dropped immediately.
 		*
 		* @type {Boolean}
 		* @default false
@@ -454,8 +461,8 @@
 		itemMoved: false,
 
 		/**
-		* Tracks the page where the being-dragged item is so we can detect
-		* when we switch pages and need to adjust rendering
+		* Tracks the page where the item being dragged is, so we can detect when we
+		* switch pages and need to adjust rendering.
 		*
 		* @type {Number}
 		* @private
@@ -463,7 +470,7 @@
 		currentPageNumber: -1,
 
 		/**
-		* Timeout for completing reorder operation
+		* Timeout for completing reorder operation.
 		*
 		* @private
 		*/
@@ -472,7 +479,7 @@
 		//* Swipeable vars
 
 		/**
-		* Index of swiped item
+		* Index of swiped item.
 		*
 		* @type {Number}
 		* @private
@@ -480,7 +487,7 @@
 		swipeIndex: null,
 
 		/**
-		* Direction of swipe
+		* Direction of swipe.
 		*
 		* @type {Number}
 		* @private
@@ -488,7 +495,7 @@
 		swipeDirection: null,
 
 		/**
-		* `true` if a persistent item is currently persisting
+		* `true` if a persistent item is currently persisting.
 		*
 		* @type {Boolean}
 		* @default false
@@ -497,7 +504,7 @@
 		persistentItemVisible: false,
 
 		/**
-		* Side from which the persisting item came
+		* Side from which the persisting item came.
 		*
 		* @type {String}
 		* @private
@@ -505,7 +512,7 @@
 		persistentItemOrigin: null,
 
 		/**
-		* True if swipe was completed
+		* `true` if swipe was completed.
 		*
 		* @type {Boolean}
 		* @private
@@ -513,14 +520,14 @@
 		swipeComplete: false,
 
 		/**
-		* Timeout used to wait before completing swipe action
+		* Timeout when waiting for swipe action to complete.
 		*
 		* @private
 		*/
 		completeSwipeTimeout: null,
 
 		/**
-		* Time in MS to wait before completing swipe action
+		* Length of time (in milliseconds) to wait before completing swipe action.
 		*
 		* @type {Number}
 		* @default 500
@@ -529,7 +536,7 @@
 		completeSwipeDelayMS: 500,
 
 		/**
-		* Time in MS for normal swipe animation
+		* Duration (in milliseconds) of normal swipe animation.
 		*
 		* @type {Number}
 		* @default 200
@@ -538,7 +545,7 @@
 		normalSwipeSpeedMS: 200,
 
 		/**
-		* Time in seconds for fast swipe animation
+		* Duration (in milliseconds) of fast swipe animation.
 		*
 		* @type {Number}
 		* @default 100
@@ -547,7 +554,7 @@
 		fastSwipeSpeedMS: 100,
 
 		/**
-		* Percentage of a swipe needed to force completion of the swipe
+		* Percentage of a swipe needed to force completion of the swipe.
 		*
 		* @type {Number}
 		* @default 0.2
@@ -624,9 +631,10 @@
 		},
 
 		/**
-		* Adjust the parent control so `[listTools]{@link enyo.List#listTools}` are created inside
-		* the strategy. This is necessary for strategies like {@link enyo.TouchScrollStrategy} that
-		* wrap its contents with additional DOM nodes.
+		* Adjusts the parent control so [listTools]{@link enyo.List#listTools} are
+		* created inside the strategy. This is necessary for strategies like
+		* {@link enyo.TouchScrollStrategy}, which wrap their contents with
+		* additional DOM nodes.
 		*
 		* @see {@link enyo.Scroller#createStrategy}
 		* @method
@@ -734,7 +742,7 @@
 		},
 
 		/**
-		* Re-dispatches events from the reorder tools to the scroll strategy
+		* Re-dispatches events from the reorder tools to the scroll strategy.
 		*
 		* @private
 		*/
@@ -743,7 +751,7 @@
 		},
 
 		/**
-		* Calculates page metrics (size, number of pages) and resizes the port
+		* Calculates page metrics (size, number of pages) and resizes the port.
 		*
 		* @private
 		*/
@@ -758,7 +766,7 @@
 		},
 
 		/**
-		* Hold pulse handler - use this to delay before running hold logic
+		* Handles hold pulse events. Used to delay before running hold logic.
 		*
 		* @private
 		*/
@@ -779,12 +787,12 @@
 		},
 
 		/**
-		* DragStart event handler
+		* Handles DragStart events.
 		*
 		* @private
 		*/
 		dragstart: function (sender, event) {
-			// stop dragstart from propogating if we're in reorder mode
+			// stop dragstart from propagating if we're in reorder mode
 			if (this.isReordering()) {
 				return true;
 			}
@@ -794,7 +802,7 @@
 		},
 
 		/**
-		* Determine if we should handle the drag event
+		* Determines whether we should handle the drag event.
 		*
 		* @private
 		*/
@@ -811,7 +819,7 @@
 		},
 
 		/**
-		* Dragfinish event handler
+		* Handles DragFinish events.
 		*
 		* @private
 		*/
@@ -824,7 +832,7 @@
 		},
 
 		/**
-		* up event handler
+		* Handles up events.
 		*
 		* @private
 		*/
@@ -835,7 +843,8 @@
 		},
 
 		/**
-		* Calculates the record indices for `pageNumber` and generates the markup for that page
+		* Calculates the record indices for `pageNumber` and generates the markup
+		* for that page.
 		*
 		* @private
 		*/
@@ -869,7 +878,7 @@
 		},
 
 		/**
-		* Map a row index number to the page number it would be in
+		* Maps a row index number to the page number where it would be found.
 		*
 		* @private
 		*/
@@ -878,7 +887,7 @@
 		},
 
 		/**
-		* Preserve original DOM node because it may be needed to route touch events
+		* Preserves original DOM node because it may be needed to route touch events.
 		*
 		* @private
 		*/
@@ -893,7 +902,7 @@
 		/**
 		 * Updates the list pages to show the correct rows for the requested `top` position.
 		 *
-		 * @param  {Number} top - Position in pixels from the top
+		 * @param  {Number} top - Position in pixels from the top.
 		 * @private
 		 */
 		update: function (top) {
@@ -937,9 +946,9 @@
 		},
 
 		/**
-		* Calculates the height and width of each row for a page
+		* Calculates the height and width of each row for a page.
 		*
-		* @param {enyo.Control} page - Page control
+		* @param {enyo.Control} page - Page control.
 		* @private
 		*/
 		getPageRowSizes: function (page) {
@@ -979,9 +988,9 @@
 		},
 
 		/**
-		* Updates the list for the given `position`
+		* Updates the list for the given `position`.
 		*
-		* @param {Number} position - Position in pixels
+		* @param {Number} position - Position in pixels.
 		* @private
 		*/
 		updateForPosition: function (position) {
@@ -989,9 +998,9 @@
 		},
 
 		/**
-		* Adjusts the position if the list is `[bottomUp]{@link enyo.List#bottomUp}`
+		* Adjusts the position if the list is [bottomUp]{@link enyo.List#bottomUp}.
 		*
-		* @param {Number} position - Position in pixels
+		* @param {Number} position - Position in pixels.
 		* @private
 		*/
 		calcPos: function (position) {
@@ -999,7 +1008,7 @@
 		},
 
 		/**
-		* Determines which page is on the bottom and positions it appropriately
+		* Determines which page is on the bottom and positions it appropriately.
 		*
 		* @private
 		*/
@@ -1010,7 +1019,7 @@
 
 		/**
 		* Updates the size of the port to be the greater of the size of the scroller or
-		* the `portSize`
+		* the `portSize`.
 		*
 		* @private
 		*/
@@ -1033,9 +1042,9 @@
 		},
 
 		/**
-		* Calculates the position of `page`
+		* Calculates the position of `page`.
 		*
-		* @param {Number} page - Page number
+		* @param {Number} page - Page number.
 		* @private
 		*/
 		pageToPosition: function (page) {
@@ -1048,9 +1057,9 @@
 		},
 
 		/**
-		 * Retrieves the metrics for a page covering `position`
+		 * Retrieves the metrics for a page covering `position`.
 		 *
-		 * @param  {Number} position - Position in pixels
+		 * @param  {Number} position - Position in pixels.
 		 * @return {enyo.List~PageInfo}
 		 * @private
 		 */
@@ -1074,9 +1083,9 @@
 		},
 
 		/**
-		* Determines if `page` is a valid page
+		* Determines if `page` is a valid page number.
 		*
-		* @param {Number} page - Page number
+		* @param {Number} page - Page number.
 		* @private
 		*/
 		isPageInRange: function (page) {
@@ -1084,7 +1093,8 @@
 		},
 
 		/**
-		* Calculates the size of a page. The size is estimated if it has not been rendered yet.
+		* Calculates the size of a page. The size is estimated if the page has not
+		* yet been rendered.
 		*
 		* @private
 		*/
@@ -1101,7 +1111,7 @@
 		},
 
 		/**
-		* Resets pages and removes all rendered rows
+		* Resets pages and removes all rendered rows.
 		*
 		* @private
 		*/
@@ -1115,7 +1125,7 @@
 		},
 
 		/**
-		* Resets page and row sizes
+		* Resets page and row sizes.
 		*
 		* @private
 		*/
@@ -1126,8 +1136,8 @@
 		},
 
 		/**
-		* When the list is scrolled, ensures that the correct rows are rendered and that the
-		* reordering controls are positioned correctly
+		* When the list is scrolled, ensures that the correct rows are rendered and
+		* that the reordering controls are positioned correctly.
 		*
 		* @see {@link enyo.Scroller#scroll}
 		* @method
@@ -1150,7 +1160,7 @@
 		}),
 
 		/**
-		* Updates the list rows when the scroll top is set explicitly
+		* Updates the list rows when the scroll top is set explicitly.
 		*
 		* @see {@link enyo.Scroller#setScrollTop}
 		* @method
@@ -1179,7 +1189,7 @@
 		},
 
 		/**
-		* Scrolls the list so the last item is visible.
+		* Scrolls the list so that the last item is visible.
 		*
 		* @method
 		* @public
@@ -1194,7 +1204,7 @@
 		/**
 		* Scrolls to the specified row.
 		*
-		* @param {Number} row - Index of row
+		* @param {Number} row - The index of the row to scroll to.
 		* @public
 		*/
 		scrollToRow: function (row) {
@@ -1271,6 +1281,7 @@
 		* Returns the {@link enyo.Selection} component that
 		* manages the selection state for this list.
 		*
+		* @return {enyo.Selection} - The component that manages selection state for this list.
 		* @public
 		*/
 		getSelection: function () {
@@ -1280,11 +1291,11 @@
 		/**
 		* Sets the selection state for the given row index.
 		*
-		* Modifying selection will not automatically re-render the row, so use
-		* `[renderRow()]{@link enyo.List#renderRow}` or `[refresh()]{@link enyo.List#refresh}` to
-		* update the view.
+		* Modifying selection will not automatically re-render the row, so call
+		* [renderRow()]{@link enyo.List#renderRow} or [refresh()]{@link enyo.List#refresh}
+		* to update the view.
 		*
-		* @param {Number} index - Index of row
+		* @param {Number} index - The index of the row whose selection state is to be set.
 		* @param {*} [data]     - Data value stored in the selection object.
 		* @public
 		*/
@@ -1295,11 +1306,11 @@
 		/**
 		* Clears the selection state for the given row index.
 		*
-		* Modifying selection will not automatically re-render the row, so use
-		* `[renderRow()]{@link enyo.List#renderRow}` or `[refresh()]{@link enyo.List#refresh}` to
-		* update the view.
+		* Modifying selection will not automatically re-render the row, so call
+		* [renderRow()]{@link enyo.List#renderRow} or [refresh()]{@link enyo.List#refresh}
+		* to update the view.
 		*
-		* @param {Number} index - Index of row
+		* @param {Number} index - The index of the row whose selection state is to be cleared.
 		* @public
 		*/
 		deselect: function (index) {
@@ -1309,7 +1320,9 @@
 		/**
 		* Gets the selection state for the given row index.
 		*
-		* @param {Number} index - Index of row
+		* @param {Number} index - The index of the row whose selection state is
+		* to be retrieved.
+		* @return {Boolean} `true` if the given row is currently selected; otherwise, `false`.
 		* @public
 		*/
 		isSelected: function (index) {
@@ -1320,26 +1333,26 @@
 		* Re-renders the specified row. Call this method after making
 		* modifications to a row, to force it to render.
 		*
-		* @param {Number} index - Index of row
+		* @param {Number} index - The index of the row to be re-rendered.
 		* @public
 	    */
 	    renderRow: function (index) {
 			this.$.generator.renderRow(index);
 	    },
 
-	    /**
-	    * Handler for onRenderRow. Updates row bounds when rows are re-rendered.
-	    *
-	    * @private
-	    */
+		/**
+	 	* Handler for `onRenderRow` events. Updates row bounds when rows are re-rendered.
+		*
+		* @private
+		*/
 		rowRendered: function (sender, event) {
 			this.updateRowBounds(event.rowIndex);
 		},
 
 		/**
-		* Prepares the row to become interactive.
+		* Prepares a row to become interactive.
 		*
-		* @param {Number} index - Index of row
+		* @param {Number} index - The index of the row to be prepared.
 		* @public
 		*/
 		prepareRow: function (index) {
@@ -1360,9 +1373,9 @@
 		* must be interactive at the time the tasks are performed). Locks the	row
 		* when done.
 		*
-		* @param {Number} index   - Index of row
-		* @param {function} func  - Function to perform
-		* @param {Object} context - Context to which the function is bound
+		* @param {Number} index   - The index of the row to be acted upon.
+		* @param {function} func  - The function to perform.
+		* @param {Object} context - The context to which the function is bound.
 		* @public
 		*/
 		performOnRow: function (index, func, context) {
@@ -1390,11 +1403,12 @@
 		},
 
 		/**
-		* Return page0 or page1 control depending on pageNumber odd/even status
+		* Returns page0 or page1 control depending on pageNumber odd/even status
 		*
-		* @param {Number} pageNumber  - Index of page
-		* @param {Boolean} checkRange - Force checking `pageNumber` against currently active pages
-		* @return {enyo.Control}      - Page control for `pageNumber`
+		* @param {Number} pageNumber  - Index of page.
+		* @param {Boolean} checkRange - Whether to force checking `pageNumber` against
+		* currently active pages.
+		* @return {enyo.Control}      - Page control for `pageNumber`.
 		* @private
 		*/
 		pageForPageNumber: function (pageNumber, checkRange) {
@@ -1411,7 +1425,7 @@
 		*/
 
 		/**
-		* Determines whether we should handle the hold event as a reorder hold.
+		* Determines whether the hold event should be handled as a reorder hold.
 		*
 		* @private
 		*/
@@ -1470,6 +1484,7 @@
 		/**
 		* Prepares floating reorder container.
 		*
+		* @param {Object} e - Event object.
 		* @private
 		*/
 		styleReorderContainer: function (e) {
@@ -1485,7 +1500,7 @@
 		* Copies the innerHTML of `node` into a new component inside of
 		* `reorderContainer`.
 		*
-		* @param {Node} node - Source node
+		* @param {Node} node - The source node.
 		* @private
 		*/
 		appendNodeToReorderContainer: function (node) {
@@ -1495,7 +1510,7 @@
 		/**
 		* Centers the floating reorder container on the user's pointer.
 		*
-		* @param {Object} e - Event object
+		* @param {Object} e - Event object.
 		* @private
 		*/
 		centerReorderContainerOnPointer: function (e) {
@@ -1514,8 +1529,8 @@
 		* Moves the reorder container to the specified `x` and `y` coordinates.
 		* Animates and kicks off timer to turn off animation.
 		*
-		* @param {Number} x - `left` position
-		* @param {Number} y - `top` position
+		* @param {Number} x - The `left` position.
+		* @param {Number} y - The `top` position.
 		* @private
 		*/
 		positionReorderContainer: function (x,y) {
@@ -1525,7 +1540,7 @@
 		},
 
 		/**
-		* Sets a timeout to remove animation class from reorder container
+		* Sets a timeout to remove animation class from reorder container.
 		*
 		* @private
 		*/
@@ -1577,9 +1592,10 @@
 		},
 
 		/**
-		* Determines the row index at `pageY` (if it exists) and moves the placeholder to that index
+		* Determines the row index at `pageY` (if it exists) and moves the placeholder
+		* to that index.
 		*
-		* @param {Number} pageY - Position from top in pixels
+		* @param {Number} pageY - Position from top in pixels.
 		* @private
 		*/
 		updatePlaceholderPosition: function (pageY) {
@@ -1596,7 +1612,7 @@
 		},
 
 		/**
-		* Positions the reorder node based on the dx and dy of the drag event.
+		* Positions the reorder node based on the `dx` and `dy` of the drag event.
 		*
 		* @private
 		*/
@@ -1610,12 +1626,12 @@
 		},
 
 		/**
-		* Checks if the list should scroll when dragging and, if so, starts the
+		* Checks whether the list should scroll when dragging and, if so, starts the
 		* scroll timeout timer. Auto-scrolling happens when the user drags an item
 		* within the top/bottom boundary percentage defined in
-		* {@link enyo.List#dragToScrollThreshold}.
+		* [dragToScrollThreshold]{@link enyo.List#dragToScrollThreshold}.
 		*
-		* @param {Object} event - Drag event
+		* @param {Object} event - Drag event.
 		* @private
 		*/
 		checkForAutoScroll: function (event) {
@@ -1665,7 +1681,8 @@
 		},
 
 		/**
-		* Scrolls the list by the distance specified in {@link enyo.List#scrollDistance}.
+		* Scrolls the list by the distance specified in
+		* [scrollDistance]{@link enyo.List#scrollDistance}.
 		*
 		* @private
 		*/
@@ -1689,7 +1706,7 @@
 		* under the user's pointer. This provides a visual cue, showing the user
 		* where the item being dragged will go if it is dropped.
 		*
-		* @param {Number} index - Index of row
+		* @param {Number} index - The row index.
 		*/
 		movePlaceholderToIndex: function (index) {
 			var node, nodeParent;
@@ -1734,7 +1751,7 @@
 
 		/**
 		* Turns off reordering. If the user didn't drag the item being reordered
-		* outside of its original position, goes into pinned reorder mode.
+		* outside of its original position, enters pinned reorder mode.
 		*
 		* @private
 		*/
@@ -1795,7 +1812,7 @@
 		},
 
 		/**
-		* Go into pinned reorder mode
+		* Enters pinned reorder mode.
 		*
 		* @fires enyo.List#event:onSetupPinnedReorderComponents
 		* @private
@@ -1846,7 +1863,7 @@
 		},
 
 		/**
-		* Adds _reorderTo_ and _reorderFrom_ properties to the reorder event.
+		* Adds `reorderTo` and `reorderFrom` properties to the reorder event.
 		*
 		* @private
 		*/
@@ -1943,7 +1960,7 @@
 		},
 
 		/**
-		* Determines if an item was reordered far enough that it warrants a refresh.
+		* Determines whether an item was reordered far enough that it warrants a refresh.
 		*
 		* @private
 		*/
@@ -1984,9 +2001,9 @@
 		},
 
 		/**
-		* Hides the DOM Node for the row at `index` and inserts the placeholder node before it
+		* Hides the DOM node for the row at `index` and inserts the placeholder node before it.
 		*
-		* @param {Number} index - Index of row
+		* @param {Number} index - The index of the row whose DOM node will be hidden.
 		* @private
 		*/
 		replaceNodeWithPlaceholder: function (index) {
@@ -2008,7 +2025,7 @@
 		* Creates and returns a placeholder node with dimensions matching those of
 		* the passed-in node.
 		*
-		* @param {Node} node - Node on which to base the dimensions
+		* @param {Node} node - Node on which to base the placeholder dimensions.
 		* @private
 		*/
 		createPlaceholderNode: function (node) {
@@ -2030,7 +2047,7 @@
 		},
 
 		/**
-		* Clears the holding area control there by removing the dragging row node
+		* Clears the holding area control there by removing the dragging row node.
 		*
 		* @private
 		*/
@@ -2074,8 +2091,9 @@
 		},
 
 		/**
-		* Repositions {@link enyo.List#currentPageNumber} and `nextPageNumber` pages to support the
-		* placeholder node's jumping from one page to the next.
+		* Repositions [currentPageNumber]{@link enyo.List#currentPageNumber} and
+		* `nextPageNumber` pages to support the placeholder node's jumping from one
+		* page to the next.
 		*
 		* @param {Number} nextPageNumber [description]
 		* @private
@@ -2099,7 +2117,7 @@
 		},
 
 		/**
-		* Hides a DOM Node
+		* Hides a DOM node.
 		*
 		* @private
 		*/
@@ -2109,7 +2127,7 @@
 		},
 
 		/**
-		* Shows a DOM Node
+		* Shows a DOM node.
 		*
 		* @private
 		*/
@@ -2119,11 +2137,11 @@
 		},
 
 		/**
-		* Called by client code to finalize a pinned mode reordering, such as when the 'Drop' button is pressed
-		* on the pinned placeholder row.
+		* Called by client code to finalize a pinned mode reordering, e.g., when the "Drop"
+		* button is pressed on the pinned placeholder row.
 		*
 		* @todo Seems incorrect to have an event on the signature for a public API
-		* @param {Object} event - Mouse/Touch Event
+		* @param {Object} event - A mouse/touch event.
 		* @public
 		*/
 		dropPinnedRow: function (event) {
@@ -2135,10 +2153,10 @@
 		},
 
 		/**
-		* Called by client code to cancel a pinned mode reordering
+		* Called by client code to cancel a pinned mode reordering.
 		*
 		* @todo Seems incorrect to have an event on the signature for a public API
-		* @param {Object} event - Mouse/Touch Event
+		* @param {Object} event - A mouse/touch event.
 		* @public
 		*/
 		cancelPinnedMode: function (event) {
@@ -2148,12 +2166,12 @@
 		},
 
 		/**
-		* Returns the row index that is under the given position on the page.  If the
-		* position is off the end of the list, this will return this.count.  If the position
-		* is before the start of the list, you'll get -1.
+		* Returns the row index that is under the given `y`-position on the page.  If the
+		* position is off the end of the list, `this.count` is returned. If the position
+		* is before the start of the list, `-1` is returned.
 		*
-		* @param {Number} y - Y position in pixels in relation to the page
-		* @return {Number}  - Index of row
+		* @param {Number} y - `y` position in pixels in relation to the page.
+		* @return {Number}  - The index of the row at the specified position.
 		* @private
 		*/
 		getRowIndexFromCoordinate: function (y) {
@@ -2195,7 +2213,7 @@
 		/**
 		* Gets the position of a node (identified via index) on the page.
 		*
-		* @return {Object} Position of row
+		* @return {Object} The position of the row node.
 		* @private
 		*/
 		getIndexPosition: function (index) {
@@ -2203,10 +2221,10 @@
 		},
 
 		/**
-		* Sets `item`'s position to match that of the list row at `index`.
+		* Sets the specified control's position to match that of the list row at `index`.
 		*
-		* @param {enyo.Control} item - Control to reposition
-		* @param {Number} index      - Index of row
+		* @param {enyo.Control} item - The control to reposition.
+		* @param {Number} index      - The index of the row whose position is to be matched.
 		* @private
 		*/
 		setItemPosition: function (item, index) {
@@ -2217,10 +2235,10 @@
 		},
 
 		/**
-		* Sets `item`'s width and height to match those of the list row at `index`.
+		* Sets the specified control's width and height to match those of the list row at `index`.
 		*
-		* @param {enyo.Control} item - Control to reposition
-		* @param {Number} index      - Index of row
+		* @param {enyo.Control} item - The control to reposition.
+		* @param {Number} index      - The index of the row whose width and height are to be matched.
 		* @private
 		*/
 		setItemBounds: function (item, index) {
@@ -2315,7 +2333,7 @@
 
 		/**
 		* When a drag is in progress, updates the position of the swipeable
-		* container based on the ddx of the event.
+		* container based on the `ddx` of the event.
 		*
 		* @private
 		*/
@@ -2365,7 +2383,7 @@
 
 		/**
 		* Reorder takes precedence over swipes, and not having it turned on or swipeable controls
-		* defined also disables this
+		* defined also disables this.
 		*
 		* @private
 		*/
@@ -2377,8 +2395,9 @@
 		/**
 		* Positions the swipeable components block at the current row.
 		*
-		* @param {Number} index      - Index of row
-		* @param {Number} xDirection - Value of xDirection from drag event (1 = right, -1 = left)
+		* @param {Number} index      - The row index.
+		* @param {Number} xDirection - Value of `xDirection` from drag event (`1` = right,
+		* `-1` = left).
 		* @private
 		*/
 		positionSwipeableContainer: function (index, xDirection) {
@@ -2396,7 +2415,7 @@
 		* Calculates new position for the swipeable container based on the user's
 		* drag action. Don't allow the container to drag beyond either edge.
 		*
-		* @param {Number} dx - Amount of change of x position
+		* @param {Number} dx - Amount of change in `x` position.
 		* @return {Number}
 		* @private
 		*/
@@ -2416,9 +2435,9 @@
 		},
 
 		/**
-		* Positions the swipeable components
+		* Positions the swipeable components.
 		*
-		* @param {Number} x - New `left` position
+		* @param {Number} x - New `left` position.
 		* @private
 		*/
 		dragSwipeableComponents: function (x) {
@@ -2427,7 +2446,7 @@
 
 		/**
 		* Begins swiping sequence by positioning the swipeable container and
-		* bubbling the setupSwipeItem event.
+		* bubbling the `setupSwipeItem` event.
 		*
 		* @param {Object} e - Event
 		* @fires enyo.List#event:onSetupSwipeItem
@@ -2491,9 +2510,9 @@
 		},
 
 		/**
-		* Complete a swipe animation in `speed` milliseconds
+		* Completes a swipe animation in the specified number of milliseconds.
 		*
-		* @param {Number} speed - Time in milliseconds
+		* @param {Number} speed - Time in milliseconds.
 		* @private
 		*/
 		swipe: function (speed) {
@@ -2512,8 +2531,8 @@
 		},
 
 		/**
-		* Returns persisted swipeable components to visible if not dragged back beyond
-		* threshold
+		* Returns persisted swipeable components to being visible if not dragged back
+		* beyond threshold.
 		*
 		* @private
 		*/
@@ -2525,7 +2544,7 @@
 		},
 
 		/**
-		* Animates the swipeable components away starting from their current position
+		* Animates the swipeable components away starting from their current position.
 		*
 		* @private
 		*/
@@ -2539,7 +2558,7 @@
 		},
 
 		/**
-		* Hides the swipeable components
+		* Hides the swipeable components.
 		*
 		* @private
 		*/
@@ -2578,11 +2597,11 @@
 		},
 
 		/**
-		* Animates a swipe starting from its current position to `targetX` over `totalTimeMS`
-		* milliseconds
+		* Animates a swipe starting from the current position to the specified new
+		* position `(targetX)` over the specified length of time `(totalTimeMS)`.
 		*
-		* @param {Number} targetX     - Target `left` position
-		* @param {Number} totalTimeMS - Time in milliseconds
+		* @param {Number} targetX     - The target `left` position.
+		* @param {Number} totalTimeMS - Time in milliseconds.
 		* @private
 		*/
 		animateSwipe: function (targetX, totalTimeMS) {
@@ -2619,7 +2638,7 @@
 		},
 
 		/**
-		* Cancels the active swipe animation
+		* Cancels the active swipe animation.
 		*
 		* @private
 		*/

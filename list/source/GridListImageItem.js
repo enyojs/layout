@@ -1,8 +1,8 @@
 (function (enyo, scope) {
 	/**
-	* _enyo.GridListImageItem_ is a convenience component that may be used inside
-	* an {@link enyo.DataGridList} to display an image grid with an
-	* optional caption and subcaption.
+	* {@link enyo.GridListImageItem} is a convenience component that may be used inside
+	* an {@link enyo.DataGridList} to display an image grid with an optional caption and
+	* subcaption.
 	*
 	* @ui
 	* @class enyo.GridListImageItem
@@ -37,7 +37,7 @@
 		*/
 		published: {
 			/**
-			* The absolute URL path to the image
+			* The absolute URL path to the image.
 			*
 			* @type {String}
 			* @default ''
@@ -46,7 +46,7 @@
 			source: '',
 
 			/**
-			* The primary caption to be displayed with the image
+			* The primary caption to be displayed with the image.
 			*
 			* @type {String}
 			* @default ''
@@ -55,7 +55,7 @@
 			caption: '',
 
 			/**
-			* The second caption line to be displayed with the image
+			* The second caption line to be displayed with the image.
 			*
 			* @type {String}
 			* @default ''
@@ -64,8 +64,8 @@
 			subCaption: '',
 
 			/**
-			* Set to true to add the `selected` CSS class to the image tile; set to
-			* false to remove the `selected` class
+			* Set to `true` to add the `selected` CSS class to the image tile; set to
+			* `false` to remove the `selected` class.
 			*
 			* @type {Boolean}
 			* @default false
@@ -74,8 +74,8 @@
 			selected: false,
 
 			/**
-			* When true, the caption and subcaption are centered; otherwise, they are
-			* left-aligned
+			* When `true`, the caption and subcaption are centered; otherwise, they are
+			* left-aligned.
 			*
 			* @type {Boolean}
 			* @default true
@@ -85,13 +85,14 @@
 
 			/**
 			* By default, the width of the image fits the width of the item, and the
-			* height is sized naturally, based on the image's aspect ratio.  Set this
+			* height is sized naturally, based on the image's aspect ratio. Set this
 			* property to `'constrain'` to letterbox the image in the available space,
 			* or `'cover'` to cover the available space with the image (cropping the
-			* larger dimension).  Note that, when _imageSizing_ is explicitly specified,
+			* larger dimension). Note that when `imageSizing` is explicitly specified,
 			* you must indicate whether the caption and subcaption are used (by setting
-			* the {@link enyo.GridListImageItem#useCaption} and
-			* {@link enyo.GridListImageItem#useSubCaption} flags) to ensure proper sizing.
+			* the [useCaption]{@link enyo.GridListImageItem#useCaption} and
+			* [useSubCaption]{@link enyo.GridListImageItem#useSubCaption} flags) to
+			* ensure proper sizing.
 			*
 			* @type {String}
 			* @default ''
@@ -100,9 +101,10 @@
 			imageSizing: '',
 
 			/**
-			* When explicitly specifying an {@link enyo.GridListImageItem#imageSizing} option, set
-			* to false if the caption space should not be reserved. This property has no effect
-			* when `imageSizing` retains its default value.
+			* When an [imageSizing]{@link enyo.GridListImageItem#imageSizing} option is
+			* explicitly specified, set this to `false` if the caption space should not
+			* be reserved. This property has no effect when `imageSizing` retains its
+			* default value.
 			*
 			* @type {Boolean}
 			* @default true
@@ -111,9 +113,10 @@
 			useCaption: true,
 
 			/**
-			* When explicitly specifying an {@link enyo.GridListImageItem#imageSizing} option, set
-			* to false if the subcaption space should not be reserved. This property has no effect
-			* when `imageSizing` retains its default value.
+			* When an [imageSizing]{@link enyo.GridListImageItem#imageSizing} option is
+			* explicitly specified, set this to `false` if the subcaption space should
+			* not be reserved. This property has no effect when `imageSizing` retains
+			* its default value.
 			*
 			* @type {Boolean}
 			* @default true

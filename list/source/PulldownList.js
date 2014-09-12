@@ -1,7 +1,8 @@
 (function (enyo, scope) {
 
 	/**
-	* Fires when user initiates a pull action.
+	* Fires when user initiates a pull action. No additional data is included with
+	* this event.
 	*
 	* @event enyo.PulldownList#event:onPullStart
 	* @type {Object}
@@ -9,7 +10,8 @@
 	*/
 
 	/**
-	* Fires when user cancels a pull action.
+	* Fires when user cancels a pull action. No additional data is included with
+	* this event.
 	*
 	* @event enyo.PulldownList#event:onPullCancel
 	* @type {Object}
@@ -17,7 +19,8 @@
 	*/
 
 	/**
-	* Fires while a pull action is in progress.
+	* Fires while a pull action is in progress. No additional data is included with
+	* this event.
 	*
 	* @event enyo.PulldownList#event:onPull
 	* @type {Object}
@@ -26,7 +29,8 @@
 
 	/**
 	* Fires when the list is released following a pull action, indicating
-	* that we are ready to retrieve data.
+	* that we are ready to retrieve data. No additional data is included with
+	* this event.
 	*
 	* @event enyo.PulldownList#event:onPullRelease
 	* @type {Object}
@@ -35,7 +39,8 @@
 
 	/**
 	* Fires when data retrieval is complete, indicating that the data is
-	* is ready to be displayed.
+	* is ready to be displayed. No additional data is included with
+	* this event.
 	*
 	* @event enyo.PulldownList#event:onPullComplete
 	* @type {Object}
@@ -43,11 +48,11 @@
 	*/
 
 	/**
-	* _enyo.PulldownList_ is a list that provides a pull-to-refresh feature, which
+	* {@link enyo.PulldownList} is a list that provides a pull-to-refresh feature, which
 	* allows new data to be retrieved and updated in the list.
 	*
-	* PulldownList provides the _onPullRelease_ event to allow an application to start
-	* retrieving new data.  The _onPullComplete_ event indicates that the pull is
+	* PulldownList provides the `onPullRelease` event to allow an application to start
+	* retrieving new data.  The `onPullComplete` event indicates that the pull is
 	* complete and it's time to update the list with the new data.
 	*
 	* ```
@@ -90,7 +95,7 @@
 		kind: 'List',
 
 		/**
-		* Sets touch to true in inherited Scroller kind for touch-based scrolling strategy
+		* Sets `touch` to `true` in inherited Scroller kind for touch-based scrolling strategy.
 		*
 		* @see {@link enyo.Scroller#touch}
 		* @type {Boolean}
@@ -100,7 +105,7 @@
 		touch: true,
 
 		/**
-		* The pull notification area at the top of the list
+		* The pull notification area at the top of the list.
 		*
 		* @type {enyo.Control}
 		* @default null
@@ -145,7 +150,7 @@
 		},
 
 		/**
-		* Message displayed when list is not being pulled
+		* Message displayed when list is not being pulled.
 		*
 		* @type {String}
 		* @default 'Pull down to refresh...'
@@ -154,7 +159,7 @@
 		pullingMessage: 'Pull down to refresh...',
 
 		/**
-		* Message displayed while a pull action is in progress
+		* Message displayed while a pull action is in progress.
 		*
 		* @type {String}
 		* @default 'Release to refresh...'
@@ -163,7 +168,7 @@
 		pulledMessage: 'Release to refresh...',
 
 		/**
-		* Message displayed while data is being retrieved
+		* Message displayed while data is being retrieved.
 		*
 		* @type {String}
 		* @default 'Loading...'
@@ -214,7 +219,7 @@
 		}),
 
 		/**
-		* Temporarily use TouchScrollStrategy on iOS devices (see ENYO-1714)
+		* Temporarily use TouchScrollStrategy on iOS devices (see ENYO-1714).
 		*
 		* @private
 		*/
@@ -241,7 +246,8 @@
 		},
 
 		/**
-		* Monitors the scroll position to display and position the {@link enyo.PulldownList#pully}
+		* Monitors the scroll position to display and position the
+		* [pully]{@link enyo.PulldownList#pully}.
 		*
 		* @see {@link enyo.Scroller#scroll}
 		* @method
@@ -289,7 +295,8 @@
 
 		/**
 		* If the pull has been fired, offset the scroll top by the height of the
-		* {@link enyo.Pulldownlist#pully} until {@link enyo.PulldownList#completePull} is called
+		* [pully]{@link enyo.Pulldownlist#pully} until
+		* [completePull()]{@link enyo.PulldownList#completePull} is called.
 		*
 		* @private
 		*/
@@ -303,7 +310,7 @@
 
 		/**
 		* Signals that the list should execute pull completion. This is usually
-		* called after the application has received the new data.
+		* called after the application has received new data.
 		*
 		* @public
 		*/
@@ -371,7 +378,7 @@
 	});
 
 	/**
-	* Fires when the Puller is created
+	* Fires when the Puller is created.
 	*
 	* @event enyo.Puller#event:onCreate
 	* @type {Object}
@@ -379,8 +386,8 @@
 	*/
 
 	/**
-	* Control displayed within a {@link enyo.PulldownList} to indicate the list is refreshing
-	* due to a pull-to-refresh
+	* {@link enyo.Puller} is a control displayed within an {@link enyo.PulldownList}
+	* to indicate that the list is refreshing due to a pull-to-refresh.
 	*
 	* @ui
 	* @class enyo.Puller
@@ -411,7 +418,7 @@
 		*/
 		published: {
 			/**
-			* Text to display below icon
+			* Text to display below icon.
 			*
 			* @type {String}
 			* @default ''
@@ -420,7 +427,7 @@
 			text: '',
 
 			/**
-			* CSS classes to apply to the icon control
+			* CSS classes to apply to the icon control.
 			*
 			* @type {String}
 			* @default ''
