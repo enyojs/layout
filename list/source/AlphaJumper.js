@@ -1,18 +1,19 @@
 (function (enyo, scope) {
 
 	/**
-	* Fires when a letter is selected
+	* Fires when a letter is selected.
 	*
 	* @event enyo.AlphaJumper#event:onAlphaJump
 	* @type {Object}
-	* @param {String} letter - The selected letter
-	* @param {Number} index  - Index of the selected letter
+	* @param {String} letter - The selected letter.
+	* @param {Number} index  - The index of the selected letter.
 	* @public
 	*/
 
 	/**
-	* Presents a vertical alphabet list useful as a navigation aid for lists, specifically
-	* {@link enyo.AlphaJumpList}.
+	* {@link enyo.AlphaJumper} provides a vertical list of alphabetical characters.
+	* It can help to streamline navigation within lists, particularly when used
+	* together with {@link enyo.AlphaJumpList}.
 	*
 	* @ui
 	* @class enyo.AlphaJumper
@@ -43,7 +44,7 @@
 		*/
 		published: {
 			/**
-			* The selected letter control
+			* The selected letter control.
 			*
 			* @type {enyo.Control}
 			* @default null
@@ -131,10 +132,10 @@
 		},
 
 		/**
-		* Iterates it's controls to find one associated with `node`
+		* Iterates through controls to find one associated with `node`.
 		*
-		* @param {Node} node
-		* @return {enyo.Control}
+		* @param {Node} node - The node whose associated control is sought.
+		* @return {enyo.Control} The control associated with the passed-in node.
 		* @private
 		*/
 		nodeToControl: function(node) {

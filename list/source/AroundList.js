@@ -1,7 +1,7 @@
 (function (enyo, scope) {
 	/**
-	*_enyo.AroundList_ is an <a href='#enyo.List'>enyo.List</a> that allows
-	*content to be displayed around its rows.
+	* {@link enyo.AroundList} is an {@link enyo.List} that allows content to be
+	* displayed around its rows.
 	*
 	* ```
 	* {kind: 'enyo.AroundList', onSetupItem: 'setupItem',
@@ -51,7 +51,7 @@
 		],
 
 		/**
-		* Block of components to be rendered above the list
+		* A block of components to be rendered above the list.
 		*
 		* @type {Object[]}
 		* @default null
@@ -60,7 +60,7 @@
 		aboveComponents: null,
 
 		/**
-		* Block of components to be rendered below the list
+		* A block of components to be rendered below the list.
 		*
 		* @type {Object[]}
 		* @default null
@@ -113,8 +113,9 @@
 		},
 
 		/**
-		* Scrolls past the [above]{@link enyo.AroundList#aboveComponents} or
-		* [below]{@link enyo.AroundList#belowComponents} components to reveal the list
+		* Scrolls past the [aboveComponents]{@link enyo.AroundList#aboveComponents}
+		* or [belowComponents]{@link enyo.AroundList#belowComponents} components to
+		* reveal the list.
 		*
 		* @public
 		*/

@@ -1,8 +1,9 @@
 (function (enyo, scope) {
 
 	/**
-	* A control that presents an alphabetic panel that you can select from, in
-	* order to perform actions based on the item selected.
+	* {@link enyo.AlphaJumpList} is an {@link enyo.List} that features an alphabetical
+	* panel from which a selection may be made. Actions are performed based on the item
+	* that was selected.
 	*
 	* ```
 	* {kind: 'AlphaJumpList', onSetupItem: 'setupItem',
@@ -73,7 +74,7 @@
 		}),
 
 		/**
-		* Vertically centers the {@link enyo.AlphaJumper} control within the scroller
+		* Vertically centers the {@link enyo.AlphaJumper} control within the scroller.
 		*
 		* @private
 		*/
