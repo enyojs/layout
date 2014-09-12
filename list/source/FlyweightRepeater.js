@@ -26,42 +26,44 @@
 	*
 	* @event enyo.FlyweightRepeater#event:onSetupItem
 	* @type {Object}
-	* @property {Number} index     - Index of row
-	* @property {Boolean} selected - `true` if row is selected
+	* @property {Number} index     - The index of the row being rendered.
+	* @property {Boolean} selected - `true` if the row is selected; otherwise, `false`.
 	* @public
 	*/
 
 	/**
-	* Fires after an individual row has been rendered
+	* Fires after an individual row has been rendered.
 	*
 	* @event enyo.FlyweightRepeater#event:onRenderRow
 	* @type {Object}
-	* @property {Number} rowIndex - Index of row
+	* @property {Number} rowIndex - The index of the row that was rendered.
 	* @public
 	*/
 
 	/**
-	* _enyo.FlyweightRepeater_ is a control that displays a repeating list of
+	* {@link enyo.FlyweightRepeater} is a control that displays a repeating list of
 	* rows, suitable for displaying medium-sized lists (up to ~100 items). A
 	* flyweight strategy is employed to render one set of row controls, as needed,
 	* for as many rows as are contained in the repeater.
 	*
 	* The FlyweightRepeater's `components` block contains the controls to be used
 	* for a single row. This set of controls will be rendered for each row. You
-	* may customize row rendering by handling the _onSetupItem_ event.
+	* may customize row rendering by handling the
+	* [onSetupItem]{@link enyo.FlyweightRepeater#event:onSetupItem} event.
 	*
 	* The controls inside a FlyweightRepeater are non-interactive. This means that
 	* calling methods that would normally cause rendering to occur (e.g.,
-	* `set('content', value)`) will not do so. However, you may force a row to
-	* render by calling `[renderRow(row)]{@link enyo.FlyweightRepeater#renderRow}`.
+	* `set('content', <value>)`) will not do so. However, you may force a row to
+	* render by calling [renderRow()]{@link enyo.FlyweightRepeater#renderRow}.
 	*
 	* In addition, you may force a row to be temporarily interactive by calling
-	* `[prepareRow(row)]{@link enyo.FlyweightRepeater#prepareRow}`. Call the
-	* `[lockRow(row)]{@link enyo.FlyweightRepeater#lockRow}` method when the interaction is
-	* complete.
+	* [prepareRow()]{@link enyo.FlyweightRepeater#prepareRow}. Call
+	* [lockRow()]{@link enyo.FlyweightRepeater#lockRow} when the interaction
+	* is complete.
 	*
 	* For more information, see the documentation on
-	* [Lists](building-apps/layout/lists.html) in the Enyo Developer Guide.
+	* [Lists]{@link building-apps/layout/lists.html} in the
+	* Enyo Developer Guide.
 	*
 	* @ui
 	* @class enyo.FlyweightRepeater
@@ -87,7 +89,7 @@
 		*/
 		published: {
 			/**
-			 * Number of rows to render
+			 * The number of rows to render.
 			 *
 			 * @type {Number}
 			 * @default 0
@@ -96,7 +98,7 @@
 			count: 0,
 
 			/**
-			* If true, the selection mechanism is disabled. Tap events are still
+			* If `true`, the selection mechanism is disabled. Tap events are still
 			* sent, but items won't be automatically re-rendered when tapped.
 			*
 			* @type {Boolean}
@@ -106,7 +108,7 @@
 			noSelect: false,
 
 			/**
-			 * If true, multiple selections are allowed
+			 * If `true`, multiple selection is allowed.
 			 *
 			 * @type {Boolean}
 			 * @default false
@@ -115,7 +117,7 @@
 			multiSelect: false,
 
 			/**
-			 * If true, the selected item will toggle
+			 * If `true`, the selected item will toggle.
 			 *
 			 * @type {Boolean}
 			 * @default false
@@ -145,8 +147,8 @@
 
 			/**
 			* Numerical offset applied to row number during row generation. Allows items
-			* to have natural indices instead of 0-based ones. This value must be
-			* positive, as row number -1 is used to represent undefined rows in the
+			* to have natural indices instead of `0`-based ones. This value must be
+			* positive, as row number `-1` is used to represent undefined rows in the
 			* event system.
 			*
 			* @type {Number}
@@ -156,8 +158,8 @@
 			rowOffset: 0,
 
 			/**
-			* Direction in which items will be laid out. Valid values are 'v' for
-			* vertical or 'h' for horizontal.
+			* Direction in which items will be laid out. Valid values are `'v'` for
+			* vertical or `'h'` for horizontal.
 			*
 			* @type {String}
 			* @default 'h'
@@ -176,8 +178,8 @@
 
 		/**
 		* Design-time attribute indicating whether row indices run
-		* from 0 to `[count]{@link enyo.FlyweightRepeater#count}-1 (`false`) or
-		* [count]{@link enyo.FlyweightRepeater#count}-1 to 0 (`true`)
+		* from `0` to [`count`]{@link enyo.FlyweightRepeater#count}`-1` `(false)` or
+		* from [`count`]{@link enyo.FlyweightRepeater#count}`-1` to `0` `(true)`.
 		*
 		* @type {Boolean}
 		* @default false
@@ -251,7 +253,7 @@
 		},
 
 		/**
-		* Renders the list
+		* Renders the list.
 		*
 		* @private
 		*/
@@ -301,7 +303,7 @@
 		},
 
 		/**
-		* Handler for selection and deselection
+		* Handler for selection and deselection.
 		*
 		* @private
 		*/
@@ -312,7 +314,7 @@
 		/**
 		* Returns the repeater's [selection]{@link enyo.Selection} component.
 		*
-		* @return {enyo.Selection}
+		* @return {enyo.Selection} The repeater's selection component.
 		* @public
 		*/
 		getSelection: function () {
@@ -322,7 +324,7 @@
 		/**
 		* Gets the selection state for the given row index.
 		*
-		* @return {Boolean} - `true` if the row is selected
+		* @return {Boolean} `true` if the row is currently selected; otherwise, `false`.
 		* @public
 		*/
 		isSelected: function (index) {
@@ -330,9 +332,9 @@
 		},
 
 		/**
-		* Renders the a row
+		* Renders the row with the specified index.
 		*
-		* @param {Number} index - Index of row
+		* @param {Number} index - The index of the row to render.
 		* @fires enyo.FlyweightRepeater#event:onRenderRow
 		* @public
 		*/
@@ -358,8 +360,8 @@
 		/**
 		* Fetches the DOM node for the given row index.
 		*
-		* @param {Number} index - Index of row
-		* @return {Node}
+		* @param {Number} index - The index of the row whose DOM node is to be fetched.
+		* @return {Node} The DOM node for the specified row.
 		* @public
 		*/
 		fetchRowNode: function (index) {
@@ -369,10 +371,10 @@
 		},
 
 		/**
-		* Fetches the row number corresponding with the target of a given event.
+		* Fetches the row number corresponding to the target of a given event.
 		*
-		* @param {Object} event - Event object
-		* @return {Number}      - Index of row
+		* @param {Object} event - Event object.
+		* @return {Number} The index of the row corresponding to the event's target.
 		* @public
 		*/
 		rowForEvent: function (event) {
@@ -391,10 +393,10 @@
 		},
 
 		/**
-		* Prepares the row specified by `index` such that changes made to the
-		* controls inside the repeater will be rendered for the given row.
+		* Prepares the specified row such that changes made to the controls inside
+		* the repeater will be rendered for the row.
 		*
-		* @param {Number} index - Index of row
+		* @param {Number} index - The index of the row to be prepared.
 		* @public
 		*/
 		prepareRow: function (index) {
@@ -418,13 +420,13 @@
 		},
 
 		/**
-		* Prepares the row specified by `index` such that changes made to the
-		* controls in the row will be rendered in the given row; then performs the
-		* function `func`, and, finally, locks the row.
+		* Prepares the specified row such that changes made to the controls in the
+		* repeater will be rendered in the row; then performs the function `func`
+		* and, finally, locks the row.
 		*
-		* @param {Number} index   - Index of row
-		* @param {Function} func  - Function to perform
-		* @param {Object} context - Context on which `func` is bound
+		* @param {Number} index   - The index of the row to be acted upon.
+		* @param {Function} func  - The function to perform.
+		* @param {Object} context - The context to which `func` is bound.
 		* @private
 		*/
 		performOnRow: function (index, func, context) {
@@ -448,8 +450,8 @@
 			* Associates a flyweight rendered control (`control`) with a
 			* rendering context specified by `node`.
 			*
-			* @param {enyo.Control} control - Flyweight-rendered control
-			* @param {Node} node - DOM Node to associate with `control`
+			* @param {enyo.Control} control - A flyweight-rendered control.
+			* @param {Node} node - The DOM node to be associated with `control`.
 			* @public
 			*/
 			claimNode: function (control, node) {

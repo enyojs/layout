@@ -1,7 +1,7 @@
 (function (enyo, scope) {
 
 	/**
-	* Fired when the Node is tapped
+	* Fires when the Node is tapped. No additional data is sent with this event.
 	*
 	* @event enyo.Node#event:onNodeTap
 	* @type {Object}
@@ -9,7 +9,7 @@
 	*/
 
 	/**
-	* Fired when the Node is double-clicked
+	* Fires when the Node is double-clicked. No additional data is sent with this event.
 	*
 	* @event enyo.Node#event:onNodeDblClick
 	* @type {Object}
@@ -17,17 +17,18 @@
 	*/
 
 	/**
-	* Fired when the Node expands or contracts, as indicated by the
-	* 'expanded' property in the event data
+	* Fires when the Node expands or contracts, as indicated by the
+	* `expanded` property in the event data.
 	*
 	* @event enyo.Node#event:onExpand
 	* @type {Object}
-	* @property {Boolean} expanded - Current expanded state of control
+	* @property {Boolean} expanded - `true` if the node is currently expanded;
+	* otherwise, `false`.
 	* @public
 	*/
 
 	/**
-	* Fired when the Node is destroyed
+	* Fires when the Node is destroyed. No additional data is sent with this event.
 	*
 	* @event enyo.Node#event:onDestroyed
 	* @type {Object}
@@ -35,7 +36,7 @@
 	*/
 
 	/**
-	* _enyo.Node_ is a control that creates structured trees based on Enyo's child
+	* {@link enyo.Node} is a control that creates structured trees based on Enyo's child
 	* component hierarchy format, e.g.:
 	*
 	* ```
@@ -53,15 +54,16 @@
 	* }
 	* ```
 	*
-	* The default kind of components within a node is itself _enyo.Node_, so only
+	* The default kind of components within a node is itself {@link enyo.Node}, so only
 	* the top-level node of the tree needs to be explicitly defined as such.
 	*
-	* When an expandable tree node expands, an {@link enyo.Node#event:onExpand} event is sent;
-	* when it is tapped, a {@link enyo.Node#event:onNodeTap} event is sent.
+	* When an expandable tree node expands, an [onExpand]{@link enyo.Node#event:onExpand}
+	* event is sent; when it is tapped, an [onNodeTap]{@link enyo.Node#event:onNodeTap}
+	* event is sent.
 	*
-	* When the optional property {@link enyo.Node#onlyIconExpands} is set to `true`, expandable
-	* nodes may only be opened by tapping the icon; tapping the content label
-	* will fire the {@link enyo.Node#event:onNodeTap} event, but will not expand the node.
+	* When the optional [onlyIconExpands]{@link enyo.Node#onlyIconExpands} property is
+	* set to `true`, expandable nodes may only be opened by tapping the icon; tapping the
+	* content label will fire the `onNodeTap` event, but will not expand the node.
 	*
 	* @ui
 	* @class  enyo.Node
@@ -82,7 +84,7 @@
 		*/
 		published: {
 			/**
-			* Whether or not the Node is expandable and has child branches
+			* Indicates whether the Node is expandable and has child branches.
 			*
 			* @type {Boolean}
 			* @default  false
@@ -91,7 +93,7 @@
 			expandable: false,
 
 			/**
-			* Open/closed state of the current Node
+			* Indicates whether the Node is currently expanded (open).
 			*
 			* @type {Boolean}
 			* @default  false
@@ -100,7 +102,7 @@
 			expanded: false,
 
 			/**
-			* Path to image to be used as the icon for this Node
+			* Path to an image to be used as the icon for this Node.
 			*
 			* @type {String}
 			* @default  ''
@@ -109,15 +111,16 @@
 			icon: '',
 
 			/**
-			* Optional flag that, when true, causes the Node to expand only when
-			* the icon is tapped; not when the contents are tapped
+			* Optional flag that, when `true`, causes the Node to expand only when
+			* the icon is tapped (not when the contents are tapped).
 			*
 			* @type {Boolean}
 			*/
 			onlyIconExpands: false,
 
 			/**
-			* Adds or removes the Enyo-selected CSS class.
+			* If `true`, adds the `'enyo-selected'` CSS class; changing value from `true`
+			* to `false` removes the class.
 			*
 			* @type {Boolean}
 			* @default  false
@@ -260,9 +263,9 @@
 		}),
 
 		/**
-		* Adds nodes as children of this control
+		* Adds nodes as children of this control.
 		*
-		* @param {Object[]} nodes - Array of component configurations
+		* @param {Object[]} nodes - An array of component configurations.
 		* @public
 		*/
 		addNodes: function (nodes) {
@@ -274,9 +277,10 @@
 		},
 
 		/**
-		* Adds new Nodes as children with the content of each specified by `nodes`
+		* Adds new Nodes as children of this Node; each value in the `nodes` array
+		* becomes the content of a new child Node.
 		*
-		* @param {String[]} nodes - Array of strings
+		* @param {String[]} nodes - An array of strings.
 		* @public
 		*/
 		addTextNodes: function (nodes) {
@@ -315,7 +319,7 @@
 		},
 
 		/**
-		* Toggles the value of {@link enyo.Node#expanded}
+		* Toggles the value of [expanded]{@link enyo.Node#expanded}.
 		*
 		* @public
 		*/
@@ -324,7 +328,7 @@
 		},
 
 		/**
-		* Immediately collapses the control's children
+		* Immediately collapses the control's children.
 		*
 		* @private
 		*/
@@ -336,7 +340,7 @@
 		},
 
 		/**
-		* Animates the expansion (using CSS transitions)
+		* Animates the expansion (using CSS transitions).
 		*
 		* @private
 		*/
@@ -356,7 +360,7 @@
 		},
 
 		/**
-		* Animates the collapse (using CSS transitions)
+		* Animates the collapsing (using CSS transitions).
 		*
 		* @private
 		*/
