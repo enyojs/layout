@@ -2266,7 +2266,7 @@
 		* @private
 		*/
 		hideReorderingRow: function () {
-			var hiddenNode = this.hasNode().querySelector('[data-enyo-index=' + this.draggingRowIndex + ']');
+			var hiddenNode = this.hasNode().querySelector('[data-enyo-index="' + this.draggingRowIndex + '"]');
 			// hide existing node
 			if (hiddenNode) {
 				this.hiddenNode = this.hideNode(hiddenNode);
