@@ -1430,7 +1430,6 @@
 		* @private
 		*/
 		shouldStartReordering: function (sender, event) {
-            console.log(this.originator);
 			if (!this.getReorderable() ||
 				event.rowIndex == null ||
 				event.rowIndex < 0 ||
