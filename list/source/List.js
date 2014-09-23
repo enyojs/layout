@@ -1414,7 +1414,7 @@
 				event.rowIndex == null ||
 				event.rowIndex < 0 ||
 				this.pinnedReorderMode ||
-				sender !== this.$.strategy ||
+				event.originator == this.$.strategy ||
 				event.index == null ||
 				event.index < 0) {
 				return false;
