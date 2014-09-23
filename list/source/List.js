@@ -1430,11 +1430,11 @@
 		* @private
 		*/
 		shouldStartReordering: function (sender, event) {
+            console.log(this.originator);
 			if (!this.getReorderable() ||
 				event.rowIndex == null ||
 				event.rowIndex < 0 ||
 				this.pinnedReorderMode ||
-				event.originator == this.$.strategy ||
 				event.index == null ||
 				event.index < 0) {
 				return false;
