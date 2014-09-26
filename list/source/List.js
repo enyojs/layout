@@ -368,13 +368,6 @@
 		holding: false,
 
 		/**
-		* Node of the dragged row, used to keep touch events alive.
-		* @type {Node}
-		* @private
-		*/
-		draggingRowNode: null,
-
-		/**
 		* Index of the row before which the placeholder item will be shown. If the
 		* placeholder is at the end of the list, this value will be one larger than
 		* the row count.
@@ -887,19 +880,6 @@
 		},
 
 		/**
-		* Preserves original DOM node because it may be needed to route touch events.
-		*
-		* @private
-		*/
-		preserveDraggingRowNode: function (pageNo) {
-			if (this.draggingRowNode && this.pageForRow(this.draggingRowIndex) === pageNo) {
-				this.$.holdingarea.hasNode().appendChild(this.draggingRowNode);
-				this.draggingRowNode = null;
-				this.removedInitialPage = true;
-			}
-		},
-
-		/**
 		 * Updates the list pages to show the correct rows for the requested `top` position.
 		 *
 		 * @param  {Number} top - Position in pixels from the top.
@@ -916,7 +896,7 @@
 			// which page number for page0 (even number pages)?
 			var p = (k % 2 === 0) ? k : k-1;
 			if (this.p0 != p && this.isPageInRange(p)) {
-				this.preserveDraggingRowNode(this.p0);
+				this.removedInitialPage = this.removedInitialPage || (this.draggingRowPage == this.p0);
 				this.generatePage(p, this.$.page0);
 				this.positionPage(p, this.$.page0);
 				this.p0 = p;
@@ -927,7 +907,7 @@
 			p = (k % 2 === 0) ? Math.max(1, k-1) : k;
 			// position data page 1
 			if (this.p1 != p && this.isPageInRange(p)) {
-				this.preserveDraggingRowNode(this.p1);
+				this.removedInitialPage = this.removedInitialPage || (this.draggingRowPage == this.p1);
 				this.generatePage(p, this.$.page1);
 				this.positionPage(p, this.$.page1);
 				this.p1 = p;
@@ -1457,7 +1437,8 @@
 			this.styleReorderContainer(event);
 
 			this.draggingRowIndex = this.placeholderRowIndex = event.rowIndex;
-			this.draggingRowNode = event.target;
+			this.draggingRowPage = this.pageForRow(this.draggingRowIndex);
+			this.removeDraggingRowNode = event.dispatchTarget.retainNode(event.target);
 			this.removedInitialPage = false;
 			this.itemMoved = false;
 			this.initialPageNumber = this.currentPageNumber = this.pageForRow(event.rowIndex);
@@ -2044,17 +2025,6 @@
 		removePlaceholderNode: function () {
 			this.removeNode(this.placeholderNode);
 			this.placeholderNode = null;
-		},
-
-		/**
-		* Clears the holding area control there by removing the dragging row node.
-		*
-		* @private
-		*/
-		removeDraggingRowNode: function () {
-			this.draggingRowNode = null;
-			var holdingArea = this.$.holdingarea.hasNode();
-			holdingArea.innerHTML = '';
 		},
 
 		/**
