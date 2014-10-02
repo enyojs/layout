@@ -109,6 +109,19 @@
         shouldReverse: function() {
             return this.container.rtl && this.orient === 'h';
         },
+		
+		/**
+		* @private
+		*/
+		destroy: enyo.inherit(function (sup) {
+			return function () {
+				sup.apply(this, arguments);
+				
+				if (this.container) {
+					this.container.removeClass(this.useFlex ? this.flexLayoutClass : this.fitLayoutClass);
+				}
+			};
+		}),
 
         /**
 		* @private
