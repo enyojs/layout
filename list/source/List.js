@@ -1432,7 +1432,7 @@
 			this.$.strategy.listReordering = true;
 
 			this.buildReorderContainer();
-			this.doSetupReorderComponents(event);
+			this.doSetupReorderComponents({index: event.index});
 			this.styleReorderContainer(event);
 
 			this.draggingRowIndex = this.placeholderRowIndex = event.rowIndex;

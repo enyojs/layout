@@ -216,7 +216,7 @@ enyo.kind({
 		this.$.remove.applyStyle('display', inSelected ? 'inline-block' : 'none');
 	},
 	removeTap: function(inSender, inEvent) {
-		this.doRemove(inEvent);
+		this.doRemove({index: inEvent.index});
 		return true;
 	}
 });

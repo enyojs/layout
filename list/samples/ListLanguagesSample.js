@@ -93,6 +93,7 @@ enyo.kind({
 		var val = this.data[i].val;
 		var number = this.languages[currentLanguage][val];
 		this.$.reorderTitle.setContent(number);
+		return true;
 	},
 	/* setupPinnedReorderComponents: function(inSender, inEvent) {
 		var i = inEvent.index;
@@ -121,6 +122,7 @@ enyo.kind({
 			? this.getNextLang(i)
 			: this.getPrevLang(i);
 		this.$.swipeTitle.setContent(this.data[i].langs[newLang]);
+		return true;
 	},
 	swipeComplete: function(inSender, inEvent) {
 		var i = inEvent.index;
