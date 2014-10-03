@@ -26,6 +26,7 @@
 	*
 	* @event enyo.List#event:onSetupReorderComponents
 	* @type {Object}
+	* @property {Number} index - The current row index.
 	* @public
 	*/
 
