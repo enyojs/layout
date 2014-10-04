@@ -290,7 +290,7 @@ enyo.kind({
 		}
 	},
 	removeTap: function(inSender, inEvent) {
-		this.doRemove(inEvent);
+		this.doRemove({index: inEvent.index});
 		return true;
 	}
 });

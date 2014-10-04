@@ -26,6 +26,7 @@
 	*
 	* @event enyo.List#event:onSetupReorderComponents
 	* @type {Object}
+	* @property {Number} index - The current row index.
 	* @public
 	*/
 
@@ -1432,7 +1433,7 @@
 			this.$.strategy.listReordering = true;
 
 			this.buildReorderContainer();
-			this.doSetupReorderComponents(event);
+			this.doSetupReorderComponents({index: event.index});
 			this.styleReorderContainer(event);
 
 			this.draggingRowIndex = this.placeholderRowIndex = event.rowIndex;
