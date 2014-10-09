@@ -321,6 +321,11 @@ module.exports = kind(
 			s.setScrollY(-1*this.getScrollTop() - this.pullHeight);
 			this.pullRelease();
 		}
+		else {
+			// if base list is configured for swipe, ensure
+			// has a chance to process swipe
+			this.inherited(arguments);
+		}
 	},
 
 	/**
