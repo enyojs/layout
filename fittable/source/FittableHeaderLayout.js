@@ -7,7 +7,7 @@
 	* space. The one that expands is labeled with the attribute `fit: true`.
 	*
 	* For more information, see the documentation on
-	* [Fittables]{@link building-apps/layout/fittables.html} in the
+	* [Fittables]{@linkplain docs/building-apps/layout/fittables.html} in the
 	* Enyo Developer Guide.
 	*
 	* @ui

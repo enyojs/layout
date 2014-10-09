@@ -15,7 +15,7 @@
 	* from the right and collapsing the old control to the left.
 	*
 	* For more information, see the documentation on
-	* [Arrangers]{@link building-apps/layout/arrangers.html} in the
+	* [Arrangers]{@linkplain docs/building-apps/layout/arrangers.html} in the
 	* Enyo Developer Guide.
 	*
 	* @class enyo.CollapsingArranger
