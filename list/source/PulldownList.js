@@ -4,7 +4,7 @@
 	* Fires when user initiates a pull action. No additional data is included with
 	* this event.
 	*
-	* @event enyo.PulldownList#event:onPullStart
+	* @event enyo.PulldownList#onPullStart
 	* @type {Object}
 	* @public
 	*/
@@ -13,7 +13,7 @@
 	* Fires when user cancels a pull action. No additional data is included with
 	* this event.
 	*
-	* @event enyo.PulldownList#event:onPullCancel
+	* @event enyo.PulldownList#onPullCancel
 	* @type {Object}
 	* @public
 	*/
@@ -22,7 +22,7 @@
 	* Fires while a pull action is in progress. No additional data is included with
 	* this event.
 	*
-	* @event enyo.PulldownList#event:onPull
+	* @event enyo.PulldownList#onPull
 	* @type {Object}
 	* @public
 	*/
@@ -32,7 +32,7 @@
 	* that we are ready to retrieve data. No additional data is included with
 	* this event.
 	*
-	* @event enyo.PulldownList#event:onPullRelease
+	* @event enyo.PulldownList#onPullRelease
 	* @type {Object}
 	* @public
 	*/
@@ -42,7 +42,7 @@
 	* is ready to be displayed. No additional data is included with
 	* this event.
 	*
-	* @event enyo.PulldownList#event:onPullComplete
+	* @event enyo.PulldownList#onPullComplete
 	* @type {Object}
 	* @public
 	*/
@@ -51,9 +51,10 @@
 	* {@link enyo.PulldownList} is a list that provides a pull-to-refresh feature, which
 	* allows new data to be retrieved and updated in the list.
 	*
-	* PulldownList provides the `onPullRelease` event to allow an application to start
-	* retrieving new data.  The `onPullComplete` event indicates that the pull is
-	* complete and it's time to update the list with the new data.
+	* PulldownList provides the [onPullRelease]{@link enyo.PulldownList#onPullRelease}
+	* event to allow an application to start retrieving new data.  The
+	* [onPullComplete]{@link enyo.PulldownList#onPullComplete} event indicates that
+	* the pull is complete and it's time to update the list with the new data.
 	*
 	* ```
 	* {name: 'list', kind: 'PulldownList', onSetupItem: 'setupItem',
@@ -322,7 +323,7 @@
 		},
 
 		/**
-		* @fires enyo.PulldownList#event:onPullStart
+		* @fires enyo.PulldownList#onPullStart
 		* @private
 		*/
 		pullStart: function () {
@@ -333,7 +334,7 @@
 		},
 
 		/**
-		* @fires enyo.PulldownList#event:onPull
+		* @fires enyo.PulldownList#onPull
 		* @private
 		*/
 		pull: function () {
@@ -342,7 +343,7 @@
 		},
 
 		/**
-		* @fires enyo.PulldownList#event:onPullCancel
+		* @fires enyo.PulldownList#onPullCancel
 		* @private
 		*/
 		pullCancel: function () {
@@ -351,7 +352,7 @@
 		},
 
 		/**
-		* @fires enyo.PulldownList#event:onPullRelease
+		* @fires enyo.PulldownList#onPullRelease
 		* @private
 		*/
 		pullRelease: function () {
@@ -380,7 +381,7 @@
 	/**
 	* Fires when the Puller is created.
 	*
-	* @event enyo.Puller#event:onCreate
+	* @event enyo.Puller#onCreate
 	* @type {Object}
 	* @public
 	*/
