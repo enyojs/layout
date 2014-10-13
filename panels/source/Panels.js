@@ -4,7 +4,7 @@
 	* Fires at the start of a panel transition, when [setIndex()]{@link enyo.Panels#setIndex}
 	* is called, and also during dragging.
 	*
-	* @event enyo.Panels#event:onTransitionStart
+	* @event enyo.Panels#onTransitionStart
 	* @type {Object}
 	* @property {Number} fromIndex - The index of the old panel.
 	* @property {Number} toIndex   - The index of the new panel.
@@ -15,7 +15,7 @@
 	* Fires at the end of a panel transition, when [setIndex()]{@link enyo.Panels#setIndex}
 	* is called, and also during dragging.
 	*
-	* @event enyo.Panels#event:onTransitionFinish
+	* @event enyo.Panels#onTransitionFinish
 	* @type {Object}
 	* @property {Number} fromIndex - The index of the old panel.
 	* @property {Number} toIndex   - The index of the new panel.
@@ -233,7 +233,7 @@
 		}),
 
 		/**
-		* Adjusts the index if the removed control is the active panel and reflows the layout
+		* Adjusts the index if the removed control is the active panel and reflows the layout.
 		*
 		* @method
 		* @private
@@ -620,7 +620,7 @@
 		* Starts the transition between two panels.
 		*
 		* @param  {Boolean} sendEvents - Whether to fire an
-		* [onTransitionStart]{@link enyo.Panels#event:onTransitionStart} event.
+		* [onTransitionStart]{@link enyo.Panels#onTransitionStart} event.
 		* @private
 		*/
 		startTransition: function (sendEvents) {
@@ -639,7 +639,7 @@
 		* Completes the transition between two panels.
 		*
 		* @param  {Boolean} sendEvents - Whether to fire an
-		* [onTransitionFinish]{@link enyo.Panels#event:onTransitionFinish} event.
+		* [onTransitionFinish]{@link enyo.Panels#onTransitionFinish} event.
 		* @private
 		*/
 		finishTransition: function (sendEvents) {
@@ -655,7 +655,7 @@
 		},
 
 		/**
-		* @fires enyo.Panels#event:onTransitionStart
+		* @fires enyo.Panels#onTransitionStart
 		* @private
 		*/
 		fireTransitionStart: function () {
@@ -667,7 +667,7 @@
 		},
 
 		/**
-		* @fires enyo.Panels#event:onTransitionFinish
+		* @fires enyo.Panels#onTransitionFinish
 		* @private
 		*/
 		fireTransitionFinish: function () {

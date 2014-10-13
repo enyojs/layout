@@ -3,7 +3,7 @@
 	/**
 	* Fires when the Slideable finishes animating.
 	*
-	* @event enyo.Slideable#event:onAnimateFinish
+	* @event enyo.Slideable#onAnimateFinish
 	* @type {enyo.Animator}
 	* @public
 	*/
@@ -12,7 +12,7 @@
 	* Fires when the position (i.e., [value]{@link enyo.Slideable#value}) of the
 	* Slideable changes.
 	*
-	* @event enyo.Slideable#event:onChange
+	* @event enyo.Slideable#onChange
 	* @type {Object}
 	* @public
 	*/
@@ -390,7 +390,7 @@
 		},
 
 		/**
-		* @fires enyo.Slideable#event:onChange
+		* @fires enyo.Slideable#onChange
 		* @private
 		*/
 		valueChanged: function (inLast) {
@@ -656,7 +656,7 @@
 		},
 
 		/**
-		* @fires enyo.Slideable#event:onAnimateFinish
+		* @fires enyo.Slideable#onAnimateFinish
 		* @private
 		*/
 		animatorComplete: function (sender) {
