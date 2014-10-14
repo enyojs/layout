@@ -10,7 +10,6 @@
 	* [Fittables]{@linkplain docs/building-apps/layout/fittables.html} in the
 	* Enyo Developer Guide.
 	*
-	* @ui
 	* @class  enyo.FittableHeaderLayout
 	* @extends enyo.FittableColumnsLayout
 	* @public

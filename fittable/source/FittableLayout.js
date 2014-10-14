@@ -34,7 +34,6 @@
 	* optimization; to use the optimization, set `useFlex: true` on the Fittable
 	* container.  This will cause flexbox to be used when possible.
 	*
-	* @ui
 	* @class  enyo.FittableLayout
 	* @extends enyo.Layout
 	* @public
@@ -293,7 +292,6 @@
 	* [Fittables]{@linkplain docs/building-apps/layout/fittables.html} in the
 	* Enyo Developer Guide.
 	*
-	* @ui
 	* @class  enyo.FittableColumnsLayout
 	* @extends enyo.FittableLayout
 	* @public
@@ -322,7 +320,6 @@
 	* [Fittables]{@linkplain docs/building-apps/layout/fittables.html} in the
 	* Enyo Developer Guide.
 	*
-	* @ui
 	* @class  enyo.FittableRowsLayout
 	* @extends enyo.FittableLayout
 	* @public

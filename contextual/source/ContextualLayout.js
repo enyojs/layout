@@ -46,7 +46,6 @@
     *
     * @typedef {Object} enyo.ContextualLayout
     *
-	* @ui
 	* @class enyo.ContextualLayout
 	* @extends enyo.Layout
 	* @public
