@@ -296,7 +296,7 @@
 
 		/**
 		* If the pull has been fired, offset the scroll top by the height of the
-		* [pully]{@link enyo.Pulldownlist#pully} until
+		* [pully]{@link enyo.PulldownList#pully} until
 		* [completePull()]{@link enyo.PulldownList#completePull} is called.
 		*
 		* @private

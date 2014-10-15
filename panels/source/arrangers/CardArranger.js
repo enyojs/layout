@@ -58,7 +58,7 @@
 		* Shows the active panel at the start of transition. Also triggers a resize on
 		* the active panel if it wasn't previously showing.
 		*
-		* @see {@link enyo.Arrange#start}
+		* @see {@link enyo.Arranger#start}
 		* @method
 		* @protected
 		*/
