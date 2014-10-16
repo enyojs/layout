@@ -32,7 +32,7 @@
 		layoutClass: 'enyo-arranger enyo-arranger-fit',
 
 		/**
-		* @see {@link enyo.Arranger#calcArrangementDifference}
+		* @see {@link enyo.Arranger.calcArrangementDifference}
 		* @protected
 		*/
 		calcArrangementDifference: function (i0, a0, i1, a1) {
@@ -44,7 +44,7 @@
 		* array of controls to be ordered such that the first control in the array is the active
 		* panel.
 		*
-		* @see {@link enyo.Arranger#arrange}
+		* @see {@link enyo.Arranger.arrange}
 		* @protected
 		*/
 		arrange: function (controls, arrangement) {
@@ -58,7 +58,7 @@
 		* Shows the active panel at the start of transition. Also triggers a resize on
 		* the active panel if it wasn't previously showing.
 		*
-		* @see {@link enyo.Arranger#start}
+		* @see {@link enyo.Arranger.start}
 		* @method
 		* @protected
 		*/
@@ -79,7 +79,7 @@
 		/**
 		* Hides all non-active panels when the transition completes.
 		*
-		* @see {@link enyo.Arranger#finish}
+		* @see {@link enyo.Arranger.finish}
 		* @method
 		* @protected
 		*/

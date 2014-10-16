@@ -87,7 +87,7 @@
 		* and yield [margin]{@link enyo.LeftRightArranger#margin} pixels on each side of
 		* [axisSize]{@link enyo.LeftRightArranger#axisSize}.
 		*
-		* @see {@link enyo.Arranger#size}
+		* @see {@link enyo.Arranger.size}
 		* @protected
 		*/
 		size: function () {
@@ -108,7 +108,7 @@
 		* to ensure that it stays behind the other panels.
 		*
 		* @todo Could use some optimization in its `for` loop (e.g. .length lookup and calc)
-		* @see {@link enyo.Arranger#start}
+		* @see {@link enyo.Arranger.start}
 		* @method
 		* @protected
 		*/
@@ -240,37 +240,37 @@
 		kind: 'LeftRightArranger',
 
 		/**
-		* @see {@link enyo.Arranger#dragProp}
+		* @see {@link enyo.Arranger.dragProp}
 		* @private
 		*/
 		dragProp: 'ddy',
 
 		/**
-		* @see {@link enyo.Arranger#dragDirectionProp}
+		* @see {@link enyo.Arranger.dragDirectionProp}
 		* @private
 		*/
 		dragDirectionProp: 'yDirection',
 
 		/**
-		* @see {@link enyo.Arranger#canDragProp}
+		* @see {@link enyo.Arranger.canDragProp}
 		* @private
 		*/
 		canDragProp: 'vertical',
 
 		/**
-		* @see {@link enyo.LeftRightArranger#axisSize}
+		* @see {@link enyo.LeftRightArranger.axisSize}
 		* @protected
 		*/
 		axisSize: 'height',
 
 		/**
-		* @see {@link enyo.LeftRightArranger#offAxisSize}
+		* @see {@link enyo.LeftRightArranger.offAxisSize}
 		* @protected
 		*/
 		offAxisSize: 'width',
 
 		/**
-		* @see {@link enyo.LeftRightArranger#axisPosition}
+		* @see {@link enyo.LeftRightArranger.axisPosition}
 		* @protected
 		*/
 		axisPosition: 'top'
@@ -306,7 +306,7 @@
 		kind: 'Arranger',
 
 		/**
-		* @see {@link enyo.Arranger#incrementalPoints}
+		* @see {@link enyo.Arranger.incrementalPoints}
 		* @private
 		*/
 		incrementalPoints: true,
@@ -321,7 +321,7 @@
 		/**
 		* Sizes each panel to one third of the container.
 		*
-		* @see  {@link enyo.Arranger#size}
+		* @see  {@link enyo.Arranger.size}
 		* @protected
 		*/
 		size: function () {
@@ -337,7 +337,7 @@
 		/**
 		* Arranges panels in a spiral with the active panel at the center.
 		*
-		* @see {@link enyo.Arranger#arrange}
+		* @see {@link enyo.Arranger.arrange}
 		* @protected
 		*/
 		arrange: function (controls, arrangement) {
@@ -352,7 +352,7 @@
 		/**
 		* Applies descending `z-index` values to each panel, starting with the active panel.
 		*
-		* @see {@link enyo.Arranger#start}
+		* @see {@link enyo.Arranger.start}
 		* @method
 		* @protected
 		*/
@@ -367,7 +367,7 @@
 		}),
 
 		/**
-		* @see {@link enyo.Arranger#calcArrangementDifference}
+		* @see {@link enyo.Arranger.calcArrangementDifference}
 		* @protected
 		*/
 		calcArrangementDifference: function (inI0, inA0, inI1, inA1) {
@@ -424,7 +424,7 @@
 		kind: 'Arranger',
 
 		/**
-		* @see {@link enyo.Arranger#incrementalPoints}
+		* @see {@link enyo.Arranger.incrementalPoints}
 		* @private
 		*/
 		incrementalPoints: true,
@@ -451,7 +451,7 @@
 		* Sizes each panel to be [colWidth]{@link enyo.GridArranger#colWidth} pixels wide
 		* and [colHeight]{@link enyo.GridArranger#colHeight} pixels high.
 		*
-		* @see {@link enyo.Arranger#size}
+		* @see {@link enyo.Arranger.size}
 		* @protected
 		*/
 		size: function () {
@@ -467,7 +467,7 @@
 		* [colWidth]{@link enyo.GridArranger#colWidth}. Each row is positioned
 		* starting at the top-left of the container.
 		*
-		* @see {@link enyo.Arranger#arrange}
+		* @see {@link enyo.Arranger.arrange}
 		* @protected
 		*/
 		arrange: function (controls, arrangement) {
@@ -484,7 +484,7 @@
 		/**
 		* If the control is moving between rows, adjusts its opacity during the transition.
 		*
-		* @see {@link enyo.Arranger#flowControl}
+		* @see {@link enyo.Arranger.flowControl}
 		* @method
 		* @protected
 		*/
@@ -496,7 +496,7 @@
 		}),
 
 		/**
-		* @see {@link enyo.Arranger#calcArrangementDifference}
+		* @see {@link enyo.Arranger.calcArrangementDifference}
 		* @protected
 		*/
 		calcArrangementDifference: function (inI0, inA0, inI1, inA1) {

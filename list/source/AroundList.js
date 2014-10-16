@@ -85,7 +85,7 @@
 		}),
 
 		/**
-		* @see enyo.List#updateMetrics
+		* @see enyo.List.updateMetrics
 		* @private
 		*/
 		updateMetrics: function () {
@@ -101,7 +101,7 @@
 		},
 
 		/**
-		* @see enyo.List#positionPage
+		* @see enyo.List.positionPage
 		* @private
 		*/
 		positionPage: function (pageNumber, target) {

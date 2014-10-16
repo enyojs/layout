@@ -49,7 +49,7 @@
 		* If a panel is added or removed after construction, ensures that any control
 		* marked to fill remaining space (via its `_fit` member) is reset.
 		*
-		* @see {@link enyo.Arranger#size}
+		* @see {@link enyo.Arranger.size}
 		* @method
 		* @protected
 		*/
@@ -91,7 +91,7 @@
 		* whose index is less than `arrangement` (the active panel's index) will be revealed
 		* by `peekWidth` pixels.
 		*
-		* @see {@link enyo.Arranger#arrange}
+		* @see {@link enyo.Arranger.arrange}
 		* @protected
 		*/
 		arrange: function (controls, arrangement) {
@@ -120,7 +120,7 @@
 		* Calculates the change in `left` position of the last panel between the two
 		* arrangements `a0` and `a1`.
 		*
-		* @see {@link enyo.Arranger#calcArrangementDifference}
+		* @see {@link enyo.Arranger.calcArrangementDifference}
 		* @private
 		*/
 		calcArrangementDifference: function (i0, a0, i1, a1) {
@@ -135,7 +135,7 @@
 		* falsy, the last panel is not resized until the
 		* [finish()]{@link enyo.CollapsingArranger#finish} method is called.
 		*
-		* @see {@link enyo.Arranger#flowControls}
+		* @see {@link enyo.Arranger.flowControls}
 		* @method
 		* @private
 		*/
@@ -157,7 +157,7 @@
 		/**
 		* Ensures that the last panel fills the remaining space when a transition completes.
 		*
-		* @see {@link enyo.Arranger#finish}
+		* @see {@link enyo.Arranger.finish}
 		* @method
 		* @private
 		*/

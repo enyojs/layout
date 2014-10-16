@@ -36,7 +36,7 @@
 		*
 		* @todo Seems like poor variable reuse of `i`
 		* @todo Should inherit from super and omit the `for` block
-		* @see {@link enyo.Arranger#start}
+		* @see {@link enyo.Arranger.start}
 		* @protected
 		*/
 		start: function () {
@@ -59,7 +59,7 @@
 		/**
 		* @todo  This method is an exact copy of CardArranger. Since it's calling the super,
 		* 	the work is being done twice, so this method should be removed.
-		* @see {@link enyo.Arranger#finish}
+		* @see {@link enyo.Arranger.finish}
 		* @method
 		* @protected
 		*/
@@ -76,7 +76,7 @@
 		/**
 		* Parses the transition point value to position the panels to slide in from the right.
 		*
-		* @see {@link enyo.Arranger#arrange}
+		* @see {@link enyo.Arranger.arrange}
 		* @protected
 		*/
 		arrange: function (controls, arrangement) {

@@ -630,7 +630,7 @@
 		* {@link enyo.TouchScrollStrategy}, which wrap their contents with
 		* additional DOM nodes.
 		*
-		* @see {@link enyo.Scroller#createStrategy}
+		* @see {@link enyo.Scroller.createStrategy}
 		* @method
 		* @private
 		*/
@@ -1120,7 +1120,7 @@
 		* When the list is scrolled, ensures that the correct rows are rendered and
 		* that the reordering controls are positioned correctly.
 		*
-		* @see {@link enyo.Scroller#scroll}
+		* @see {@link enyo.Scroller.scroll}
 		* @method
 		* @private
 		*/
@@ -1143,7 +1143,7 @@
 		/**
 		* Updates the list rows when the scroll top is set explicitly.
 		*
-		* @see {@link enyo.Scroller#setScrollTop}
+		* @see {@link enyo.Scroller.setScrollTop}
 		* @method
 		* @public
 		*/

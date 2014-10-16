@@ -79,7 +79,7 @@
 		}),
 
 		/**
-		* @see {@link enyo.Arranger#size}
+		* @see {@link enyo.Arranger.size}
 		* @protected
 		*/
 		size: function () {
@@ -158,7 +158,7 @@
 		/**
 		* Sets the `left` position for each panel according to the `arrangement`.
 		*
-		* @see {@link enyo.Arranger#arrange}
+		* @see {@link enyo.Arranger.arrange}
 		* @protected
 		*/
 		arrange: function (controls, arrangement) {
@@ -175,7 +175,7 @@
 		/**
 		* Calculates the difference in width between the panels at `i0` and `i1`.
 		*
-		* @see {@link enyo.Arranger#calcArrangementDifference}
+		* @see {@link enyo.Arranger.calcArrangementDifference}
 		* @protected
 		*/
 		calcArrangementDifference: function (i0, a0, i1, a1) {

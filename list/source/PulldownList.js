@@ -98,7 +98,7 @@
 		/**
 		* Sets `touch` to `true` in inherited Scroller kind for touch-based scrolling strategy.
 		*
-		* @see {@link enyo.Scroller#touch}
+		* @see {@link enyo.Scroller.touch}
 		* @type {Boolean}
 		* @default true
 		* @public
@@ -250,7 +250,7 @@
 		* Monitors the scroll position to display and position the
 		* [pully]{@link enyo.PulldownList#pully}.
 		*
-		* @see {@link enyo.Scroller#scroll}
+		* @see {@link enyo.Scroller.scroll}
 		* @method
 		* @private
 		*/

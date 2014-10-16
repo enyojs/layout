@@ -70,7 +70,7 @@
 		*
 		* @type {Boolean}
 		* @default false
-		* @see {@link enyo.Scroller#touchOverscroll}
+		* @see {@link enyo.Scroller.touchOverscroll}
 		* @public
 		*/
 		touchOverscroll: false,
@@ -80,7 +80,7 @@
 		*
 		* @type {Boolean}
 		* @default false
-		* @see {@link enyo.Scroller#thumb}
+		* @see {@link enyo.Scroller.thumb}
 		* @public
 		*/
 		thumb: false,
@@ -91,7 +91,7 @@
 		*
 		* @type {Boolean}
 		* @default true
-		* @see {@link enyo.Scroller#animate}
+		* @see {@link enyo.Scroller.animate}
 		* @public
 		*/
 		animate: true,
@@ -102,7 +102,7 @@
 		*
 		* @type {Boolean}
 		* @default true
-		* @see {@link enyo.Scroller#verticalDragPropagation}
+		* @see {@link enyo.Scroller.verticalDragPropagation}
 		* @public
 		*/
 		verticalDragPropagation: true,
@@ -113,7 +113,7 @@
 		*
 		* @type {Boolean}
 		* @default true
-		* @see {@link enyo.Scroller#horizontalDragPropagation}
+		* @see {@link enyo.Scroller.horizontalDragPropagation}
 		* @public
 		*/
 		horizontalDragPropagation: true,
