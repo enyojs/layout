@@ -104,7 +104,7 @@
 	* property to `true`.
 	*
 	* For more information, see the documentation on
-	* [Lists]{@linkplain apps/building-apps/layout/lists.html} in the
+	* [Lists]{@linkplain docs/building-apps/layout/lists.html} in the
 	* Enyo Developer Guide.
 	*
 	* @ui
