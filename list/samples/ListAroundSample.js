@@ -57,7 +57,10 @@ enyo.kind({
 			var showd = d != (prev && prev.name[0]);
 			this.$.divider.setContent(d);
 			this.$.divider.canGenerate = showd;
-			this.$.item.applyStyle('border-top', showd ? 'none' : null);
+			this.$.item.applyStyle('border-top', null);
+			if (showd) {
+				this.$.item.applyStyle('border-top', 'none');
+			}
 		}
 		return true;
 	},
