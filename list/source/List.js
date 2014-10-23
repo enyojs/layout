@@ -2322,6 +2322,10 @@
 			// save dragged distance (for dragfinish)
 			this.draggedXDistance = event.dx;
 			this.draggedYDistance = event.dy;
+			// save last meaningful (non-zero) and new direction (for swipeDragFinish)
+			if (event.xDirection != this.lastSwipeDirection && event.xDirection) {
+				this.lastSwipeDirection = event.xDirection;
+			}
 			return true;
 		},
 
@@ -2341,7 +2345,7 @@
 			// otherwise if user dragged more than 20% of the width, complete the swipe. if not, back out.
 			} else {
 				var percentageDragged = this.calcPercentageDragged(this.draggedXDistance);
-				if ((percentageDragged > this.percentageDraggedThreshold) && (event.xDirection === this.swipeDirection)) {
+				if ((percentageDragged > this.percentageDraggedThreshold) && (this.lastSwipeDirection === this.swipeDirection)) {
 					this.swipe(this.fastSwipeSpeedMS);
 				} else {
 					this.backOutSwipe(event);
