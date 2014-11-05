@@ -14,7 +14,7 @@
 	* that this will occur if enabled by the platform.
 	*
 	* For more information, see the documentation on
-	* [Arrangers]{@linkplain docs/building-apps/layout/arrangers.html} in the
+	* [Arrangers]{@linkplain $dev-guide/building-apps/layout/arrangers.html} in the
 	* Enyo Developer Guide.
 	*
 	* @class  enyo.Arranger

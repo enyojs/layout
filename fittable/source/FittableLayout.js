@@ -289,7 +289,7 @@
 	* specific base kind.
 	*
 	* For more information, see the documentation on
-	* [Fittables]{@linkplain docs/building-apps/layout/fittables.html} in the
+	* [Fittables]{@linkplain $dev-guide/building-apps/layout/fittables.html} in the
 	* Enyo Developer Guide.
 	*
 	* @class  enyo.FittableColumnsLayout
@@ -317,7 +317,7 @@
 	* specific base kind.
 	*
 	* For more information, see the documentation on
-	* [Fittables]{@linkplain docs/building-apps/layout/fittables.html} in the
+	* [Fittables]{@linkplain $dev-guide/building-apps/layout/fittables.html} in the
 	* Enyo Developer Guide.
 	*
 	* @class  enyo.FittableRowsLayout

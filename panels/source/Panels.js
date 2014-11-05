@@ -36,7 +36,7 @@
 	* active panel has the most prominent position.
 	*
 	* For more information, see the documentation on
-	* [Panels]{@linkplain docs/building-apps/layout/panels.html} in the
+	* [Panels]{@linkplain $dev-guide/building-apps/layout/panels.html} in the
 	* Enyo Developer Guide.
 	*
 	* @ui
