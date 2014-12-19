@@ -3,7 +3,7 @@
 	/**
 	* Fires when the Node is tapped. No additional data is sent with this event.
 	*
-	* @event enyo.Node#event:onNodeTap
+	* @event enyo.Node#onNodeTap
 	* @type {Object}
 	* @public
 	*/
@@ -11,7 +11,7 @@
 	/**
 	* Fires when the Node is double-clicked. No additional data is sent with this event.
 	*
-	* @event enyo.Node#event:onNodeDblClick
+	* @event enyo.Node#onNodeDblClick
 	* @type {Object}
 	* @public
 	*/
@@ -20,7 +20,7 @@
 	* Fires when the Node expands or contracts, as indicated by the
 	* `expanded` property in the event data.
 	*
-	* @event enyo.Node#event:onExpand
+	* @event enyo.Node#onExpand
 	* @type {Object}
 	* @property {Boolean} expanded - `true` if the node is currently expanded;
 	* otherwise, `false`.
@@ -30,7 +30,7 @@
 	/**
 	* Fires when the Node is destroyed. No additional data is sent with this event.
 	*
-	* @event enyo.Node#event:onDestroyed
+	* @event enyo.Node#onDestroyed
 	* @type {Object}
 	* @public
 	*/
@@ -57,8 +57,8 @@
 	* The default kind of components within a node is itself {@link enyo.Node}, so only
 	* the top-level node of the tree needs to be explicitly defined as such.
 	*
-	* When an expandable tree node expands, an [onExpand]{@link enyo.Node#event:onExpand}
-	* event is sent; when it is tapped, an [onNodeTap]{@link enyo.Node#event:onNodeTap}
+	* When an expandable tree node expands, an [onExpand]{@link enyo.Node#onExpand}
+	* event is sent; when it is tapped, an [onNodeTap]{@link enyo.Node#onNodeTap}
 	* event is sent.
 	*
 	* When the optional [onlyIconExpands]{@link enyo.Node#onlyIconExpands} property is
@@ -201,7 +201,7 @@
 
 		/**
 		* @method
-		* @fires enyo.Node#event:onDestroyed
+		* @fires enyo.Node#onDestroyed
 		* @private
 		*/
 		destroy: enyo.inherit(function (sup) {
@@ -292,7 +292,7 @@
 		},
 
 		/**
-		* @fires enyo.Node#event:onNodeTap
+		* @fires enyo.Node#onNodeTap
 		* @private
 		*/
 		tap: function (sender, event) {
@@ -310,7 +310,7 @@
 		},
 
 		/**
-		* @fires enyo.Node#event:onNodeDblClick
+		* @fires enyo.Node#onNodeDblClick
 		* @private
 		*/
 		dblclick: function (sender, event) {
@@ -383,7 +383,7 @@
 		},
 
 		/**
-		* @fires enyo.Node#event:onExpand
+		* @fires enyo.Node#onExpand
 		* @private
 		*/
 		expandedChanged: function (old) {

@@ -19,8 +19,8 @@
 	*
 	* All of the events (`onload`, `onerror`, and `onZoom`) from the contained
 	* ImageView objects are bubbled up to the ImageCarousel, which also inherits
-	* the [onTransitionStart]{@link enyo.Panels#event:onTransitionStart}
-	* and [onTransitionFinish]{@link enyo.Panels#event:onTransitionFinish}
+	* the [onTransitionStart]{@link enyo.Panels#onTransitionStart}
+	* and [onTransitionFinish]{@link enyo.Panels#onTransitionFinish}
 	* events from {@link enyo.Panels}.
 	*
 	* The [images]{@link enyo.ImageCarousel#images} property is an array containing the

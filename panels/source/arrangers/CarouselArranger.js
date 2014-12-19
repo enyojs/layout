@@ -15,7 +15,7 @@
 	* from the right and sliding the old controls off to the left.
 	*
 	* For more information, see the documentation on
-	* [Arrangers]{@link building-apps/layout/arrangers.html} in the
+	* [Arrangers]{@linkplain $dev-guide/building-apps/layout/arrangers.html} in the
 	* Enyo Developer Guide.
 	*
 	* @class  enyo.CarouselArranger

@@ -24,7 +24,7 @@
 	/**
 	* Fires once per row at render time.
 	*
-	* @event enyo.FlyweightRepeater#event:onSetupItem
+	* @event enyo.FlyweightRepeater#onSetupItem
 	* @type {Object}
 	* @property {Number} index     - The index of the row being rendered.
 	* @property {Boolean} selected - `true` if the row is selected; otherwise, `false`.
@@ -34,7 +34,7 @@
 	/**
 	* Fires after an individual row has been rendered.
 	*
-	* @event enyo.FlyweightRepeater#event:onRenderRow
+	* @event enyo.FlyweightRepeater#onRenderRow
 	* @type {Object}
 	* @property {Number} rowIndex - The index of the row that was rendered.
 	* @public
@@ -49,7 +49,7 @@
 	* The FlyweightRepeater's `components` block contains the controls to be used
 	* for a single row. This set of controls will be rendered for each row. You
 	* may customize row rendering by handling the
-	* [onSetupItem]{@link enyo.FlyweightRepeater#event:onSetupItem} event.
+	* [onSetupItem]{@link enyo.FlyweightRepeater#onSetupItem} event.
 	*
 	* The controls inside a FlyweightRepeater are non-interactive. This means that
 	* calling methods that would normally cause rendering to occur (e.g.,
@@ -62,7 +62,7 @@
 	* is complete.
 	*
 	* For more information, see the documentation on
-	* [Lists]{@link building-apps/layout/lists.html} in the
+	* [Lists]{@linkplain $dev-guide/building-apps/layout/lists.html} in the
 	* Enyo Developer Guide.
 	*
 	* @ui
@@ -245,7 +245,7 @@
 		},
 
 		/**
-		* @fires enyo.FlyweightRepeater#event:onSetupItem
+		* @fires enyo.FlyweightRepeater#onSetupItem
 		* @private
 		*/
 		setupItem: function (index) {
@@ -335,7 +335,7 @@
 		* Renders the row with the specified index.
 		*
 		* @param {Number} index - The index of the row to render.
-		* @fires enyo.FlyweightRepeater#event:onRenderRow
+		* @fires enyo.FlyweightRepeater#onRenderRow
 		* @public
 		*/
 		renderRow: function (index) {

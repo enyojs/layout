@@ -14,7 +14,7 @@
 	/**
 	* Fires once per row at render time.
 	*
-	* @event enyo.List#event:onSetupItem
+	* @event enyo.List#onSetupItem
 	* @type {Object}
 	* @property {Number} index - The current row index.
 	* @public
@@ -24,7 +24,7 @@
 	* Fires when reordering starts, to setup reordering components. No additional
 	* data is included with this event.
 	*
-	* @event enyo.List#event:onSetupReorderComponents
+	* @event enyo.List#onSetupReorderComponents
 	* @type {Object}
 	* @property {Number} index - The current row index.
 	* @public
@@ -33,7 +33,7 @@
 	/**
 	* Fires when reordering completes.
 	*
-	* @event enyo.List#event:onReorder
+	* @event enyo.List#onReorder
 	* @type {Object}
 	* @property {Number} reorderTo   - The index of the destination row.
 	* @property {Number} reorderFrom - The index of the source row.
@@ -44,7 +44,7 @@
 	* Fires when pinned reordering starts. No additional data is included with
 	* this event.
 	*
-	* @event enyo.List#event:onSetupPinnedReorderComponents
+	* @event enyo.List#onSetupPinnedReorderComponents
 	* @type {Object}
 	* @public
 	*/
@@ -53,21 +53,21 @@
 	* Fires when swiping starts, to set up swipeable components. No additional
 	* data is included with this event.
 	*
-	* @event enyo.List#event:onSetupSwipeItem
+	* @event enyo.List#onSetupSwipeItem
 	* @type {Object}
 	* @public
 	*/
 
 	/**
 	* @todo onSwipeDrag is never fired
-	* @event enyo.List#event:onSwipeDrag
+	* @event enyo.List#onSwipeDrag
 	* @type {Object}
 	* @public
 	*/
 
 	/**
 	* @todo onSwipe is never fired
-	* @event enyo.List#event:onSwipe
+	* @event enyo.List#onSwipe
 	* @type {Object}
 	* @public
 	*/
@@ -75,7 +75,7 @@
 	/**
 	* Fires when a swipe completes.
 	*
-	* @event enyo.List#event:onSwipeComplete
+	* @event enyo.List#onSwipeComplete
 	* @type {Object}
 	* @property {Number} index      - The index of the row that was swiped.
 	* @property {Number} xDirection - The direction of the swipe.
@@ -92,7 +92,7 @@
 	*
 	* A List's `components` block contains the controls to be used for a single
 	* row. This set of controls will be rendered for each row. You may customize
-	* row rendering by handling the [onSetupItem]{@link enyo.List#event:onSetupItem}
+	* row rendering by handling the [onSetupItem]{@link enyo.List#onSetupItem}
 	* event.
 	*
 	* Events fired from within list rows contain the `index` property, which may
@@ -104,7 +104,7 @@
 	* property to `true`.
 	*
 	* For more information, see the documentation on
-	* [Lists]{@link building-apps/layout/lists.html} in the
+	* [Lists]{@linkplain $dev-guide/building-apps/layout/lists.html} in the
 	* Enyo Developer Guide.
 	*
 	* @ui
@@ -1425,7 +1425,7 @@
 		/**
 		* Processes hold event and prepares for reordering.
 		*
-		* @fires enyo.List#event:onSetupReorderComponents
+		* @fires enyo.List#onSetupReorderComponents
 		* @private
 		*/
 		startReordering: function (event) {
@@ -1795,7 +1795,7 @@
 		/**
 		* Enters pinned reorder mode.
 		*
-		* @fires enyo.List#event:onSetupPinnedReorderComponents
+		* @fires enyo.List#onSetupPinnedReorderComponents
 		* @private
 		*/
 		beginPinnedReorder: function (event) {
@@ -1831,7 +1831,7 @@
 		/**
 		* Swaps the rows that were reordered, and sends up reorder event.
 		*
-		* @fires enyo.List#event:onReorder
+		* @fires enyo.List#onReorder
 		* @private
 		*/
 		reorderRows: function (event) {
@@ -2423,7 +2423,7 @@
 		* bubbling the `setupSwipeItem` event.
 		*
 		* @param {Object} e - Event
-		* @fires enyo.List#event:onSetupSwipeItem
+		* @fires enyo.List#onSetupSwipeItem
 		* @private
 		*/
 		startSwipe: function (e) {
@@ -2545,7 +2545,7 @@
 		/**
 		* Completes swipe and hides active swipeable item.
 		*
-		* @fires enyo.List#event:onSwipeComplete
+		* @fires enyo.List#onSwipeComplete
 		* @private
 		*/
 		completeSwipe: function () {

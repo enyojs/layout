@@ -6,7 +6,7 @@
 	* from one control to the next.
 	*
 	* For more information, see the documentation on
-	* [Arrangers]{@link building-apps/layout/arrangers.html} in the
+	* [Arrangers]{@linkplain $dev-guide/building-apps/layout/arrangers.html} in the
 	* Enyo Developer Guide.
 	*
 	* @class  enyo.CardArranger
@@ -58,7 +58,7 @@
 		* Shows the active panel at the start of transition. Also triggers a resize on
 		* the active panel if it wasn't previously showing.
 		*
-		* @see {@link enyo.Arrange#start}
+		* @see {@link enyo.Arranger#start}
 		* @method
 		* @protected
 		*/

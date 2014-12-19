@@ -10,7 +10,7 @@
 	* ```
 	*
 	* The `onload` and `onerror` events bubble up from the underlying image
-	* element and an [onZoom]{@link enyo.ImageView#event:onZoom} event is
+	* element and an [onZoom]{@link enyo.ImageView#onZoom} event is
 	* triggered when the user changes the zoom level of the image.
 	*
 	* If you wish, you may add {@link enyo.ScrollThumb} indicators, disable zoom

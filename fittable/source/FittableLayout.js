@@ -277,7 +277,7 @@
     * specific base kind.
     *
     * For more information, see the documentation on
-    * [Fittables]{@link building-apps/layout/fittables.html} in the
+    * [Fittables]{@linkplain $dev-guide/building-apps/layout/fittables.html} in the
     * Enyo Developer Guide.
     *
     * @ui
@@ -306,7 +306,7 @@
     * specific base kind.
     *
     * For more information, see the documentation on
-    * [Fittables]{@link building-apps/layout/fittables.html} in the
+    * [Fittables]{@linkplain $dev-guide/building-apps/layout/fittables.html} in the
     * Enyo Developer Guide.
     *
     * @ui

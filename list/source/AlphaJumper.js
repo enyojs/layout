@@ -3,7 +3,7 @@
 	/**
 	* Fires when a letter is selected.
 	*
-	* @event enyo.AlphaJumper#event:onAlphaJump
+	* @event enyo.AlphaJumper#onAlphaJump
 	* @type {Object}
 	* @param {String} letter - The selected letter.
 	* @param {Number} index  - The index of the selected letter.
@@ -147,7 +147,7 @@
 		},
 
 		/**
-		* @fires enyo.AlphaJumper#event:onAlphaJump
+		* @fires enyo.AlphaJumper#onAlphaJump
 		* @private
 		*/
 		markerChanged: function(last) {

@@ -4,7 +4,7 @@
 	* Fires whenever the user adjusts the zoom via double-tap/double-click, mousewheel,
 	* or pinch-zoom.
 	*
-	* @event enyo.PanZoomView#event:onZoom
+	* @event enyo.PanZoomView#onZoom
 	* @type {Object}
 	* @property {Number} scale - The new scaling factor.
 	* @public
@@ -13,7 +13,7 @@
 	/**
 	* Fires after a zoom to notify children to position non-zooming controls.
 	*
-	* @event enyo.PanZoomView#event:onPositionPin
+	* @event enyo.PanZoomView#onPositionPin
 	* @type {Object}
 	* @property {Numer} scale   - The new scaling factor.
 	* @property {Object} bounds - An object containing the current viewport bounds.
@@ -33,7 +33,7 @@
 	* }
 	* ```
 	*
-	* An [onZoom]{@link enyo.PanZoomView#event:onZoom} event is triggered when the
+	* An [onZoom]{@link enyo.PanZoomView#onZoom} event is triggered when the
 	* user changes the zoom level.
 	*
 	* If you wish, you may add {@link enyo.ScrollThumb} indicators, disable zoom
@@ -514,7 +514,7 @@
 		/**
 		* Persists the scaling factor when a gesture finishes.
 		*
-		* @fires enyo.PanZoomView#event:onZoom
+		* @fires enyo.PanZoomView#onZoom
 		* @private
 		*/
 		saveState: function (sender, event) {
@@ -619,7 +619,7 @@
 		},
 
 		/**
-		* @fires enyo.PanZoomView#event:onPositionPin
+		* @fires enyo.PanZoomView#onPositionPin
 		* @private
 		*/
 		positionClientControls: function (scale) {
