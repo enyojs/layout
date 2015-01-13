@@ -147,7 +147,7 @@
 		* @private
 		*/
 		tools: [
-			{kind: 'Animator', onStep: 'step', onEnd: 'completed'}
+			{kind: 'Animator', onStep: 'step', onEnd: 'animationEnded'}
 		],
 
 		/**
@@ -355,6 +355,7 @@
 			this.index = newIndex;
 			this.notifyObservers('index', prevIndex, newIndex);
 		},
+
 		/**
 		* Sets the active panel to the panel specified by the given index.
 		* The transition to the next panel will be immediate and will not be animated,
@@ -364,8 +365,13 @@
 		* @public
 		*/
 		setIndexDirect: function (index) {
-			this.setIndex(index);
-			this.completed();
+			if (this.animate) {
+				this.animate = false;
+				this.setIndex(index);
+				this.animate = true;
+			} else {
+				this.setIndex(index);
+			}
 		},
 
 		/**
@@ -443,23 +449,17 @@
 		*/
 		indexChanged: function (old) {
 			this.lastIndex = old;
-			if (!this.dragging && this.$.animator) {
-				if (this.$.animator.isAnimating()) {
-					if (this.finishTransitionInfo) {
-						this.finishTransitionInfo.animating = true;
-					}
-					this.completed();
-				}
-				this.$.animator.stop();
-				if (this.hasNode()) {
-					if (this.animate) {
-						this.startTransition(true);
-						this.$.animator.play({
-							startValue: this.fraction
-						});
+			if (!this.dragging && this.$.animator && this.hasNode()) {
+				if (this.animate) {
+					// If we're mid-transition, complete it and indicate we need to transition
+					if (this.$.animator.isAnimating()) {
+						this.transitionOnComplete = true;
+						this.$.animator.complete();
 					} else {
-						this.refresh();
+						this.animateTransition();
 					}
+				} else {
+					this.directTransition();
 				}
 			}
 		},
@@ -476,13 +476,23 @@
 		/**
 		* @private
 		*/
+		animationEnded: function (sender, event) {
+			this.completed();
+		},
+
+		/**
+		* @private
+		*/
 		completed: function () {
-			if (this.$.animator.isAnimating()) {
-				this.$.animator.stop();
-			}
-			this.fraction = 1;
-			this.stepTransition();
 			this.finishTransition(true);
+
+			// Animator.onEnd fires asynchronously so we need an internal flag to indicate we need
+			// to start the next transition when the previous completes
+			if (this.transitionOnComplete) {
+				this.transitionOnComplete = false;
+				this.animateTransition();
+			}
+
 			return true;
 		},
 
@@ -610,48 +620,87 @@
 			if (this.$.animator && this.$.animator.isAnimating()) {
 				this.$.animator.stop();
 			}
-			this.startTransition(false);
+			this.setupTransition();
 			this.fraction = 1;
 			this.stepTransition();
-			this.finishTransition(false);
+			this.teardownTransition();
 		},
 
 		/**
-		* Starts the transition between two panels.
+		* Transitions to the new index without animation
 		*
-		* @param  {Boolean} sendEvents - Whether to fire an
-		* [onTransitionStart]{@link enyo.Panels#onTransitionStart} event.
 		* @private
 		*/
-		startTransition: function (sendEvents) {
+		directTransition: function () {
+			this.startTransition();
+			this.fraction = 1;
+			this.stepTransition();
+			this.finishTransition();
+		},
+
+		/**
+		* Animates the transition to the new index
+		*
+		* @private
+		*/
+		animateTransition: function () {
+			this.startTransition();
+			this.$.animator.play({
+				startValue: this.fraction
+			});
+		},
+
+		/**
+		* Starts the transition between two panels. if a transition is already in progress, this is
+		* a no-op.
+		*
+		* @private
+		*/
+		startTransition: function () {
+			if (!this.transitioning) {
+				this.transitioning = true;
+				this.setupTransition();
+				this.fireTransitionStart();
+			}
+		},
+
+		/**
+		* Sets up transition state
+		*
+		* @private
+		*/
+		setupTransition: function () {
 			this.fromIndex = this.fromIndex != null ? this.fromIndex : this.lastIndex || 0;
 			this.toIndex = this.toIndex != null ? this.toIndex : this.index;
-			//this.log(this.id, this.fromIndex, this.toIndex);
 			if (this.layout) {
 				this.layout.start();
-			}
-			if (sendEvents) {
-				this.fireTransitionStart();
 			}
 		},
 
 		/**
 		* Completes the transition between two panels.
 		*
-		* @param  {Boolean} sendEvents - Whether to fire an
-		* [onTransitionFinish]{@link enyo.Panels#onTransitionFinish} event.
 		* @private
 		*/
-		finishTransition: function (sendEvents) {
+		finishTransition: function (animating) {
+			this.teardownTransition();
+			this.fireTransitionFinish(animating);
+
+			this.transitioning = false;
+		},
+
+		/**
+		* Resets transition state
+		*
+		* @private
+		*/
+		teardownTransition: function () {
 			if (this.layout) {
 				this.layout.finish();
 			}
 			this.transitionPoints = [];
 			this.fraction = 0;
 			this.fromIndex = this.toIndex = null;
-			if (sendEvents) {
-				this.fireTransitionFinish();
-			}
 		},
 
 		/**
@@ -670,10 +719,10 @@
 		* @fires enyo.Panels#onTransitionFinish
 		* @private
 		*/
-		fireTransitionFinish: function () {
+		fireTransitionFinish: function (animating) {
 			var t = this.finishTransitionInfo;
-			if (this.hasNode() && (!t || (t.fromIndex != this.lastIndex || t.toIndex != this.index))) {
-				if (t && t.animating) {
+			if (this.hasNode() && (!t || (t.fromIndex != this.fromIndex || t.toIndex != this.toIndex))) {
+				if (t && animating) {
 					this.finishTransitionInfo = {fromIndex: t.toIndex, toIndex: this.lastIndex};
 				} else {
 					this.finishTransitionInfo = {fromIndex: this.lastIndex, toIndex: this.index};
@@ -704,7 +753,6 @@
 				}
 			}
 		},
-
 
 		/**
 		* Fetches the arrangement at a specified index, initializing it if necessary.
