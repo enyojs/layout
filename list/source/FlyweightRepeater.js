@@ -177,6 +177,17 @@
 		},
 
 		/**
+		* Setting cachePoint: true ensures that events from the repeater's subtree will
+		* always bubble up through the repeater, allowing the events to be decorated with repeater-
+		* related metadata and references.
+		*
+		* @type {Boolean}
+		* @default true
+		* @private
+		*/
+		cachePoint: true,
+
+		/**
 		* Design-time attribute indicating whether row indices run
 		* from `0` to [`count`]{@link enyo.FlyweightRepeater#count}`-1` `(false)` or
 		* from [`count`]{@link enyo.FlyweightRepeater#count}`-1` to `0` `(true)`.
