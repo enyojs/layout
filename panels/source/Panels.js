@@ -359,7 +359,7 @@
 		/**
 		* Sets the active panel to the panel specified by the given index.
 		* The transition to the next panel will be immediate and will not be animated,
-		* regardless of the value of the [animate]{@link enyo.Panels#animate} property. 
+		* regardless of the value of the [animate]{@link enyo.Panels#animate} property.
 		*
 		* @param {Number} index - The index of the panel to activate.
 		* @public
@@ -484,7 +484,7 @@
 		* @private
 		*/
 		completed: function () {
-			this.finishTransition(true);
+			this.finishTransition();
 
 			// Animator.onEnd fires asynchronously so we need an internal flag to indicate we need
 			// to start the next transition when the previous completes
@@ -623,7 +623,7 @@
 			this.setupTransition();
 			this.fraction = 1;
 			this.stepTransition();
-			this.teardownTransition();
+			this.completeTransition();
 		},
 
 		/**
@@ -682,22 +682,28 @@
 		*
 		* @private
 		*/
-		finishTransition: function (animating) {
-			this.teardownTransition();
-			this.fireTransitionFinish(animating);
-
+		finishTransition: function () {
+			this.completeTransition(true);
 			this.transitioning = false;
 		},
 
 		/**
-		* Resets transition state
+		* Completes the transition by performing any tasks to be run when the transition ends,
+		* including firing events and clean-up.
 		*
+		* @param {Boolean} [fire] - If `true`, will fire the {@link enyo.Panels#onTransitionFinish}
+		*	event if deemed necessary.
 		* @private
 		*/
-		teardownTransition: function () {
+		completeTransition: function (fire) {
 			if (this.layout) {
 				this.layout.finish();
 			}
+
+			if (fire) {
+				this.fireTransitionFinish();
+			}
+
 			this.transitionPoints = [];
 			this.fraction = 0;
 			this.fromIndex = this.toIndex = null;
@@ -719,10 +725,10 @@
 		* @fires enyo.Panels#onTransitionFinish
 		* @private
 		*/
-		fireTransitionFinish: function (animating) {
+		fireTransitionFinish: function () {
 			var t = this.finishTransitionInfo;
 			if (this.hasNode() && (!t || (t.fromIndex != this.fromIndex || t.toIndex != this.toIndex))) {
-				if (t && animating) {
+				if (this.transitionOnComplete) {
 					this.finishTransitionInfo = {fromIndex: t.toIndex, toIndex: this.lastIndex};
 				} else {
 					this.finishTransitionInfo = {fromIndex: this.lastIndex, toIndex: this.index};
