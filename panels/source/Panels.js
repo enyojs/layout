@@ -450,7 +450,7 @@
 		indexChanged: function (old) {
 			this.lastIndex = old;
 			if (!this.dragging && this.$.animator && this.hasNode()) {
-				if (this.animate) {
+				if (this.shouldAnimate()) {
 					// If we're mid-transition, complete it and indicate we need to transition
 					if (this.$.animator.isAnimating()) {
 						this.transitionOnComplete = true;
@@ -462,6 +462,16 @@
 					this.directTransition();
 				}
 			}
+		},
+
+		/**
+		* Returns `true` if the panels should animate in the transition from `fromIndex` to
+		* `toIndex`.
+		*
+		* @private
+		*/
+		shouldAnimate: function () {
+			return this.animate;
 		},
 
 		/**
