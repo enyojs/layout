@@ -466,9 +466,9 @@
 
 		/**
 		* Returns `true` if the panels should animate in the transition from `fromIndex` to
-		* `toIndex`.
+		* `toIndex`. This can be overridden in a {@glossary subkind} for greater customization.
 		*
-		* @private
+		* @protected
 		*/
 		shouldAnimate: function () {
 			return this.animate;
