@@ -736,7 +736,7 @@
 		* @private
 		*/
 		fireTransitionFinish: function () {
-			var t = this.finishTransitionInfo;
+			var t = this.finishTransitionInfo || {fromIndex: null, toIndex: null};
 			if (this.hasNode() && (!t || (t.fromIndex != this.fromIndex || t.toIndex != this.toIndex))) {
 				if (this.transitionOnComplete) {
 					this.finishTransitionInfo = {fromIndex: t.toIndex, toIndex: this.lastIndex};
