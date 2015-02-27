@@ -1,3 +1,3 @@
 if (enyo && enyo.version) {
-	enyo.version.layout = "2.5.3-pre.15.t";
+	enyo.version.layout = "2.5.3-pre.17.t";
 }
