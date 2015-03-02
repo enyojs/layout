@@ -736,10 +736,12 @@
 		* @private
 		*/
 		fireTransitionFinish: function () {
-			var t = this.finishTransitionInfo;
-			if (this.hasNode() && (!t || (t.fromIndex != this.fromIndex || t.toIndex != this.toIndex))) {
+			var t = this.finishTransitionInfo,
+				fromIndex = t ? t.fromIndex : null,
+				toIndex = t ? t.toIndex : null;
+			if (this.hasNode() && (!t || (fromIndex != this.fromIndex || toIndex != this.toIndex))) {
 				if (this.transitionOnComplete) {
-					this.finishTransitionInfo = {fromIndex: t.toIndex, toIndex: this.lastIndex};
+					this.finishTransitionInfo = {fromIndex: toIndex, toIndex: this.lastIndex};
 				} else {
 					this.finishTransitionInfo = {fromIndex: this.lastIndex, toIndex: this.index};
 				}
