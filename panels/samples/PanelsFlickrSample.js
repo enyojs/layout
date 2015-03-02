@@ -154,7 +154,7 @@ enyo.kind({
 		return req;
 	},
 	processAjaxResponse: function(inSender, inResponse) {
-		inResponse = JSON.parse(inResponse);
+		inResponse = enyo.json.parse(inResponse);
 		this.processResponse(inSender, inResponse);
 	},
 	processResponse: function(inSender, inResponse) {
