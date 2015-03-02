@@ -68,7 +68,7 @@ enyo.kind({
 		}
 	},
 	processAjaxSearchResults: function(inRequest, inResponse) {
-		inResponse = JSON.parse(inResponse);
+		inResponse = enyo.json.parse(inResponse);
 		this.processSearchResults(inRequest, inResponse);
 	},
 	processSearchResults: function(inRequest, inResponse) {
