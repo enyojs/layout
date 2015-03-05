@@ -693,8 +693,8 @@
 		* @private
 		*/
 		finishTransition: function () {
-			this.completeTransition(true);
 			this.transitioning = false;
+			this.completeTransition(true);
 		},
 
 		/**
@@ -711,9 +711,13 @@
 			}
 
 			if (fire) {
-				this.fireTransitionFinish();
+				this.fireTransitionFinish(true);
+			} else {
+				this.clearTransitionData();
 			}
+		},
 
+		clearTransitionData: function() {
 			this.transitionPoints = [];
 			this.fraction = 0;
 			this.fromIndex = this.toIndex = null;
@@ -733,9 +737,11 @@
 
 		/**
 		* @fires enyo.Panels#onTransitionFinish
+		* @param {Boolean} [clearData] - If true, clearTransitionData will be called after recording
+		*  the values needed for the callback
 		* @private
 		*/
-		fireTransitionFinish: function () {
+		fireTransitionFinish: function (clearData) {
 			var t = this.finishTransitionInfo,
 				fromIndex = t ? t.fromIndex : null,
 				toIndex = t ? t.toIndex : null;
@@ -745,7 +751,12 @@
 				} else {
 					this.finishTransitionInfo = {fromIndex: this.lastIndex, toIndex: this.index};
 				}
+				if(clearData) {
+					this.clearTransitionData();
+				}
 				this.doTransitionFinish(enyo.clone(this.finishTransitionInfo));
+			} else if(clearData) {
+				this.clearTransitionData();
 			}
 		},
 
