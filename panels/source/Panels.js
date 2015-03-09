@@ -717,6 +717,11 @@
 			}
 		},
 
+		/**
+		* Clears transition-related data
+		*
+		* @private
+		*/
 		clearTransitionData: function() {
 			this.transitionPoints = [];
 			this.fraction = 0;
