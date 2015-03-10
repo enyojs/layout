@@ -718,7 +718,7 @@
 		},
 
 		/**
-		* Clears transition-related data
+		* Clears transition-related data.
 		*
 		* @private
 		*/
@@ -742,8 +742,8 @@
 
 		/**
 		* @fires enyo.Panels#onTransitionFinish
-		* @param {Boolean} [clearData] - If true, clearTransitionData will be called after recording
-		*  the values needed for the callback
+		* @param {Boolean} [clearData] - If `true`, {@link enyo.Panels#clearTransitionData} will be
+		*	called after recording the values needed for the callback.
 		* @private
 		*/
 		fireTransitionFinish: function (clearData) {
@@ -756,11 +756,11 @@
 				} else {
 					this.finishTransitionInfo = {fromIndex: this.lastIndex, toIndex: this.index};
 				}
-				if(clearData) {
+				if (clearData) {
 					this.clearTransitionData();
 				}
 				this.doTransitionFinish(enyo.clone(this.finishTransitionInfo));
-			} else if(clearData) {
+			} else if (clearData) {
 				this.clearTransitionData();
 			}
 		},
