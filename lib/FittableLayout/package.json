@@ -1,0 +1,6 @@
+{
+	"main": "FittableLayout.js",
+	"style": [
+		"FittableLayout.css"
+	]
+}
