@@ -3,7 +3,7 @@
 	/**
 	* A collection of useful metrics about a page.
 	*
-	* @typedef enyo.List~PageInfo
+	* @typedef {Object} enyo.List~PageInfo
 	* @property {Number} no       - The page number.
 	* @property {Number} size     - The page size.
 	* @property {Number} pos      - The page position.
