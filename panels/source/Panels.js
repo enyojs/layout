@@ -633,6 +633,7 @@
 			this.setupTransition();
 			this.fraction = 1;
 			this.stepTransition();
+			this.transitioning = false;
 			this.completeTransition();
 		},
 
@@ -842,7 +843,7 @@
 			* @param  {Object[]} a1     - Array of target arrangement object.
 			* @param  {Number} fraction - The fraction (between 0 and 1) with which to lerp.
 			* @return {Object[]}        - Array of arrangements that is `fraction` between
-			* 	`a0` and `a1`.
+			*	`a0` and `a1`.
 			* @private
 			*/
 			lerp: function (a0, a1, fraction) {
