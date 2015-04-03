@@ -26,7 +26,7 @@
 		* @private
 		*/
 		components: [
-			{name: 'image', kind: 'enyo.Image', classes:'image'},
+			{name: 'image', kind: 'enyo.Image', classes: 'image'},
 			{name: 'caption', classes: 'caption'},
 			{name: 'subCaption', classes: 'sub-caption'}
 		],
@@ -101,6 +101,18 @@
 			imageSizing: '',
 
 			/**
+			* This property sets the background color of the [image]{@link enyo.Image}.
+			* Additionally, you can clear background color on load event by adding onload handler.
+			* Note that onload handler will work only when no sizing value is set.
+			* Because, background image can not handle onload event. 
+			*
+			* @type {String}
+			* @default ''
+			* @public
+			*/
+			backgroundColor: '',
+
+			/**
 			* When an [imageSizing]{@link enyo.GridListImageItem#imageSizing} option is
 			* explicitly specified, set this to `false` if the caption space should not
 			* be reserved. This property has no effect when `imageSizing` retains its
@@ -131,6 +143,7 @@
 		bindings: [
 			{from: '.source', to: '.$.image.src'},
 			{from: '.caption', to: '.$.caption.content'},
+			{from: '.backgroundColor', to: '.$.image.backgroundColor'},
 			{from: '.caption', to: '.$.caption.showing', kind: 'enyo.EmptyBinding'},
 			{from: '.subCaption', to: '.$.subCaption.content'},
 			{from: '.subCaption', to: '.$.subCaption.showing', kind: 'enyo.EmptyBinding'}
