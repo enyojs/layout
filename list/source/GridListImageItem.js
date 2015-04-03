@@ -141,12 +141,12 @@
 		* @private
 		*/
 		bindings: [
-			{from: '.source', to: '.$.image.src'},
-			{from: '.caption', to: '.$.caption.content'},
-			{from: '.backgroundColor', to: '.$.image.backgroundColor'},
-			{from: '.caption', to: '.$.caption.showing', kind: 'enyo.EmptyBinding'},
-			{from: '.subCaption', to: '.$.subCaption.content'},
-			{from: '.subCaption', to: '.$.subCaption.showing', kind: 'enyo.EmptyBinding'}
+			{from: 'source', to: '$.image.src'},
+			{from: 'caption', to: '$.caption.content'},
+			{from: 'backgroundColor', to: '$.image.backgroundColor'},
+			{from: 'caption', to: '$.caption.showing', kind: 'enyo.EmptyBinding'},
+			{from: 'subCaption', to: '$.subCaption.content'},
+			{from: 'subCaption', to: '$.subCaption.showing', kind: 'enyo.EmptyBinding'}
 		],
 
 		/**
