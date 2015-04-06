@@ -60,7 +60,7 @@ var List = kind({
 
 ready(function () {
 	var name = window.document.location.search.substring(1),
-		sample = samples[name] || List;
+		Sample = samples[name] || List;
 
-	new sample({samples: samples}).renderInto(document.body);
+	new Sample({samples: samples}).renderInto(document.body);
 });

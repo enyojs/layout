@@ -1,10 +1,6 @@
 
 var
 	kind = require('enyo/kind'),
-	ready = require('enyo/ready'),
-	utils = require('enyo/utils'),
-	drag = require('enyo/drag'),
-	Scroller = require('enyo/Scroller'),
 	Select = require('enyo/Select'),
 	Button = require('enyo/Button'),
 	ToolDecorator = require('enyo/ToolDecorator'),
@@ -16,7 +12,6 @@ var
 	CarouselArranger = require('layout/CarouselArranger'),
 	CollapsingArranger = require('layout/CollapsingArranger'),
 	DockRightArranger = require('layout/DockRightArranger'),
-	FittableColumns = require('layout/FittableColumns'),
 	FittableRows = require('layout/FittableRows'),
 	GridArranger = require('layout/GridArranger'),
 	LeftRightArranger = require('layout/LeftRightArranger'),
@@ -30,7 +25,7 @@ var MyGridArranger = kind({
 	colWidth: '150'
 });
 
-var PanelsSample = module.exports = kind({
+module.exports = kind({
 	name: 'enyo.sample.PanelsSample',
 	kind: FittableRows,
 	classes: 'enyo-sample-panelssample enyo-fit',

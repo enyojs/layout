@@ -1,6 +1,5 @@
 var
 	kind = require('enyo/kind'),
-	drag = require('enyo/drag'),
 	Animator = require('enyo/Animator'),
 	Button = require('enyo/Button'),
 	Select = require('enyo/Select');

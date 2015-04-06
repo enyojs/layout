@@ -9,7 +9,7 @@ var
 	Panels = require('layout/Panels'),
 	List = require('layout/List');
 
-var PanelsSlidingSample = module.exports = kind({
+module.exports = kind({
 	name: 'enyo.sample.PanelsSlidingSample',
 	kind: FittableRows,
 	classes: 'enyo-fit',

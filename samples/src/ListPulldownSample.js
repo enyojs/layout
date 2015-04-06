@@ -3,7 +3,7 @@ var
 	json = require('enyo/json'),
 	Ajax = require('enyo/Ajax'),
 	Button = require('enyo/Button'),
-	Image = require('enyo/Image'),
+	Img = require('enyo/Image'),
 	Input = require('enyo/Input'),
 	JsonpRequest = require('enyo/Jsonp');
 
@@ -19,13 +19,13 @@ module.exports = kind({
 		{classes: 'layout-sample-toolbar', components: [
 			{label: 'label', components: [
 				{name: 'searchInput', kind: Input, value: 'nature', placeholder: 'Enter seach term'},
-				{kind: Image, src: 'assets/search-input-search.png', style: 'width: 20px;'}
+				{kind: Img, src: 'assets/search-input-search.png', style: 'width: 20px;'}
 			]},
 			{kind: Button, content: 'search', ontap: 'search'}
 		]},
 		{name: 'list', kind: PulldownList, classes: 'list-sample-pulldown-list', fit: true, onSetupItem: 'setupItem', onPullRelease: 'pullRelease', onPullComplete: 'pullComplete', components: [
 			{style: 'padding: 10px; height:70px', classes: 'list-sample-pulldown-item enyo-border-box', components: [
-				{name: 'icon', kind: Image, style: 'float: left; width: 48px; height: 48px; padding: 0 10px 10px 0;'},
+				{name: 'icon', kind: Img, style: 'float: left; width: 48px; height: 48px; padding: 0 10px 10px 0;'},
 				{name: 'name', tag: 'span', style: 'font-weight: bold;'}
 			]}
 		]}

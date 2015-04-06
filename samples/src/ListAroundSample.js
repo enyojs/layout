@@ -4,7 +4,7 @@ var
 	utils = require('enyo/utils'),
 	Button = require('enyo/Button'),
 	Checkbox = require('enyo/Checkbox'),
-	Image = require('enyo/Image'),
+	Img = require('enyo/Image'),
 	Input = require('enyo/Input'),
 	Popup = require('enyo/Popup');
 
@@ -22,13 +22,13 @@ var AroundListContactItem = kind({
 		onRemove: ''
 	},
 	components: [
-		{name: 'avatar', kind: Image, classes: 'list-sample-around-avatar'},
+		{name: 'avatar', kind: Img, classes: 'list-sample-around-avatar'},
 		{components: [
 			{name: 'name', classes: 'list-sample-around-name'},
 			{name: 'title', classes: 'list-sample-around-description'},
 			{content: '(415) 711-1234', classes: 'list-sample-around-description'}
 		]},
-		{name: 'remove', kind: Image, classes: 'list-sample-around-remove-button', src: 'assets/remove-icon.png', ontap: 'removeTap'}
+		{name: 'remove', kind: Img, classes: 'list-sample-around-remove-button', src: 'assets/remove-icon.png', ontap: 'removeTap'}
 	],
 	setContact: function (contact) {
 		this.$.name.setContent(contact.name);
@@ -54,7 +54,7 @@ module.exports = kind({
 			{kind: FittableColumns, classes: 'layout-sample-toolbar', components: [
 				{kind: FittableColumns, tag: 'label', fit: true, noStretch: true, components: [
 					{kind: Input, placeholder: 'Search...', fit: true, oninput: 'searchInputChange'},
-					{kind: Image, src: 'assets/search-input-search.png', style: 'height: 20px; width: 20px;'}
+					{kind: Img, src: 'assets/search-input-search.png', style: 'height: 20px; width: 20px;'}
 				]}
 			]}
 		], components: [
@@ -155,7 +155,6 @@ module.exports = kind({
 		this.$.list.scrollToContentStart();
 	},
 	createDb: function(inCount) {
-		/* global makeName */
 		this.db = [];
 		for (var i=0; i<inCount; i++) {
 			this.db.push(this.generateItem(names.makeName(4, 6) + ' ' + names.makeName(5, 10)));

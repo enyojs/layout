@@ -2,7 +2,7 @@ var
 	kind = require('enyo/kind'),
 	utils = require('enyo/utils'),
 	Button = require('enyo/Button'),
-	Image = require('enyo/Image');
+	Img = require('enyo/Image');
 
 var
 	PanZoomView = require('layout/PanZoomView');
@@ -14,8 +14,8 @@ var ImagesView = kind({
 		src : ''
 	},
 	components:[
-		{kind: Image, onload: 'load', ondown: 'down'},
-		{kind: Image, onload: 'load', ondown: 'down'}
+		{kind: Img, onload: 'load', ondown: 'down'},
+		{kind: Img, onload: 'load', ondown: 'down'}
 	],
 	create: kind.inherit(function(sup) {
 		return function(){

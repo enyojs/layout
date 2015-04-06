@@ -1,9 +1,10 @@
 var
 	kind = require('enyo/kind'),
 	json = require('enyo/json'),
+	Ajax = require('enyo/Ajax'),
 	Button = require('enyo/Button'),
 	Component = require('enyo/Component'),
-	Image = require('enyo/Image'),
+	Img = require('enyo/Image'),
 	Input = require('enyo/Input'),
 	JsonpRequest = require('enyo/Jsonp');
 
@@ -11,7 +12,7 @@ var
 	CollapsingArranger = require('layout/CollapsingArranger'),
 	FittableColumns = require('layout/FittableColumns'),
 	FittableRows = require('layout/FittableRows'),
-	List = require('layout/List')
+	List = require('layout/List'),
 	Panels = require('layout/Panels');
 
 // A simple component to do a Flickr search.
@@ -41,7 +42,7 @@ var PanelsFlickrSearch = kind({
 		if (window.location.protocol === 'ms-appx:') {
 			params.nojsoncallback = 1;
 			// Use ajax for platforms with no jsonp support (Windows 8)
-			req = new enyo.Ajax({url: this.url, handleAs: 'text'})
+			req = new Ajax({url: this.url, handleAs: 'text'})
 				.response(this, 'processAjaxResponse')
 				.go(params);
 		} else {
@@ -77,18 +78,18 @@ module.exports = kind({
 			{components: [
 				{kind: FittableColumns, tag: 'label', style: 'width: 90%;', components: [
 					{name: 'searchInput', fit: true, kind: Input, value: 'Japan', onchange: 'search'},
-					{kind: Image, src: 'assets/search-input-search.png', style: 'width: 20px; height: 20px;'}
+					{kind: Img, src: 'assets/search-input-search.png', style: 'width: 20px; height: 20px;'}
 				]},
-				{name: 'searchSpinner', kind: Image, src: 'assets/spinner.gif', showing: false}
+				{name: 'searchSpinner', kind: Img, src: 'assets/spinner.gif', showing: false}
 			]},
 			{kind: List, fit: true, touch: true, onSetupItem: 'setupItem', components: [
 				{name: 'item', style: 'padding: 10px;', classes: 'panels-sample-flickr-item enyo-border-box', ontap: 'itemTap', components: [
-					{name: 'thumbnail', kind: Image, classes: 'panels-sample-flickr-thumbnail'},
+					{name: 'thumbnail', kind: Img, classes: 'panels-sample-flickr-thumbnail'},
 					{name: 'title', classes: 'panels-sample-flickr-title'}
 				]},
 				{name: 'more', style: 'background-color: #323232;', components: [
 					{kind: Button, content: 'more photos', classes: 'onyx-dark panels-sample-flickr-more-button', ontap: 'more'},
-					{name: 'moreSpinner', kind: Image, src: 'assets/spinner.gif', classes: 'panels-sample-flickr-more-spinner'}
+					{name: 'moreSpinner', kind: Img, src: 'assets/spinner.gif', classes: 'panels-sample-flickr-more-spinner'}
 				]}
 			]}
 		]},
@@ -97,8 +98,8 @@ module.exports = kind({
 				{kind: Button, content: 'Back', ontap: 'showList'}
 			]},
 			{fit: true, style: 'position: relative;', components: [
-				{name: 'flickrImage', kind: Image, classes: 'enyo-fit panels-sample-flickr-center panels-sample-flickr-image', showing: false, onload: 'imageLoaded', onerror: 'imageLoaded'},
-				{name: 'imageSpinner', kind: Image, src: 'assets/spinner-large.gif', classes: 'enyo-fit panels-sample-flickr-center', showing: false}
+				{name: 'flickrImage', kind: Img, classes: 'enyo-fit panels-sample-flickr-center panels-sample-flickr-image', showing: false, onload: 'imageLoaded', onerror: 'imageLoaded'},
+				{name: 'imageSpinner', kind: Img, src: 'assets/spinner-large.gif', classes: 'enyo-fit panels-sample-flickr-center', showing: false}
 			]}
 		]},
 		{name: 'flickrSearch', kind: PanelsFlickrSearch, onResults: 'searchResults'}

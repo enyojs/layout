@@ -1,7 +1,6 @@
 var
 	kind = require('enyo/kind'),
 	Control = require('enyo/Control'),
-	Image = require('enyo/Image'),
 	Popup = require('enyo/Popup'),
 	Repeater = require('enyo/Repeater'),
 	Scroller = require('enyo/Scroller');

@@ -4,7 +4,7 @@ var
 	utils = require('enyo/utils'),
 	Button = require('enyo/Button'),
 	Checkbox = require('enyo/Checkbox'),
-	Image = require('enyo/Image'),
+	Img = require('enyo/Image'),
 	Input = require('enyo/Input'),
 	Popup = require('enyo/Popup');
 
@@ -26,7 +26,7 @@ var ContactItem = kind({
 		importance: 0
 	},
 	components: [
-		{name: 'avatar', kind: Image, classes: 'list-sample-contacts-avatar'},
+		{name: 'avatar', kind: Img, classes: 'list-sample-contacts-avatar'},
 		{components: [
 			{name: 'name'},
 			{name: 'title', classes: 'list-sample-contacts-description'},
@@ -83,7 +83,7 @@ module.exports = kind({
 				{fit: true},
 				{tag: 'label', components: [
 					{kind: Input, placeholder: 'Search...', style: 'width: 140px;', oninput: 'searchInputChange'},
-					{kind: Image, src: 'assets/search-input-search.png', style: 'width: 20px;'}
+					{kind: Img, src: 'assets/search-input-search.png', style: 'width: 20px;'}
 				]},
 				{kind: Button, content: 'remove selected', ontap: 'removeSelected'}
 			]

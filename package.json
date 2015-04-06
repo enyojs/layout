@@ -2,7 +2,7 @@
   "name": "layout",
   "version": "1.0.0",
   "description": "It's moved to [https://enyojs.atlassian.net](https://enyojs.atlassian.net).",
-  "main": "package.js",
+  "main": "index.js",
   "directories": {
     "doc": "docs"
   },
