@@ -76,6 +76,11 @@ Easing extends `enyo.easing`, by including thirty additional interpolation metho
 [Easing sample](https://github.com/enyojs/lib/layout/easing/samples) folder, showing how to implement these methods. View the
 [Easing source](https://github.com/enyojs/lib/layout/easing/source/Easing.js) to see a list of supported easing methods.
 
+## Samples
+
+All samples reside in a consolidated sample app for Enyo and its libraries:
+[enyo-strawman](https://github.com/enyojs/enyo-strawman)
+
 ## Copyright and License Information
 
 Unless otherwise specified, all content, including all source code files and
