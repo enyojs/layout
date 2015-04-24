@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/enyojs/layout2.git"
+    "url": "https://github.com/enyojs/layout.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/enyojs/layout2/issues"
+    "url": "https://github.com/enyojs/layout/issues"
   },
-  "homepage": "https://github.com/enyojs/layout2",
+  "homepage": "https://github.com/enyojs/layout",
   "devDependencies": {
     "gulp": "^3.8.11",
     "gulp-jshint": "^1.10.0",
