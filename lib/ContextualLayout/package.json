@@ -1,6 +1,6 @@
 {
 	"main": "ContextualLayout.js",
-	"style": [
+	"styles": [
 		"ContextualLayout.css"
 	]
 }

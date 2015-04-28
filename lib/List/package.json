@@ -1,6 +1,6 @@
 {
 	"main": "List.js",
-	"style": [
+	"styles": [
 		"List.css"
 	]
 }

@@ -1,6 +1,6 @@
 {
   "main": "Arranger.js",
-  "style": [
+  "styles": [
     "Arranger.css"
   ]
 }

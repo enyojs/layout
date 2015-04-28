@@ -1,6 +1,6 @@
 {
 	"main": "AlphaJumper.js",
-	"style": [
+	"styles": [
 		"AlphaJumper.css"
 	]
 }

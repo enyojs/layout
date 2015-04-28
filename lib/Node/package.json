@@ -1,6 +1,6 @@
 {
 	"main": "Node.js",
-	"style": [
+	"styles": [
 		"Node.css"
 	]
 }

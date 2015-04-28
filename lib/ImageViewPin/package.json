@@ -1,6 +1,6 @@
 {
 	"main": "ImageViewPin.js",
-	"style": [
+	"styles": [
 		"ImageViewPin.css"
 	]
 }
