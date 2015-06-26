@@ -6,6 +6,7 @@
 	width: 100%;
 	height: 100%;
 	color: #fff;
+	box-sizing: border-box;
 }
 .enyo-gridlist-imageitem img {
 	display: block;
@@ -55,7 +56,4 @@
 .enyo-gridlist-imageitem.sized-image > .sub-caption {
 	position: absolute;
 	bottom: 0;
-}
-.enyo-gridlist-imageitem:not(.sized-image){
-	padding-bottom: 3.5rem;
 }
