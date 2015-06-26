@@ -56,6 +56,3 @@
 	position: absolute;
 	bottom: 0;
 }
-.enyo-gridlist-imageitem:not(.sized-image){
-	padding-bottom: 3.5rem;
-}
