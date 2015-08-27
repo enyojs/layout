@@ -1,8 +1,12 @@
 {
   "name": "layout",
+  "assets": [],
+  "devAssets": [],
+  "styles": [],
+  "main": "index.js",
+  "moduleDir": "src",
   "version": "1.0.0",
   "description": "It's moved to [https://enyojs.atlassian.net](https://enyojs.atlassian.net).",
-  "main": "index.js",
   "directories": {
     "doc": "docs"
   },
