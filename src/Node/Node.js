@@ -87,11 +87,6 @@ var TreeNode = module.exports = kind(
 	name: 'enyo.Node',
 
 	/**
-	* @private
-	*/
-	kind: Control,
-
-	/**
 	* @lends module:layout/Node~Node.prototype
 	* @private
 	*/
@@ -155,8 +150,10 @@ var TreeNode = module.exports = kind(
 
 	/**
 	* @private
+	*
+	* set during `create`
 	*/
-	defaultKind: TreeNode,
+	defaultKind: '',
 
 	/**
 	* @private
@@ -204,6 +201,7 @@ var TreeNode = module.exports = kind(
 	*/
 	create: kind.inherit(function (sup) {
 		return function () {
+			this.defaultKind = TreeNode;
 			sup.apply(this, arguments);
 			//this.expandedChanged();
 			//this.levelChanged();
