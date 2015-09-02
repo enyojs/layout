@@ -140,9 +140,9 @@ module.exports = kind(
 		useSubCaption: true,
 
 		/**
-		* Placeholder image used while {@link enyo.GridListImageItem#source} is loaded
+		* Placeholder image used while [source]{@link module:layout/GridListImageItem~GridListImageItem#source} is loaded
 		*
-		* @see enyo.Image#placeholder
+		* @see module:enyo/Image~Image#placeholder
 		* @type {String}
 		* @default ''
 		* @public
