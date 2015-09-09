@@ -96,9 +96,8 @@ var FittableLayout = module.exports = kind(/** @lends module:layout/FittableLayo
 	* @private
 	*/
 	_reflowOnShowing: function (was, is, prop) {
-		if (is && this._hiddenReflow) {
+		if (is) {
 			this.reflow();
-			this._hiddenReflow = false;
 		}
 	},
 
@@ -199,9 +198,6 @@ var FittableLayout = module.exports = kind(/** @lends module:layout/FittableLayo
 	*/
 	_reflow: function(sMeasureName, sClienMeasure, sAttrBefore, sAttrAfter) {
 		this.container.addRemoveClass('enyo-stretch', !this.container.noStretch);
-		
-		// check if it overflows while container is not showing and remember the state
-		if (!this.container.showing) this._hiddenReflow = true;
 
 		var oFitChild       = this.getFitControl(),
 			oContainerNode  = this.container.hasNode(),  // Container node
