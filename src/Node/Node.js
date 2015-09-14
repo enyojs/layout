@@ -156,11 +156,6 @@ var TreeNode = module.exports = kind(
 	/**
 	* @private
 	*/
-	defaultKind: TreeNode,
-
-	/**
-	* @private
-	*/
 	classes: 'enyo-node',
 
 	/**
@@ -168,7 +163,7 @@ var TreeNode = module.exports = kind(
 	*/
 	components: [
 		{name: 'icon', kind: Img, showing: false},
-		{name: 'caption', kind: Control, Xtag: 'span', style: 'display: inline-block; padding: 4px;', allowHtml: true},
+		{name: 'caption', kind: Control, style: 'display: inline-block; padding: 4px;', allowHtml: true},
 		{name: 'extra', kind: Control, tag: 'span', allowHtml: true}
 	],
 
@@ -176,8 +171,8 @@ var TreeNode = module.exports = kind(
 	* @private
 	*/
 	childClient: [
-		{name: 'box', kind: Control, classes: 'enyo-node-box', Xstyle: 'border: 1px solid orange;', components: [
-			{name: 'client', kind: Control, classes: 'enyo-node-client', Xstyle: 'border: 1px solid lightblue;'}
+		{name: 'box', kind: Control, classes: 'enyo-node-box', style: 'height:auto;', components: [
+			{name: 'client', kind: Control, classes: 'enyo-node-client', style: 'top:0px;'}
 		]}
 	],
 
@@ -425,3 +420,8 @@ var TreeNode = module.exports = kind(
 		//this.contentChanged();
 	}
 });
+
+/**
+* @private
+*/
+TreeNode.prototype.defaultKind = TreeNode;

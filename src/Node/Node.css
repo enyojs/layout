@@ -6,6 +6,8 @@
 .enyo-node img {
 	vertical-align: middle;
 	padding-right: 6px;
+	padding-top: 4px;
+	padding-bottom:4px;
 }
 
 .enyo-node-box {
