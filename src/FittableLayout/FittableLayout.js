@@ -96,7 +96,7 @@ var FittableLayout = module.exports = kind(/** @lends module:layout/FittableLayo
 	* @private
 	*/
 	_reflowOnShowing: function (was, is, prop) {
-		if (is) {
+		if (is && this._hiddenReflow) {
 			this.reflow();
 		}
 	},
@@ -249,6 +249,14 @@ var FittableLayout = module.exports = kind(/** @lends module:layout/FittableLayo
 
 		nFitSize = nTotalSize - (nBeforeOffset + nAfterOffset);
 		oFitChild.applyStyle(sMeasureName, nFitSize + 'px');
+
+		// check if it reflows while container is showing and fit child has a valid height
+		// then remember the state
+		if (this.container.showing && nFitSize > 0) {
+			this._hiddenReflow = false;
+		} else {
+			this._hiddenReflow = true;
+		}
 	},
 
 	/**
