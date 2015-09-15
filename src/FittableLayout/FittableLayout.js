@@ -197,7 +197,7 @@ var FittableLayout = module.exports = kind(/** @lends module:layout/FittableLayo
 			oFirstChild,
 			nFitSize;
 
-		if (!oFitChild || !oContainerNode) { return; }
+		if (!oFitChild || !oContainerNode) { return true; }
 
 		oPadding   = dom.calcPaddingExtents(oContainerNode);
 		oBounds    = oFitChild.getBounds();
