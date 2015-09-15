@@ -8,7 +8,6 @@ var
 	kind = require('enyo/kind'),
 	dom = require('enyo/dom'),
 	Control = require('enyo/Control'),
-	utils = require('enyo/utils'),
 	Layout = require('enyo/Layout');
 
 var detector = document.createElement('div'),
@@ -77,9 +76,6 @@ var FittableLayout = module.exports = kind(/** @lends module:layout/FittableLayo
 	constructor: function () {
 		Layout.prototype._constructor.apply(this, arguments);
 
-		// If the layout was flowed on container hidden, reflow the layout while showing it.
-		this.container.addObserver('showing', utils.bindSafely(this, '_reflowOnShowing'));
-
 		// Add the force-ltr class if we're in RTL mode, but this control is set explicitly to NOT be in RTL mode.
 		this.container.addRemoveClass('force-left-to-right', (Control.prototype.rtl && !this.container.get('rtl')) );
 
@@ -89,16 +85,6 @@ var FittableLayout = module.exports = kind(/** @lends module:layout/FittableLayo
 			this.container.addClass(this.flexLayoutClass);
 		} else {
 			this.container.addClass(this.fitLayoutClass);
-		}
-	},
-
-	/**
-	* @private
-	*/
-	_reflowOnShowing: function (was, is, prop) {
-		if (is && this._hiddenReflow) {
-			this.reflow();
-			this._hiddenReflow = false;
 		}
 	},
 
@@ -200,9 +186,6 @@ var FittableLayout = module.exports = kind(/** @lends module:layout/FittableLayo
 	_reflow: function(sMeasureName, sClienMeasure, sAttrBefore, sAttrAfter) {
 		this.container.addRemoveClass('enyo-stretch', !this.container.noStretch);
 		
-		// check if it overflows while container is not showing and remember the state
-		if (!this.container.showing) this._hiddenReflow = true;
-
 		var oFitChild       = this.getFitControl(),
 			oContainerNode  = this.container.hasNode(),  // Container node
 			nTotalSize     = 0,                          // Total container width or height without padding
@@ -214,11 +197,19 @@ var FittableLayout = module.exports = kind(/** @lends module:layout/FittableLayo
 			oFirstChild,
 			nFitSize;
 
-		if (!oFitChild || !oContainerNode) { return; }
+		if (!oFitChild || !oContainerNode) { return true; }
 
 		oPadding   = dom.calcPaddingExtents(oContainerNode);
 		oBounds    = oFitChild.getBounds();
 		nTotalSize = oContainerNode[sClienMeasure] - (oPadding[sAttrBefore] + oPadding[sAttrAfter]);
+
+		// If total size is zero, there's nothing for us to do (and the Control
+		// we're doing layout for is probably hidden). In this case, we
+		// short-circuit and return `true` to signify that we want to reflow
+		// again the next time the Control is shown.
+		if (nTotalSize === 0) {
+			return true;
+		}
 
 		if (this.shouldReverse()) {
 			oFirstChild  = this.getFirstChild();
@@ -285,9 +276,9 @@ var FittableLayout = module.exports = kind(/** @lends module:layout/FittableLayo
 	reflow: function() {
 		if (!this.useFlex) {
 			if (this.orient == 'h') {
-				this._reflow('width', 'clientWidth', 'left', 'right');
+				return this._reflow('width', 'clientWidth', 'left', 'right');
 			} else {
-				this._reflow('height', 'clientHeight', 'top', 'bottom');
+				return this._reflow('height', 'clientHeight', 'top', 'bottom');
 			}
 		}
 	},
