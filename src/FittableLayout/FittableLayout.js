@@ -221,7 +221,7 @@ var FittableLayout = module.exports = kind(/** @lends module:layout/FittableLayo
 				nBeforeOffset = nMarginBeforeFirstChild;
 			} else {
 				var oFirstChildBounds      = oFirstChild.getBounds(),
-					nSpaceBeforeFirstChild = oFirstChildBounds[sAttrBefore];
+					nSpaceBeforeFirstChild = oFirstChildBounds[sAttrBefore] - (oPadding[sAttrBefore] || 0);
 
 				nBeforeOffset = oBounds[sAttrBefore] + nMarginBeforeFirstChild - nSpaceBeforeFirstChild;
 			}
