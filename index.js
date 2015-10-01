@@ -1,3 +1,3 @@
 module.exports = {
-	version: '2.6.0-pre.17'
+	version: '2.6.0-pre.17.1'
 };
