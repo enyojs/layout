@@ -261,7 +261,7 @@ var Panels = module.exports = kind(
 			// adjust index if the current panel is being removed
 			// so it's either the previous panel or the first one.
 			var newIndex = -1;
-			var controlIndex = utils.indexOf(control, this.controls);
+			var controlIndex = utils.indexOf(control, this.getPanels());
 			if (controlIndex === this.index) {
 				newIndex = Math.max(controlIndex - 1, 0);
 			}
