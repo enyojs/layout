@@ -13,21 +13,27 @@ var
 	CarouselArranger = require('./CarouselArranger');
 
 /**
-* {@link module:layout/ImageCarousel~ImageCarousel} is an {@link module:layout/Panels~Panels} that uses {@link module:layout/CarouselArranger~CarouselArranger}
-* as its arrangerKind. An ImageCarousel dynamically creates and loads instances of
+* {@link module:layout/ImageCarousel~ImageCarousel} is a
+* {@link module:layout/Panels~Panels} that uses
+* {@link module:layout/CarouselArranger~CarouselArranger} as its arrangerKind.
+* An ImageCarousel dynamically creates and loads instances of
 * {@link module:layout/ImageView~ImageView} as needed, creating a gallery of images.
 *
-* ```
-* {kind: 'ImageCarousel', images: [
-* 	'assets/mercury.jpg',
-* 	'assets/venus.jpg',
-* 	'assets/earth.jpg',
-* 	'assets/mars.jpg',
-* 	'assets/jupiter.jpg',
-* 	'assets/saturn.jpg',
-* 	'assets/uranus.jpg',
-* 	'assets/neptune.jpg'
-* ], defaultScale: 'auto'},
+* ```javascript
+* 	var
+* 		kind = require('enyo/kind'),
+* 		ImageCarousel = require('layout/ImageCarousel');
+*
+* 	{kind: ImageCarousel, images: [
+* 		'assets/mercury.jpg',
+* 		'assets/venus.jpg',
+* 		'assets/earth.jpg',
+* 		'assets/mars.jpg',
+* 		'assets/jupiter.jpg',
+* 		'assets/saturn.jpg',
+* 		'assets/uranus.jpg',
+* 		'assets/neptune.jpg'
+* 	], defaultScale: 'auto'},
 * ```
 *
 * All of the events (`onload`, `onerror`, and `onZoom`) from the contained

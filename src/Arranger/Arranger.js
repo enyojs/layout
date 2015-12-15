@@ -17,7 +17,7 @@ var
 * controls it lays out as active. The other controls are placed relative to
 * the active control as makes sense for the layout.
 *
-* `enyo.Arranger` supports dynamic layouts, meaning it's possible to transition
+* `layout/Arranger` supports dynamic layouts, meaning it's possible to transition
 * between an arranger's layouts	via animation. Typically, arrangers should lay out
 * controls using CSS transforms, since these are optimized for animation. To
 * support this, the controls in an arranger are absolutely positioned, and

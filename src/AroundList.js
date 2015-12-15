@@ -11,18 +11,22 @@ var
 	FlyweightRepeater = require('./FlyweightRepeater');
 
 /**
-* {@link module:layout/AroundList~AroundList} is an {@link module:layout/List~List} that allows content to be
-* displayed around its rows.
+* {@link module:layout/AroundList~AroundList} is a {@link module:layout/List~List}
+* that allows content to be displayed around its rows.
 *
-* ```
-* {kind: 'enyo.AroundList', onSetupItem: 'setupItem',
-*     aboveComponents: [
-*         {content: 'Content above the list'}
-*     ],
-*     components: [
-*         {content: 'List item'}
-*     ]
-* }
+* ```javascript
+* 	var
+* 		kind = require('enyo/kind'),
+* 		AroundList = require('layout/AroundList');
+*
+* 	{kind: AroundList, onSetupItem: 'setupItem',
+* 		aboveComponents: [
+* 			{content: 'Content above the list'}
+* 		],
+* 		components: [
+* 			{content: 'List item'}
+* 		]
+* 	}
 * ```
 *
 * @class AroundList

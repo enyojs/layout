@@ -17,8 +17,9 @@ var
 */
 
 /**
-* {@link module:layout/PulldownList/Puller~Puller} is a control displayed within an {@link module:layout/PulldownList~PulldownList}
-* to indicate that the list is refreshing due to a pull-to-refresh.
+* {@link module:layout/PulldownList/Puller~Puller} is a control displayed within
+* a {@link module:layout/PulldownList~PulldownList} to indicate that the list is
+* refreshing in response to a pull-to-refresh action.
 *
 * @class Puller
 * @extends module:enyo/Control~Control

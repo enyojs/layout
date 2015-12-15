@@ -42,8 +42,8 @@ var
 * other things) a carousel, a set of collapsing panels, a card stack that fades
 * between panels, or a grid.
 *
-* Any Enyo control may be placed inside an `Panels`, but by convention we
-* refer to each of these controls as a "panel". From the set of panels in an
+* Any Enyo control may be placed inside a `Panels`, but by convention we
+* refer to each of these controls as a "panel". From the set of panels in a
 * `Panels`, one is considered to be active. The active panel is set by index
 * using the [setIndex()]{@link module:layout/Panels~Panels#setIndex} method. The actual layout of
 * the panels typically changes each time the active panel is set, such that the new

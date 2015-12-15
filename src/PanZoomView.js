@@ -37,11 +37,15 @@ var
 * panning, mousewheel zooming and pinch-zoom (on touchscreen devices that
 * support it).
 *
-* ```
-* {kind: 'PanZoomView', scale: 'auto', contentWidth: 500, contentHeight: 500,
-* 	style: 'width: 500px; height: 400px;',
-* 	components: [{content: 'Hello World'}]
-* }
+* ```javascript
+* 	var
+* 		kind = require('enyo/kind'),
+* 		PanZoomView = require('layout/PanZoomView');
+*
+* 	{kind: PanZoomView, scale: 'auto', contentWidth: 500, contentHeight: 500,
+* 		style: 'width: 500px; height: 400px;',
+* 		components: [{content: 'Hello World'}]
+* 	}
 * ```
 *
 * An [onZoom]{@link module:layout/PanZoomView~PanZoomView#onZoom} event is triggered when the

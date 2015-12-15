@@ -14,12 +14,18 @@ var
 	PanZoomView = require('./PanZoomView');
 
 /**
-* {@link module:layout/ImageView~ImageView} is a control that displays an image at a given scaling
-* factor, with enhanced support for double-tap/double-click to zoom, panning,
-* mousewheel zooming and pinch-zoom (on touchscreen devices that support it).
+* {@link module:layout/ImageView~ImageView} is a control that displays an image
+* at a given scaling factor, with enhanced support for double-tap/double-click
+* to zoom, panning, mousewheel zooming and pinch-zoom (on touchscreen devices
+* that support it).
 *
-* ```
-* {kind: 'ImageView', src: 'assets/globe.jpg', scale: 'auto', style: 'width:500px; height:400px;'}
+* ```javascript
+* 	var
+* 		kind = require('enyo/kind'),
+* 		ImageView = require('layout/ImageView');
+*
+* 	{kind: ImageView, src: 'assets/globe.jpg', scale: 'auto',
+* 		style: 'width: 500px; height: 400px;'}
 * ```
 *
 * The `onload` and `onerror` events bubble up from the underlying image

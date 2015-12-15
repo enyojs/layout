@@ -62,33 +62,39 @@ var
 */
 
 /**
-* {@link module:layout/PulldownList~PulldownList} is a list that provides a pull-to-refresh feature, which
-* allows new data to be retrieved and updated in the list.
+* {@link module:layout/PulldownList~PulldownList} is a list that provides a
+* pull-to-refresh feature, which allows new data to be retrieved and updated in
+* the list.
 *
 * PulldownList provides the [onPullRelease]{@link module:layout/PulldownList~PulldownList#onPullRelease}
 * event to allow an application to start retrieving new data.  The
-* [onPullComplete]{@link module:layout/PulldownList~PulldownList#onPullComplete} event indicates that
-* the pull is complete and it's time to update the list with the new data.
+* [onPullComplete]{@link module:layout/PulldownList~PulldownList#onPullComplete}
+* event indicates that the pull is complete and it's time to update the list
+* with the new data.
 *
-* ```
-* {name: 'list', kind: 'PulldownList', onSetupItem: 'setupItem',
-* 	onPullRelease: 'pullRelease', onPullComplete: 'pullComplete',
-* 	components: [
-* 		{name: 'item'}
-* 	]
-* }
+* ```javascript
+* 	var
+* 		kind = require('enyo/kind'),
+* 		PulldownList = require('layout/PulldownList');
 *
-* pullRelease: function () {
-* 	this.search();
-* },
-* processSearchResults: function (inRequest, inResponse) {
-* 	this.results = inResponse.results;
-* 	this.$.list.setCount(this.results.length);
-* 	this.$.list.completePull();
-* },
-* pullComplete: function () {
-* 	this.$.list.reset();
-* }
+* 	{name: 'list', kind: PulldownList, onSetupItem: 'setupItem',
+* 		onPullRelease: 'pullRelease', onPullComplete: 'pullComplete',
+* 		components: [
+* 			{name: 'item'}
+* 		]
+* 	}
+*
+* 	pullRelease: function () {
+* 		this.search();
+* 	},
+* 	processSearchResults: function (inRequest, inResponse) {
+* 		this.results = inResponse.results;
+* 		this.$.list.setCount(this.results.length);
+* 		this.$.list.completePull();
+* 	},
+* 	pullComplete: function () {
+* 		this.$.list.reset();
+* 	}
 * ```
 *
 * @class PulldownList

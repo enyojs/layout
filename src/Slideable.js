@@ -48,13 +48,17 @@ var
 * The following control is placed 90% off the screen to the right, and slides
 * to its natural position:
 *
-* ```
-* {kind: 'enyo.Slideable', value: -90, min: -90, unit: '%',
-* 	classes: 'enyo-fit', style: 'width: 300px;',
-* 	components: [
-* 		{content: 'stuff'}
-* 	]
-* }
+* ```javascript
+* 	var
+* 		kind = require('enyo/kind'),
+* 		Slideable = require('layout/Slideable');
+*
+* 	{kind: Slideable, value: -90, min: -90, unit: '%',
+* 		classes: 'enyo-fit', style: 'width: 300px;',
+* 		components: [
+* 			{content: 'stuff'}
+* 		]
+* 	}
 * ```
 *
 * @class Slideable

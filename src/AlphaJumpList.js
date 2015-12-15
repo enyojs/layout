@@ -11,18 +11,24 @@ var
 	List = require('./List');
 
 /**
-* {@link module:layout/AlphaJumpList~AlphaJumpList} is an {@link module:layout/List~List} that features an alphabetical
-* panel from which a selection may be made. Actions are performed based on the item
-* that was selected.
+* {@link module:layout/AlphaJumpList~AlphaJumpList} is a
+* {@link module:layout/List~List} that features an alphabetical panel from which
+* a selection may be made. Actions are performed based on the item that is
+* selected.
 *
-* ```
-* {kind: 'AlphaJumpList', onSetupItem: 'setupItem',
-* 	onAlphaJump: 'alphaJump',
-* 	components: [
-* 		{name: 'divider'},
-* 		{kind: 'onyx.Item'}
-* 	]
-* }
+* ```javascript
+* 	var
+* 		kind = require('enyo/kind'),
+* 		AlphaJumpList = require('layout/AlphaJumpList'),
+* 		Item = require('onyx/Item');
+*
+* 	{kind: AlphaJumpList, onSetupItem: 'setupItem',
+* 		onAlphaJump: 'alphaJump',
+* 		components: [
+* 			{name: 'divider'},
+* 			{kind: Item}
+* 		]
+* 	}
 * ```
 *
 * @ui
