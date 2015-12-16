@@ -11,8 +11,8 @@ var
 
 
 /**
-* {@link module:layout/CardArranger~CardArranger} is an {@link module:layout/Arranger~Arranger} that displays only
-* one active control. The non-active controls are hidden with
+* {@link module:layout/CardArranger~CardArranger} is a {@link module:layout/Arranger~Arranger}
+* that displays only one active control. The non-active controls are hidden with
 * `setShowing(false)`. Transitions between arrangements are handled by fading
 * from one control to the next.
 *

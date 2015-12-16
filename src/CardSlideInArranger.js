@@ -11,10 +11,11 @@ var
 	CardArranger = require('./CardArranger');
 
 /**
-* {@link module:layout/CardSlideInArranger~CardSlideInArranger} is an {@link module:layout/Arranger~Arranger} that
-* displays only one active control. The non-active controls are hidden with
-* `setShowing(false)`. Transitions between arrangements are handled by
-* sliding the new control	over the current one.
+* {@link module:layout/CardSlideInArranger~CardSlideInArranger} is a
+* {@link module:layout/Arranger~Arranger} that displays only one active control.
+* The non-active controls are hidden with `setShowing(false)`. Transitions
+* between arrangements are handled by sliding the new control	over the current
+* one.
 *
 * Note that CardSlideInArranger always slides controls in from the right. If
 * you want an arranger that slides to the right and left, try

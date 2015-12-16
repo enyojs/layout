@@ -11,10 +11,11 @@ var
 	Arranger = require('./Arranger');
 
 /**
-* {@link module:layout/DockRightArranger~DockRightArranger} is an {@link module:layout/Arranger~Arranger} that displays the
-* active control, along with some number of inactive controls to fill the
-* available space. The active control is positioned on the right side of the
-* container and the rest of the views are laid out to the right.
+* {@link module:layout/DockRightArranger~DockRightArranger} is a
+* {@link module:layout/Arranger~Arranger} that displays the active control,
+* along with some number of inactive controls to fill the available space. The
+* active control is positioned on the right side of the container and the rest
+* of the views are laid out to the right.
 *
 * For best results with DockRightArranger, you should set a minimum width
 * for each control via a CSS style, e.g., `min-width: 25%` or

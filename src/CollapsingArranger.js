@@ -10,12 +10,12 @@ var
 	CarouselArranger = require('./CarouselArranger');
 
 /**
-* {@link module:layout/CollapsingArranger~CollapsingArranger} is an {@link module:layout/Arranger~Arranger} that displays the
-* active control, along with some number of inactive	controls to fill the
-* available space. The active control is positioned on the left side of the
-* container and the rest of the views are laid out to the right. The last
-* control, if visible, will expand to fill whatever space is not taken up by
-* the previous controls.
+* {@link module:layout/CollapsingArranger~CollapsingArranger} is a
+* {@link module:layout/Arranger~Arranger} that displays the active control,
+* along with some number of inactive controls to fill the available space. The
+* active control is positioned on the left side of the container and the rest of
+* the views are laid out to the right. The last control, if visible, will expand
+* to fill whatever space is not taken up by the previous controls.
 *
 * For best results with CollapsingArranger, you should set a minimum width
 * for each control via a CSS style, e.g., `min-width: 25%` or

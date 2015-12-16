@@ -10,9 +10,10 @@ var
 	Arranger = require('./Arranger');
 
 /**
-* {@link module:layout/SpiralArranger~SpiralArranger} is an {@link module:layout/Arranger~Arranger} that arranges
-* controls in a spiral. The active control is positioned on top and the other
-* controls are laid out in a spiral pattern below.
+* {@link module:layout/SpiralArranger~SpiralArranger} is a
+* {@link module:layout/Arranger~Arranger} that arranges controls in a spiral.
+* The active control is positioned on top and the other controls are laid out in
+* a spiral pattern below.
 *
 * Transitions between arrangements are handled by rotating the new control up
 * from below and rotating the active control down to the end of the spiral.

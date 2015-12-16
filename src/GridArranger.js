@@ -10,14 +10,14 @@ var
 	Arranger = require('./Arranger');
 
 /**
-* {@link module:layout/GridArranger~GridArranger} is an {@link module:layout/Arranger~Arranger} that arranges
-* controls in a grid. The active control is positioned at the top-left of the
-* grid and the other controls are laid out from left to right and then from
-* top to bottom.
+* {@link module:layout/GridArranger~GridArranger} is a
+* {@link module:layout/Arranger~Arranger} that arranges controls in a grid. The
+* active control is positioned at the top-left of the grid and the other
+* controls are laid out from left to right and then from top to bottom.
 *
 * Transitions between arrangements are handled by moving the active control to
-* the end of the grid and shifting the other controls	to the left, or by
-* moving it up to the previous row, to fill the space.
+* the end of the grid and shifting the other controls	to the left, or by moving
+* it up to the previous row, to fill the space.
 *
 * For more information, see the documentation on
 * [Arrangers]{@linkplain $dev-guide/building-apps/layout/arrangers.html} in the

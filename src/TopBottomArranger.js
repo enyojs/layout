@@ -10,10 +10,11 @@ var
 	LeftRightArranger = require('./LeftRightArranger');
 
 /**
-* {@link module:layout/TopBottomArranger~TopBottomArranger} is an {@link module:layout/Arranger~Arranger} that displays
-* the active control and some of the previous and next controls. The active
-* control is centered vertically in the container, and the previous and next
-* controls are laid out above and below, respectively.
+* {@link module:layout/TopBottomArranger~TopBottomArranger} is a
+* {@link module:layout/Arranger~Arranger} that displays the active control and
+* some of the previous and next controls. The active control is centered
+* vertically in the container, and the previous and next controls are laid out
+* above and below, respectively.
 *
 * Transitions between arrangements are handled by sliding the new control in
 * from the bottom and sliding the active control out the top.

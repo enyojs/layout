@@ -11,10 +11,11 @@ var
 	Arranger = require('./Arranger');
 
 /**
-* {@link module:layout/CarouselArranger~CarouselArranger} is an {@link module:layout/Arranger~Arranger} that displays
-* the active control, along with some number of inactive controls to fill the
-* available space. The active control is positioned on the left side of the
-* container, and the rest of the views are laid out to the right.
+* {@link module:layout/CarouselArranger~CarouselArranger} is a
+* {@link module:layout/Arranger~Arranger} that displays the active control,
+* along with some number of inactive controls to fill the available space. The
+* active control is positioned on the left side of the container, and the rest
+* of the views are laid out to the right.
 *
 * One of the controls may have `fit: true` set, in which case it will take up
 * any remaining space after all of the other controls have been sized.

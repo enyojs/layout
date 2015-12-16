@@ -18,22 +18,23 @@ var detector = document.createElement('div'),
 		(detector.style.msFlexBasis !== undefined);
 
 /**
-* {@link module:layout/FittableLayout~FittableLayout} provides the base positioning and boundary logic for
-* the fittable layout strategy. The fittable layout strategy is based on
-* laying out items in either a set of rows or a set of columns, with most of
-* the items having natural size, but one item expanding to fill the remaining
-* space. The item that expands is labeled with the attribute `fit: true`.
+* {@link module:layout/FittableLayout~FittableLayout} provides the base
+* positioning and boundary logic for the fittable layout strategy. The fittable
+* layout strategy is based on laying out items in either a set of rows or a set
+* of columns, with most of the items having natural size, but one item expanding
+* to fill the remaining space. The item that expands is labeled with the
+* attribute `fit: true`.
 *
-* The subkinds {@link module:layout/FittableLayout~FittableColumnsLayout} and {@link module:layout/FittableLayout~FittableRowsLayout}
-* (or _their_ subkinds) are used for layout rather than `enyo.FittableLayout` because
-* they specify properties that the framework expects to be available when laying items
-* out.
+* The subkinds {@link module:layout/FittableLayout~FittableColumnsLayout} and
+* {@link module:layout/FittableLayout~FittableRowsLayout} (or _their_ subkinds)
+* are used for layout rather than `FittableLayout` because they specify
+* properties that the framework expects to be available when laying items out.
 *
-* When available on the platform, you can opt-in to have `enyo.FittableLayout` use CSS
-* flexible box (flexbox) to implement fitting behavior on the platform for better
-* performance; Enyo will fall back to JavaScript-based layout on older platforms.
-* Three subtle differences between the flexbox and JavaScript implementations
-* should be noted:
+* When available on the platform, you can opt-in to have `FittableLayout` use
+* CSS flexible box (flexbox) to implement fitting behavior on the platform for
+* better performance; Enyo will fall back to JavaScript-based layout on older
+* platforms. Three subtle differences between the flexbox and JavaScript
+* implementations should be noted:
 
 * - When using flexbox, vertical margins (i.e., `margin-top`, `margin-bottom`) will
 * not collapse; when using JavaScript layout, vertical margins will collapse according
@@ -300,15 +301,14 @@ var FittableLayout = module.exports = kind(/** @lends module:layout/FittableLayo
 });
 
 /**
-* {@link module:layout/FittableLayout~FittableColumnsLayout} provides a container in which items are laid
-* out in a set of vertical columns, with most of the items having natural
-* size, but one expanding to fill the remaining space. The one that expands is
-* labeled with the attribute `fit: true`.
+* {@link module:layout/FittableLayout~FittableColumnsLayout} provides a
+* container in which items are laid out in a set of vertical columns, with most
+* of the items having natural size, but one expanding to fill the remaining
+* space. The one that expands is labeled with the attribute `fit: true`.
 *
-* `enyo.FittableColumnsLayout` is meant to be used as a value for the
-* `layoutKind` property of other kinds. `layoutKind` provides a way to add
-* layout behavior in a pluggable fashion while retaining the ability to use a
-* specific base kind.
+* `FittableColumnsLayout` is meant to be used as a value for the `layoutKind`
+* property of other kinds. `layoutKind` provides a way to add layout behavior in
+* a pluggable fashion while retaining the ability to use a specific base kind.
 *
 * For more information, see the documentation on
 * [Fittables]{@linkplain $dev-guide/building-apps/layout/fittables.html} in the
@@ -332,15 +332,14 @@ module.exports.Columns = kind(/** @lends module:layout/FittableLayout~FittableCo
 
 
 /**
-* {@link module:layout/FittableLayout~FittableRowsLayout} provides a container in which items are laid out
-* in a set of horizontal rows, with most of the items having natural size, but
-* one expanding to fill the remaining space. The one that expands is labeled
-* with the attribute `fit: true`.
+* {@link module:layout/FittableLayout~FittableRowsLayout} provides a container
+* in which items are laid out in a set of horizontal rows, with most of the
+* items having natural size, but one expanding to fill the remaining space. The
+* one that expands is labeled with the attribute `fit: true`.
 *
-* `enyo.FittableRowsLayout` is meant to be used as a value for the
-* `layoutKind` property of other kinds. `layoutKind` provides a way to add
-* layout behavior in a pluggable fashion while retaining the ability to use a
-* specific base kind.
+* `FittableRowsLayout` is meant to be used as a value for the `layoutKind`
+* property of other kinds. `layoutKind` provides a way to add layout behavior in
+* a pluggable fashion while retaining the ability to use a specific base kind.
 *
 * For more information, see the documentation on
 * [Fittables]{@linkplain $dev-guide/building-apps/layout/fittables.html} in the

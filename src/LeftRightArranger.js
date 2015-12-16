@@ -10,10 +10,11 @@ var
 	Arranger = require('./Arranger');
 
 /**
-* {@link module:layout/LeftRightArranger~LeftRightArranger} is an {@link module:layout/Arranger~Arranger} that displays
-* the active control and some of the previous and next controls. The active
-* control is centered horizontally in the container, and the previous and next
-* controls are laid out to the left and right, respectively.
+* {@link module:layout/LeftRightArranger~LeftRightArranger} is a
+* {@link module:layout/Arranger~Arranger} that displays the active control and
+* some of the previous and next controls. The active control is centered
+* horizontally in the container, and the previous and next controls are laid out
+* to the left and right, respectively.
 *
 * Transitions between arrangements are handled by sliding the new control in
 * from the right and sliding the active control out to the left.

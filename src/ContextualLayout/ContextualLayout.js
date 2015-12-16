@@ -8,25 +8,30 @@ var
     Layout = require('enyo/Layout');
 
 /**
-* {@link module:layout/ContextualLayout~ContextualLayout} provides the base positioning logic for a contextual
-* layout strategy. This layout strategy is intended for use with a popup in a
-* decorator/activator scenario, in which the popup is positioned relative to
-* the activator, e.g.:
+* {@link module:layout/ContextualLayout~ContextualLayout} provides the base
+* positioning logic for a contextual layout strategy. This layout strategy is
+* intended for use with a popup in a decorator/activator scenario, in which the
+* popup is positioned relative to the activator, e.g.:
 *
-* ```
-* {kind: 'onyx.ContextualPopupDecorator', components: [
-*   {content: 'Show Popup'},
-*   {kind: 'onyx.ContextualPopup',
-*       title: 'Sample Popup',
-*       actionButtons: [
-*           {content: 'Button 1', classes: 'onyx-button-warning'},
-*           {content: 'Button 2'}
-*       ],
-*       components: [
-*           {content: 'Sample component in popup'}
-*       ]
-*   }
-* ]}
+* ```javascript
+* 	var
+* 		kind = require('enyo/kind'),
+* 		ContextualPopup = require('onyx/ContextualPopup'),
+* 		ContextualPopupDecorator = require('onyx/ContextualPopupDecorator');
+*
+* 	{kind: ContextualPopupDecorator, components: [
+* 		{content: 'Show Popup'},
+* 		{kind: ContextualPopup,
+* 			title: 'Sample Popup',
+* 			actionButtons: [
+* 				{content: 'Button 1', classes: 'onyx-button-warning'},
+* 				{content: 'Button 2'}
+* 			],
+* 			components: [
+* 				{content: 'Sample component in popup'}
+* 			]
+* 		}
+* 	]}
 * ```
 *
 * The decorator contains the popup and activator, with the activator being the
