@@ -160,7 +160,7 @@ var TreeNode = module.exports = kind(
 	/**
 	* @private
 	*/
-	defaultKind: TreeNode,
+	defaultKind: null, // set after the fact
 
 	/**
 	* @private
@@ -429,3 +429,5 @@ var TreeNode = module.exports = kind(
 		//this.contentChanged();
 	}
 });
+
+TreeNode.prototype.defaultKind = TreeNode;
