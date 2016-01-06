@@ -52,14 +52,15 @@ var
 * 		kind = require('enyo/kind'),
 * 		Node = require('layout/Node');
 *
-* 	{kind: Node, icon: 'images/folder-open.png', content: 'Tree',
+* 	{kind: Node, icon: '@../assets/folder-open.png', content: 'Tree',
 * 		expandable: true, expanded: true, components: [
-* 			{icon: 'images/file.png', content: 'Alpha'},
-* 			{icon: 'images/folder-open.png', content: 'Bravo',
+* 			{icon: '@../assets/file.png', content: 'Alpha'},
+* 			{icon: '@../assets/folder-open.png', content: 'Bravo',
 * 				expandable: true, expanded: false, components: [
-* 					{icon: 'images/file.png', content: 'Bravo-Alpha'},
-* 					{icon: 'images/file.png', content: 'Bravo-Bravo'},
-* 					{icon: 'images/file.png', content: 'Bravo-Charlie'}
+* 					{icon: '@../assets/file.png', content: 'Bravo-Alpha'},
+* 					{icon: '@../assets/file.png', content: 'Bravo-Bravo'},
+* 					{icon: '@../assets/file.png', content: 'Bravo-Charlie'}
+* 					]
 * 				]
 * 			}
 * 		]

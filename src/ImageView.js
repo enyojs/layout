@@ -24,7 +24,7 @@ var
 * 		kind = require('enyo/kind'),
 * 		ImageView = require('layout/ImageView');
 *
-* 	{kind: ImageView, src: 'assets/globe.jpg', scale: 'auto',
+* 	{kind: ImageView, src: '@../assets/globe.jpg', scale: 'auto',
 * 		style: 'width: 500px; height: 400px;'}
 * ```
 *

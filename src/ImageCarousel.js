@@ -25,14 +25,14 @@ var
 * 		ImageCarousel = require('layout/ImageCarousel');
 *
 * 	{kind: ImageCarousel, images: [
-* 		'assets/mercury.jpg',
-* 		'assets/venus.jpg',
-* 		'assets/earth.jpg',
-* 		'assets/mars.jpg',
-* 		'assets/jupiter.jpg',
-* 		'assets/saturn.jpg',
-* 		'assets/uranus.jpg',
-* 		'assets/neptune.jpg'
+* 		'@../assets/mercury.jpg',
+* 		'@../assets/venus.jpg',
+* 		'@../assets/earth.jpg',
+* 		'@../assets/mars.jpg',
+* 		'@../assets/jupiter.jpg',
+* 		'@../assets/saturn.jpg',
+* 		'@../assets/uranus.jpg',
+* 		'@../assets/neptune.jpg'
 * 	], defaultScale: 'auto'},
 * ```
 *
