@@ -214,7 +214,7 @@ module.exports = kind(
 	*/
 	components: [
 		{name: 'animator', kind: Animator, onStep: 'zoomAnimationStep', onEnd: 'zoomAnimationEnd'},
-		{name: 'viewport', style: 'overflow:hidden;min-height:100%;min-width:100%;', classes: 'enyo-fit', ongesturechange: 'gestureTransform', ongestureend: 'saveState', ontap: 'singleTap', ondblclick: 'doubleClick', onmousewheel: 'mousewheel', components: [
+		{name: 'viewport', style: 'overflow:hidden;min-height:100%;min-width:100%;', classes: 'enyo-fit', ongesturechange: 'gestureTransform', ongestureend: 'saveState', ontap: 'singleTap', ondblclick: 'doubleClick', onmousewheel: 'mousewheel', ondown: 'handleDown', components: [
 			{name: 'content'}
 		]}
 	],
@@ -297,6 +297,17 @@ module.exports = kind(
 		// Prevent default scroll wheel action and prevent event from bubbling up to to touch scroller
 		event.preventDefault();
 		return true;
+	},
+
+	/**
+	* Ensure that hold is canceled onMove (vs onLeave) so drag event occur as expected
+	*
+	* @private
+	*/
+	handleDown: function (sender, event) {
+		event.configureHoldPulse({
+			endHold: 'onMove'
+		});
 	},
 
 	/**
