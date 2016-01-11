@@ -6,7 +6,7 @@
   "main": "index.js",
   "moduleDir": "src",
   "version": "1.0.0",
-  "description": "It's moved to [https://enyojs.atlassian.net](https://enyojs.atlassian.net).",
+  "description": "A layout library for Enyo.",
   "directories": {
     "doc": "docs"
   },
@@ -18,7 +18,7 @@
     "url": "https://github.com/enyojs/layout.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/enyojs/layout/issues"
   },
