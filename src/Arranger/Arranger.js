@@ -372,7 +372,7 @@ Arranger.positionControl = function (control, bounds, unit) {
 	unit = unit || 'px';
 	if (!this.updating) {
 		// IE10 uses setBounds because of control hit caching problems seem in some apps
-		if (Dom.canTransform() && !control.preventTransform && !platform.android && platform.ie !== 10) {
+		if (Dom.canTransform() && !control.preventTransform && platform.ie !== 10) {
 			var l = bounds.left, t = bounds.top;
 			l = utils.isString(l) ? l : l && (l + unit);
 			t = utils.isString(t) ? t : t && (t + unit);
