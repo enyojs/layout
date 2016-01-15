@@ -274,7 +274,7 @@ var easing = module.exports = utils.mixin(animation.easing, /** @lends module:la
     * @public
     */
     easeInBounce: function (n, t, b, c, d) {
-        return c - easing.easeOutBounce (d-t, 0, c, d) + b;
+        return c - easing.easeOutBounce (n, d-t, 0, c, d) + b;
     },
 
     /**
