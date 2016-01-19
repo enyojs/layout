@@ -7,8 +7,10 @@ var
 	utils = require('enyo/utils');
 
 /**
-* enyo.List was too large for the parser so we have to split it up. For now, we're arbitrarily
+* layout/List was too large for the parser so we have to split it up. For now, we're arbitrarily
 * splitting the methods into another file. A more appropriate refactoring is required.
+* @module layout/List
+* @private
 */
 
 module.exports = /** @lends module:layout/List~List.prototype */ {
