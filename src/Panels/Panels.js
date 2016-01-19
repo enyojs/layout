@@ -540,6 +540,7 @@ var Panels = module.exports = kind(
 		if (this.dragging) {
 			event.preventDefault();
 			this.dragTransition(event);
+			return true;
 		}
 	},
 
@@ -551,6 +552,7 @@ var Panels = module.exports = kind(
 			this.dragging = false;
 			event.preventTap();
 			this.dragfinishTransition(event);
+			return true;
 		}
 	},
 
