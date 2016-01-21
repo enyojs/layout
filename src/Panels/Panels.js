@@ -502,6 +502,7 @@ var Panels = module.exports = kind(
 	*/
 	animationEnded: function (sender, event) {
 		this.completed();
+		return true;
 	},
 
 	/**
@@ -651,6 +652,7 @@ var Panels = module.exports = kind(
 		this.stepTransition();
 		this.transitioning = false;
 		this.completeTransition();
+		this.dragging = false;
 	},
 
 	/**
