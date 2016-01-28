@@ -394,6 +394,15 @@ module.exports = kind(
 	setPulled: function () {
 		this.$.puller.setText(this.pulledMessage);
 		this.$.puller.setIconClass(this.pulledIconClass);
+	},
+
+	/**
+	* Prevent swiping while pully is showing as the swipe gets rendered one row off
+	*
+	* @private
+	*/
+	isSwipeable: function () {
+		return !this.pully.get('showing') && List.prototype.isSwipeable.apply(this, arguments);
 	}
 });
 
