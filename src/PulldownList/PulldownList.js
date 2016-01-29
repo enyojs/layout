@@ -321,6 +321,11 @@ module.exports = kind(
 			s.setScrollY(-1*this.getScrollTop() - this.pullHeight);
 			this.pullRelease();
 		}
+		else {
+			// if base list is configured for swipe, ensure
+			// has a chance to process swipe
+			List.prototype.dragfinish.apply(this, arguments);
+		}
 	},
 
 	/**
@@ -389,6 +394,24 @@ module.exports = kind(
 	setPulled: function () {
 		this.$.puller.setText(this.pulledMessage);
 		this.$.puller.setIconClass(this.pulledIconClass);
+	},
+
+	/**
+	* Prevent swiping while pully is showing as the swipe gets rendered one row off
+	*
+	* @private
+	*/
+	isSwipeable: function () {
+		return !this.pully.get('showing') && List.prototype.isSwipeable.apply(this, arguments);
+	},
+
+	/**
+	* Prevent reordering while pully is showing
+	*
+	* @private
+	*/
+	shouldStartReordering: function () {
+		return !this.pully.get('showing') && List.prototype.shouldStartReordering.apply(this, arguments);
 	}
 });
 
