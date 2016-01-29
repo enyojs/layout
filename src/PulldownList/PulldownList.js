@@ -403,6 +403,15 @@ module.exports = kind(
 	*/
 	isSwipeable: function () {
 		return !this.pully.get('showing') && List.prototype.isSwipeable.apply(this, arguments);
+	},
+
+	/**
+	* Prevent reordering while pully is showing
+	*
+	* @private
+	*/
+	shouldStartReordering: function () {
+		return !this.pully.get('showing') && List.prototype.shouldStartReordering.apply(this, arguments);
 	}
 });
 
