@@ -324,7 +324,7 @@ module.exports = kind(
 		else {
 			// if base list is configured for swipe, ensure
 			// has a chance to process swipe
-			this.inherited(arguments);
+			List.prototype.dragfinish.apply(this, arguments);
 		}
 	},
 
