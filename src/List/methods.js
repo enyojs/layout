@@ -88,7 +88,7 @@ module.exports = /** @lends module:layout/List~List.prototype */ {
 	* {@link module:enyo/TouchScrollStrategy~TouchScrollStrategy}, which wrap their contents with
 	* additional DOM nodes.
 	*
-	* @see {@link module:enyo/Scroller~Scroller.createStrategy}
+	* @see {@link module:enyo/Scroller~Scroller#createStrategy}
 	* @method
 	* @private
 	*/
@@ -578,7 +578,7 @@ module.exports = /** @lends module:layout/List~List.prototype */ {
 	* When the list is scrolled, ensures that the correct rows are rendered and
 	* that the reordering controls are positioned correctly.
 	*
-	* @see {@link module:enyo/Scroller~Scroller.scroll}
+	* @see {@link module:enyo/Scroller~Scroller#scroll}
 	* @method
 	* @private
 	*/
@@ -601,7 +601,7 @@ module.exports = /** @lends module:layout/List~List.prototype */ {
 	/**
 	* Updates the list rows when the scroll top is set explicitly.
 	*
-	* @see {@link module:enyo/Scroller~Scroller.setScrollTop}
+	* @see {@link module:enyo/Scroller~Scroller#setScrollTop}
 	* @method
 	* @public
 	*/
