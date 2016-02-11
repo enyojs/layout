@@ -61,6 +61,18 @@ var
 * 	}
 * ```
 *
+* NOTE: If Slideable is used with [Accessibility]{@link module:enyo/AccessibilitySupport} the focus
+* event can cause the screen to scroll as the browser attempts to position the contents on the
+* screen. To prevent this, in the container of the Slideable set the `accessibilityPreventScroll`
+* property to `true`:
+*
+* ```javascript
+* 	accessibilityPreventScroll: true
+* ```
+*
+* This issue is not unique to Slideable and can occur with other controls that extend beyond the
+* viewport.
+*
 * @class Slideable
 * @extends module:enyo/Control~Control
 * @ui
@@ -333,12 +345,12 @@ module.exports = kind(
 	/**
 	* @private
 	*/
-	updateBounds: function (inValue, inDimensions) {
-		var inBounds = {};
-		inBounds[this.boundary] = inValue;
-		this.setBounds(inBounds, this.unit);
+	updateBounds: function (value, dimensions) {
+		var bounds = {};
+		bounds[this.boundary] = value;
+		this.setBounds(bounds, this.unit);
 
-		this.setInlineStyles(inValue, inDimensions);
+		this.setInlineStyles(value, dimensions);
 	},
 
 	/**
@@ -407,7 +419,7 @@ module.exports = kind(
 	* @fires module:layout/Slideable~Slideable#onChange
 	* @private
 	*/
-	valueChanged: function (inLast) {
+	valueChanged: function (last) {
 		var v = this.value;
 		if (this.isOob(v) && !this.isAnimating()) {
 			this.value = this.overMoving ? this.dampValue(v) : this.clampValue(v);
@@ -416,7 +428,7 @@ module.exports = kind(
 		// desktop chrome doesn't like this code path so avoid...
 		if (platform.android > 2) {
 			if (this.value) {
-				if (inLast === 0 || inLast === undefined) {
+				if (last === 0 || last === undefined) {
 					dom.accelerate(this, this.accelerated);
 				}
 			} else {
@@ -472,26 +484,26 @@ module.exports = kind(
 	/**
 	* @private
 	*/
-	clampValue: function (inValue) {
+	clampValue: function (value) {
 		var min = this.calcMin();
 		var max = this.calcMax();
-		return Math.max(min, Math.min(inValue, max));
+		return Math.max(min, Math.min(value, max));
 	},
 
 	/**
 	* @private
 	*/
-	dampValue: function (inValue) {
-		return this.dampBound(this.dampBound(inValue, this.min, 1), this.max, -1);
+	dampValue: function (value) {
+		return this.dampBound(this.dampBound(value, this.min, 1), this.max, -1);
 	},
 
 	/**
 	* @private
 	*/
-	dampBound: function (inValue, inBoundary, inSign) {
-		var v = inValue;
-		if (v * inSign < inBoundary * inSign) {
-			v = inBoundary + (v - inBoundary) / 4;
+	dampBound: function (value, boundary, sign) {
+		var v = value;
+		if (v * sign < boundary * sign) {
+			v = boundary + (v - boundary) / 4;
 		}
 		return v;
 	},
@@ -521,30 +533,30 @@ module.exports = kind(
 	/**
 	* @private
 	*/
-	shouldDrag: function (inEvent) {
-		return this.draggable && inEvent[this.shouldDragProp];
+	shouldDrag: function (event) {
+		return this.draggable && event[this.shouldDragProp];
 	},
 
 	/**
 	* Determines whether the specified value is out of bounds (i.e., greater than
 	* [max]{@link module:layout/Slideable~Slideable#max} or less than [min]{@link module:layout/Slideable~Slideable#min}).
 	*
-	* @param {Number} inValue - The value to check.
-	* @return {Boolean} `true` if `inValue` is out of bounds; otherwise, `false`.
+	* @param {Number} value - The value to check.
+	* @return {Boolean} `true` if `value` is out of bounds; otherwise, `false`.
 	* @private
 	*/
-	isOob: function (inValue) {
-		return inValue > this.calcMax() || inValue < this.calcMin();
+	isOob: function (value) {
+		return value > this.calcMax() || value < this.calcMin();
 	},
 
 	/**
 	* @private
 	*/
-	dragstart: function (inSender, inEvent) {
-		if (this.shouldDrag(inEvent)) {
-			inEvent.preventDefault();
+	dragstart: function (sender, event) {
+		if (this.shouldDrag(event)) {
+			event.preventDefault();
 			this.$.animator.stop();
-			inEvent.dragInfo = {};
+			event.dragInfo = {};
 			this.dragging = true;
 			this.drag0 = this.value;
 			this.dragd0 = 0;
@@ -558,15 +570,15 @@ module.exports = kind(
 	*
 	* @private
 	*/
-	drag: function (inSender, inEvent) {
+	drag: function (sender, event) {
 		if (this.dragging) {
-			inEvent.preventDefault();
-			var d = this.canTransform ? inEvent[this.dragMoveProp] * this.kDragScalar : this.pixelsToPercent(inEvent[this.dragMoveProp]);
+			event.preventDefault();
+			var d = this.canTransform ? event[this.dragMoveProp] * this.kDragScalar : this.pixelsToPercent(event[this.dragMoveProp]);
 			var v = this.drag0 + d;
 			var dd = d - this.dragd0;
 			this.dragd0 = d;
 			if (dd) {
-				inEvent.dragInfo.minimizing = dd < 0;
+				event.dragInfo.minimizing = dd < 0;
 			}
 			this.setValue(v);
 			return this.preventDragPropagation;
