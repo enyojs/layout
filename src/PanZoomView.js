@@ -6,7 +6,6 @@
 var
 	kind = require('enyo/kind'),
 	dom = require('enyo/dom'),
-	platform = require('enyo/platform'),
 	utils = require('enyo/utils'),
 	Animator = require('enyo/Animator'),
 	Scroller = require('enyo/Scroller');
@@ -214,7 +213,7 @@ module.exports = kind(
 	*/
 	components: [
 		{name: 'animator', kind: Animator, onStep: 'zoomAnimationStep', onEnd: 'zoomAnimationEnd'},
-		{name: 'viewport', style: 'overflow:hidden;min-height:100%;min-width:100%;', classes: 'enyo-fit', ongesturechange: 'gestureTransform', ongestureend: 'saveState', ontap: 'singleTap', ondblclick: 'doubleClick', onmousewheel: 'mousewheel', ondown: 'handleDown', components: [
+		{name: 'viewport', style: 'overflow:hidden;min-height:100%;min-width:100%;', classes: 'enyo-fit', ongesturechange: 'gestureTransform', ongestureend: 'saveState', ontap: 'singleTap', onmousewheel: 'mousewheel', ondown: 'handleDown', components: [
 			{name: 'content'}
 		]}
 	],
@@ -468,17 +467,8 @@ module.exports = kind(
 				params = utils.mixin({translate: this.bounds.left + 'px, ' + this.bounds.top + 'px'}, params);
 			}
 			dom.transform(this.$.content, params);
-		} else if (platform.ie) {
-			// IE8 does not support transforms, but filter should work
-			// http://www.useragentman.com/IETransformsTranslator/
-			var matrix = '"progid:DXImageTransform.Microsoft.Matrix(M11='+scale+', M12=0, M21=0, M22='+scale+', SizingMethod=\'auto expand\')"';
-			this.$.content.applyStyle('-ms-filter', matrix);
-			this.$.content.setBounds({width: this.bounds.width*scale + 'px', height: this.bounds.height*scale + 'px',
-					left:this.bounds.left + 'px', top:this.bounds.top + 'px'});
-			this.$.content.applyStyle('width', scale*this.bounds.width);
-			this.$.content.applyStyle('height', scale*this.bounds.height);
 		} else {
-			// ...no transforms and not IE... there's nothin' I can do.
+			// ...no transforms means there's nothin' I can do.
 		}
 
 		//adjust scroller to new position that keeps ratio with the new content size
@@ -545,26 +535,6 @@ module.exports = kind(
 			this.doZoom({scale:this.scale});
 		}
 		this.ratioX = this.ratioY = null;
-	},
-
-	/**
-	* Normalizes the event and forwards it to
-	* [singleTap()]{@link module:layout/PanZoomView~PanZoomView#singleTap}.
-	*
-	* IE 8 Only
-	*
-	* @private
-	*/
-	doubleClick: function (sender, event) {
-		//IE 8 fix; dblclick fires rather than multiple successive click events
-		if (platform.ie==8) {
-			this.tapped = true;
-			//normalize event
-			event.pageX = event.clientX + event.target.scrollLeft;
-			event.pageY = event.clientY + event.target.scrollTop;
-			this.singleTap(sender, event);
-			event.preventDefault();
-		}
 	},
 
 	/**

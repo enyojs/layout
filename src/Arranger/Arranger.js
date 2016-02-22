@@ -397,14 +397,7 @@ Arranger.positionControl = function (control, bounds, unit) {
 * @public
 */
 Arranger.opacifyControl = function (inControl, inOpacity) {
-	var o = inOpacity;
 	// FIXME: very high/low settings of opacity can cause a control to
 	// blink so cap this here.
-	o = o > 0.99 ? 1 : (o < 0.01 ? 0 : o);
-	// note: we only care about ie8
-	if (platform.ie < 9) {
-		inControl.applyStyle('filter', 'progid:DXImageTransform.Microsoft.Alpha(Opacity=' + (o * 100) + ')');
-	} else {
-		inControl.applyStyle('opacity', o);
-	}
+	inControl.applyStyle('opacity', inOpacity > 0.99 ? 1 : (inOpacity < 0.01 ? 0 : inOpacity));
 };

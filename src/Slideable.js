@@ -336,8 +336,6 @@ module.exports = kind(
 		var s = dom.getComputedStyle(node);
 		if (s) {
 			return s.getPropertyValue(boundary);
-		} else if (node && node.currentStyle) {
-			return node.currentStyle[boundary];
 		}
 		return '0';
 	},
