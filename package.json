@@ -5,7 +5,7 @@
   "styles": [],
   "main": "index.js",
   "moduleDir": "src",
-  "version": "1.0.0",
+  "version": "2.7.0-rc.1",
   "description": "A layout library for Enyo.",
   "directories": {
     "doc": "docs"
