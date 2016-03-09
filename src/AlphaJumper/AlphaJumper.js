@@ -98,9 +98,7 @@ module.exports = kind(
 		this.tracking = true;
 		if (this.hasNode()) {
 			var b = this.node.getBoundingClientRect();
-			// IE8 does not return width
-			var w = (b.width === undefined) ? (b.right - b.left) : b.width;
-			this.x = b.left + w/2;
+			this.x = b.left + b.width/2;
 		}
 		dispatcher.capture(this);
 		this.track(event);
