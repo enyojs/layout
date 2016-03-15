@@ -2076,7 +2076,7 @@ module.exports = /** @lends module:layout/List~List.prototype */ {
 	*/
 	stopAnimateSwipe: function () {
 		if (this.job) {
-			this.job = animation.cancelRequestAnimationFrame(this.job);
+			this.job = animation.cancelAnimationFrame(this.job);
 		}
 	}
 };
