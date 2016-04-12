@@ -1,0 +1,6 @@
+{
+	"main": "PulldownList.js",
+	"styles": [
+		"PulldownList.css"
+	]
+}

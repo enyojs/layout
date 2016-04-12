@@ -1,0 +1,32 @@
+{
+  "name": "layout",
+  "assets": [],
+  "devAssets": [],
+  "styles": [],
+  "main": "index.js",
+  "moduleDir": "src",
+  "version": "2.7.0",
+  "description": "A layout library for Enyo.",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/enyojs/layout.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/enyojs/layout/issues"
+  },
+  "homepage": "https://github.com/enyojs/layout",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-jshint": "^2.0.0",
+    "jshint": "^2.9.1",
+    "jshint-stylish": "^2.1.0"
+  }
+}
