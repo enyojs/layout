@@ -5,7 +5,7 @@
   "styles": [],
   "main": "index.js",
   "moduleDir": "src",
-  "version": "2.6.3-rc.13.s",
+  "version": "2.6.3-rc.15.s",
   "description": "It's moved to [https://enyojs.atlassian.net](https://enyojs.atlassian.net).",
   "directories": {
     "doc": "docs"

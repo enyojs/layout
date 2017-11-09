@@ -1,3 +1,3 @@
 module.exports = {
-	version: '2.6.3-rc.13.s'
+	version: '2.6.3-rc.15.s'
 };
